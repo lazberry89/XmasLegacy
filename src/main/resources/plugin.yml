@@ -1,0 +1,14 @@
+name: XmasLegacy
+version: '${version}'
+
+main: org.lazberry.xmasLegacy.XmasLegacy
+api-version: '26.1.1'
+load: POSTWORLD
+commands:
+  문의:
+    usage: /문의 <내용>
+    description: 문의를 하여 관리자를 호출합니다.
+
+  이동문의:
+    usage: /이동문의 <유저>
+    description: 문의를 받고 해당 유저로 이동합니다.
