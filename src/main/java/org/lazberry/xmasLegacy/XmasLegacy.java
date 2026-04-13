@@ -10,14 +10,22 @@ public final class XmasLegacy extends JavaPlugin {
 		getLogger().warning("This Christmas will be Perfect!");
 
 		ServerJoinManager SJM = new ServerJoinManager();
-		RuleManager RM = new RuleManager();
-		InquiryManager IM = new InquiryManager(RM);
+		RuleManager RM = new RuleManager(this);
+		InquiryManager IM = new InquiryManager(RM, this);
 		InquiryCommandManager ICM = new InquiryCommandManager(IM);
-		InquireTeleportCommand ITPC = new InquireTeleportCommand(IM);
+		InquireTeleportCommand ITC = new InquireTeleportCommand(IM);
+        RuleCommandManager RCM = new RuleCommandManager(RM);
+        LogCommandManager LCM = new LogCommandManager(IM, this);
+        UserManager UM = new UserManager(this);
+        SJM.setUM(UM);
 
 		getServer().getPluginManager().registerEvents(SJM, this);
 		getCommand("문의").setExecutor(ICM);
-		getCommand("이동문의").setExecutor(ITPC);
+		getCommand("이동문의").setExecutor(ITC);
+        getCommand("filter").setExecutor(RCM);
+        getCommand("filter").setTabCompleter(RCM);
+        getCommand("log").setTabCompleter(LCM);
+        getCommand("log").setTabCompleter(LCM);
 	}
 
 	@Override

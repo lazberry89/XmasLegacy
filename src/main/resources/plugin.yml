@@ -12,3 +12,7 @@ commands:
   이동문의:
     usage: /이동문의 <유저>
     description: 문의를 받고 해당 유저로 이동합니다.
+
+  log:
+    usage: /log <inquiry | inquiries> <이름>
+    description: 로그 검색

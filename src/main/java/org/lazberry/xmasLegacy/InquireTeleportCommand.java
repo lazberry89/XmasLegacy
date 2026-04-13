@@ -27,14 +27,17 @@ public class InquireTeleportCommand implements CommandExecutor {
 			if (target != null && target.isOnline()) {
 				if (IM.hasInquiry(target.getUniqueId())) {
 					p.teleport(target);
-					p.spawnParticle(Particle.FLAME, p.getLocation().add(0, 1, 0), 5, 0.5, 1.2, 0.5, 0.01);
-					p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 이동하였습니다"));
+					p.spawnParticle(Particle.FLAME, p.getLocation().add(0, 1, 0), 15, 0.5, 1.2, 0.5, 0.01);
+					p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 이동하였습니다."));
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-					target.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 관리자가 이동하였습니다"));
+
+					target.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 관리자가 배정되었습니다 : &c&l" + p.getName()));
+                    target.playSound(target, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                    IM.updateInquiryStatus(target.getUniqueId(), InquiryStatus.RESOLVED);
 
 					IM.removeInquiry(target.getUniqueId());
 				} else {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 유저의 문의가 처리되었거나 없습니다!"));
+					p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 유저의 문의가 처리되었거나 없습니다."));
 				}
 			}
 		}
