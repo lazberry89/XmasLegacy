@@ -6,7 +6,7 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("§7[§aX§cm§aa§cs§aL§ce§ag§ca§ac§cy§7]§f Plugin Enabled!");
+		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
 
 		ServerJoinManager SJM = new ServerJoinManager();
@@ -24,7 +24,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("이동문의").setExecutor(ITC);
         getCommand("filter").setExecutor(RCM);
         getCommand("filter").setTabCompleter(RCM);
-        getCommand("log").setTabCompleter(LCM);
+        getCommand("log").setExecutor(LCM);
         getCommand("log").setTabCompleter(LCM);
 	}
 

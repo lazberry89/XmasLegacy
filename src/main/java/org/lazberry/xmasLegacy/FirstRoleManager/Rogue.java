@@ -1,0 +1,32 @@
+package org.lazberry.xmasLegacy.FirstRoleManager;
+
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.lazberry.xmasLegacy.Roles.Roles;
+
+public class Rogue extends AbstractFirstRole {
+
+	public Rogue(int c1, int c2) {
+		super(c1, c2);
+	}
+
+	@Override
+	public void useFirstSkill(Player player) {
+
+	}
+
+	@Override
+	public void useSecondSkill(Player player) {
+
+	}
+
+	@Override
+	public Roles getRole() {
+		return Roles.Rogue;
+	}
+
+	@Override
+	public ItemStack roleItem() {
+		return null;
+	}
+}

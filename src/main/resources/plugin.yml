@@ -13,6 +13,10 @@ commands:
     usage: /이동문의 <유저>
     description: 문의를 받고 해당 유저로 이동합니다.
 
+  filter:
+    usage: /filter <append | remove | list> <word>
+    description: 욕설 필터 목록 설정
+
   log:
     usage: /log <inquiry | inquiries> <이름>
     description: 로그 검색

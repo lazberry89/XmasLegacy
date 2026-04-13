@@ -88,10 +88,10 @@ public class InquiryManager {
 										.clickEvent(ClickEvent.runCommand("/이동문의 " + inqSender.getName()))
 												.hoverEvent(HoverEvent.showText(ComponentChanger.comp(Prefix.YELLOW + " 클릭 시 문의한 유저의 위치로 이동합니다.")));
                 Component bwt = ComponentChanger.comp(" &c&l[처벌]")
-                        .clickEvent(ClickEvent.runCommand("/ban " +  inqSender.getName()))
-                        .hoverEvent(HoverEvent.showText(ComponentChanger.comp(Prefix.RED + "클릭 시 유저를 밴 처리합니다.")));
+                        .clickEvent(ClickEvent.runCommand("/ban " +  inqSender.getName() + " 욕설사용"))
+                        .hoverEvent(HoverEvent.showText(ComponentChanger.comp(Prefix.RED + " 클릭 시 유저를 밴 처리합니다.")));
                 msg = msg.append(nt);
-                if (rm.checkBadWords(message) && inqSender.isOnline() && !inqSender.isOp()) msg = msg.append(bwt);
+                if (rm.checkBadWords(message) && inqSender.isOnline()) msg = msg.append(bwt); // && !inqSender.isOp()
 
 				ops.sendMessage(ColorUtils.chat("&b&l[문의]&f " + inqSender.getName() + " 님이 보냄 : &7" + rm.hideBadWords(message)));
 				ops.sendMessage(msg);
@@ -110,6 +110,7 @@ public class InquiryManager {
         logConfig.set(path + ".player", playerName);
         logConfig.set(path + ".message", message);
         logConfig.set(path + ".status", InquiryStatus.OPEN.name());
+
 
         try {
             logConfig.save(logFile);
@@ -152,7 +153,7 @@ public class InquiryManager {
 
         String latestKey = timeKeys.getLast();
 
-        logConfig.set("logs." + uuid + "." + latestKey + ".status", newStatus);
+        logConfig.set("logs." + uuid + "." + latestKey + ".status", newStatus.name());
 
         try {
             logConfig.save(logFile);

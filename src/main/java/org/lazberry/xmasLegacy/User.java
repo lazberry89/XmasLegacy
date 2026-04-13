@@ -3,6 +3,7 @@ package org.lazberry.xmasLegacy;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmasLegacy.Roles.Roles;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -11,7 +12,7 @@ public class User {
     private final UUID uuid;
     private String name;
     private @Nullable Roles role;
-    private Integer dollars;
+    private int dollars;
     private int inquireCount;
     private int playTime;
 
