@@ -26,7 +26,12 @@ public class Archer extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleItem() {
+	public ItemStack roleWeapon() {
 		return null;
 	}
+
+    @Override
+    public ItemStack roleArmor() {
+        return null;
+    }
 }

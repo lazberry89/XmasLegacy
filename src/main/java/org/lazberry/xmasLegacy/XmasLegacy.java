@@ -18,6 +18,7 @@ public final class XmasLegacy extends JavaPlugin {
         LogCommandManager LCM = new LogCommandManager(IM, this);
         UserManager UM = new UserManager(this);
         SJM.setUM(UM);
+        SkillEffectManager SEM =  new SkillEffectManager(this);
 
 		getServer().getPluginManager().registerEvents(SJM, this);
 		getCommand("문의").setExecutor(ICM);
