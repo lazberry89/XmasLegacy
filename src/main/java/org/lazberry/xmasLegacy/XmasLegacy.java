@@ -1,6 +1,8 @@
 package org.lazberry.xmasLegacy;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
+import org.lazberry.xmasLegacy.FirstRoleManager.TestCommands;
 
 public final class XmasLegacy extends JavaPlugin {
 
@@ -27,6 +29,12 @@ public final class XmasLegacy extends JavaPlugin {
         getCommand("filter").setTabCompleter(RCM);
         getCommand("log").setExecutor(LCM);
         getCommand("log").setTabCompleter(LCM);
+
+		/// /tests
+		TestCommands TC = new TestCommands(SEM, this);
+		FirstRoleListener FRL = new FirstRoleListener(SEM, this);
+		getCommand("test").setExecutor(TC);
+		getServer().getPluginManager().registerEvents(FRL, this);
 	}
 
 	@Override

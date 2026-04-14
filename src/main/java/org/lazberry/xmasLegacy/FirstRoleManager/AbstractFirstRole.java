@@ -10,13 +10,12 @@ public abstract class AbstractFirstRole {
 	private int cooldown2;
     private XmasLegacy plugin;
 
-	public AbstractFirstRole(int c1, int c2) {
+	public AbstractFirstRole(int c1, int c2, XmasLegacy plugin) {
 		this.cooldown1 = c1;
 		this.cooldown2 = c2;
+		this.plugin = plugin;
 	}
-    public void setPlugin(XmasLegacy plugin) {
-        this.plugin = plugin;
-    }
+
     public XmasLegacy getPlugin() {
         return this.plugin;
     }

@@ -1,21 +1,23 @@
 package org.lazberry.xmasLegacy.FirstRoleManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.SkillEffectManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
+import org.lazberry.xmasLegacy.XmasLegacy;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,8 +27,8 @@ public class Knight extends AbstractFirstRole {
     private float Damage = 5;
     private final SkillEffectManager SEM;
 
-	public Knight(int c1, int c2, SkillEffectManager SEM) {
-		super(c1, c2);
+	public Knight(int c1, int c2, SkillEffectManager SEM, XmasLegacy plugin) {
+		super(c1, c2, plugin);
         this.SEM = SEM;
 	}
 
@@ -34,7 +36,7 @@ public class Knight extends AbstractFirstRole {
 	public void useFirstSkill(Player player) { //Sharp Sweeping
         ItemStack tool = player.getInventory().getItemInMainHand();
         if (player.getCooldown(tool) > 0) {
-            player.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + player.getCooldown(tool) * 20 + "&f초 기다리세요"));
+            player.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) player.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;
         }
 
@@ -84,19 +86,38 @@ public class Knight extends AbstractFirstRole {
 	}
 
 	@Override
-	public void useSecondSkill(Player p) { //Heavy Strike
+	public void useSecondSkill(Player p) { //Taunt
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + p.getCooldown(tool) * 20 + "&f초 기다리세요"));
+            p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;
         }
-        SEM.drawCircularLine(p, p.getLocation().add(0, 0.1, 0), Particle.CRIT, 2.5, true, 50);
-        for (Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 2.5, 3, 2.5)) {
-            if (entity instanceof LivingEntity e) {
-                if (p.equals(e)) continue;
-                SEM.knockbackEntity(p, e, 1.5, 0.15);
-                e.damage(Damage/2);
-                p.playSound(p.getLocation(), Sound.ITEM_MACE_SMASH_GROUND_HEAVY, 1.0f, 1.0f);
+        p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 30, 10, 10, 10, 0.01);
+		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 0.6f);
+        for (Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 10.0, 10.0, 10.0)) {
+            if (entity instanceof LivingEntity e && !p.equals(e)) {
+                if (e instanceof Mob mob) {
+					mob.setTarget(p);
+					mob.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, mob.getLocation(), 10, 1.5, 1.5, 1.5, 0.1);
+	                Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+		                if (mob.isValid()) {
+							mob.setAI(false);
+							mob.setMemory(MemoryKey.ANGRY_AT, null);
+			                mob.setMemory(MemoryKey.UNIVERSAL_ANGER, null);
+							mob.setMemory(MemoryKey.GOLEM_DETECTED_RECENTLY, null);
+							mob.setMemory(MemoryKey.HUNTED_RECENTLY, null);
+							mob.setMemory(MemoryKey.DANGER_DETECTED_RECENTLY, null);
+							mob.setTarget(null);
+							Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+								mob.setAI(true);
+							}, 3L);
+		                }
+					}, 100L);
+                }
+				if (e instanceof Player target) {
+					SEM.knockbackEntity(p, target, -1.5, 0.15);
+				}
+
             }
         }
         p.setCooldown(tool, this.getCooldown2() * 20);
@@ -110,7 +131,7 @@ public class Knight extends AbstractFirstRole {
 	public ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), Material.IRON_SWORD)
                 .setName(ColorUtils.chat("&7&l녹슨 철검"))
-                .setLore(ColorUtils.chat("&5기사의 검.장인은 도구를 탓하지 않는다."), ColorUtils.chat("&e&l공격력:&7&l " + this.Damage))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
                 .setUnbreakable()
                 .hideAllFlags()
                 .setItemModel("BasicSword")
@@ -124,10 +145,11 @@ public class Knight extends AbstractFirstRole {
     public ItemStack roleArmor() {
         return ItemBuilder.of(getPlugin(), Material.IRON_CHESTPLATE)
                 .setName(ColorUtils.chat("&7&l낡은 흉갑"))
-                .setLore("&5장인은 도구를 탓하지 않는다.근데 이건 좀 불편함")
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
                 .setUnbreakable()
                 .hideAllFlags()
                 .setItemModel("KnightArmor")
+		        .setArmorState(7.0)
                 .build()
                 .clone();
     }

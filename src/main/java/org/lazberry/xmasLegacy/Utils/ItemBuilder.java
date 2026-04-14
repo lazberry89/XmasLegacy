@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,7 @@ import org.lazberry.xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ItemBuilder {
 	private final ItemStack item;
@@ -91,12 +93,40 @@ public class ItemBuilder {
         return addAttribute(Attribute.ATTACK_DAMAGE, damage, AttributeModifier.Operation.ADD_NUMBER);
     }
 
+	public ItemBuilder setArmorState(double state) {
+		return addAttribute(Attribute.ARMOR, state, AttributeModifier.Operation.ADD_NUMBER);
+	}
+
     public ItemBuilder setUnbreakable() {
         if (meta != null) {
             meta.setUnbreakable(true);
         }
         return this;
     }
+	/**
+	 * 특정 마법을 부여합니다.
+	 * @param enchantment 마법 종류
+	 * @param level 레벨
+	 * @return ItemBuilder
+	 */
+	public ItemBuilder addEnchant(Enchantment enchantment, int level) {
+		if (meta != null) {
+			meta.addEnchant(enchantment, level, true);
+		}
+		return this;
+	}
+
+	/**
+	 * 여러 마법을 한꺼번에 부여합니다.
+	 * @param enchantments 마법 Map
+	 * @return ItemBuilder
+	 */
+	public ItemBuilder addEnchants(Map<Enchantment, Integer> enchantments) {
+		if (meta != null) {
+			enchantments.forEach((enchant, level) -> meta.addEnchant(enchant, level, true));
+		}
+		return this;
+	}
 
     /**
      * 1.21.4+ 버전의 새로운 Item Model 기능을 설정합니다.
@@ -106,7 +136,6 @@ public class ItemBuilder {
     public ItemBuilder setItemModel(String modelKey) {
         if (meta != null) {
             // NamespacedKey를 생성하여 아이템 모델을 직접 지정합니다.
-            // 이 기능은 최신 Paper/Spigot API에서 meta.setItemModel()로 제공됩니다.
             NamespacedKey key = NamespacedKey.fromString(modelKey);
             if (key != null) {
                 meta.setItemModel(key);

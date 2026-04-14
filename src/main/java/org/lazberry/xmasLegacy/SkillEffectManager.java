@@ -1,5 +1,6 @@
 package org.lazberry.xmasLegacy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -155,4 +156,50 @@ public class SkillEffectManager {
         }
         return false;
     }
+	public void followParticle(Player p, Particle particle, double duration) {
+		new BukkitRunnable() {
+			// 1틱마다 실행 (0.05초)
+			double elapsed = 0;
+			// 틱으로 계산 (duration * 20틱)
+			final double maxTicks = duration * 20;
+
+			@Override
+			public void run() {
+				// 1. 시간이 다 됐거나 플레이어가 나갔으면 종료
+				if (elapsed >= maxTicks || !p.isOnline()) {
+					this.cancel();
+					return;
+				}
+
+				// 2. 파티클 소환
+				p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01);
+
+				// 3. 카운트 증가
+				elapsed++;
+			}
+		}.runTaskTimer(plugin, 0L, 1L); // 1L(1틱) 간격으로 무지하게 부드럽게 출력
+	}
+	public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
+		new BukkitRunnable() {
+			// 1틱마다 실행 (0.05초)
+			double elapsed = 0;
+			// 틱으로 계산 (duration * 20틱)
+			final double maxTicks = duration * 20;
+
+			@Override
+			public void run() {
+				// 1. 시간이 다 됐거나 플레이어가 나갔으면 종료
+				if (elapsed >= maxTicks || !p.isOnline()) {
+					this.cancel();
+					return;
+				}
+
+				// 2. 파티클 소환
+				p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01, dust);
+
+				// 3. 카운트 증가
+				elapsed++;
+			}
+		}.runTaskTimer(plugin, 0L, 1L); // 1L(1틱) 간격으로 무지하게 부드럽게 출력
+	}
 }

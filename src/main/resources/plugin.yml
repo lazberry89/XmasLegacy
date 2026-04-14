@@ -2,7 +2,7 @@ name: XmasLegacy
 version: '${version}'
 
 main: org.lazberry.xmasLegacy.XmasLegacy
-api-version: '26.1.1'
+api-version: '1.21.11'
 load: POSTWORLD
 commands:
   문의:
@@ -20,3 +20,5 @@ commands:
   log:
     usage: /log <inquiry | inquiries> <이름>
     description: 로그 검색
+
+  test:

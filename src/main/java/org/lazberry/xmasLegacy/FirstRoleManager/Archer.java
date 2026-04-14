@@ -3,11 +3,12 @@ package org.lazberry.xmasLegacy.FirstRoleManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.XmasLegacy;
 
 public class Archer extends AbstractFirstRole {
 
-	public Archer(int c1, int c2) {
-		super(c1, c2);
+	public Archer(int c1, int c2, XmasLegacy plugin) {
+		super(c1, c2, plugin);
 	}
 
 	@Override
