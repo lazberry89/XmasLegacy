@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.Skill.BasicSkills;
 import org.lazberry.xmasLegacy.SkillEffectManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
@@ -25,9 +26,12 @@ import java.util.UUID;
 public class Knight extends AbstractFirstRole {
     private float Damage = 5;
     private final SkillEffectManager SEM;
+	private BasicSkills currentSkill = BasicSkills.SHARP_SWEEPING;
+	public BasicSkills getCurrentSkill() {return this.currentSkill;}
+	public void next() {currentSkill = currentSkill.next();}
 
-	public Knight(int c1, int c2, SkillEffectManager SEM, XmasLegacy plugin) {
-		super(c1, c2, plugin);
+	public Knight(SkillEffectManager SEM, XmasLegacy plugin) {
+		super(4, 4, plugin);
         this.SEM = SEM;
 	}
 
@@ -86,7 +90,9 @@ public class Knight extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) { //Taunt
-        ItemStack tool = p.getInventory().getItemInMainHand();
+        ItemStack tool = p.getInventory().getChestplate();
+		if (tool == null) return;
+
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;

@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.Skill.BasicSkills;
 import org.lazberry.xmasLegacy.SkillEffectManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
@@ -18,6 +19,9 @@ import org.lazberry.xmasLegacy.XmasLegacy;
 
 public class Rogue extends AbstractFirstRole {
 	private final SkillEffectManager SEM;
+	private BasicSkills currentSkill = BasicSkills.DAGGER_RUSH;
+	public BasicSkills getCurrentSkill() {return this.currentSkill;}
+	public void next() {currentSkill = currentSkill.next();}
 
 	public Rogue(int c1, int c2, SkillEffectManager SEM, XmasLegacy plugin) {
 		super(c1, c2, plugin);
@@ -26,7 +30,8 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		ItemStack tool = p.getInventory().getItemInMainHand();
+		ItemStack tool = p.getInventory().getBoots();
+		if (tool == null) return;
 		Entity target = p.getTargetEntity(10, false);
 
 		if (p.getCooldown(tool) > 0) {
@@ -40,10 +45,8 @@ public class Rogue extends AbstractFirstRole {
                 p.setVelocity(vector.multiply(2.5).setY(0.2)); // 너무 빠르면 감지가 안 될 수 있어 2.5 추천
                 SEM.followParticle(p, Particle.DUST, 0.5, new Particle.DustOptions(Color.GRAY, 1.5f));
 
-                // 쿨타임 설정
                 p.setCooldown(tool, this.getCooldown1() * 20);
 
-                // 감지 스케줄러
                 new BukkitRunnable() {
                     int timeout = 0;
 
@@ -71,7 +74,8 @@ public class Rogue extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 타겟이 없습니다!"));
 		}
 	}
-	public void useDaggerRush(Player player, LivingEntity target) {
+
+	private void useDaggerRush(Player player, LivingEntity target) {
 		new BukkitRunnable() {
 			int count = 0;
 

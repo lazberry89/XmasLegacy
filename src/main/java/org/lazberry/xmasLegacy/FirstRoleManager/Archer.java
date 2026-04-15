@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.Skill.BasicSkills;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
@@ -20,23 +21,28 @@ import org.lazberry.xmasLegacy.XmasLegacy;
 import java.util.function.Consumer;
 
 public class Archer extends AbstractFirstRole {
+	private BasicSkills currentSkill = BasicSkills.SHOCK_DART;
+	public BasicSkills getCurrentSkill() {return this.currentSkill;}
+	public void next() {currentSkill = currentSkill.next();}
 
 	public Archer(int c1, int c2, XmasLegacy plugin) {
 		super(c1, c2, plugin);
 	}
+
 
 	@Override
 	public void useFirstSkill(Player p) {
         ItemStack bow = p.getInventory().getItemInMainHand();
 
         if (p.getCooldown(bow) > 0) return;
+		p.getWorld().playSound(p.getLocation(), org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.0f, 0.6f);
 
-        Arrow arrow = p.getWorld().spawn(p.getEyeLocation(), Arrow.class, a -> {
-                a.setVelocity(p.getLocation().getDirection().multiply(2.5));
-                a.setShooter(p);
-                a.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "skill"), PersistentDataType.STRING, "archer_arrow");
-                a.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-        });
+		Arrow arrow = p.launchProjectile(Arrow.class);
+		arrow.setVelocity(p.getLocation().getDirection().multiply(2.5));
+		arrow.setShooter(p);
+		arrow.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "skill"), PersistentDataType.STRING, "archer_arrow");
+		arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -58,7 +64,8 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-        ItemStack tool = p.getInventory().getItemInMainHand();
+        ItemStack tool = p.getInventory().getHelmet();
+		if (tool == null) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
@@ -67,7 +74,7 @@ public class Archer extends AbstractFirstRole {
         p.setInvulnerable(true);
         p.getWorld().createExplosion(p.getLocation(), 2, false, false);
         Vector vector = p.getLocation().getDirection();
-        p.setVelocity(vector.multiply(-1.5).setY(0.3));
+        p.setVelocity(vector.multiply(-2).setY(0.3));
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
             if (p.isValid()) {
                 p.setInvulnerable(false);
