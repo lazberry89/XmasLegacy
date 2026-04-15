@@ -23,7 +23,7 @@ public class Mage extends AbstractFirstRole {
 
 	@Override
 	public Roles getRole() {
-		return Roles.Mage;
+		return Roles.MAGE;
 	}
 
 	@Override

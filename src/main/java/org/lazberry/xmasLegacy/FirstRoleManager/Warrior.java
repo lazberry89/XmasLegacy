@@ -23,7 +23,7 @@ public class Warrior extends AbstractFirstRole {
 
 	@Override
 	public Roles getRole() {
-		return Roles.Warrior;
+		return Roles.WARRIOR;
 	}
 
 	@Override

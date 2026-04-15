@@ -1,16 +1,16 @@
 package org.lazberry.xmasLegacy.Roles;
 
 public enum Roles {
-	Knight, //기사
-	Warrior, //전사
-	Archer, //궁수
-	Mage, //마법사
-	Priest, //성직자
-	Rogue, //도적
-	Crafter, //장인
-	Gatherer, //수집가
-	Farmer, //농부
-	Miner, //광부
-	Engineer, //기술자
+    KNIGHT, //기사
+    WARRIOR, //전사
+    ARCHER, //궁수
+    MAGE, //마법사
+    PRIEST, //성직자
+    ROGUE, //도적
+    CRAFTER, //장인
+	GATHERER, //수집가
+	FARMER, //농부
+	MINER, //광부
+	ENGINEER, //기술자
 
 }

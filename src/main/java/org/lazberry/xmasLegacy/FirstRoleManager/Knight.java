@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
@@ -124,7 +123,7 @@ public class Knight extends AbstractFirstRole {
 	}
 	@Override
 	public Roles getRole() {
-		return Roles.Knight;
+		return Roles.KNIGHT;
 	}
 
 	@Override

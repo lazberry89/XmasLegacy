@@ -35,11 +35,35 @@ public class Rogue extends AbstractFirstRole {
 		}
 		if (target != null) {
 			if (target instanceof LivingEntity le) {
-				Vector vector = p.getLocation().getDirection().normalize();
-				p.setVelocity(vector.multiply(3).setY(0.3));
-				SEM.followParticle(p, Particle.DUST, 0.5, new Particle.DustOptions(Color.GRAY, 1.5f));
-				p.setCooldown(tool, this.getCooldown1() * 20);
-				useDaggerRush(p, le);
+
+                Vector vector = p.getLocation().getDirection().normalize();
+                p.setVelocity(vector.multiply(2.5).setY(0.2)); // 너무 빠르면 감지가 안 될 수 있어 2.5 추천
+                SEM.followParticle(p, Particle.DUST, 0.5, new Particle.DustOptions(Color.GRAY, 1.5f));
+
+                // 쿨타임 설정
+                p.setCooldown(tool, this.getCooldown1() * 20);
+
+                // 감지 스케줄러
+                new BukkitRunnable() {
+                    int timeout = 0;
+
+                    @Override
+                    public void run() {
+                        timeout++;
+
+                        if (p.getLocation().distance(le.getLocation()) <= 2.0) {
+                            useDaggerRush(p, le);
+                            this.cancel();
+                            return;
+                        }
+
+                        if (timeout > 20 || !p.isOnline() || le.isDead()) {
+                            this.cancel();
+                        }
+                    }
+                }.runTaskTimer(getPlugin(), 0L, 1L);
+
+                p.setCooldown(tool, this.getCooldown1() * 20);
 			} else {
 				p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 타겟이 아닙니다!"));
 			}
@@ -98,7 +122,7 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public Roles getRole() {
-		return Roles.Rogue;
+		return Roles.ROGUE;
 	}
 
 	@Override
