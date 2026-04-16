@@ -40,7 +40,7 @@ public final class XmasLegacy extends JavaPlugin {
 
 		/// /tests
 		TestCommands TC = new TestCommands(SEM, this);
-		FirstRoleListener FRL = new FirstRoleListener(SEM, this, knight, rogue, archer, warrior);
+		FirstRoleListener FRL = new FirstRoleListener(SEM, this, knight, rogue, archer, warrior, mage);
 		getCommand("test").setExecutor(TC);
 		getServer().getPluginManager().registerEvents(FRL, this);
 
