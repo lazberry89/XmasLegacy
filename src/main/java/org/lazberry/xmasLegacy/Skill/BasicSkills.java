@@ -11,7 +11,10 @@ public enum BasicSkills {
 	SMOKE,
 
 	TOMAHAWK,
-	BLOOD_FRENZY;
+	BLOOD_FRENZY,
+
+    COMPACT_INSANELY,
+    GRAVITY;
 
 	BasicSkills() {}
 
@@ -32,6 +35,9 @@ public enum BasicSkills {
 			// Warrior
 			case TOMAHAWK -> BLOOD_FRENZY;
 			case BLOOD_FRENZY -> TOMAHAWK;
+
+            case COMPACT_INSANELY -> GRAVITY;
+            case GRAVITY -> COMPACT_INSANELY;
 		};
 	}
 	public String getSkillName() {

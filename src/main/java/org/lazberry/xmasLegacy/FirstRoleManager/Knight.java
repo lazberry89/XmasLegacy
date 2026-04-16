@@ -19,16 +19,14 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Knight extends AbstractFirstRole {
     private float Damage = 5;
     private final SkillEffectManager SEM;
-	private BasicSkills currentSkill = BasicSkills.SHARP_SWEEPING;
-	public BasicSkills getCurrentSkill() {return this.currentSkill;}
-	public void next() {currentSkill = currentSkill.next();}
+    private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+    public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHARP_SWEEPING);}
+    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Knight(SkillEffectManager SEM, XmasLegacy plugin) {
 		super(4, 4, plugin);
@@ -38,6 +36,7 @@ public class Knight extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player player) { //Sharp Sweeping
         ItemStack tool = player.getInventory().getItemInMainHand();
+        if (!consumeEnergy(player, 3)) return;
         if (player.getCooldown(tool) > 0) {
             player.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) player.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;
@@ -92,6 +91,7 @@ public class Knight extends AbstractFirstRole {
 	public void useSecondSkill(Player p) { //Taunt
         ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null) return;
+        if (!consumeEnergy(p, 3)) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
@@ -154,6 +154,7 @@ public class Knight extends AbstractFirstRole {
                 .setUnbreakable()
                 .hideAllFlags()
                 .setItemModel("KnightArmor")
+                .setTag("role_id", "KnightArmor")
 		        .setArmorState(7.0)
                 .build()
                 .clone();

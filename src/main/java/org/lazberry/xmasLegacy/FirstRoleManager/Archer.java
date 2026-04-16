@@ -18,12 +18,14 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
-import java.util.function.Consumer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Archer extends AbstractFirstRole {
-	private BasicSkills currentSkill = BasicSkills.SHOCK_DART;
-	public BasicSkills getCurrentSkill() {return this.currentSkill;}
-	public void next() {currentSkill = currentSkill.next();}
+	private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHOCK_DART);}
+	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Archer(int c1, int c2, XmasLegacy plugin) {
 		super(c1, c2, plugin);
@@ -33,7 +35,7 @@ public class Archer extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
         ItemStack bow = p.getInventory().getItemInMainHand();
-
+        if (!consumeEnergy(p, 3)) return;
         if (p.getCooldown(bow) > 0) return;
 		p.getWorld().playSound(p.getLocation(), org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.0f, 0.6f);
 
@@ -66,6 +68,7 @@ public class Archer extends AbstractFirstRole {
 	public void useSecondSkill(Player p) {
         ItemStack tool = p.getInventory().getHelmet();
 		if (tool == null) return;
+        if (!consumeEnergy(p, 4)) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));

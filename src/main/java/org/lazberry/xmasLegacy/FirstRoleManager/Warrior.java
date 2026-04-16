@@ -5,10 +5,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
@@ -21,10 +24,14 @@ import org.lazberry.xmasLegacy.Utils.GlowUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class Warrior extends AbstractFirstRole {
-	private BasicSkills currentSkill = BasicSkills.BLOOD_FRENZY;
-	public BasicSkills getCurrentSkill() {return this.currentSkill;}
-	public void next() {currentSkill = currentSkill.next();}
+    private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+    public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.BLOOD_FRENZY);}
+    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Warrior(int c1, int c2, XmasLegacy plugin) {
 		super(c1, c2, plugin);
@@ -33,7 +40,7 @@ public class Warrior extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getChestplate();
-
+        if (!consumeEnergy(p, 3)) return;
 		if (tool == null) return;
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
@@ -57,7 +64,7 @@ public class Warrior extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-
+        if (!consumeEnergy(p, 3)) return;
 		if (p.getCooldown(tool.getType()) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
@@ -163,6 +170,7 @@ public class Warrior extends AbstractFirstRole {
 		        .setUnbreakable()
 		        .hideAllFlags()
 		        .setArmorState(9)
+                .addAttribute(Attribute.SCALE, 0.2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR)
 		        .setTag("role_id", "WarriorArmor")
 		        .build().clone();
     }

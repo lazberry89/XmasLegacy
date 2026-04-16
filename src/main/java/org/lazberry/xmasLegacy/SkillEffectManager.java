@@ -35,15 +35,13 @@ public class SkillEffectManager {
         target.setVelocity(direction);
     }
     /**
-     *
-     * @param p player
      * @param loc show Location
      * @param particle particle
      * @param radius 범위
      * @param animated 애니메이션
      * @param points 파티클 갯수
      */
-    public void drawCircularLine(Player p, Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points) {
+    public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points) {
         int finalPoints = (points == null) ? 20 : points; // 기본값 20 설정
 
         if (animated) {

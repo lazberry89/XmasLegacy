@@ -17,11 +17,15 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class Rogue extends AbstractFirstRole {
 	private final SkillEffectManager SEM;
-	private BasicSkills currentSkill = BasicSkills.DAGGER_RUSH;
-	public BasicSkills getCurrentSkill() {return this.currentSkill;}
-	public void next() {currentSkill = currentSkill.next();}
+    private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+    public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.DAGGER_RUSH);}
+    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Rogue(int c1, int c2, SkillEffectManager SEM, XmasLegacy plugin) {
 		super(c1, c2, plugin);
@@ -32,6 +36,7 @@ public class Rogue extends AbstractFirstRole {
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getBoots();
 		if (tool == null) return;
+        if (!consumeEnergy(p, 3)) return;
 		Entity target = p.getTargetEntity(10, false);
 
 		if (p.getCooldown(tool) > 0) {
@@ -100,6 +105,7 @@ public class Rogue extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
+        if (!consumeEnergy(p, 3)) return;
 		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
@@ -153,6 +159,7 @@ public class Rogue extends AbstractFirstRole {
 		        .setUnbreakable()
 		        .hideAllFlags()
 		        .setItemModel("RogueArmor")
+                .setTag("role_id", "RogueArmor")
 		        .setArmorState(5.0)
 		        .build()
 		        .clone();

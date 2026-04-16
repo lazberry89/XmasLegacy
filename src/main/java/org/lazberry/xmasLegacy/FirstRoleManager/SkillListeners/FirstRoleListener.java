@@ -14,10 +14,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmasLegacy.FirstRoleManager.Archer;
-import org.lazberry.xmasLegacy.FirstRoleManager.Knight;
-import org.lazberry.xmasLegacy.FirstRoleManager.Rogue;
-import org.lazberry.xmasLegacy.FirstRoleManager.Warrior;
+import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
 import org.lazberry.xmasLegacy.SkillEffectManager;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
@@ -30,15 +27,16 @@ public class FirstRoleListener implements Listener {
 	private final Rogue rogue;
 	private final Archer archer;
 	private final Warrior warrior;
+    private final Mage mage;
 
-
-	public FirstRoleListener(SkillEffectManager SEM, XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior) {
+	public FirstRoleListener(SkillEffectManager SEM, XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior, Mage mage) {
 		this.SEM = SEM;
 		this.plugin = plugin;
 		this.knight = knight;
 		this.rogue = rogue;
 		this.archer = archer;
 		this.warrior = warrior;
+        this.mage = mage;
 	}
 
 
@@ -55,37 +53,45 @@ public class FirstRoleListener implements Listener {
 			if (e.getAction().isLeftClick()) {
 				switch (pdc) {
 					case "knight" -> {
-						if (knight.getCurrentSkill() == null) return;
-						if (knight.getCurrentSkill() == BasicSkills.SHARP_SWEEPING) {
+						if (knight.getCurrentSkill(p) == null) return;
+						if (knight.getCurrentSkill(p) == BasicSkills.SHARP_SWEEPING) {
 							knight.useFirstSkill(p);
-						} else if (knight.getCurrentSkill() == BasicSkills.TAUNT) {
+						} else if (knight.getCurrentSkill(p) == BasicSkills.TAUNT) {
 							knight.useSecondSkill(p);
 						}
 					}
 					case "rogue" -> {
-						if (rogue.getCurrentSkill() == null) return;
-						if (rogue.getCurrentSkill() == BasicSkills.DAGGER_RUSH) {
+						if (rogue.getCurrentSkill(p) == null) return;
+						if (rogue.getCurrentSkill(p) == BasicSkills.DAGGER_RUSH) {
 							rogue.useFirstSkill(p);
-						} else if (rogue.getCurrentSkill() == BasicSkills.SMOKE) {
+						} else if (rogue.getCurrentSkill(p) == BasicSkills.SMOKE) {
 							rogue.useSecondSkill(p);
 						}
 					}
 					case "archer" -> {
-						if (archer.getCurrentSkill() == null) return;
-						if (archer.getCurrentSkill() == BasicSkills.SHOCK_DART) {
+						if (archer.getCurrentSkill(p) == null) return;
+						if (archer.getCurrentSkill(p) == BasicSkills.SHOCK_DART) {
 							archer.useFirstSkill(p);
-						} else if (archer.getCurrentSkill() == BasicSkills.BACK_DASH) {
+						} else if (archer.getCurrentSkill(p) == BasicSkills.BACK_DASH) {
 							archer.useSecondSkill(p);
 						}
 					}
 					case "warrior" -> {
-						if (warrior.getCurrentSkill() == null) return;
-						if (warrior.getCurrentSkill() == BasicSkills.BLOOD_FRENZY) {
+						if (warrior.getCurrentSkill(p) == null) return;
+						if (warrior.getCurrentSkill(p) == BasicSkills.BLOOD_FRENZY) {
 							warrior.useFirstSkill(p);
-						} else if (warrior.getCurrentSkill() == BasicSkills.TOMAHAWK) {
+						} else if (warrior.getCurrentSkill(p) == BasicSkills.TOMAHAWK) {
 							warrior.useSecondSkill(p);
 						}
 					}
+                    case "mage" -> {
+                        if (mage.getCurrentSkill(p) == null) return;
+                        if (mage.getCurrentSkill(p) == BasicSkills.COMPACT_INSANELY) {
+                            mage.useFirstSkill(p);
+                        } else if (mage.getCurrentSkill(p) == BasicSkills.GRAVITY) {
+                            mage.useSecondSkill(p);
+                        }
+                    }
 				}
 			}
 		}
@@ -104,21 +110,25 @@ public class FirstRoleListener implements Listener {
 		if (pdc != null) {
 			switch (pdc) {
 				case "knight" -> {
-					knight.next();
-					p.sendActionBar(ComponentChanger.comp("&8&l" + knight.getCurrentSkill().getSkillName()));
+					knight.next(p);
+					p.sendActionBar(ComponentChanger.comp("&8&l" + knight.getCurrentSkill(p).getSkillName()));
 				}
 				case "rogue" -> {
-					rogue.next();
-					p.sendActionBar(ComponentChanger.comp("&8&l" + rogue.getCurrentSkill().getSkillName()));
+					rogue.next(p);
+					p.sendActionBar(ComponentChanger.comp("&8&l" + rogue.getCurrentSkill(p).getSkillName()));
 				}
 				case "archer" -> {
-					archer.next();
-					p.sendActionBar(ComponentChanger.comp("&8&l" + archer.getCurrentSkill().getSkillName()));
+					archer.next(p);
+					p.sendActionBar(ComponentChanger.comp("&8&l" + archer.getCurrentSkill(p).getSkillName()));
 				}
 				case "warrior" -> {
-					warrior.next();
-					p.sendActionBar(ComponentChanger.comp("&8&l" + warrior.getCurrentSkill().getSkillName()));
+					warrior.next(p);
+					p.sendActionBar(ComponentChanger.comp("&8&l" + warrior.getCurrentSkill(p).getSkillName()));
 				}
+                case "mage" -> {
+                    mage.next(p);
+                    p.sendActionBar(ComponentChanger.comp("&8&l" + warrior.getCurrentSkill(p).getSkillName()));
+                }
 			}
 		}
 	}

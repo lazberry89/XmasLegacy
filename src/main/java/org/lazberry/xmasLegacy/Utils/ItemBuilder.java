@@ -85,6 +85,16 @@ public class ItemBuilder {
         }
         return this;
     }
+    public ItemBuilder addAttribute(Attribute attribute, double amount, AttributeModifier.Operation operation, EquipmentSlotGroup slot) {
+        if (meta != null) {
+            // 1.21+ 에서는 유니크한 Key가 필요합니다.
+            NamespacedKey key = new NamespacedKey(this.plugin, attribute.getKey().getKey());
+            AttributeModifier modifier = new AttributeModifier(key, amount, operation, slot);
+
+            meta.addAttributeModifier(attribute, modifier);
+        }
+        return this;
+    }
 
     /**
      * 공격력을 설정하는 전용 편의 메서드 (가장 많이 씀)

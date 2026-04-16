@@ -1,8 +1,11 @@
 package org.lazberry.xmasLegacy.FirstRoleManager;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
 public abstract class AbstractFirstRole {
@@ -34,4 +37,19 @@ public abstract class AbstractFirstRole {
 		return cooldown2;
 	}
 	public void loadCooldown(String path) {}
+
+    protected boolean consumeEnergy(Player player, int hungerCost) {
+        int currentFood = player.getFoodLevel();
+
+        if (currentFood < hungerCost) {
+            player.sendMessage(ColorUtils.chat(Prefix.RED + " 에너지가 부족하여 스킬을 사용할 수 없습니다! (필요: &6" + hungerCost + "&f)"));
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+            return false;
+        }
+
+        player.setFoodLevel(Math.max(0, currentFood - hungerCost));
+        player.setSaturation(0);
+
+        return true;
+    }
 }

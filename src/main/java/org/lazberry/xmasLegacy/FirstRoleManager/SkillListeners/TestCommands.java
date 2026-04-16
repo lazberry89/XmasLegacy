@@ -46,6 +46,11 @@ public class TestCommands implements CommandExecutor {
 						p.getInventory().addItem(w.roleWeapon());
 						p.getInventory().addItem(w.roleArmor());
 					}
+                    case "mage" -> {
+                        AbstractFirstRole m = new Mage(4, 4, plugin, SEM);
+                        p.getInventory().addItem(m.roleWeapon());
+                        p.getInventory().addItem(m.roleArmor());
+                    }
 				}
 			}
 		}

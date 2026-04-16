@@ -8,6 +8,8 @@ import org.lazberry.xmasLegacy.Roles.Roles;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,5 +92,27 @@ public class UserManager {
     public User getUser(Player p) {
         return users.get(p.getUniqueId());
     }
+    public List<User> getAllUsers() {
+        List<User> result = new ArrayList<>();
+        for (UUID uuid : users.keySet()) {
+            User user = users.get(uuid);
+            result.add(user);
+        }
+        return result;
+    }
+    public boolean withdraw(Player p, int amount) {
+        User user = getUser(p);
+        if (user != null && user.getDollars() >= amount) {
+            user.setDollars(user.getDollars() - amount);
+            return true;
+        }
+        return false;
+    }
 
+    public void deposit(Player p, int amount) {
+        User user = getUser(p);
+        if (user != null) {
+            user.setDollars(user.getDollars() + amount);
+        }
+    }
 }
