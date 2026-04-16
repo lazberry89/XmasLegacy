@@ -127,7 +127,7 @@ public class FirstRoleListener implements Listener {
 				}
                 case "mage" -> {
                     mage.next(p);
-                    p.sendActionBar(ComponentChanger.comp("&8&l" + warrior.getCurrentSkill(p).getSkillName()));
+                    p.sendActionBar(ComponentChanger.comp("&8&l" + mage.getCurrentSkill(p).getSkillName()));
                 }
 			}
 		}

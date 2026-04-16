@@ -1,9 +1,6 @@
 package org.lazberry.xmasLegacy.FirstRoleManager;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.ArmorStand;
@@ -29,7 +26,7 @@ import java.util.UUID;
 
 public class Mage extends AbstractFirstRole {
     private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-    public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), null);}
+    public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_INSANELY);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
     private final SkillEffectManager SEM;
 
@@ -70,8 +67,8 @@ public class Mage extends AbstractFirstRole {
 
                 orb.teleport(orb.getLocation().add(dir));
                 // 보라색 응축체 파티클
-                orb.getWorld().spawnParticle(Particle.DRAGON_BREATH, orb.getLocation(), 5, 0.1, 0.1, 0.1, 0.02);
-                orb.getWorld().spawnParticle(Particle.WITCH, orb.getLocation(), 10, 0.3, 0.3, 0.3, 0.01);
+	            Particle.DustOptions dust = new Particle.DustOptions(Color.PURPLE, 1.0f);
+                orb.getWorld().spawnParticle(Particle.DUST, orb.getLocation(), 15, 0.1, 0.1, 0.1, 0.02, dust);
 
                 // 충돌 검사
                 for (Entity e : orb.getNearbyEntities(1.0, 1.0, 1.0)) {
@@ -109,7 +106,7 @@ public class Mage extends AbstractFirstRole {
 
         if (!consumeEnergy(p, 8)) return;
 
-        final Location center = p.getEyeLocation().add(p.getLocation().getDirection().multiply(4));
+        final Location center = p.getEyeLocation().add(p.getLocation().getDirection().multiply(8));
 
         if (center.getBlock().getType().isSolid()) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 위치에 스킬을 사용할 수 없습니다!"));
@@ -117,9 +114,10 @@ public class Mage extends AbstractFirstRole {
         }
 
         // 마법진 연출 (center를 직접 add하지 않고 clone()으로 파생 좌표 생성)
-        SEM.drawCircularLine(center, Particle.WITCH, 3, true, 120);
-        SEM.drawCircularLine(center.clone().add(0, -0.5, 0), Particle.WITCH, 2.5, true, 120);
-        SEM.drawCircularLine(center.clone().add(0, 0.5, 0), Particle.WITCH, 2.5, true, 120);
+		Particle.DustOptions dust = new Particle.DustOptions(Color.PURPLE, 1.0f);
+        SEM.drawCircularLine(center, Particle.DUST, 3, true, 120, dust);
+        SEM.drawCircularLine(center.clone().add(0, -0.5, 0), Particle.DUST, 2.5, true, 120, dust);
+        SEM.drawCircularLine(center.clone().add(0, 0.5, 0), Particle.DUST, 2.5, true, 120, dust);
 
         p.getWorld().playSound(center, Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 1.0f, 0.7f);
 
@@ -136,8 +134,8 @@ public class Mage extends AbstractFirstRole {
                 }
 
                 // 블랙홀 시각 효과 강화
-                center.getWorld().spawnParticle(Particle.SQUID_INK, center, 15, 0.3, 0.3, 0.3, 0.05);
-                center.getWorld().spawnParticle(Particle.REVERSE_PORTAL, center, 10, 0.2, 0.2, 0.2, 0.1);
+                center.getWorld().spawnParticle(Particle.SQUID_INK, center, 3, 0.3, 0.3, 0.3, 0.05);
+                center.getWorld().spawnParticle(Particle.REVERSE_PORTAL, center, 7, 0.2, 0.2, 0.2, 0.1);
 
                 for (Entity e : center.getWorld().getNearbyEntities(center, 6.0, 6.0, 6.0)) {
                     if (e instanceof LivingEntity le && !e.equals(p)) {
@@ -151,7 +149,7 @@ public class Mage extends AbstractFirstRole {
                             le.setVelocity(direction.multiply(pullStrength).setY(0.1));
                         } else {
                             // 중심부에 도달하면 멈춰있게 만듦 (빨려들어온 후 고정 효과)
-                            le.setVelocity(new Vector(0, 0.05, 0));
+                            le.setVelocity(new Vector(0, 0.02, 0));
                         }
                     }
                 }

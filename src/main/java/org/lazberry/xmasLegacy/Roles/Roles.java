@@ -12,5 +12,4 @@ public enum Roles {
 	FARMER, //농부
 	MINER, //광부
 	MERCHANT; //상인
-
 }

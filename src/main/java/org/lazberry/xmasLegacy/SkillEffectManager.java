@@ -64,6 +64,29 @@ public class SkillEffectManager {
             }
         }
     }
+	public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points, Particle.DustOptions dust) {
+		int finalPoints = (points == null) ? 20 : points; // 기본값 20 설정
+
+		if (animated) {
+			new BukkitRunnable() {
+				double angle = 0;
+				final double step = (2 * Math.PI) / finalPoints;
+
+				@Override
+				public void run() {
+					spawnCircularParticle(loc, particle, radius, angle, dust);
+					angle += step;
+
+					if (angle >= 2 * Math.PI) this.cancel();
+				}
+			}.runTaskTimer(plugin, 0L, 1L);
+		} else {
+			for (int i = 0; i < finalPoints; i++) {
+				double angle = i * ((2 * Math.PI) / finalPoints);
+				spawnCircularParticle(loc, particle, radius, angle, dust);
+			}
+		}
+	}
 
     private void spawnCircularParticle(Location center, Particle particle, double radius, double angle) {
         double x = Math.cos(angle) * radius;
@@ -71,6 +94,12 @@ public class SkillEffectManager {
         Location particleLoc = center.clone().add(x, 0.5, z);
         center.getWorld().spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0);
     }
+	private void spawnCircularParticle(Location center, Particle particle, double radius, double angle, Particle.DustOptions dust) {
+		double x = Math.cos(angle) * radius;
+		double z = Math.sin(angle) * radius;
+		Location particleLoc = center.clone().add(x, 0.5, z);
+		center.getWorld().spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0, dust);
+	}
 
     /**
      *
