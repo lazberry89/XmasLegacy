@@ -43,7 +43,6 @@ public class SkillEffectManager {
      */
     public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points) {
         int finalPoints = (points == null) ? 20 : points; // 기본값 20 설정
-
         if (animated) {
             new BukkitRunnable() {
                 double angle = 0;
@@ -56,7 +55,7 @@ public class SkillEffectManager {
 
                     if (angle >= 2 * Math.PI) this.cancel();
                 }
-            }.runTaskTimer(plugin, 0L, 1L);
+            }.runTaskTimerAsynchronously(plugin, 0L, 1L);
         } else {
             for (int i = 0; i < finalPoints; i++) {
                 double angle = i * ((2 * Math.PI) / finalPoints);
@@ -79,7 +78,7 @@ public class SkillEffectManager {
 
 					if (angle >= 2 * Math.PI) this.cancel();
 				}
-			}.runTaskTimer(plugin, 0L, 1L);
+			}.runTaskTimerAsynchronously(plugin, 0L, 1L);
 		} else {
 			for (int i = 0; i < finalPoints; i++) {
 				double angle = i * ((2 * Math.PI) / finalPoints);
@@ -136,7 +135,7 @@ public class SkillEffectManager {
                     currentDist += space;
                     if (currentDist >= distance) this.cancel();
                 }
-            }.runTaskTimer(plugin, 0L, 1L);
+            }.runTaskTimerAsynchronously(plugin, 0L, 1L);
         } else {
             for (double d = 0; d < distance; d += space) {
                 Location point = start.clone().add(direction.clone().multiply(d));
@@ -187,7 +186,6 @@ public class SkillEffectManager {
 		new BukkitRunnable() {
 			// 1틱마다 실행 (0.05초)
 			double elapsed = 0;
-			// 틱으로 계산 (duration * 20틱)
 			final double maxTicks = duration * 20;
 
 			@Override
@@ -208,9 +206,9 @@ public class SkillEffectManager {
 	}
 	public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
 		new BukkitRunnable() {
-			// 1틱마다 실행 (0.05초)
+
 			double elapsed = 0;
-			// 틱으로 계산 (duration * 20틱)
+
 			final double maxTicks = duration * 20;
 
 			@Override
@@ -227,6 +225,6 @@ public class SkillEffectManager {
 				// 3. 카운트 증가
 				elapsed++;
 			}
-		}.runTaskTimer(plugin, 0L, 1L); // 1L(1틱) 간격으로 무지하게 부드럽게 출력
+		}.runTaskTimerAsynchronously(plugin, 0L, 1L); // 1L(1틱) 간격으로 무지하게 부드럽게 출력
 	}
 }

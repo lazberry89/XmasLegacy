@@ -3,15 +3,14 @@ package org.lazberry.xmasLegacy.FirstRoleManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.joml.Quaternionf;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
@@ -20,9 +19,7 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Mage extends AbstractFirstRole {
     private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
@@ -112,8 +109,22 @@ public class Mage extends AbstractFirstRole {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 위치에 스킬을 사용할 수 없습니다!"));
             return;
         }
+        List<BlockDisplay> cores = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            BlockDisplay bd = center.getWorld().spawn(center.clone().subtract(0.5, 0.5, 0.5), BlockDisplay.class, display -> {
+                display.setBlock(Material.PURPLE_STAINED_GLASS.createBlockData());
+                display.setBrightness(new Display.Brightness(15, 15)); // 발광 효과
 
-        // 마법진 연출 (center를 직접 add하지 않고 clone()으로 파생 좌표 생성)
+                // 초기 크기 및 변환 설정
+                Transformation trans = display.getTransformation();
+                trans.getScale().set(1.2f, 1.2f, 1.2f); // 살짝 크게
+                display.setTransformation(trans);
+                display.setInterpolationDuration(1); // 부드러운 애니메이션을 위한 보간 설정
+                display.setInterpolationDelay(0);
+            });
+            cores.add(bd);
+        }
+
 		Particle.DustOptions dust = new Particle.DustOptions(Color.PURPLE, 1.0f);
         SEM.drawCircularLine(center, Particle.DUST, 3, true, 120, dust);
         SEM.drawCircularLine(center.clone().add(0, -0.5, 0), Particle.DUST, 2.5, true, 120, dust);
@@ -122,37 +133,51 @@ public class Mage extends AbstractFirstRole {
         p.getWorld().playSound(center, Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 1.0f, 0.7f);
 
         // 쿨타임 설정
-        p.setCooldown(tool.getType(), getCooldown2() * 20);
+        p.setCooldown(tool, getCooldown2() * 20);
 
         new BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
                 if (ticks > 50 || !p.isOnline()) {
+                    cores.forEach(Entity::remove);
                     this.cancel();
                     return;
                 }
 
-                // 블랙홀 시각 효과 강화
-                center.getWorld().spawnParticle(Particle.SQUID_INK, center, 3, 0.3, 0.3, 0.3, 0.05);
-                center.getWorld().spawnParticle(Particle.REVERSE_PORTAL, center, 7, 0.2, 0.2, 0.2, 0.1);
+                for (int i = 0; i < cores.size(); i++) {
+                    BlockDisplay bd = cores.get(i);
+                    Transformation trans = bd.getTransformation();
 
+                    float angle = (float) Math.toRadians(ticks * 15); // 프레임당 회전 속도
+                    if (i == 0) trans.getLeftRotation().set(new Quaternionf().rotationXYZ(angle, angle * 0.5f, 0));
+                    else if (i == 1) trans.getLeftRotation().set(new Quaternionf().rotationXYZ(0, angle, angle * 0.5f));
+                    else trans.getLeftRotation().set(new Quaternionf().rotationXYZ(angle * 0.5f, 0, angle));
+
+                    bd.setTransformation(trans);
+                    bd.setInterpolationDuration(1); // 다음 틱까지 부드럽게 연결
+                }
+
+                // 나머지 시각 효과 및 끌어당기기 로직
+                center.getWorld().spawnParticle(Particle.REVERSE_PORTAL, center, 10, 0.5, 0.5, 0.5, 0.1);
                 for (Entity e : center.getWorld().getNearbyEntities(center, 6.0, 6.0, 6.0)) {
+
                     if (e instanceof LivingEntity le && !e.equals(p)) {
+
                         Vector direction = center.toVector().subtract(le.getLocation().toVector());
+
                         double distance = direction.length();
 
                         if (distance > 0.6) { // 0.5보다 살짝 늘려 떨림 방지
                             direction.normalize();
                             double pullStrength = 0.35;
-                            // Y축을 0.1로 살짝 높여 마찰력을 더 확실히 제거
                             le.setVelocity(direction.multiply(pullStrength).setY(0.1));
                         } else {
-                            // 중심부에 도달하면 멈춰있게 만듦 (빨려들어온 후 고정 효과)
                             le.setVelocity(new Vector(0, 0.02, 0));
                         }
                     }
                 }
+
                 ticks++;
             }
         }.runTaskTimer(getPlugin(), 0, 1);

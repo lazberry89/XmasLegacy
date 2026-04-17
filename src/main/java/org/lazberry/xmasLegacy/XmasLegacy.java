@@ -38,7 +38,7 @@ public final class XmasLegacy extends JavaPlugin {
         getCommand("log").setExecutor(LCM);
         getCommand("log").setTabCompleter(LCM);
 
-		/// /tests
+		//tests
 		TestCommands TC = new TestCommands(SEM, this);
 		FirstRoleListener FRL = new FirstRoleListener(SEM, this, knight, rogue, archer, warrior, mage);
 		getCommand("test").setExecutor(TC);

@@ -137,7 +137,10 @@ public class ItemBuilder {
 		}
 		return this;
 	}
-
+    public ItemStack setAmount(int i) {
+        item.setAmount(i);
+        return item;
+    }
     /**
      * 1.21.4+ 버전의 새로운 Item Model 기능을 설정합니다.
      * 정수형 ID 대신 NamespacedKey(String)를 사용하여 모델을 지정할 수 있습니다.
