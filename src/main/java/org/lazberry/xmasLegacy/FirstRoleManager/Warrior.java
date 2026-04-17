@@ -75,7 +75,6 @@ public class Warrior extends AbstractFirstRole {
 		final Vector direction = startLoc.getDirection().clone().normalize().multiply(1.0);
 		final float playerYaw = p.getLocation().getYaw();
 
-		// 2. 아머스탠드 소환 및 초기 설정
 		ArmorStand axeStand = p.getWorld().spawn(startLoc, ArmorStand.class, stand -> {
 			stand.setVisible(false);
 			stand.setGravity(false);

@@ -2,11 +2,16 @@ package org.lazberry.xmasLegacy;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.lazberry.xmasLegacy.Env.ConsumableManager;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
+import org.lazberry.xmasLegacy.PlayerUtils.BagCommandManager;
+import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
 
 public final class XmasLegacy extends JavaPlugin {
+	private BagManager BM;
+	private ConsumableManager CM;
 
 	@Override
 	public void onEnable() {
@@ -23,6 +28,10 @@ public final class XmasLegacy extends JavaPlugin {
         UserManager UM = new UserManager(this);
         SJM.setUM(UM);
         SkillEffectManager SEM =  new SkillEffectManager(this);
+		this.BM = new BagManager(this);
+		BM.loadAllBags();
+		BagCommandManager BCM = new BagCommandManager(BM);
+		this.CM = new ConsumableManager(this, UM, BM);
 
 		Archer archer = new Archer(4, 4, this);
 		Knight knight = new Knight(SEM, this);
@@ -37,6 +46,8 @@ public final class XmasLegacy extends JavaPlugin {
         getCommand("filter").setTabCompleter(RCM);
         getCommand("log").setExecutor(LCM);
         getCommand("log").setTabCompleter(LCM);
+		getCommand("가방").setExecutor(BCM);
+		getCommand("가방").setTabCompleter(BCM);
 
 		//tests
 		TestCommands TC = new TestCommands(SEM, this);
@@ -54,10 +65,12 @@ public final class XmasLegacy extends JavaPlugin {
                 getLogger().info("모든 유저 데이터를 자동 저장했습니다.");
             }
         }.runTaskTimer(this, 20L * 60 * 5, 20L * 60 * 5); // 5분
+		CM.runCookieTimer(this);
 	}
 
 	@Override
 	public void onDisable() {
-		// Plugin shutdown logic
+		BM.saveAllBags();
+		CM.stopCookieTimer();
 	}
 }
