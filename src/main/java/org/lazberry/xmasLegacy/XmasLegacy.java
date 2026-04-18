@@ -5,30 +5,50 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
+import org.lazberry.xmasLegacy.Region.RegionManager;
 
 public final class XmasLegacy extends JavaPlugin {
 
+    private ServerJoinManager SJM;
+    private RuleManager RM;
+    private InquiryManager IM;
+    private InquiryCommandManager ICM;
+    private InquireTeleportCommand ITC;
+    private RuleCommandManager RCM;
+    private LogCommandManager LCM;
+    private UserManager UM;
+    private SkillEffectManager SEM;
+    private RegionManager RGM;
+
+    private Archer archer;
+    private Knight knight;
+    private Rogue rogue;
+    private Warrior warrior;
+    private Mage mage;
+
 	@Override
 	public void onEnable() {
+        this.SJM = new ServerJoinManager();
+        this.RM = new RuleManager(this);
+        this.IM = new InquiryManager(RM, this);
+        this.ICM = new InquiryCommandManager(IM);
+        this.ITC = new InquireTeleportCommand(IM);
+        this.RCM = new RuleCommandManager(RM);
+        this.LCM = new LogCommandManager(IM, this);
+        this.UM = new UserManager(this);
+        this.SEM = new SkillEffectManager(this);
+        this.RGM = new RegionManager(this, UM);
+
+        this.archer = new Archer(4, 4, this);
+        this.knight = new Knight(SEM, this);
+        this.rogue  = new Rogue(4, 4, SEM, this);
+        this.mage = new Mage(4, 4,this, SEM);
+        this.warrior = new Warrior(4, 4, this);
+
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
-
-		ServerJoinManager SJM = new ServerJoinManager();
-		RuleManager RM = new RuleManager(this);
-		InquiryManager IM = new InquiryManager(RM, this);
-		InquiryCommandManager ICM = new InquiryCommandManager(IM);
-		InquireTeleportCommand ITC = new InquireTeleportCommand(IM);
-        RuleCommandManager RCM = new RuleCommandManager(RM);
-        LogCommandManager LCM = new LogCommandManager(IM, this);
-        UserManager UM = new UserManager(this);
         SJM.setUM(UM);
-        SkillEffectManager SEM =  new SkillEffectManager(this);
-
-		Archer archer = new Archer(4, 4, this);
-		Knight knight = new Knight(SEM, this);
-		Rogue rogue = new Rogue(4, 4, SEM, this);
-		Warrior warrior = new Warrior(4, 4, this);
-        Mage mage = new Mage(4, 4,this, SEM);
+        UM.getAllUsers();
 
 		getServer().getPluginManager().registerEvents(SJM, this);
 		getCommand("문의").setExecutor(ICM);
@@ -58,6 +78,9 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+        if (RGM != null) {
+            RGM.saveAll();
+        }
 		// Plugin shutdown logic
 	}
 }
