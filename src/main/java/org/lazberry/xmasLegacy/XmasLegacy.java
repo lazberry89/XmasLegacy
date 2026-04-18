@@ -2,9 +2,12 @@ package org.lazberry.xmasLegacy;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.lazberry.xmasLegacy.Env.ConsumableManager;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
+import org.lazberry.xmasLegacy.PlayerUtils.BagCommandManager;
+import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
 import org.lazberry.xmasLegacy.Region.RegionManager;
 
 public final class XmasLegacy extends JavaPlugin {
@@ -17,8 +20,14 @@ public final class XmasLegacy extends JavaPlugin {
     private RuleCommandManager RCM;
     private LogCommandManager LCM;
     private UserManager UM;
+	private BagManager BM;
+	private BagCommandManager BCM;
     private SkillEffectManager SEM;
     private RegionManager RGM;
+	private FirstRoleListener FRL;
+	private TestCommands TC;
+	private ChatCensoring CC;
+	private ConsumableManager CM;
 
     private Archer archer;
     private Knight knight;
@@ -36,8 +45,12 @@ public final class XmasLegacy extends JavaPlugin {
         this.RCM = new RuleCommandManager(RM);
         this.LCM = new LogCommandManager(IM, this);
         this.UM = new UserManager(this);
+		this.BM = new BagManager(this);
+		this.BCM = new BagCommandManager(BM);
         this.SEM = new SkillEffectManager(this);
         this.RGM = new RegionManager(this, UM);
+		this.CC = new ChatCensoring(RM, this);
+		this.CM = new ConsumableManager(this, UM, BM);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -45,27 +58,28 @@ public final class XmasLegacy extends JavaPlugin {
         this.mage = new Mage(4, 4,this, SEM);
         this.warrior = new Warrior(4, 4, this);
 
+		this.FRL = new FirstRoleListener(SEM, this, knight, rogue, archer, warrior, mage);
+		this.TC = new TestCommands(SEM, this);
+
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
         SJM.setUM(UM);
         UM.getAllUsers();
+		this.BM.loadAllBags();
 
 		getServer().getPluginManager().registerEvents(SJM, this);
+		getServer().getPluginManager().registerEvents(FRL, this);
+		getServer().getPluginManager().registerEvents(CC, this);
+
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
         getCommand("filter").setExecutor(RCM);
         getCommand("filter").setTabCompleter(RCM);
         getCommand("log").setExecutor(LCM);
         getCommand("log").setTabCompleter(LCM);
-
-		//tests
-		TestCommands TC = new TestCommands(SEM, this);
-		FirstRoleListener FRL = new FirstRoleListener(SEM, this, knight, rogue, archer, warrior, mage);
+		getCommand("가방").setExecutor(BCM);
+		getCommand("가방").setTabCompleter(BCM);
 		getCommand("test").setExecutor(TC);
-		getServer().getPluginManager().registerEvents(FRL, this);
-
-
-
 
         new BukkitRunnable() {
             @Override
@@ -81,6 +95,5 @@ public final class XmasLegacy extends JavaPlugin {
         if (RGM != null) {
             RGM.saveAll();
         }
-		// Plugin shutdown logic
 	}
 }

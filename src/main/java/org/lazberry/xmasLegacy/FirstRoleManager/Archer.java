@@ -35,8 +35,8 @@ public class Archer extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
         ItemStack bow = p.getInventory().getItemInMainHand();
-        if (!consumeEnergy(p, 3)) return;
         if (p.getCooldown(bow) > 0) return;
+        if (!consumeEnergy(p, 3)) return;
 		p.getWorld().playSound(p.getLocation(), org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.0f, 0.6f);
 
 		Arrow arrow = p.launchProjectile(Arrow.class);
@@ -67,13 +67,13 @@ public class Archer extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
         ItemStack tool = p.getInventory().getHelmet();
-		if (tool == null) return;
-        if (!consumeEnergy(p, 4)) return;
+		if (tool == null || tool.getType() == Material.AIR) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;
         }
+        if (!consumeEnergy(p, 4)) return;
         p.setInvulnerable(true);
         p.getWorld().createExplosion(p.getLocation(), 2, false, false);
         Vector vector = p.getLocation().getDirection();

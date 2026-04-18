@@ -39,7 +39,6 @@ public class FirstRoleListener implements Listener {
         this.mage = mage;
 	}
 
-
 	@EventHandler
 	public void onSkillUse(PlayerInteractEvent e) {
 		Player p = e.getPlayer();

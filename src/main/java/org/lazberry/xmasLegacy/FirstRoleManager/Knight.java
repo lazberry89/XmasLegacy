@@ -36,12 +36,11 @@ public class Knight extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player player) { //Sharp Sweeping
         ItemStack tool = player.getInventory().getItemInMainHand();
-        if (!consumeEnergy(player, 3)) return;
         if (player.getCooldown(tool) > 0) {
             player.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) player.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;
         }
-
+        if (!consumeEnergy(player, 3)) return;
         Vector direction = player.getLocation().getDirection().normalize();
         player.setVelocity(direction.multiply(1.5).setY(0.2));
 
@@ -90,13 +89,13 @@ public class Knight extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) { //Taunt
         ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null) return;
-        if (!consumeEnergy(p, 3)) return;
+		if (tool == null || tool.getType() == Material.AIR) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
             return;
         }
+        if (!consumeEnergy(p, 3)) return;
         p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 30, 10, 10, 10, 0.01);
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 0.6f);
         for (Entity entity : p.getWorld().getNearbyEntities(p.getLocation(), 10.0, 10.0, 10.0)) {

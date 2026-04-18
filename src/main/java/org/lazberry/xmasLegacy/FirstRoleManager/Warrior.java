@@ -40,12 +40,12 @@ public class Warrior extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getChestplate();
-        if (!consumeEnergy(p, 3)) return;
-		if (tool == null) return;
+		if (tool == null || tool.getType() == Material.AIR) return;
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
 			return;
 		}
+        if (!consumeEnergy(p, 3)) return;
 		p.damage(8);
 		p.getWorld().strikeLightningEffect(p.getLocation());
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
@@ -64,12 +64,12 @@ public class Warrior extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-        if (!consumeEnergy(p, 3)) return;
 		if (p.getCooldown(tool.getType()) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
 		}
 
+		if (!consumeEnergy(p, 3)) return;
 		Location startLoc = p.getEyeLocation();
 		// 1. 벡터 복사본 생성 및 속도 설정 (원본 보존을 위해 clone 사용)
 		final Vector direction = startLoc.getDirection().clone().normalize().multiply(1.0);

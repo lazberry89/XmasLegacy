@@ -35,8 +35,7 @@ public class Rogue extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getBoots();
-		if (tool == null) return;
-        if (!consumeEnergy(p, 3)) return;
+		if (tool == null || tool.getType() == Material.AIR) return;
 		Entity target = p.getTargetEntity(10, false);
 
 		if (p.getCooldown(tool) > 0) {
@@ -45,6 +44,7 @@ public class Rogue extends AbstractFirstRole {
 		}
 		if (target != null) {
 			if (target instanceof LivingEntity le) {
+				if (!consumeEnergy(p, 3)) return;
 
                 Vector vector = p.getLocation().getDirection().normalize();
                 p.setVelocity(vector.multiply(2.5).setY(0.2)); // 너무 빠르면 감지가 안 될 수 있어 2.5 추천
@@ -105,12 +105,12 @@ public class Rogue extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-        if (!consumeEnergy(p, 3)) return;
 		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool)/20 + "&f초 기다리세요"));
 			return;
 		}
+        if (!consumeEnergy(p, 3)) return;
 		Particle.DustOptions dust = new Particle.DustOptions(Color.GRAY, 5.0f);
 		p.getWorld().spawnParticle(Particle.DUST, p.getLocation(), 160, 5, 3, 5, 0.01, dust); //연막 컨셉
 		p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 0.8f);

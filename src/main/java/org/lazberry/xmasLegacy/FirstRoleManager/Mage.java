@@ -35,12 +35,12 @@ public class Mage extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
         ItemStack tool = p.getInventory().getItemInMainHand();
-        if (!consumeEnergy(p, 6)) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
             return;
         }
+        if (!consumeEnergy(p, 6)) return;
         Location startLoc = p.getEyeLocation();
         Vector dir = startLoc.getDirection().normalize().multiply(0.4); // 매우 느린 속도
 
@@ -96,7 +96,7 @@ public class Mage extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
         ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null) return;
+		if (tool == null || tool.getType() == Material.AIR) return;
 
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
