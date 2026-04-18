@@ -29,7 +29,7 @@ public class ServerJoinManager implements Listener {
             User user = new User(p, null);
             UM.addUser(p, user);
 		} else {
-			e.joinMessage(ComponentChanger.comp(Prefix.XmasLegacy + "&6&l " + p.getName() + "&f 님이 접속했어요!🎄"));
+			e.joinMessage(ComponentChanger.comp(Prefix.XmasLegacy + "&6&l " + p.getName() + "&f 님이 접속했어요!"));
 			//p.playSound(p, "sound.christmas", 1.0f, 1.0f); //이후에 리소스팩에 전용 사운드 추가
 
 		}

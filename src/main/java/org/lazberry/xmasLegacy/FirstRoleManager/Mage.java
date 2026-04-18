@@ -95,7 +95,9 @@ public class Mage extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-        ItemStack tool = p.getInventory().getItemInMainHand();
+        ItemStack tool = p.getInventory().getChestplate();
+		if (tool == null) return;
+
         if (p.getCooldown(tool) > 0) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
             return;
@@ -155,20 +157,18 @@ public class Mage extends AbstractFirstRole {
                     else trans.getLeftRotation().set(new Quaternionf().rotationXYZ(angle * 0.5f, 0, angle));
 
                     bd.setTransformation(trans);
-                    bd.setInterpolationDuration(1); // 다음 틱까지 부드럽게 연결
+                    bd.setInterpolationDuration(1);
                 }
 
-                // 나머지 시각 효과 및 끌어당기기 로직
                 center.getWorld().spawnParticle(Particle.REVERSE_PORTAL, center, 10, 0.5, 0.5, 0.5, 0.1);
                 for (Entity e : center.getWorld().getNearbyEntities(center, 6.0, 6.0, 6.0)) {
 
                     if (e instanceof LivingEntity le && !e.equals(p)) {
-
                         Vector direction = center.toVector().subtract(le.getLocation().toVector());
 
                         double distance = direction.length();
 
-                        if (distance > 0.6) { // 0.5보다 살짝 늘려 떨림 방지
+                        if (distance > 0.6) {
                             direction.normalize();
                             double pullStrength = 0.35;
                             le.setVelocity(direction.multiply(pullStrength).setY(0.1));
