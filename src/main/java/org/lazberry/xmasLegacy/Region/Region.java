@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.UserManager;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Region {
@@ -15,12 +16,11 @@ public class Region {
     private final Location center;
     private final World world;
     private final UserManager UM;
+	private String name;
 
-    // 계산된 좌표들을 상수로 들고 있습니다 (성능 최적화)
     private final int sMinX, sMaxX, sMinZ, sMaxZ, sMinY, sMaxY;
     private final int oMinX, oMaxX, oMinZ, oMaxZ, oMinY, oMaxY;
 
-    // 권한 설정 관련 변수 (추가된 부분)
     private boolean allowPublicEntry = true;      // 외부인 출입 허용 여부
     private boolean allowPublicInteraction = false; // 외부인 상호작용 허용 여부
 
@@ -30,10 +30,11 @@ public class Region {
         this.center = center;
         this.id = IDGenerator.generateRandomId();
         this.world = center.getWorld();
+		this.name = p.getName();
 
         Roles role = UM.getUser(p).getRole();
 
-        int minY = (role == Roles.MINER) ? -100 : 15;
+        int minY = (Roles.MINER.equals(role)) ? -100 : 15;
         this.sMinY = minY;
         this.oMinY = minY;
         this.sMaxY = 320;
@@ -50,7 +51,6 @@ public class Region {
         this.oMaxZ = center.getBlockZ() + 10;
     }
 
-    // 판정 로직: &&를 사용하여 박스 안에 있는지 정확히 체크
     public boolean isInsideSafeZone(Location loc) {
         if (!loc.getWorld().equals(world)) return false;
         int x = loc.getBlockX();
@@ -73,11 +73,20 @@ public class Region {
                 (z >= oMinZ && z <= oMaxZ);
     }
 
+	public boolean overlaps(Region other) {
+		if (!this.world.equals(other.world)) return false;
+
+		boolean overlapX = this.oMinX <= other.oMaxX && this.oMaxX >= other.oMinX;
+		boolean overlapY = this.oMinY <= other.oMaxY && this.oMaxY >= other.oMinY;
+		boolean overlapZ = this.oMinZ <= other.oMaxZ && this.oMaxZ >= other.oMinZ;
+
+		return overlapX && overlapY && overlapZ;
+	}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Region c)) return false;
-        return owner == c.owner;
+        return Objects.equals(id, c.getId());
     }
 
     @Override
@@ -89,8 +98,12 @@ public class Region {
     public Location getCenter() { return center; }
     public boolean isAllowPublicEntry() { return allowPublicEntry; }
     public boolean isAllowPublicInteraction() { return allowPublicInteraction; }
+	public void setAllowPublicEntry(boolean allowPublicEntry) { this.allowPublicEntry = allowPublicEntry; }
+	public void setAllowPublicInteraction(boolean allowPublicInteraction) { this.allowPublicInteraction = allowPublicInteraction; }
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 
-    // YAML 로딩 전용 생성자 (기존 로직을 건드리지 않고 필드값만 그대로 주입)
+
     public Region(UUID owner, String id, Location center, boolean allowEntry, boolean allowInteract, UserManager UM) {
         this.owner = owner;
         this.id = id;
@@ -100,9 +113,9 @@ public class Region {
         this.allowPublicInteraction = allowInteract;
         this.UM = UM;
 
-        Roles role = UM.getUser(Bukkit.getOfflinePlayer(owner).getPlayer()).getRole();
+        Roles role = UM.getRoleByUUID(owner);
 
-        int minY = (role == Roles.MINER) ? -100 : 15;
+	    int minY = (role == Roles.MINER) ? -100 : 15;
         this.sMinY = minY; this.oMinY = minY;
         this.sMaxY = 320; this.oMaxY = 320;
 

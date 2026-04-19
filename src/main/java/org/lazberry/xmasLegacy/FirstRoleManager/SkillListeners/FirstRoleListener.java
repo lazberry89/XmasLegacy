@@ -2,12 +2,9 @@ package org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners;
 
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -16,12 +13,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
-import org.lazberry.xmasLegacy.SkillEffectManager;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
 public class FirstRoleListener implements Listener {
-	private final SkillEffectManager SEM;
 	private final XmasLegacy plugin;
 	private final Knight knight;
 	private final Rogue rogue;
@@ -29,8 +24,7 @@ public class FirstRoleListener implements Listener {
 	private final Warrior warrior;
     private final Mage mage;
 
-	public FirstRoleListener(SkillEffectManager SEM, XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior, Mage mage) {
-		this.SEM = SEM;
+	public FirstRoleListener(XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior, Mage mage) {
 		this.plugin = plugin;
 		this.knight = knight;
 		this.rogue = rogue;

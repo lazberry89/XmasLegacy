@@ -12,6 +12,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmasLegacy.Region.Region;
+import org.lazberry.xmasLegacy.Region.RegionManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 
@@ -24,11 +26,15 @@ import java.util.stream.Stream;
 public class LogCommandManager implements CommandExecutor, TabCompleter {
     private final InquiryManager IM;
     private final XmasLegacy plugin;
+	private RegionManager RM;
 
     public LogCommandManager(InquiryManager IM, XmasLegacy plugin) {
         this.IM = IM;
         this.plugin = plugin;
     }
+	public void setRM(RegionManager RM) {
+		this.RM = RM;
+	}
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
@@ -41,8 +47,8 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
         if (args.length == 2) {
             switch (args[0].toLowerCase()) {
 	            case "inquiry" -> {
-					String targetName = args[1]; // 람다 내부에서 쓰기 위해 변수 고정
-	                p.sendMessage(ColorUtils.chat("&7로그를 불러오는 중입니다...")); // 사용자 경험(UX) 배려
+					String targetName = args[1];
+	                p.sendMessage(ColorUtils.chat("&7로그를 불러오는 중입니다..."));
 
 	                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 		                OfflinePlayer op = Bukkit.getOfflinePlayer(targetName);
@@ -58,9 +64,25 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 		                }
 	                });
 	            }
+	            case "regions" -> {
+		            OfflinePlayer of = Bukkit.getOfflinePlayer(args[1]);
+					if (of.hasPlayedBefore()) {
+						List<Region> regions = RM.getRegion(of.getUniqueId());
+						if (regions == null || regions.isEmpty()) {
+							p.sendMessage(ColorUtils.chat(Prefix.RED + " 구역이 없습니다."));
+							return true;
+						}
+						SendRegions(p, regions);
+					} else {
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 유저가 존재하지 않습니다."));
+						p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
+						return true;
+					}
+	            }
                 default -> {
                     p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 명령어가 아닙니다."));
                     p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
+					return true;
                 }
             }
         } else if (args.length == 1) {
@@ -85,6 +107,14 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 						p.sendMessage(comp);
 					}
 				}
+				case "regions" -> {
+					List<Region> regions = RM.getRegions();
+					if (regions.isEmpty()) {
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 구역이 없습니다."));
+						return true;
+					}
+					SendRegions(p, regions);
+				}
 				default -> {
 					p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 명령어가 아닙니다."));
 					p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
@@ -94,23 +124,46 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
-	    List<String> completions = new ArrayList<>();
-	    if (args.length == 1) {
-		    completions.add("inquiry");
-		    completions.add("inquiries");
-	    } else if (args.length == 2 && args[0].equalsIgnoreCase("inquiry")) {
-		    // 현재 접속 중인 플레이어 이름을 추천해줌
-		    for (Player onlineP : Bukkit.getOnlinePlayers()) {
-			    completions.add(onlineP.getName());
-		    }
-	    }
+	private void SendRegions(Player p, List<Region> regions) {
+		for (Region region : regions) {
+			p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
+			p.sendMessage(ColorUtils.chat("&6&lRegion ID : &f" + region.getId()));
+			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.getName()));
 
-	    // 사용자가 입력 중인 글자로 시작하는 것만 필터링 (보통 필수)
-	    String lastArg = args[args.length - 1];
-	    return completions.stream()
-			    .filter(s -> s.toLowerCase().startsWith(lastArg.toLowerCase()))
-			    .toList();
-    }
+			int x = region.getCenter().getBlockX();
+			int y = region.getCenter().getBlockY();
+			int z = region.getCenter().getBlockZ();
+			String world = region.getCenter().getWorld().getName();
+
+			p.sendMessage(ColorUtils.chat("&eLocation : &7" + world + " (" + x + ", " + y + ", " + z + ")"));
+
+			String entry = region.isAllowPublicEntry() ? "&a허용" : "&c차단";
+			String interact = region.isAllowPublicInteraction() ? "&a허용" : "&c차단";
+			p.sendMessage(ColorUtils.chat("&eSettings : &f출입[" + entry + "&f] 상호작용[" + interact + "&f]"));
+		}
+		p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
+	}
+
+	@Override
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
+		List<String> completions = new ArrayList<>();
+
+		if (args.length == 1) {
+			completions.add("inquiry");
+			completions.add("inquiries");
+			completions.add("regions");
+		} else if (args.length == 2) {
+			String sub = args[0].toLowerCase();
+			if (sub.equals("inquiry") || sub.equals("regions")) {
+				for (Player onlineP : Bukkit.getOnlinePlayers()) {
+					completions.add(onlineP.getName());
+				}
+			}
+		}
+
+		String lastArg = args[args.length - 1];
+		return completions.stream()
+				.filter(s -> s.toLowerCase().startsWith(lastArg.toLowerCase()))
+				.toList();
+	}
 }

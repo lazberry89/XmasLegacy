@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmasLegacy.UserManager;
 import org.lazberry.xmasLegacy.XmasLegacy;
@@ -41,7 +42,6 @@ public class RegionManager {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    // 데이터 저장 로직
     public void saveAll() {
         config.set("regions", null); // 초기화
 
@@ -85,7 +85,6 @@ public class RegionManager {
 
             Region region = new Region(owner, id, center, entry, interact, UM);
 
-            // 메모리에 적재
             regions.computeIfAbsent(owner, k -> new ArrayList<>()).add(region);
         }
         plugin.getLogger().info("[Region] " + regions.size() + "명의 유저 구역 데이터를 로드했습니다.");
@@ -95,6 +94,22 @@ public class RegionManager {
         regions.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);
         saveAll();
     }
+	public void removeRegion(Region region) {
+		if (region == null) return;
+
+		UUID ownerUUID = region.getOwner();
+		if (regions.containsKey(ownerUUID)) {
+			List<Region> userRegions = regions.get(ownerUUID);
+
+			if (userRegions.remove(region)) {
+				if (userRegions.isEmpty()) {
+					regions.remove(ownerUUID);
+				}
+				saveAll();
+				plugin.getLogger().info("[Region] 구역이 삭제되었습니다. ID: " + region.getId());
+			}
+		}
+	}
     public void removeAllRegion(Player p) {
         regions.remove(p.getUniqueId());
         saveAll();
@@ -113,4 +128,20 @@ public class RegionManager {
         }
         return null;
     }
+	public @Nullable Region getRegion(String id) {
+		for (List<Region> list : regions.values()) {
+			for (Region region : list) {
+				if (region.getId().equals(id)) return region;
+			}
+		}
+		return null;
+	}
+	public boolean isOverlaps(Region r1, Region r2) {
+		if (r1 == null || r2 == null) return false;
+		return r1.overlaps(r2);
+	}
+	@NotNull
+	public List<Region> getRegions() {
+		return regions.values().stream().flatMap(List::stream).toList();
+	}
 }

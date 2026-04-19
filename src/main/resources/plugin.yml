@@ -25,4 +25,8 @@ commands:
     usage: /log <inquiry | inquiries> <이름>
     description: 로그 검색
 
+  구역:
+    usage: /구역 <ID> <설정> <값>
+    description: 구역 설정
+
   test:

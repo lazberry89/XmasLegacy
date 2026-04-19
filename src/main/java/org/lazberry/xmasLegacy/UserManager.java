@@ -89,7 +89,8 @@ public class UserManager {
         users.remove(p.getUniqueId());
     }
     public User getUser(Player p) {
-        return users.get(p.getUniqueId());
+	    if (p == null) return null;
+	    return users.get(p.getUniqueId());
     }
     public List<User> getAllUsers() {
         List<User> result = new ArrayList<>();
@@ -114,4 +115,27 @@ public class UserManager {
             user.setDollars(user.getDollars() + amount);
         }
     }
+	public Roles getRoleByUUID(UUID uuid) {
+		if (users.containsKey(uuid)) {
+			return users.get(uuid).getRole();
+		}
+
+		// 2. 접속 중이 아니라면 파일에서 직접 읽기
+		File userFile = new File(plugin.getDataFolder() + "/users", uuid + ".yml");
+		if (userFile.exists()) {
+			FileConfiguration config = YamlConfiguration.loadConfiguration(userFile);
+			String roleStr = config.getString("role");
+			if (roleStr != null) {
+				try {
+					return Roles.valueOf(roleStr);
+				} catch (IllegalArgumentException e) {
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+	public User getUser(UUID uuid) {
+		return users.get(uuid);
+	}
 }

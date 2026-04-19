@@ -11,7 +11,7 @@ import org.lazberry.xmasLegacy.XmasLegacy;
 public abstract class AbstractFirstRole {
 	private int cooldown1;
 	private int cooldown2;
-    private XmasLegacy plugin;
+    private final XmasLegacy plugin;
 
 	public AbstractFirstRole(int c1, int c2, XmasLegacy plugin) {
 		this.cooldown1 = c1;

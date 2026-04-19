@@ -32,6 +32,6 @@ public enum HiddenRoles {
 				return role;
 			}
 		}
-		return null; // 또는 기본값
+		return null;
 	}
 }

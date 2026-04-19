@@ -44,7 +44,7 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof User c)) return false;
-        return this.uuid.equals(c.uuid);
+        return Objects.equals(uuid, c.uuid);
     }
 
     @Override
