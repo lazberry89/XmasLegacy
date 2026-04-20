@@ -6,6 +6,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -160,7 +161,7 @@ public class Rogue extends AbstractFirstRole {
 		        .hideAllFlags()
 		        .setItemModel("RogueArmor")
                 .setTag("role_id", "RogueArmor")
-		        .setArmorState(5.0)
+		        .setArmorState(5.0, EquipmentSlotGroup.FEET)
 		        .build()
 		        .clone();
     }

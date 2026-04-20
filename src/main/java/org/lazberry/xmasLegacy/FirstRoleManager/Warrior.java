@@ -168,7 +168,7 @@ public class Warrior extends AbstractFirstRole {
 		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 		        .setUnbreakable()
 		        .hideAllFlags()
-		        .setArmorState(9)
+		        .setArmorState(9, EquipmentSlotGroup.CHEST)
                 .addAttribute(Attribute.SCALE, 0.2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR)
                 .addAttribute(Attribute.MAX_HEALTH, 4, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR)
 		        .setTag("role_id", "WarriorArmor")

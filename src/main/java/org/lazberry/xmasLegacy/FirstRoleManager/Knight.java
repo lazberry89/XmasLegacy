@@ -157,7 +157,7 @@ public class Knight extends AbstractFirstRole {
                 .hideAllFlags()
                 .setItemModel("KnightArmor")
                 .setTag("role_id", "KnightArmor")
-		        .addAttribute(Attribute.ARMOR, 7, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.BODY)
+		        .addAttribute(Attribute.ARMOR, 7, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
                 .build()
                 .clone();
     }

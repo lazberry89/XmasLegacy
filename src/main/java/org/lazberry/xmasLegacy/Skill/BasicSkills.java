@@ -14,7 +14,10 @@ public enum BasicSkills {
 	BLOOD_FRENZY,
 
     COMPACT_INSANELY,
-    GRAVITY;
+    GRAVITY,
+
+	COMPACT_HEAL,
+	STEROID;
 
 	BasicSkills() {}
 
@@ -38,6 +41,10 @@ public enum BasicSkills {
 
             case COMPACT_INSANELY -> GRAVITY;
             case GRAVITY -> COMPACT_INSANELY;
+
+			//Priest
+			case COMPACT_HEAL -> STEROID;
+			case STEROID -> COMPACT_HEAL;
 		};
 	}
 	public String getSkillName() {

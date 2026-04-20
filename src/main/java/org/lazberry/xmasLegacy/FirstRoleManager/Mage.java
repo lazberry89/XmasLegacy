@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -208,7 +209,8 @@ public class Mage extends AbstractFirstRole {
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
                 .setUnbreakable()
                 .hideAllFlags()
-                .addAttribute(Attribute.JUMP_STRENGTH, 0.04, AttributeModifier.Operation.ADD_NUMBER)
+                .addAttribute(Attribute.JUMP_STRENGTH, 0.04, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
+                .setArmorState(7, EquipmentSlotGroup.CHEST)
                 .setTag("role_id", "MageArmor")
                 .build().clone();
     }

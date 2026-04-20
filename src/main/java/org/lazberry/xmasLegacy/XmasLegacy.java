@@ -11,7 +11,6 @@ import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import org.lazberry.xmasLegacy.PlayerUtils.BagCommandManager;
 import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
 import org.lazberry.xmasLegacy.Region.*;
-import org.lazberry.xmasLegacy.User.StateIndicator;
 import org.lazberry.xmasLegacy.User.UserManager;
 
 public final class XmasLegacy extends JavaPlugin {
@@ -36,7 +35,6 @@ public final class XmasLegacy extends JavaPlugin {
 	private RegionCommandManager RGCM;
 	private RegionIndicator RI;
     private RegionPreviewer RGP;
-    private StateIndicator SI;
     private GhostModeManager GMM;
     private GhostCommand GC;
     private GhostListener GL;
@@ -77,7 +75,6 @@ public final class XmasLegacy extends JavaPlugin {
 		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage);
 		this.TC = new TestCommands(SEM, this);
         this.RGP = new RegionPreviewer(this,RGM);
-        this.SI = new StateIndicator(this, UM);
         this.GMM = new GhostModeManager(this);
         this.GC = new GhostCommand(GMM);
         this.GL = new GhostListener(GMM, this);
@@ -131,7 +128,6 @@ public final class XmasLegacy extends JavaPlugin {
 		CM.stopCookieTimer();
 		BM.saveAllBags();
 		getLogger().info("모든 가방 데이터를 자동 저장했습니다.");
-        SI.stopTask();
 	}
 
     public NamespacedKey getNamespacedKey(String key) {
