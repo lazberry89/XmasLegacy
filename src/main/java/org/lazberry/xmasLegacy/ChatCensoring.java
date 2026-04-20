@@ -23,8 +23,8 @@ public class ChatCensoring implements Listener {
 	public void onChatCensor(AsyncChatEvent e) {
 		Player p = e.getPlayer();
 		String msg = PlainTextComponentSerializer.plainText().serialize(e.message());
-
-		if (RM.checkBadWords(msg)) {
+        String chk = msg.replace("\\s+", "");
+		if (RM.checkBadWords(chk)) {
 			String replace = RM.hideBadWords(msg);
 			e.message(ComponentChanger.comp(replace));
 

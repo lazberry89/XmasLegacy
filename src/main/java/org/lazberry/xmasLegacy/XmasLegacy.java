@@ -1,7 +1,9 @@
 package org.lazberry.xmasLegacy;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.lazberry.xmasLegacy.Economy.EconomyManager;
 import org.lazberry.xmasLegacy.Env.ConsumableManager;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
@@ -9,6 +11,8 @@ import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import org.lazberry.xmasLegacy.PlayerUtils.BagCommandManager;
 import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
 import org.lazberry.xmasLegacy.Region.*;
+import org.lazberry.xmasLegacy.User.StateIndicator;
+import org.lazberry.xmasLegacy.User.UserManager;
 
 public final class XmasLegacy extends JavaPlugin {
 
@@ -31,6 +35,12 @@ public final class XmasLegacy extends JavaPlugin {
 	private RegionPermission RP;
 	private RegionCommandManager RGCM;
 	private RegionIndicator RI;
+    private RegionPreviewer RGP;
+    private StateIndicator SI;
+    private GhostModeManager GMM;
+    private GhostCommand GC;
+    private GhostListener GL;
+    private EconomyManager EM;
 
     private Archer archer;
     private Knight knight;
@@ -66,6 +76,12 @@ public final class XmasLegacy extends JavaPlugin {
 
 		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage);
 		this.TC = new TestCommands(SEM, this);
+        this.RGP = new RegionPreviewer(this,RGM);
+        this.SI = new StateIndicator(this, UM);
+        this.GMM = new GhostModeManager(this);
+        this.GC = new GhostCommand(GMM);
+        this.GL = new GhostListener(GMM, this);
+        this.EM = new EconomyManager(UM);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
@@ -81,6 +97,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(CM, this);
 		getServer().getPluginManager().registerEvents(RP, this);
 		getServer().getPluginManager().registerEvents(RI, this);
+        getServer().getPluginManager().registerEvents(GL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -93,6 +110,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("test").setExecutor(TC);
 		getCommand("구역").setExecutor(RGCM);
 		getCommand("구역").setTabCompleter(RGCM);
+        getCommand("vanish").setExecutor(GC);
 
         new BukkitRunnable() {
             @Override
@@ -113,5 +131,15 @@ public final class XmasLegacy extends JavaPlugin {
 		CM.stopCookieTimer();
 		BM.saveAllBags();
 		getLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+        SI.stopTask();
 	}
+
+    public NamespacedKey getNamespacedKey(String key) {
+        return new NamespacedKey(this, key);
+    }
+
+    public void playConsoleSound() {
+        System.out.print("\u0007");
+        System.out.flush();
+    }
 }

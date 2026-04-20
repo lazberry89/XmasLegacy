@@ -1,12 +1,11 @@
-package org.lazberry.xmasLegacy;
+package org.lazberry.xmasLegacy.User;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.XmasLegacy;
 
 import java.io.File;
 import java.io.IOException;
@@ -120,7 +119,6 @@ public class UserManager {
 			return users.get(uuid).getRole();
 		}
 
-		// 2. 접속 중이 아니라면 파일에서 직접 읽기
 		File userFile = new File(plugin.getDataFolder() + "/users", uuid + ".yml");
 		if (userFile.exists()) {
 			FileConfiguration config = YamlConfiguration.loadConfiguration(userFile);
@@ -129,7 +127,9 @@ public class UserManager {
 				try {
 					return Roles.valueOf(roleStr);
 				} catch (IllegalArgumentException e) {
-					return null;
+                    plugin.getServer().getLogger().warning("Exception: " + e.getMessage());
+                    plugin.playConsoleSound();
+                    return null;
 				}
 			}
 		}

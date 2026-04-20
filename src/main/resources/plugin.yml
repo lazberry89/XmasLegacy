@@ -29,4 +29,8 @@ commands:
     usage: /구역 <ID> <설정> <값>
     description: 구역 설정
 
+  vanish:
+    usage: /vanish
+    description: 리스트, 인게임에서 소멸 후 유저관찰
+
   test:

@@ -4,8 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -154,7 +157,7 @@ public class Knight extends AbstractFirstRole {
                 .hideAllFlags()
                 .setItemModel("KnightArmor")
                 .setTag("role_id", "KnightArmor")
-		        .setArmorState(7.0)
+		        .addAttribute(Attribute.ARMOR, 7, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.BODY)
                 .build()
                 .clone();
     }

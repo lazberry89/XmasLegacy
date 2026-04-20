@@ -170,6 +170,7 @@ public class Warrior extends AbstractFirstRole {
 		        .hideAllFlags()
 		        .setArmorState(9)
                 .addAttribute(Attribute.SCALE, 0.2, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR)
+                .addAttribute(Attribute.MAX_HEALTH, 4, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR)
 		        .setTag("role_id", "WarriorArmor")
 		        .build().clone();
     }

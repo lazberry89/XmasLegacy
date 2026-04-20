@@ -7,6 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.lazberry.xmasLegacy.User.User;
+import org.lazberry.xmasLegacy.User.UserManager;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 
 public class ServerJoinManager implements Listener {

@@ -104,7 +104,7 @@ public class ItemBuilder {
     }
 
 	public ItemBuilder setArmorState(double state) {
-		return addAttribute(Attribute.ARMOR, state, AttributeModifier.Operation.ADD_NUMBER);
+		return addAttribute(Attribute.ARMOR, state, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ARMOR);
 	}
 
     public ItemBuilder setUnbreakable() {

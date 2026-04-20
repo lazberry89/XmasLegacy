@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
-import org.lazberry.xmasLegacy.UserManager;
+import org.lazberry.xmasLegacy.User.UserManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;

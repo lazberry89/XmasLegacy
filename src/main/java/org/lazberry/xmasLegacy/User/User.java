@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy;
+package org.lazberry.xmasLegacy.User;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class User {
     private final UUID uuid;
-    private String name;
+    private final String name;
     private @Nullable Roles role;
     private int dollars;
     private int inquireCount = 0;

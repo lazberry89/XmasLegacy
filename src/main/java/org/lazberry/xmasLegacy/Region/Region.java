@@ -1,11 +1,11 @@
 package org.lazberry.xmasLegacy.Region;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.lazberry.xmasLegacy.Roles.Roles;
-import org.lazberry.xmasLegacy.UserManager;
+import org.lazberry.xmasLegacy.Settings.Constants;
+import org.lazberry.xmasLegacy.User.UserManager;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -34,25 +34,25 @@ public class Region {
 
         Roles role = UM.getUser(p).getRole();
 
-        int minY = (Roles.MINER.equals(role)) ? -100 : 15;
+        int minY = (Roles.MINER.equals(role)) ? Constants.MinerMinY : Constants.UserMinY;
         this.sMinY = minY;
         this.oMinY = minY;
         this.sMaxY = 320;
         this.oMaxY = 320;
 
-        this.sMinX = center.getBlockX() - 5;
-        this.sMaxX = center.getBlockX() + 5;
-        this.sMinZ = center.getBlockZ() - 5;
-        this.sMaxZ = center.getBlockZ() + 5;
+        this.sMinX = center.getBlockX() - Constants.InnerRange;
+        this.sMaxX = center.getBlockX() + Constants.InnerRange;
+        this.sMinZ = center.getBlockZ() - Constants.InnerRange;
+        this.sMaxZ = center.getBlockZ() + Constants.InnerRange;
 
-        this.oMinX = center.getBlockX() - 10;
-        this.oMaxX = center.getBlockX() + 10;
-        this.oMinZ = center.getBlockZ() - 10;
-        this.oMaxZ = center.getBlockZ() + 10;
+        this.oMinX = center.getBlockX() - Constants.OuterRange;
+        this.oMaxX = center.getBlockX() + Constants.OuterRange;
+        this.oMinZ = center.getBlockZ() - Constants.OuterRange;
+        this.oMaxZ = center.getBlockZ() + Constants.OuterRange;
     }
 
     public boolean isInsideSafeZone(Location loc) {
-        if (!loc.getWorld().equals(world)) return false;
+        if (WorldDiff(loc)) return false;
         int x = loc.getBlockX();
         int y = loc.getBlockY();
         int z = loc.getBlockZ();
@@ -63,7 +63,7 @@ public class Region {
     }
 
     public boolean isInsideOuterZone(Location loc) {
-        if (!loc.getWorld().equals(world)) return false;
+        if (WorldDiff(loc)) return false;
         int x = loc.getBlockX();
         int y = loc.getBlockY();
         int z = loc.getBlockZ();
@@ -71,6 +71,10 @@ public class Region {
         return (x >= oMinX && x <= oMaxX) &&
                 (y >= oMinY && y <= oMaxY) &&
                 (z >= oMinZ && z <= oMaxZ);
+    }
+
+    private boolean WorldDiff(Location loc) {
+        return loc.getWorld().equals(world);
     }
 
 	public boolean overlaps(Region other) {
@@ -115,18 +119,18 @@ public class Region {
 
         Roles role = UM.getRoleByUUID(owner);
 
-	    int minY = (role == Roles.MINER) ? -100 : 15;
+	    int minY = (role == Roles.MINER) ? Constants.MinerMinY : Constants.UserMinY;
         this.sMinY = minY; this.oMinY = minY;
         this.sMaxY = 320; this.oMaxY = 320;
 
-        this.sMinX = center.getBlockX() - 5;
-        this.sMaxX = center.getBlockX() + 5;
-        this.sMinZ = center.getBlockZ() - 5;
-        this.sMaxZ = center.getBlockZ() + 5;
+        this.sMinX = center.getBlockX() - Constants.InnerRange;
+        this.sMaxX = center.getBlockX() + Constants.InnerRange;
+        this.sMinZ = center.getBlockZ() - Constants.InnerRange;
+        this.sMaxZ = center.getBlockZ() + Constants.InnerRange;
 
-        this.oMinX = center.getBlockX() - 10;
-        this.oMaxX = center.getBlockX() + 10;
-        this.oMinZ = center.getBlockZ() - 10;
-        this.oMaxZ = center.getBlockZ() + 10;
+        this.oMinX = center.getBlockX() - Constants.OuterRange;
+        this.oMaxX = center.getBlockX() + Constants.OuterRange;
+        this.oMinZ = center.getBlockZ() - Constants.OuterRange;
+        this.oMaxZ = center.getBlockZ() + Constants.OuterRange;
     }
 }

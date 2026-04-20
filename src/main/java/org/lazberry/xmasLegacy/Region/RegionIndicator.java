@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmasLegacy.Prefix;
-import org.lazberry.xmasLegacy.UserManager;
+import org.lazberry.xmasLegacy.User.UserManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
