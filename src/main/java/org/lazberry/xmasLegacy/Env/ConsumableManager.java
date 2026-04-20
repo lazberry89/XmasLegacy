@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
+import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.User.UserManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
@@ -47,7 +48,7 @@ public class ConsumableManager implements Listener {
     @EventHandler
     public void joinPrize(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        p.getInventory().addItem(basicFood(16));
+        p.getInventory().addItem(basicFood(Constants.COOKIE_COUNT));
     }
 
     public void runCookieTimer(XmasLegacy plugin) {
@@ -56,13 +57,13 @@ public class ConsumableManager implements Listener {
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (!UM.getUser(p).ifWantsCookie()) continue;
-                Map<Integer, ItemStack> leftOver = p.getInventory().addItem(basicFood(16));
+                Map<Integer, ItemStack> leftOver = p.getInventory().addItem(basicFood(Constants.COOKIE_COUNT));
 
 				if (!leftOver.isEmpty()) {
 					leftOver.values().forEach(item -> BM.addItem(p, item, item.getAmount()));
 				}
             }
-        }, 20 * 60 * 60L, 20 * 60 * 60L);
+        }, 20 * 60 * Constants.COOKIE_TIMER_MINUTE, 20 * 60 * Constants.COOKIE_TIMER_MINUTE);
     }
 
     public void stopCookieTimer() {

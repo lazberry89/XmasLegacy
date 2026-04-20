@@ -11,6 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.joml.Vector3f;
+import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -57,12 +58,12 @@ public class RegionPreviewer {
         List<BlockDisplay> displays = new ArrayList<>();
         Location loc = p.getLocation().getBlock().getLocation();
 
-        displays.add(createDisplay(p, loc, 11, 305, Material.RED_STAINED_GLASS, "inner")); // 안쪽 (5+1+5)
-        displays.add(createDisplay(p, loc, 21, 305, Material.BLUE_STAINED_GLASS, "outer")); // 바깥 (10+1+10)
+        displays.add(createDisplay(p, loc, Constants.INNER_RANGE, 305, Material.RED_STAINED_GLASS, "inner")); // 안쪽 (5+1+5)
+        displays.add(createDisplay(p, loc, Constants.OUTER_RANGE, 305, Material.BLUE_STAINED_GLASS, "outer")); // 바깥 (10+1+10)
 
         for (Region region : RM.getRegions()) {
-            if (region.getCenter().distance(loc) < 30) {
-                displays.add(createDisplay(p, region.getCenter(), 21, 305, Material.ORANGE_STAINED_GLASS, "existing"));
+            if (region.getCenter().distance(loc) < Constants.OUTER_RANGE) {
+                displays.add(createDisplay(p, region.getCenter(), Constants.OUTER_RANGE, 305, Material.ORANGE_STAINED_GLASS, "existing"));
             }
         }
 

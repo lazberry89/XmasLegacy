@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.Settings.Constants;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class User {
         this.uuid = p.getUniqueId();
         this.name = p.getName();
         this.role = role;
-        if (!p.hasPlayedBefore()) this.dollars = p.getName().startsWith(".") ? 5000 : 1000;
+        if (!p.hasPlayedBefore()) this.dollars = p.getName().startsWith(".") ? Constants.BASIC_MONEY_MOBILE : Constants.BASIC_MONEY_NORMAL;
     }
 
     public UUID getUUID() {return this.uuid;}

@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 
@@ -23,7 +24,7 @@ public class InquiryManager {
 	private final Map<UUID, Long> cooldowns = new HashMap<>();
 	private Map<UUID, String> inquiryMessage = new HashMap<>();
     private final XmasLegacy plugin;
-	private final int cooldownTime = 30;
+	private final int cooldownTime = Constants.INQUIRY_COOLDOWN;
 	private final RuleManager rm;
 
 	public InquiryManager(RuleManager rm, XmasLegacy plugin) {

@@ -43,7 +43,7 @@ public class EconomyManager {
         if (target == null || sender == null) return false;
         if (sender.getUniqueId().equals(target.getUniqueId())) return false;
         if (withdraw(sender, amount)) {
-            deposit(target, amount * (100- Constants.TaxRate)/100);
+            deposit(target, amount * (100- Constants.TAX_RATE)/100);
             return true;
         }
         return false;
@@ -56,7 +56,7 @@ public class EconomyManager {
         if (sender.getUniqueId().equals(target.getUniqueId())) return false;
         if (amount <= 0) return false;
         if (withdraw(sender, amount)) {
-            deposit(target, amount * (100- Constants.TaxRate)/100);
+            deposit(target, amount * (100- Constants.TAX_RATE)/100);
             return true;
         }
         return false;

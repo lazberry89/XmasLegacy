@@ -19,8 +19,8 @@ public class CurrencyManager {
     }
 
     public ItemStack currency(int amount) {
-        if (amount < Constants.CurrencyMinimum) return null;
-        return ItemBuilder.of(plugin, Material.GOLD_INGOT)
+        if (amount < Constants.CURRENCY_MINIMUM) return null;
+        return ItemBuilder.of(plugin, Constants.CURRENCY_ITEM)
                 .setName(ColorUtils.chat("&6&l현금 수표: " + amount + "$"))
                 .setLore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다.(수수료 없음)"))
                 .setGlint(true)
