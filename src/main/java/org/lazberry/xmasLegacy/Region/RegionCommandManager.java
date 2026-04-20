@@ -24,7 +24,7 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + "사용법: /구역 <ID> <설정> <값>"));
+			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
 			return true;
 		} else if (args.length == 3) {
 			Region region = RM.getRegion(args[0]);
