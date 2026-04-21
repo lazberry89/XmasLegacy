@@ -6,11 +6,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.lazberry.xmasLegacy.Economy.EconomyManager;
 import org.lazberry.xmasLegacy.Env.ConsumableManager;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
+import org.lazberry.xmasLegacy.FirstRoleManager.Priest.ConductableItems;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import org.lazberry.xmasLegacy.PlayerUtils.BagCommandManager;
 import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
 import org.lazberry.xmasLegacy.Region.*;
+import org.lazberry.xmasLegacy.User.PartyManager;
 import org.lazberry.xmasLegacy.User.UserManager;
 
 public final class XmasLegacy extends JavaPlugin {
@@ -39,6 +41,8 @@ public final class XmasLegacy extends JavaPlugin {
     private GhostCommand GC;
     private GhostListener GL;
     private EconomyManager EM;
+    private PartyManager PM;
+    private ConductableItems CDI;
 
     private Archer archer;
     private Knight knight;
@@ -65,6 +69,14 @@ public final class XmasLegacy extends JavaPlugin {
 		this.RP = new RegionPermission(RGM);
 		this.RGCM = new RegionCommandManager(RGM);
 		this.RI = new RegionIndicator(RGM, UM, this);
+		this.TC = new TestCommands(SEM, this);
+        this.RGP = new RegionPreviewer(this,RGM);
+        this.GMM = new GhostModeManager(this);
+        this.GC = new GhostCommand(GMM);
+        this.GL = new GhostListener(GMM, this);
+        this.EM = new EconomyManager(UM);
+        this.PM = new PartyManager(UM, this);
+        this.CDI = new ConductableItems(this);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -73,12 +85,6 @@ public final class XmasLegacy extends JavaPlugin {
         this.warrior = new Warrior(4, 4, this);
 
 		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage);
-		this.TC = new TestCommands(SEM, this);
-        this.RGP = new RegionPreviewer(this,RGM);
-        this.GMM = new GhostModeManager(this);
-        this.GC = new GhostCommand(GMM);
-        this.GL = new GhostListener(GMM, this);
-        this.EM = new EconomyManager(UM);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");

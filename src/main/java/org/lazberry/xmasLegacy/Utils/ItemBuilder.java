@@ -1,6 +1,7 @@
 package org.lazberry.xmasLegacy.Utils;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmasLegacy.XmasLegacy;
@@ -126,6 +128,13 @@ public class ItemBuilder {
 		return this;
 	}
 
+    public ItemBuilder customPotionColor(Color color) {
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
+        if (meta != null) {
+            meta.setColor(color);
+        }
+        return this;
+    }
 	/**
 	 * 여러 마법을 한꺼번에 부여합니다.
 	 * @param enchantments 마법 Map

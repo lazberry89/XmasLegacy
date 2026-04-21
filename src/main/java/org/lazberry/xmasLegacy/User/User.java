@@ -12,6 +12,7 @@ import java.util.UUID;
 public class User {
     private final UUID uuid;
     private final String name;
+    private final Player p;
     private @Nullable Roles role;
     private int dollars;
     private int inquireCount = 0;
@@ -19,6 +20,7 @@ public class User {
     private boolean wantsCookie = true;
 
     public User(@NotNull Player p, @Nullable Roles role) {
+        this.p = p;
         this.uuid = p.getUniqueId();
         this.name = p.getName();
         this.role = role;
@@ -41,6 +43,8 @@ public class User {
     public boolean isMobile() {return this.name.startsWith(".");}
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
     public boolean ifWantsCookie() {return this.wantsCookie;}
+    public UUID getUuid() {return this.uuid;}
+    public Player getPlayer() {return this.p;}
 
     @Override
     public boolean equals(Object o) {

@@ -25,4 +25,18 @@ public class GlowUtils {
 		team.addEntity(entity);
 		entity.setGlowing(true);
 	}
+    public static void clearGlow(Entity entity) {
+        // 1. 엔티티의 발광 상태를 끕니다.
+        entity.setGlowing(false);
+
+        // 2. 메인 스코어보드에서 해당 엔티티가 속한 팀을 찾아 제거합니다.
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+
+        // 엔티티의 이름을 식별자로 사용하여 팀에서 제거 (Player의 경우 name, Entity의 경우 UUID)
+        Team team = scoreboard.getEntryTeam(entity.getUniqueId().toString());
+
+        if (team != null) {
+            team.removeEntry(entity.getUniqueId().toString());
+        }
+    }
 }
