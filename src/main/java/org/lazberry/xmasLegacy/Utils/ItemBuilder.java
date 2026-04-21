@@ -186,6 +186,14 @@ public class ItemBuilder {
         return this;
     }
 
+	public ItemBuilder setTag(String key, Integer value) {
+		if (meta != null) {
+			NamespacedKey nsk = new NamespacedKey(this.plugin, key);
+			meta.getPersistentDataContainer().set(nsk, PersistentDataType.INTEGER, value);
+		}
+		return this;
+	}
+
 	public ItemStack build() {
 		if (meta != null) {
 			item.setItemMeta(meta);

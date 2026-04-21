@@ -7,6 +7,7 @@ import org.lazberry.xmasLegacy.Economy.EconomyManager;
 import org.lazberry.xmasLegacy.Env.ConsumableManager;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.FirstRoleManager.Priest.ConductableItems;
+import org.lazberry.xmasLegacy.FirstRoleManager.Priest.PriestShop;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import org.lazberry.xmasLegacy.PlayerUtils.BagCommandManager;
@@ -43,6 +44,7 @@ public final class XmasLegacy extends JavaPlugin {
     private EconomyManager EM;
     private PartyManager PM;
     private ConductableItems CDI;
+	private PriestShop PSP;
 
     private Archer archer;
     private Knight knight;
@@ -77,6 +79,7 @@ public final class XmasLegacy extends JavaPlugin {
         this.EM = new EconomyManager(UM);
         this.PM = new PartyManager(UM, this);
         this.CDI = new ConductableItems(this);
+		this.PSP = new PriestShop(CDI);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);

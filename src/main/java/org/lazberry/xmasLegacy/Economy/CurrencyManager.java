@@ -24,22 +24,22 @@ public class CurrencyManager {
                 .setName(ColorUtils.chat("&6&l현금 수표: " + amount + "$"))
                 .setLore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다.(수수료 없음)"))
                 .setGlint(true)
-                .setTag("money", String.valueOf(amount))
+                .setTag("money", amount)
                 .build();
     }
 
     public void currencyToBank(Player p, ItemStack money) {
         if (money == null || money.getType() == Material.AIR) return;
 
-        String value = money.getPersistentDataContainer().get(
+        Integer value = money.getPersistentDataContainer().get(
                 plugin.getNamespacedKey("money"),
-                PersistentDataType.STRING
+                PersistentDataType.INTEGER
         );
 
         if (value == null) return;
 
         try {
-            int amount = Integer.parseInt(value);
+            int amount = value;
             if (amount <= 0) return;
 
             int currentAmount = money.getAmount();
