@@ -27,7 +27,7 @@ import java.util.*;
 public class Knight extends AbstractFirstRole {
     private float Damage = 5;
     private final SkillEffectManager SEM;
-    private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+    private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHARP_SWEEPING);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 

@@ -7,6 +7,7 @@ import org.lazberry.xmasLegacy.Economy.EconomyManager;
 import org.lazberry.xmasLegacy.Env.ConsumableManager;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
 import org.lazberry.xmasLegacy.FirstRoleManager.Priest.ConductableItems;
+import org.lazberry.xmasLegacy.FirstRoleManager.Priest.Priest;
 import org.lazberry.xmasLegacy.FirstRoleManager.Priest.PriestShop;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import org.lazberry.xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
@@ -51,6 +52,7 @@ public final class XmasLegacy extends JavaPlugin {
     private Rogue rogue;
     private Warrior warrior;
     private Mage mage;
+	private Priest priest;
 
 	@Override
 	public void onEnable() {
@@ -86,8 +88,10 @@ public final class XmasLegacy extends JavaPlugin {
         this.rogue  = new Rogue(4, 4, SEM, this);
         this.mage = new Mage(4, 4,this, SEM);
         this.warrior = new Warrior(4, 4, this);
+		this.priest = new Priest(4, 4, PM, SEM, this);
 
-		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage);
+		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage, priest);
+		this.TC.setPM(PM);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");

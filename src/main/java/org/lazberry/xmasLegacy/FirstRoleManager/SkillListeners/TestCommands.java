@@ -6,16 +6,23 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
+import org.lazberry.xmasLegacy.FirstRoleManager.Priest.Priest;
 import org.lazberry.xmasLegacy.SkillEffectManager;
+import org.lazberry.xmasLegacy.User.PartyManager;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
 public class TestCommands implements CommandExecutor {
 	private final SkillEffectManager SEM;
+	private PartyManager PM;
 	private final XmasLegacy plugin;
 
 	public TestCommands(SkillEffectManager SEM, XmasLegacy plugin) {
 		this.SEM = SEM;
 		this.plugin = plugin;
+	}
+
+	public void setPM(PartyManager PM) {
+		this.PM = PM;
 	}
 
 	@Override
@@ -51,6 +58,11 @@ public class TestCommands implements CommandExecutor {
                         p.getInventory().addItem(m.roleWeapon());
                         p.getInventory().addItem(m.roleArmor());
                     }
+					case "priest" -> {
+						AbstractFirstRole pr = new Priest(4, 4, PM, SEM, plugin);
+						p.getInventory().addItem(pr.roleWeapon());
+						p.getInventory().addItem(pr.roleArmor());
+					}
 				}
 			}
 		}

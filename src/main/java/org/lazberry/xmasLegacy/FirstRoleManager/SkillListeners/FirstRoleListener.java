@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmasLegacy.FirstRoleManager.*;
+import org.lazberry.xmasLegacy.FirstRoleManager.Priest.Priest;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 import org.lazberry.xmasLegacy.XmasLegacy;
@@ -23,14 +24,16 @@ public class FirstRoleListener implements Listener {
 	private final Archer archer;
 	private final Warrior warrior;
     private final Mage mage;
+	private final Priest priest;
 
-	public FirstRoleListener(XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior, Mage mage) {
+	public FirstRoleListener(XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior, Mage mage, Priest priest) {
 		this.plugin = plugin;
 		this.knight = knight;
 		this.rogue = rogue;
 		this.archer = archer;
 		this.warrior = warrior;
         this.mage = mage;
+		this.priest = priest;
 	}
 
 	@EventHandler
@@ -85,6 +88,14 @@ public class FirstRoleListener implements Listener {
                             mage.useSecondSkill(p);
                         }
                     }
+					case "priest" -> {
+						if (priest.getCurrentSkill(p) == null) return;
+						if (priest.getCurrentSkill(p) == BasicSkills.COMPACT_HEAL) {
+							priest.useFirstSkill(p);
+						} else if (priest.getCurrentSkill(p) == BasicSkills.STEROID) {
+							priest.useSecondSkill(p);
+						}
+					}
 				}
 			}
 		}
@@ -122,6 +133,10 @@ public class FirstRoleListener implements Listener {
                     mage.next(p);
                     p.sendActionBar(ComponentChanger.comp("&8&l" + mage.getCurrentSkill(p).getSkillName()));
                 }
+				case "priest" -> {
+					priest.next(p);
+					p.sendActionBar(ComponentChanger.comp("&8&l" + priest.getCurrentSkill(p).getSkillName()));
+				}
 			}
 		}
 	}

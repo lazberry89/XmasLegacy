@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class Rogue extends AbstractFirstRole {
 	private final SkillEffectManager SEM;
-    private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+    private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.DAGGER_RUSH);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 

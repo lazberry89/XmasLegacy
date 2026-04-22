@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Warrior extends AbstractFirstRole {
-    private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+    private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.BLOOD_FRENZY);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 

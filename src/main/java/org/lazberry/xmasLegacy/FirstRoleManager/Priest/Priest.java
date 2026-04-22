@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
+import org.lazberry.xmasLegacy.Skill.BasicSkills;
 import org.lazberry.xmasLegacy.SkillEffectManager;
 import org.lazberry.xmasLegacy.User.PartyManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
@@ -20,9 +21,16 @@ import org.lazberry.xmasLegacy.Utils.GlowUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class Priest extends AbstractFirstRole {
     private final PartyManager PM;
     private final SkillEffectManager SEM;
+	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_HEAL);}
+	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Priest(int c1, int c2, PartyManager PM, SkillEffectManager SEM, XmasLegacy plugin) {
 		super(c1, c2, plugin);
@@ -112,6 +120,7 @@ public class Priest extends AbstractFirstRole {
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
+				.setTag("role_id", "priest")
 				.addAttribute(Attribute.ATTACK_DAMAGE, 5.0, AttributeModifier.Operation.ADD_NUMBER)
 				.build()
 				.clone();
@@ -124,8 +133,9 @@ public class Priest extends AbstractFirstRole {
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
-				.setArmorState(5.0, null)
+				.setArmorState(5.0, EquipmentSlotGroup.CHEST)
 				.addAttribute(Attribute.ARMOR_TOUGHNESS, 5.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
+				.setTag("role_id", "priest")
 				.build()
 				.clone();
 	}

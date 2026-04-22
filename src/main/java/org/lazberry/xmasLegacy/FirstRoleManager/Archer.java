@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Archer extends AbstractFirstRole {
-	private Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHOCK_DART);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
