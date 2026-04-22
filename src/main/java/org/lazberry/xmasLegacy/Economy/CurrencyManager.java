@@ -21,11 +21,12 @@ public class CurrencyManager {
 
     public static ItemStack currency(int amount) {
         return ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Constants.CURRENCY_ITEM)
-                .setName(ColorUtils.chat("&6&l현금 수표: " + amount + "$"))
-                .setLore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다.(수수료 없음)"))
+                .setName(ColorUtils.chat("&6&l" + amount + "$"))
+                .setLore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다."))
                 .setGlint(true)
-                .setTag("money", amount)
-                .build();
+                .setTag("money", 100)
+                .setAmount(amount)
+                .clone();
     }
 
     public void currencyToBank(Player p, ItemStack money) {
@@ -35,24 +36,11 @@ public class CurrencyManager {
                 plugin.getNamespacedKey("money"),
                 PersistentDataType.INTEGER
         );
+        int count = money.getAmount();
 
         if (value == null) return;
-
-        try {
-            int amount = value;
-            if (amount <= 0) return;
-
-            int currentAmount = money.getAmount();
-            if (currentAmount > 1) {
-                money.setAmount(currentAmount - 1);
-            } else {
-                money.setAmount(0);
-            }
-            EM.deposit(p, amount);
-
-        } catch (NumberFormatException e) {
-            plugin.getLogger().warning("잘못된 수표 데이터 발견: " + p.getName());
-            plugin.playConsoleSound();
+        if (value == 100) {
+            EM.deposit(p, 100 * count);
         }
     }
 }

@@ -5,10 +5,13 @@ import org.bukkit.entity.Player;
 import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.User.UserManager;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class EconomyManager {
     private final UserManager UM;
+    private final Map<String, Integer> marketDemand = new HashMap<>();
 
     public EconomyManager(UserManager um) {
         this.UM = um;
@@ -80,5 +83,31 @@ public class EconomyManager {
         if (amount <= 0) return false;
         int userMoney = UM.getUser(uuid).getDollars();
         return userMoney >= amount;
+    }
+
+    // 1. 누군가 물건을 샀을 때 판매량 증가 (ShopListener의 onTrade에서 호출하세요!)
+    public void recordSale(String itemKey, int amount) {
+        marketDemand.put(itemKey, marketDemand.getOrDefault(itemKey, 0) + amount);
+    }
+
+    // 2. 적게 사면 내려가게 만들기 위한 로직 (스케줄러로 주기적으로 호출)
+    public void decayDemand() {
+        for (String key : marketDemand.keySet()) {
+            int current = marketDemand.get(key);
+            if (current > 0) {
+                marketDemand.put(key, Math.max(0, current - 1));
+            }
+        }
+    }
+
+    // 3. 현재 판매량에 비례한 가격 인상/할인 수치 반환 (Special Price용)
+    public int getPriceAdjustment(String itemKey, int basePrice) {
+        int soldCount = marketDemand.getOrDefault(itemKey, 0);
+
+        // 예시 공식: 5개 팔릴 때마다 기본 가격의 10%씩 인상
+        // 만약 할인도 적용하고 싶다면 soldCount의 기준점을 잡고 음수를 반환하도록 짜면 됩니다.
+        double rate = ((double) soldCount / 5) * 0.10;
+
+        return (int) (basePrice * rate);
     }
 }

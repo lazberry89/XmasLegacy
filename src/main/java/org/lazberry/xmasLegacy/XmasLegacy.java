@@ -79,7 +79,7 @@ public final class XmasLegacy extends JavaPlugin {
         this.EM = new EconomyManager(UM);
         this.PM = new PartyManager(UM, this);
         this.CDI = new ConductableItems(this);
-		this.PSP = new PriestShop(CDI);
+		this.PSP = new PriestShop(CDI, EM);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);

@@ -31,4 +31,10 @@ public class Constants {
 	//Inquiry
 	public static int INQUIRY_COOLDOWN = 30;
 
+    //Shop
+    //-Priest
+    public static int DRAGON_BREATH_PRICE = 200;
+    public static int HEALER_POTION_PRICE = 900;
+    public static int PROTECTION_POTION_PRICE = 1700;
+
 }
