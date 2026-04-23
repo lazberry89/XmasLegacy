@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class InquireTeleportCommand implements CommandExecutor {
 	private final InquiryManager IM;
 

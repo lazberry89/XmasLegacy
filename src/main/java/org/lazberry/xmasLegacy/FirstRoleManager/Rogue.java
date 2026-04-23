@@ -10,6 +10,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
@@ -137,7 +138,7 @@ public class Rogue extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleWeapon() {
+	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), Material.IRON_SWORD)
 				.setName(ColorUtils.chat("&7&l무딘 단검"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
@@ -153,7 +154,7 @@ public class Rogue extends AbstractFirstRole {
 	}
 
     @Override
-    public ItemStack roleArmor() {
+    public @NotNull ItemStack roleArmor() {
         return ItemBuilder.of(getPlugin(), Material.IRON_BOOTS)
 		        .setName(ColorUtils.chat("&7&l낡은 부츠"))
 		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))

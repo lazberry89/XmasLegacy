@@ -3,6 +3,8 @@ package org.lazberry.xmasLegacy.Region;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.User.UserManager;
@@ -51,7 +53,7 @@ public class Region {
         this.oMaxZ = center.getBlockZ() + Constants.OUTER_RANGE;
     }
 
-    public boolean isInsideSafeZone(Location loc) {
+    public boolean isInsideSafeZone(@NotNull Location loc) {
         if (WorldDiff(loc)) return false;
         int x = loc.getBlockX();
         int y = loc.getBlockY();
@@ -98,13 +100,13 @@ public class Region {
         return owner.hashCode();
     }
     public UUID getOwner() { return owner; }
-    public String getId() { return id; }
-    public Location getCenter() { return center; }
+    public @NotNull String getId() { return id; }
+    public @NotNull Location getCenter() { return center; }
     public boolean isAllowPublicEntry() { return allowPublicEntry; }
     public boolean isAllowPublicInteraction() { return allowPublicInteraction; }
 	public void setAllowPublicEntry(boolean allowPublicEntry) { this.allowPublicEntry = allowPublicEntry; }
 	public void setAllowPublicInteraction(boolean allowPublicInteraction) { this.allowPublicInteraction = allowPublicInteraction; }
-	public String getName() { return name; }
+	public @NotNull String getName() { return name; }
 	public void setName(String name) { this.name = name; }
 
 

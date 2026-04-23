@@ -3,6 +3,7 @@ package org.lazberry.xmasLegacy.FirstRoleManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
@@ -26,8 +27,8 @@ public abstract class AbstractFirstRole {
 	public abstract void useFirstSkill(Player player);
 	public abstract void useSecondSkill(Player player);
 	public abstract Roles getRole();
-	public abstract ItemStack roleWeapon();
-    public abstract ItemStack roleArmor();
+	public abstract @NotNull ItemStack roleWeapon();
+    public abstract @NotNull ItemStack roleArmor();
 
 	public int getCooldown1() {
 		return cooldown1;

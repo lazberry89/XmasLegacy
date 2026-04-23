@@ -13,6 +13,7 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class RuleCommandManager implements CommandExecutor, TabCompleter {
     private final RuleManager RM;
 

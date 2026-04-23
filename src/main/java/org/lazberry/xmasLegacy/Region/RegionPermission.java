@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class RegionPermission implements Listener {
 	private final RegionManager RM;
 

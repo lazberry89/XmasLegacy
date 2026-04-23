@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
@@ -135,7 +136,7 @@ public class Knight extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleWeapon() {
+	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), Material.IRON_SWORD)
                 .setName(ColorUtils.chat("&7&l녹슨 철검"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
@@ -149,7 +150,7 @@ public class Knight extends AbstractFirstRole {
 	}
 
     @Override
-    public ItemStack roleArmor() {
+    public @NotNull ItemStack roleArmor() {
         return ItemBuilder.of(getPlugin(), Material.IRON_CHESTPLATE)
                 .setName(ColorUtils.chat("&7&l낡은 흉갑"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))

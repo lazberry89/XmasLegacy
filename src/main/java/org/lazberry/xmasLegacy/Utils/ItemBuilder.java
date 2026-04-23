@@ -115,6 +115,13 @@ public class ItemBuilder {
         }
         return this;
     }
+
+    public ItemBuilder setMaxStackSize(int size) {
+        if (meta != null) {
+            meta.setMaxStackSize(size);
+        }
+        return this;
+    }
 	/**
 	 * 특정 마법을 부여합니다.
 	 * @param enchantment 마법 종류

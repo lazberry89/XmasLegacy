@@ -7,6 +7,7 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class ConductableItems {
     private final XmasLegacy plugin;
 
@@ -21,6 +22,7 @@ public class ConductableItems {
                 .setLore(ColorUtils.chat("&7가장 기초적인 물약. 약간의 버프를 잠시 받는다."), "&8ELPMETRORRIM")
                 .setGlint(true)
                 .setTag("potion", "dragon_breath")
+                .setMaxStackSize(64)
                 .build()
                 .clone();
     }
@@ -32,6 +34,7 @@ public class ConductableItems {
                 .setLore(ColorUtils.chat("&7일정 시간동안 회복을 받습니다."))
                 .customPotionColor(Color.ORANGE)
                 .setTag("potion", "healing")
+                .setMaxStackSize(64)
                 .setGlint(false)
                 .build()
                 .clone();
@@ -45,6 +48,7 @@ public class ConductableItems {
                 .customPotionColor(Color.NAVY)
                 .setTag("potion", "protection")
                 .setGlint(false)
+                .setMaxStackSize(64)
                 .build()
                 .clone();
     }
@@ -56,6 +60,7 @@ public class ConductableItems {
                 .setLore(ColorUtils.chat("&7투척 위치에 창을 소환한다."))
                 .customPotionColor(Color.YELLOW)
                 .setTag("potion", "spear")
+                .setMaxStackSize(64)
                 .setGlint(true)
                 .build()
                 .clone();
@@ -69,6 +74,7 @@ public class ConductableItems {
                 .customPotionColor(Color.RED)
                 .setGlint(true)
                 .setTag("potion", "death_saver")
+                .setMaxStackSize(64)
                 .build()
                 .clone();
     }

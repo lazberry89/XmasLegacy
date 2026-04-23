@@ -5,6 +5,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.XmasLegacy;
@@ -24,12 +26,12 @@ public class BagManager {
 		this.plugin = plugin;
 	}
 
-	public TempBag getUserBags(Player p) {
+	public @NotNull TempBag getUserBags(Player p) {
 		return bags.computeIfAbsent(p.getUniqueId(),
 				uuid -> new TempBag(plugin, uuid));
 	}
 
-	public TempBag getBag(UUID uuid) {
+	public @NotNull TempBag getBag(UUID uuid) {
 		return bags.computeIfAbsent(uuid, k -> new TempBag(plugin, k));
 	}
 
@@ -44,7 +46,7 @@ public class BagManager {
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 		}
 	}
-
+    @Contract(pure = true)
 	public ItemStack[] getPlayerBag(Player p) {
 		return getUserBags(p).getInventory().getContents();
 	}

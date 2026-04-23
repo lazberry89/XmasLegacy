@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class ChatCensoring implements Listener {
 	private final RuleManager RM;
 	private final XmasLegacy plugin;

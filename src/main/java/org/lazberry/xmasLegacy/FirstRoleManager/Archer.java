@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
 import org.lazberry.xmasLegacy.Skill.BasicSkills;
@@ -92,7 +93,7 @@ public class Archer extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleWeapon() {
+	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), Material.BOW)
                 .setName(ColorUtils.chat("&8&l궁수의 활"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
@@ -104,7 +105,7 @@ public class Archer extends AbstractFirstRole {
 	}
 
     @Override
-    public ItemStack roleArmor() {
+    public @NotNull ItemStack roleArmor() {
         return ItemBuilder.of(getPlugin(), Material.LEATHER_HELMET)
                 .setName(ColorUtils.chat("&8&l엘프의 모자"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))

@@ -17,6 +17,7 @@ import org.lazberry.xmasLegacy.Region.*;
 import org.lazberry.xmasLegacy.User.PartyManager;
 import org.lazberry.xmasLegacy.User.UserManager;
 
+@SuppressWarnings({"FieldCanBeLocal", "DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
 
     private ServerJoinManager SJM;

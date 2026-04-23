@@ -118,7 +118,7 @@ public class RegionManager {
         return regions.getOrDefault(p.getUniqueId(), new ArrayList<>());
     }
     public @Nullable List<Region> getRegion(UUID uuid) {
-        return regions.getOrDefault(uuid, new ArrayList<>());
+        return regions.getOrDefault(uuid, null);
     }
     public @Nullable Region getRegionAt(Location loc) {
         for (List<Region> list : regions.values()) {

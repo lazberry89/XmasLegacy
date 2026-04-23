@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
@@ -190,7 +191,7 @@ public class Mage extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleWeapon() {
+	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), Material.BREEZE_ROD)
                 .setName(ColorUtils.chat("&7&l일반 지팡이"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
@@ -203,7 +204,7 @@ public class Mage extends AbstractFirstRole {
 	}
 
     @Override
-    public ItemStack roleArmor() {
+    public @NotNull ItemStack roleArmor() {
         return ItemBuilder.of(getPlugin(), Material.DIAMOND_CHESTPLATE)
                 .setName(ColorUtils.chat("&7&l보호구"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))

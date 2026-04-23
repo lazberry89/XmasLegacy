@@ -36,5 +36,7 @@ public class Constants {
     public static int DRAGON_BREATH_PRICE = 200;
     public static int HEALER_POTION_PRICE = 900;
     public static int PROTECTION_POTION_PRICE = 1700;
+    public static int SPEAR_POTION_PRICE = 2500;
+    public static int DEATH_SAVER_PRICE = 7200;
 
 }

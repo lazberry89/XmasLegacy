@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.User.UserManager;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
@@ -29,7 +30,7 @@ public class RegionIndicator implements Listener {
 		this.plugin = plugin;
 	}
 
-	public ItemStack RegionBeacon() {
+	public @NotNull ItemStack RegionBeacon() {
 		return ItemBuilder.of(plugin, Material.BEACON)
 				.setName(ColorUtils.chat("&b&l구역 생성기"))
 				.setLore(ColorUtils.chat("&8이 장치를 설치한 뒤 상호작용하여 구역을 생성하세요!"))

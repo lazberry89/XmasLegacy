@@ -1,6 +1,5 @@
 package org.lazberry.xmasLegacy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class SkillEffectManager {
     private final XmasLegacy plugin;
 

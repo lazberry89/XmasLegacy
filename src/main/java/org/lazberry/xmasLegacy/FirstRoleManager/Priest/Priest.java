@@ -10,6 +10,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmasLegacy.Prefix;
 import org.lazberry.xmasLegacy.Roles.Roles;
@@ -127,7 +128,7 @@ public class Priest extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleArmor() {
+	public @NotNull ItemStack roleArmor() {
 		return ItemBuilder.of(getPlugin(), Material.GOLDEN_CHESTPLATE)
 				.setName(ColorUtils.chat("&e&l단단한 근육"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))

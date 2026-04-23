@@ -10,6 +10,7 @@ import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class CurrencyManager {
     private final EconomyManager EM;
     private final XmasLegacy plugin;

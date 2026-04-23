@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class GhostListener implements Listener {
     private final GhostModeManager GMM;
     private final XmasLegacy plugin;
