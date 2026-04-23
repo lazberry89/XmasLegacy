@@ -26,6 +26,7 @@ public class CurrencyManager {
                 .setLore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다."))
                 .setGlint(true)
                 .setTag("money", 100)
+                .setMaxStackSize(Constants.MAX_CURRENCY_STACK)
                 .setAmount(amount)
                 .clone();
     }

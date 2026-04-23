@@ -1,5 +1,6 @@
 package org.lazberry.xmasLegacy.PlayerUtils;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,16 +36,19 @@ public class BagManager {
 		return bags.computeIfAbsent(uuid, k -> new TempBag(plugin, k));
 	}
 
-	public void addItem(Player p, ItemStack item, int amount) {
+    @CanIgnoreReturnValue
+	public List<ItemStack> addItem(Player p, ItemStack item, int amount) {
 		ItemStack clone = item.clone();
-		boolean result = getUserBags(p).addItem(clone, amount);
-		if (!result) {
+		List<ItemStack> result = getUserBags(p).addItem(clone, amount);
+		if (!result.isEmpty()) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 가방이 가득 찼습니다!"));
-			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 0.6f, 1.0f);
+            result.forEach(s -> p.getWorld().dropItemNaturally(p.getLocation(), s));
+			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 0.6f, 1.0f);
 		} else {
 			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 가방에 아이템이 추가되었습니다!"));
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 		}
+        return result;
 	}
     @Contract(pure = true)
 	public ItemStack[] getPlayerBag(Player p) {

@@ -1,5 +1,7 @@
 package org.lazberry.xmasLegacy.PlayerUtils;
 
+import com.google.common.collect.Lists;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -14,6 +16,8 @@ import org.lazberry.xmasLegacy.Utils.ComponentChanger;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,13 +49,15 @@ public class TempBag implements InventoryHolder {
 		return this.inv;
 	}
 
-	public boolean addItem(ItemStack item, int amount) {
-		if (item == null || item.getType() == Material.AIR) return true;
+    @CanIgnoreReturnValue
+	public @NotNull List<ItemStack> addItem(ItemStack item, int amount) {
+		if (item == null || item.getType() == Material.AIR) return new ArrayList<>();
 
 		ItemStack toAdd = item.clone();
 		toAdd.setAmount(amount);
 
 		Map<Integer, ItemStack> left = this.inv.addItem(toAdd);
-		return left.isEmpty();
+		if (left.isEmpty()) return new ArrayList<>();
+        return Lists.newArrayList(left.values());
 	}
 }
