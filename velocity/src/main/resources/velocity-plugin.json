@@ -1,0 +1,6 @@
+{
+  "id": "velocity",
+  "name": "velocity",
+  "version": "${version}",
+  "main": "org.lazberry.velocity.Velocity"
+}

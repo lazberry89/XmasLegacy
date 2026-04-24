@@ -1,0 +1,6 @@
+name: paper
+version: '${version}'
+
+main: xmasLegacy.XmasLegacy
+api-version: '1.21.11'
+load: POSTWORLD

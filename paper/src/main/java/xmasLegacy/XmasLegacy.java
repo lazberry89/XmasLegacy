@@ -128,6 +128,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("구역").setTabCompleter(RGCM);
         getCommand("vanish").setExecutor(GC);
 
+		/*
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -135,6 +136,7 @@ public final class XmasLegacy extends JavaPlugin {
                 getLogger().info("모든 유저 데이터를 자동 저장했습니다.");
             }
         }.runTaskTimer(this, 20L * 60 * 5, 20L * 60 * 5);
+		 */
 	}
 
 	@Override
@@ -142,7 +144,7 @@ public final class XmasLegacy extends JavaPlugin {
         if (RGM != null) {
             RGM.saveAll();
         }
-		UM.getAllUsers().forEach(UM::saveUserToFile);
+		//UM.getAllUsers().forEach(UM::saveUserToFile);
 		getLogger().info("모든 유저 데이터를 자동 저장했습니다.");
 		CM.stopCookieTimer();
 		BM.saveAllBags();
