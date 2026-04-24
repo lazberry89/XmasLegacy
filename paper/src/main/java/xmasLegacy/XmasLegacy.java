@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.lazberry.xmaslegacy.*;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
+import org.lazberry.xmaslegacy.Inquiry.InquiryRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
@@ -27,6 +28,7 @@ public final class XmasLegacy extends JavaPlugin {
     private InquiryManager IM;
     private InquiryCommandManager ICM;
     private InquireTeleportCommand ITC;
+	private InquiryRepository IR;
     private RuleCommandManager RCM;
     private LogCommandManager LCM;
     private UserManager UM;
@@ -59,14 +61,15 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+        this.UM = new UserManager();
         this.SJM = new ServerJoinManager();
         this.RM = new RuleManager(new ArrayList<>());
-        this.IM = new InquiryManager(UM);
+		this.IR = new InquiryRepository();
         this.ICM = new InquiryCommandManager(IM);
+        this.IM = new InquiryManager(UM, RM, IR);
         this.ITC = new InquireTeleportCommand(IM);
         this.RCM = new RuleCommandManager(RM);
         this.LCM = new LogCommandManager(IM, this);
-        this.UM = new UserManager();
 		this.BM = new BagManager(this);
 		this.BCM = new BagCommandManager(BM);
         this.SEM = new SkillEffectManager(this);
