@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy;
 
+import org.lazberry.xmaslegacy.User.User;
+
 import java.util.List;
 import java.util.UUID;
 

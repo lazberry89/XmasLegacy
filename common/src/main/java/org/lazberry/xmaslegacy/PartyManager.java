@@ -1,5 +1,8 @@
 package org.lazberry.xmaslegacy;
 
+import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.User.UserManager;
+
 import java.util.*;
 
 public class PartyManager {

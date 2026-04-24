@@ -11,5 +11,8 @@ public enum Roles {
 	GATHERER, //수집가
 	FARMER, //농부
 	MINER, //광부
-	MERCHANT; //상인
+	MERCHANT, //상인
+
+	ADMIN,
+	USER;
 }

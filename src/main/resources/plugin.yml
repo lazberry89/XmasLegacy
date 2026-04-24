@@ -1,7 +1,7 @@
 name: XmasLegacy
 version: '${version}'
 
-main: org.lazberry.xmasLegacy.XmasLegacy
+main: xmasLegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
 commands:
