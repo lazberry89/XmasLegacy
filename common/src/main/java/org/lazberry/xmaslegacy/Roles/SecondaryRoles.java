@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy.Roles;
+package org.lazberry.xmaslegacy.Roles;
 
 public enum SecondaryRoles {
 	GUARDIAN, //기사 2차전직 가디언

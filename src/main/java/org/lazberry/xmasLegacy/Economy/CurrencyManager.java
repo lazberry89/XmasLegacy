@@ -1,7 +1,6 @@
 package org.lazberry.xmasLegacy.Economy;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,6 +8,8 @@ import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
+
+import java.util.UUID;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class CurrencyManager {
@@ -31,7 +32,7 @@ public class CurrencyManager {
                 .clone();
     }
 
-    public void currencyToBank(Player p, ItemStack money) {
+    public void currencyToBank(UUID uuid, ItemStack money) {
         if (money == null || money.getType() == Material.AIR) return;
 
         Integer value = money.getPersistentDataContainer().get(
@@ -42,7 +43,7 @@ public class CurrencyManager {
 
         if (value == null) return;
         if (value == 100) {
-            EM.deposit(p, 100 * count);
+            EM.deposit(uuid, 100 * count);
         }
     }
 }

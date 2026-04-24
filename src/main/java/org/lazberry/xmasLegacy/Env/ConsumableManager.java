@@ -5,16 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmasLegacy.PlayerUtils.BagManager;
-import org.lazberry.xmasLegacy.Settings.Constants;
 import org.lazberry.xmasLegacy.User.UserManager;
-import org.lazberry.xmasLegacy.Utils.ColorUtils;
 import org.lazberry.xmasLegacy.Utils.ItemBuilder;
 import org.lazberry.xmasLegacy.XmasLegacy;
 
@@ -43,12 +39,6 @@ public class ConsumableManager implements Listener {
                 .build();
         a.setAmount(amount);
         return a.clone();
-    }
-
-    @EventHandler
-    public void joinPrize(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        p.getInventory().addItem(basicFood(Constants.COOKIE_COUNT));
     }
 
     public void runCookieTimer(XmasLegacy plugin) {

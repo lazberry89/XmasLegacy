@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class LogCommandManager implements CommandExecutor, TabCompleter {
     private final InquiryManager IM;

@@ -1,6 +1,4 @@
-package org.lazberry.xmasLegacy.Settings;
-
-import org.bukkit.Material;
+package org.lazberry.xmaslegacy;
 
 public class Constants {
 	//Consumable
@@ -11,7 +9,6 @@ public class Constants {
     public static int TAX_RATE = 3;
     public static int CURRENCY_MINIMUM = 100;
     public static int MAX_CURRENCY_STACK = 100000;
-	public static Material CURRENCY_ITEM = Material.valueOf("GOLD_INGOT");
 
     //Region
     public static int MINER_MINY = -100;

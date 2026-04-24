@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy.Roles;
+package org.lazberry.xmaslegacy.Roles;
 
 public enum ThirdRoles {
 	PALADIN, //기사 3차전직

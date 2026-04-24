@@ -115,7 +115,7 @@ public class Priest extends AbstractFirstRole {
 	}
 
 	@Override
-	public ItemStack roleWeapon() {
+	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), Material.GOLDEN_SPEAR)
 				.setName(ColorUtils.chat("&e&l힐링 스피어"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))

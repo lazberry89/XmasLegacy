@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy.Utils;
+package org.lazberry.xmaslegacy.Roles;
 
 public enum Lang {
     KOREAN,

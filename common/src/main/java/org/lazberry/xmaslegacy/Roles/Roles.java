@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy.Roles;
+package org.lazberry.xmaslegacy.Roles;
 
 public enum Roles {
     KNIGHT, //기사 o

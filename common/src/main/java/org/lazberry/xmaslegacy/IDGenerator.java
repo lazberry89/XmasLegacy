@@ -1,8 +1,6 @@
-package org.lazberry.xmasLegacy.Region;
+package org.lazberry.xmaslegacy;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmasLegacy.Settings.Constants;
-
 import java.util.concurrent.ThreadLocalRandom;
 
 public class IDGenerator {

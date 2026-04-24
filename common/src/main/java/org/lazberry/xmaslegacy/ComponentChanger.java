@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy.Utils;
+package org.lazberry.xmaslegacy;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;

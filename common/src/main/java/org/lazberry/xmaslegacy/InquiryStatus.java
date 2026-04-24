@@ -1,4 +1,4 @@
-package org.lazberry.xmasLegacy;
+package org.lazberry.xmaslegacy;
 
 public enum InquiryStatus {
     OPEN,

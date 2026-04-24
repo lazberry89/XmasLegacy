@@ -1,6 +1,5 @@
 package org.lazberry.xmasLegacy.Region;
 
-import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

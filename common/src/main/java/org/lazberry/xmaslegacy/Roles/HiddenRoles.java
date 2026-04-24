@@ -1,6 +1,4 @@
-package org.lazberry.xmasLegacy.Roles;
-
-import org.lazberry.xmasLegacy.Utils.Lang;
+package org.lazberry.xmaslegacy.Roles;
 
 public enum HiddenRoles {
 	DRAGON_SLAYER("&#DD00FF[&#E228FF드&#E850FF래&#ED78FF곤 &#F8C8FF슬&#F8C8FF레&#F8C8FF이&#F8C8FF어&#F8C8FF]", "&#DD00FF[&#E11DFFD&#E539FFr&#E956FFa&#EC72FFg&#F08FFFo&#F4ABFFn &#F8C8FFS&#F8C8FFl&#F8C8FFa&#F8C8FFy&#F8C8FFe&#F8C8FFr&#F8C8FF]"),
