@@ -116,9 +116,7 @@ public class Knight extends AbstractFirstRole {
 							mob.setMemory(MemoryKey.HUNTED_RECENTLY, null);
 							mob.setMemory(MemoryKey.DANGER_DETECTED_RECENTLY, null);
 							mob.setTarget(null);
-							Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-								mob.setAI(true);
-							}, 3L);
+							Bukkit.getScheduler().runTaskLater(getPlugin(), () -> mob.setAI(true), 3L);
 		                }
 					}, 100L);
                 }

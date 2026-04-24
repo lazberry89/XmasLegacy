@@ -37,7 +37,6 @@ public final class XmasLegacy extends JavaPlugin {
     private RegionManager RGM;
 	private FirstRoleListener FRL;
 	private TestCommands TC;
-	private ChatCensoring CC;
 	private ConsumableManager CM;
 	private RegionPermission RP;
 	private RegionCommandManager RGCM;
@@ -73,7 +72,6 @@ public final class XmasLegacy extends JavaPlugin {
 		this.BCM = new BagCommandManager(BM);
         this.SEM = new SkillEffectManager(this);
         this.RGM = new RegionManager(this, UM);
-		this.CC = new ChatCensoring(RM, this);
 		this.CM = new ConsumableManager(this, UM, BM);
 		this.RP = new RegionPermission(RGM);
 		this.RGCM = new RegionCommandManager(RGM);
@@ -108,7 +106,6 @@ public final class XmasLegacy extends JavaPlugin {
 
 		getServer().getPluginManager().registerEvents(SJM, this);
 		getServer().getPluginManager().registerEvents(FRL, this);
-		getServer().getPluginManager().registerEvents(CC, this);
 		getServer().getPluginManager().registerEvents(CM, this);
 		getServer().getPluginManager().registerEvents(RP, this);
 		getServer().getPluginManager().registerEvents(RI, this);
