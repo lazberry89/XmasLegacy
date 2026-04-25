@@ -43,7 +43,7 @@ public class Warrior extends AbstractFirstRole {
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) p.getCooldown(tool) / 20}&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
         if (!consumeEnergy(p, 3)) return;
@@ -66,7 +66,7 @@ public class Warrior extends AbstractFirstRole {
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool.getType()) > 0) {
-			p.sendMessage(ColorUtils.chat( STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) p.getCooldown(tool.getType()) / 20}&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat( Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
 

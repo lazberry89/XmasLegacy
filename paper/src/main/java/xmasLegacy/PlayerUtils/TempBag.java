@@ -11,7 +11,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.ComponentChanger;
 import org.lazberry.xmaslegacy.Constants;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
@@ -29,7 +28,7 @@ public class TempBag implements InventoryHolder {
 	public TempBag(XmasLegacy plugin, UUID uuid) {
 		this.plugin = plugin;
 		this.uuid = uuid;
-		this.inv = Bukkit.createInventory(this, Constants.BAG_SIZE, ComponentChanger.comp("&c&l[임시 보관함]"));
+		this.inv = Bukkit.createInventory(this, Constants.BAG_SIZE,ColorUtils.chat("&c&l[임시 보관함]"));
 		this.inv.setItem(0, basicFood());
 	}
 	public ItemStack basicFood() {

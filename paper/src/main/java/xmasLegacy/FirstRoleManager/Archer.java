@@ -71,7 +71,7 @@ public class Archer extends AbstractFirstRole {
 		if (tool == null || tool.getType() == Material.AIR) return;
 
         if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) p.getCooldown(tool) / 20}&f초 기다리세요"));
+            p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
             return;
         }
         if (!consumeEnergy(p, 4)) return;

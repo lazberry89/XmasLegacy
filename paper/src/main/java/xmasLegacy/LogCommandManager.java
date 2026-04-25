@@ -40,7 +40,7 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
         if (!(commandSender instanceof Player p)) return false;
         if (!p.isOp()) {
-            p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 로그를 볼 수 있는 권한이 없습니다."));
+            p.sendMessage(ColorUtils.chat(Prefix.RED + " 로그를 볼 수 있는 권한이 없습니다."));
             p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             return true;
         }
@@ -57,7 +57,7 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 		                List<String> logs = IM.getInquiryLogs(uuid);
 
 		                if (logs.isEmpty() || (logs.size() == 1 && logs.getFirst().contains("없습니다"))) {
-			                p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} '\{targetName}' 유저의 기록이 없습니다."));
+			                p.sendMessage(ColorUtils.chat(Prefix.RED + "'" + targetName + "' 유저의 기록이 없습니다."));
 
 		                } else {
 							logs.forEach(p::sendMessage);
@@ -69,18 +69,18 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 					if (of.hasPlayedBefore()) {
 						List<Region> regions = RM.getRegion(of.getUniqueId());
 						if (regions == null || regions.isEmpty()) {
-							p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 구역이 없습니다."));
+							p.sendMessage(ColorUtils.chat(Prefix.RED + " 구역이 없습니다."));
 							return true;
 						}
 						SendRegions(p, regions);
 					} else {
-						p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 유저가 존재하지 않습니다."));
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 유저가 존재하지 않습니다."));
 						p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 						return true;
 					}
 	            }
                 default -> {
-                    p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 유효한 명령어가 아닙니다."));
+                    p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 명령어가 아닙니다."));
                     p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 					return true;
                 }
@@ -100,9 +100,9 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 						String msg = entry.getValue();
 
 						// 채팅창에 클릭 가능한 메시지로 띄워줌
-						Component comp = ColorUtils.chat(STR."&e- &f\{userName} &7: \{msg} ")
+						Component comp = ColorUtils.chat(String.format("&e- &f%s &7: %s ", userName, msg))
 								.append(ColorUtils.chat("&a&l[이동]"))
-								.clickEvent(ClickEvent.runCommand(STR."/이동문의 \{userName}"));
+								.clickEvent(ClickEvent.runCommand("/이동문의 " + userName));
 
 						p.sendMessage(comp);
 					}
@@ -110,13 +110,13 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 				case "regions" -> {
 					List<Region> regions = RM.getRegions();
 					if (regions.isEmpty()) {
-						p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 구역이 없습니다."));
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 구역이 없습니다."));
 						return true;
 					}
 					SendRegions(p, regions);
 				}
 				default -> {
-					p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 유효한 명령어가 아닙니다."));
+					p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 명령어가 아닙니다."));
 					p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 				}
 			}
@@ -127,19 +127,19 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 	private void SendRegions(Player p, List<Region> regions) {
 		for (Region region : regions) {
 			p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
-			p.sendMessage(ColorUtils.chat(STR."&6&lRegion ID : &f\{region.getId()}"));
-			p.sendMessage(ColorUtils.chat(STR."&eOwner : &f\{region.getName()}"));
+			p.sendMessage(ColorUtils.chat("&6&lRegion ID : &f" + region.getId()));
+			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.getName()));
 
 			int x = region.getCenter().getBlockX();
 			int y = region.getCenter().getBlockY();
 			int z = region.getCenter().getBlockZ();
 			String world = region.getCenter().getWorld().getName();
 
-			p.sendMessage(ColorUtils.chat(STR."&eLocation : &7\{world} (\{x}, \{y}, \{z})"));
+			p.sendMessage(ColorUtils.chat(String.format("&eLocation : &7%s (%d, %d, %d)", world, x, y, z)));
 
 			String entry = region.isAllowPublicEntry() ? "&a허용" : "&c차단";
 			String interact = region.isAllowPublicInteraction() ? "&a허용" : "&c차단";
-			p.sendMessage(ColorUtils.chat(STR."&eSettings : &f출입[\{entry}&f] 상호작용[\{interact}&f]"));
+			p.sendMessage(ColorUtils.chat(String.format("&eSettings : &f출입[%s&f] 상호작용[%s&f]", entry, interact)));
 		}
 		p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
 	}

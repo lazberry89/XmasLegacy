@@ -33,7 +33,7 @@ public class ConsumableManager implements Listener {
 
     public static ItemStack basicFood(int amount) {
         ItemStack a =  ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.POTATO)
-                .setName(ColorUtils.chat("&4&l라즈베리 쿠키"))
+                .setName(ColorUtils.chat("&c&l라즈베리 쿠키"))
                 .setLore(ColorUtils.chat("&8맛은 있는데,배는 고플걸"))
                 .setGlint(true)
                 .hideAllFlags()

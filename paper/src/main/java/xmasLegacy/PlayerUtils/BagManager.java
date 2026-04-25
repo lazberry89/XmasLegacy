@@ -41,11 +41,11 @@ public class BagManager {
 		ItemStack clone = item.clone();
 		List<ItemStack> result = getUserBags(p).addItem(clone, amount);
 		if (!result.isEmpty()) {
-			p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 가방이 가득 찼습니다!"));
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 가방이 가득 찼습니다!"));
             result.forEach(s -> p.getWorld().dropItemNaturally(p.getLocation(), s));
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 0.6f, 1.0f);
 		} else {
-			p.sendMessage(ColorUtils.chat(STR."\{Prefix.YELLOW} 가방에 아이템이 추가되었습니다!"));
+			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 가방에 아이템이 추가되었습니다!"));
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 		}
         return result;

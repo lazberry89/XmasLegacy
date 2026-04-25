@@ -41,7 +41,11 @@ public class InquiryRepository {
 			pstmt.setString(1, uuid.toString());
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				logs.add(STR."&8[\{rs.getTimestamp("created_at")}] &7\{rs.getString("status")}: &f\{rs.getString("message")}");
+                logs.add("&8[%s] &7%s: &f%s".formatted(
+                        rs.getTimestamp("created_at"),
+                        rs.getString("status"),
+                        rs.getString("message")
+                ));
 			}
 		} catch (SQLException e) { e.printStackTrace(); }
 		return logs;

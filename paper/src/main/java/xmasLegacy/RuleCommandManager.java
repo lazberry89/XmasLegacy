@@ -27,7 +27,7 @@ public class RuleCommandManager implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
         if (!(commandSender instanceof Player p)) return false;
         if (!p.isOp()) {
-            p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 관리자 전용입니다. 관리자에게 문의하세요!"));
+            p.sendMessage(ColorUtils.chat(Prefix.RED + " 관리자 전용입니다. 관리자에게 문의하세요!"));
             p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             return true;
         }
@@ -35,18 +35,18 @@ public class RuleCommandManager implements CommandExecutor, TabCompleter {
         if (args.length == 0) {
             p.sendMessage(ColorUtils.chat("&c&l차단&f&l 단어 리스트: "));
             for (String bw : RM.getBadWordList()) {
-                p.sendMessage(ColorUtils.chat(STR."&c&l-&f \{bw}"));
+                p.sendMessage(ColorUtils.chat(String.format("&c&l-&f %s", bw)));
             }
         }
         if (args.length == 2) {
             switch (args[0].toLowerCase()) {
                 case "append" -> {
                     if (RM.getBadWordList().contains(args[1])) {
-                        p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 이미 존재하는 항목입니다."));
+                        p.sendMessage(ColorUtils.chat(Prefix.RED + " 이미 존재하는 항목입니다."));
                         p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
                     } else {
                         RM.addBadWordList(args[1]);
-                        p.sendMessage(ColorUtils.chat(STR."\{Prefix.YELLOW} 추가되었습니다. /filter list로 확인"));
+                        p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 추가되었습니다. /filter list로 확인"));
                         p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
                     }
                 }
@@ -55,7 +55,7 @@ public class RuleCommandManager implements CommandExecutor, TabCompleter {
                         RM.removeBadWordList(args[1]);
                         p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
                     } else {
-                        p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 존재하지 않는 항목입니다."));
+                        p.sendMessage(ColorUtils.chat(Prefix.RED + " 존재하지 않는 항목입니다."));
                         p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
                     }
                 }

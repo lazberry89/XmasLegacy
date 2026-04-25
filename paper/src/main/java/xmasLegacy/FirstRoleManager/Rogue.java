@@ -41,7 +41,7 @@ public class Rogue extends AbstractFirstRole {
 		Entity target = p.getTargetEntity(10, false);
 
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) p.getCooldown(tool) / 20}&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
 		if (target != null) {
@@ -75,10 +75,10 @@ public class Rogue extends AbstractFirstRole {
 
                 p.setCooldown(tool, this.getCooldown1() * 20);
 			} else {
-				p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 유효한 타겟이 아닙니다!"));
+				p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 타겟이 아닙니다!"));
 			}
 		} else {
-			p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 타겟이 없습니다!"));
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 타겟이 없습니다!"));
 		}
 	}
 
@@ -109,7 +109,7 @@ public class Rogue extends AbstractFirstRole {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) p.getCooldown(tool) / 20}&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
         if (!consumeEnergy(p, 3)) return;

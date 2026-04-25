@@ -116,27 +116,27 @@ public class FirstRoleListener implements Listener {
 			switch (pdc) {
 				case "knight" -> {
 					knight.next(p);
-					p.sendActionBar(ColorUtils.chat(STR."&8&l\{knight.getCurrentSkill(p).getSkillName()}"));
+					p.sendActionBar(ColorUtils.chat("&8&l[ " + knight.getCurrentSkill(p).getSkillName() + " ]"));
 				}
 				case "rogue" -> {
 					rogue.next(p);
-					p.sendActionBar(ColorUtils.chat(STR."&8&l\{rogue.getCurrentSkill(p).getSkillName()}"));
+					p.sendActionBar(ColorUtils.chat("&8&l[ " + rogue.getCurrentSkill(p).getSkillName() + " ]"));
 				}
 				case "archer" -> {
 					archer.next(p);
-					p.sendActionBar(ColorUtils.chat(STR."&8&l\{archer.getCurrentSkill(p).getSkillName()}"));
+					p.sendActionBar(ColorUtils.chat("&8&l[ " + archer.getCurrentSkill(p).getSkillName() + " ]"));
 				}
 				case "warrior" -> {
 					warrior.next(p);
-					p.sendActionBar(ColorUtils.chat(STR."&8&l\{warrior.getCurrentSkill(p).getSkillName()}"));
+					p.sendActionBar(ColorUtils.chat("&8&l[ " + warrior.getCurrentSkill(p).getSkillName() + " ]"));
 				}
                 case "mage" -> {
                     mage.next(p);
-                    p.sendActionBar(ColorUtils.chat(STR."&8&l\{mage.getCurrentSkill(p).getSkillName()}"));
+                    p.sendActionBar(ColorUtils.chat("&8&l[ " + mage.getCurrentSkill(p).getSkillName() + " ]"));
                 }
 				case "priest" -> {
 					priest.next(p);
-					p.sendActionBar(ColorUtils.chat(STR."&8&l\{priest.getCurrentSkill(p).getSkillName()}"));
+					p.sendActionBar(ColorUtils.chat("&8&l[ " + priest.getCurrentSkill(p).getSkillName() + " ]"));
 				}
 			}
 		}

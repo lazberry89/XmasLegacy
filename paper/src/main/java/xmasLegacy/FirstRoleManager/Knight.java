@@ -41,7 +41,7 @@ public class Knight extends AbstractFirstRole {
 	public void useFirstSkill(Player player) { //Sharp Sweeping
         ItemStack tool = player.getInventory().getItemInMainHand();
         if (player.getCooldown(tool) > 0) {
-            player.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) player.getCooldown(tool) / 20}&f초 기다리세요"));
+            player.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) player.getCooldown(tool) / 20 + "&f초 기다리세요"));
             return;
         }
         if (!consumeEnergy(player, 3)) return;
@@ -96,7 +96,7 @@ public class Knight extends AbstractFirstRole {
 		if (tool == null || tool.getType() == Material.AIR) return;
 
         if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 아직 스킬을 쓸 수 없습니다! &e\{(float) p.getCooldown(tool) / 20}&f초 기다리세요"));
+            p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
             return;
         }
         if (!consumeEnergy(p, 3)) return;
