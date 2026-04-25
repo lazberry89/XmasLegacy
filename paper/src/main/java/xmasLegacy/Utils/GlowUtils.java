@@ -12,7 +12,7 @@ public class GlowUtils {
 		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
 		// 2. 색상 이름을 따서 팀 이름을 만듭니다 (예: glow_red)
-		String teamName = STR."glow_\{color.toString()}";
+		String teamName = "glow_" + color.toString();
 		Team team = scoreboard.getTeam(teamName);
 
 		// 3. 해당 색상의 팀이 없으면 새로 만듭니다.

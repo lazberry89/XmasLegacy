@@ -2,15 +2,15 @@ package xmasLegacy;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.lazberry.xmaslegacy.*;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.User.UserRepository;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
-import xmasLegacy.FirstRoleManager.Priest.ConductableItems;
-import xmasLegacy.FirstRoleManager.Priest.Priest;
-import xmasLegacy.FirstRoleManager.Priest.PriestShop;
+import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import xmasLegacy.PlayerUtils.BagCommandManager;
@@ -49,6 +49,8 @@ public final class XmasLegacy extends JavaPlugin {
     private PartyManager PM;
     private ConductableItems CDI;
 	private PriestShop PSP;
+	private PotionListener PL;
+	private PriestCommand PC;
 
     private Archer archer;
     private Knight knight;
@@ -60,7 +62,7 @@ public final class XmasLegacy extends JavaPlugin {
 	@Override
 	public void onEnable() {
         this.UM = new UserManager();
-        this.SJM = new ServerJoinManager();
+        this.SJM = new ServerJoinManager(UM, this);
         this.RM = new RuleManager(new ArrayList<>());
 		this.IR = new InquiryRepository();
         this.ICM = new InquiryCommandManager(IM);
@@ -85,6 +87,8 @@ public final class XmasLegacy extends JavaPlugin {
         this.PM = new PartyManager(UM);
         this.CDI = new ConductableItems(this);
 		this.PSP = new PriestShop(CDI, EM);
+		this.PL = new PotionListener(this, CDI);
+		this.PC = new PriestCommand(CDI);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -98,7 +102,6 @@ public final class XmasLegacy extends JavaPlugin {
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
-        SJM.setUM(UM);
         UM.getAllUsers();
 		CM.runCookieTimer(this);
 		this.BM.loadAllBags();
@@ -110,6 +113,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(RP, this);
 		getServer().getPluginManager().registerEvents(RI, this);
         getServer().getPluginManager().registerEvents(GL, this);
+		getServer().getPluginManager().registerEvents(PL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -123,16 +127,8 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("구역").setExecutor(RGCM);
 		getCommand("구역").setTabCompleter(RGCM);
         getCommand("vanish").setExecutor(GC);
-
-		/*
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                UM.getAllUsers().forEach(UM::saveUserToFile);
-                getLogger().info("모든 유저 데이터를 자동 저장했습니다.");
-            }
-        }.runTaskTimer(this, 20L * 60 * 5, 20L * 60 * 5);
-		 */
+		getCommand("potion").setExecutor(PC);
+		getCommand("potion").setTabCompleter(PC);
 	}
 
 	@Override

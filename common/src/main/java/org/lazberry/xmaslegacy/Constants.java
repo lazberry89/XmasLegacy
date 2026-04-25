@@ -37,4 +37,16 @@ public class Constants {
     public static int SPEAR_POTION_PRICE = 2500;
     public static int DEATH_SAVER_PRICE = 7200;
 
+	public static int DRAGON_POTION_DURATION = 5;
+	public static int DRAGON_HEAL_AMPLIFIER = 0;
+	public static int DRAGON_PROTECTION_AMPLIFIER = 0;
+	public static int DRAGON_SATURATION_AMPLIFIER = 0;
+
+	public static int HEALER_POTION_DURATION = 5;
+	public static int HEALER_POTION_AMPLIFIER = 2
+			;
+	public static int PROTECTION_POTION_DURATION = 7;
+	public static int PROTECTION_POTION_AMPLIFIER = 1;
+
+	public static int DEATH_SAVER_DURATION = 2;
 }

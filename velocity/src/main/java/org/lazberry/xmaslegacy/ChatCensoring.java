@@ -24,7 +24,7 @@ public class ChatCensoring {
 			String filteredMessage = RM.hideBadWords(message);
 			event.setResult(PlayerChatEvent.ChatResult.message(filteredMessage));
 
-			player.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 욕설이 포함된 채팅은 제재받을 수 있습니다."));
+			player.sendMessage(ColorUtils.chat(Prefix.RED + " 욕설이 포함된 채팅은 제재받을 수 있습니다."));
 		}
 	}
 }

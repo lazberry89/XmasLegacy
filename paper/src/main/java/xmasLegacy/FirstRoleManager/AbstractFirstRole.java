@@ -43,7 +43,7 @@ public abstract class AbstractFirstRole {
         int currentFood = player.getFoodLevel();
 
         if (currentFood < hungerCost) {
-            player.sendMessage(ColorUtils.chat(STR."\{Prefix.RED} 에너지가 부족하여 스킬을 사용할 수 없습니다! (필요: &6\{hungerCost}&f)"));
+            player.sendMessage(ColorUtils.chat(Prefix.RED + " 에너지가 부족하여 스킬을 사용할 수 없습니다! (필요: &6" + hungerCost + "&f)"));
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
             return false;
         }

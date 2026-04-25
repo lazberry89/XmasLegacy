@@ -15,7 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.ComponentChanger;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;

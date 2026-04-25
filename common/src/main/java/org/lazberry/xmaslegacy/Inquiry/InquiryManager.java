@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ComponentChanger;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Prefix;
 import org.lazberry.xmaslegacy.RuleManager;
@@ -36,21 +36,21 @@ public class InquiryManager {
 		String name = (user != null) ? user.getName() : "Unknown";
 		if (message == null) {
 			activeInquiries.put(uuid, "내용 없는 호출");
-			return ComponentChanger.comp("이동하시겠습니까? ")
-					.append(ComponentChanger.comp("&a&l[이동]"))
+			return ColorUtils.chat("이동하시겠습니까? ")
+					.append(ColorUtils.chat("&a&l[이동]"))
 					.clickEvent(ClickEvent.runCommand("/이동문의 " + name))
-					.hoverEvent(HoverEvent.showText(ComponentChanger.comp("클릭 시 문의한 유저의 위치로 이동합니다.")));
+					.hoverEvent(HoverEvent.showText(ColorUtils.chat("클릭 시 문의한 유저의 위치로 이동합니다.")));
 		} else {
 			activeInquiries.put(uuid, message);
-			Component msg = ComponentChanger.comp("이동하시겠습니까? ");
-			Component nt = ComponentChanger.comp("&a&l[이동]")
+			Component msg = ColorUtils.chat("이동하시겠습니까? ");
+			Component nt = ColorUtils.chat("&a&l[이동]")
 					.clickEvent(ClickEvent.runCommand("/이동문의 " + name))
-					.hoverEvent(HoverEvent.showText(ComponentChanger.comp(Prefix.YELLOW + " 클릭 시 문의한 유저의 위치로 이동합니다.")));
+					.hoverEvent(HoverEvent.showText(ColorUtils.chat(Prefix.YELLOW + " 클릭 시 문의한 유저의 위치로 이동합니다.")));
 			msg = msg.append(nt);
 			if (rm.checkBadWords(message)) {
-				Component bwt = ComponentChanger.comp(" &c&l[처벌]")
+				Component bwt = ColorUtils.chat(" &c&l[처벌]")
 						.clickEvent(ClickEvent.runCommand("/ban " + name + " 욕설사용"))
-						.hoverEvent(HoverEvent.showText(ComponentChanger.comp(Prefix.RED + " 클릭 시 유저를 밴 처리합니다.")));
+						.hoverEvent(HoverEvent.showText(ColorUtils.chat(Prefix.RED + " 클릭 시 유저를 밴 처리합니다.")));
 				msg = msg.append(bwt);
 			}
 			return msg;

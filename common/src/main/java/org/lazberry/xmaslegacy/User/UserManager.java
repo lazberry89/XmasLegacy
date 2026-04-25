@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.User;
 import org.lazberry.xmaslegacy.Roles.Roles;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
@@ -72,5 +73,34 @@ public class UserManager {
 		if (u != null) {
 			repository.saveUser(u);
 		}
+	}
+
+	public CompletableFuture<User> onJoinAsync(UUID uuid, String name, boolean isFloodgate) {
+		return CompletableFuture.supplyAsync(() -> {
+			User loaded = repository.loadUser(uuid);
+
+			if (loaded == null) {
+				loaded = new User(uuid, Roles.USER, name);
+				loaded.setNewUser(true);
+
+				if (isFloodgate) {
+					loaded.setDollars(loaded.getDollars() + 5000);
+				}
+
+				repository.saveUser(loaded);
+			}
+
+			users.put(uuid, loaded);
+			return loaded;
+		});
+	}
+
+	public void onQuitAsync(UUID uuid) {
+		CompletableFuture.runAsync(() -> {
+			User u = users.remove(uuid);
+			if (u != null) {
+				repository.saveUser(u);
+			}
+		});
 	}
 }
