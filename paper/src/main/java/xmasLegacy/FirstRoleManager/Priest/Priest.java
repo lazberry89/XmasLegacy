@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.PartyManager;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Prefix;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;

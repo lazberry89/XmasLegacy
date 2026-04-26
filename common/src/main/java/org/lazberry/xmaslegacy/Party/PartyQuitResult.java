@@ -1,10 +1,11 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.Party;
 
 import org.lazberry.xmaslegacy.User.User;
 
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class PartyQuitResult {
 
 	private final UUID leaverUuid;

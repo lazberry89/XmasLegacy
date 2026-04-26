@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PartyManager;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Priest.Priest;
 import xmasLegacy.SkillEffectManager;

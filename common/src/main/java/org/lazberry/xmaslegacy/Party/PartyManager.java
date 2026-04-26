@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.Party;
 
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
