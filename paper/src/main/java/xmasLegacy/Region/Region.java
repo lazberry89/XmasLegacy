@@ -30,7 +30,7 @@ public class Region {
         this.UM = UM;
         this.owner = p.getUniqueId();
         this.center = center;
-        this.id = IDGenerator.generateRandomId();
+        this.id = IDGenerator.generateRandomId(Constants.ID_LENGTH);
         this.world = center.getWorld();
 		this.name = p.getName();
 

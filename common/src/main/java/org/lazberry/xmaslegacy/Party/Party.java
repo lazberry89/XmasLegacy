@@ -1,15 +1,20 @@
 package org.lazberry.xmaslegacy.Party;
 
 import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.User.UserManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Party {
-    private final User leader;
+    private User leader;
+	private final UUID PartyID;
     private final List<User> members = new ArrayList<>();
 
     public Party(User leader) {
+		this.PartyID = UUID.randomUUID();
         this.leader = leader;
         this.members.add(leader);
     }
@@ -27,7 +32,10 @@ public class Party {
             if (leave.equals(leader)) {
                 members.remove(leader);
                 if (!members.isEmpty()) {
-
+					leader = members.getFirst();
+					return true;
+                } else {
+					return false;
                 }
             } else {
                 members.remove(leave);
@@ -37,5 +45,33 @@ public class Party {
         return false;
     }
 
+	public User getLeader() {
+		return leader;
+	}
+	public List<User> getMembers() {
+		return members;
+	}
+	public boolean isFull() {
+		return members.size() >= 4;
+	}
+	public boolean isInParty(User user) {
+		return members.contains(user);
+	}
+
+	public boolean isInParty(UserManager um, UUID uuid) {
+		User u = um.getUser(uuid);
+		if (u == null) return false;
+		return isInParty(u);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Party u)) return false;
+		return PartyID.equals(u.PartyID);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(PartyID);
+	}
 
 }

@@ -5,7 +5,7 @@ public enum Roles {
     WARRIOR, //전사 o
     ARCHER, //궁수 o
     MAGE, //마법사 o
-    PRIEST, //성직자
+    PRIEST, //성직자 o
     ROGUE, //도적 o
     CRAFTER, //장인
 	GATHERER, //수집가
@@ -14,5 +14,5 @@ public enum Roles {
 	MERCHANT, //상인
 
 	ADMIN,
-	USER;
+	USER
 }

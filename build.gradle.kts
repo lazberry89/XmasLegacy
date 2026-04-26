@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
 }
 
 repositories {
@@ -29,6 +30,27 @@ tasks {
         val props = mapOf("version" to version)
         filesMatching("plugin.yml") {
             expand(props)
+        }
+    }
+
+    allprojects {
+        group = "org.lazberry"
+        version = "1.0-SNAPSHOT"
+    }
+
+    subprojects {
+        apply(plugin = "java")
+
+        repositories {
+            mavenCentral()
+            maven("https://repo.papermc.io/repository/maven-public/") // Paper API
+            maven("https://nexus.velocitypowered.com/repository/maven-public/") // Velocity API
+        }
+
+        tasks.withType<JavaCompile> {
+            options.encoding = "UTF-8"
+            targetCompatibility = "21"
+            sourceCompatibility = "21"
         }
     }
 }

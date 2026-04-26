@@ -5,8 +5,6 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import java.sql.*;
 import java.util.UUID;
 
-import static java.sql.DriverManager.getConnection;
-
 public class SqlUserRepository implements UserRepository {
 
 	private final String url = "jdbc:mysql://localhost:3306/your_database_name?useSSL=false";
@@ -35,7 +33,7 @@ public class SqlUserRepository implements UserRepository {
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.execute(); // 문자열 커맨드 전송!
+			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

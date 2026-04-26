@@ -2,6 +2,7 @@
 plugins {
     id("java-library")
     id("xyz.jpenilla.run-velocity")
+    id("com.github.johnrengelman.shadow")
 }
 
 repositories {
@@ -25,7 +26,16 @@ tasks {
     // This is the only required configuration besides applying the plugin.
     // Your plugin's jar (or shadowJar if present) will be used automatically.
     velocityVersion("3.5.0-SNAPSHOT")
+
   }
+    shadowJar {
+        archiveClassifier.set("")
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
+
 
     processResources {
         val props = mapOf("version" to version )

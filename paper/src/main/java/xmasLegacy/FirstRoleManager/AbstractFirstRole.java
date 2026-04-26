@@ -24,8 +24,8 @@ public abstract class AbstractFirstRole {
         return this.plugin;
     }
 
-	public abstract void useFirstSkill(Player player);
-	public abstract void useSecondSkill(Player player);
+	public abstract void useFirstSkill(Player p);
+	public abstract void useSecondSkill(Player p);
 	public abstract Roles getRole();
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();

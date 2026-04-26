@@ -1,6 +1,38 @@
-name: paper
+name: XmasLegacy
 version: '${version}'
 
 main: xmasLegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
+commands:
+  문의:
+    usage: /문의 <내용>
+    description: 문의를 하여 관리자를 호출합니다.
+
+  이동문의:
+    usage: /이동문의 <유저>
+    description: 문의를 받고 해당 유저로 이동합니다.
+
+  가방:
+    usage: /가방
+    description: 유저별 개인 저장공간을 제공합니다.
+
+  filter:
+    usage: /filter <append | remove | list> <word>
+    description: 욕설 필터 목록 설정
+
+  log:
+    usage: /log <inquiry | inquiries> <이름>
+    description: 로그 검색
+
+  구역:
+    usage: /구역 <ID> <설정> <값>
+    description: 구역 설정
+
+  vanish:
+    usage: /vanish
+    description: 리스트, 인게임에서 소멸 후 유저관찰
+
+  test:
+
+  potion:
