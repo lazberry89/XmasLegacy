@@ -9,8 +9,8 @@ public enum Roles {
     ROGUE, //도적 o
     CRAFTER, //장인
 	GATHERER, //수집가
-	FARMER, //농부
-	MINER, //광부
+	FARMER, //농부 o
+	MINER, //광부 o
 	MERCHANT, //상인
 
 	ADMIN,

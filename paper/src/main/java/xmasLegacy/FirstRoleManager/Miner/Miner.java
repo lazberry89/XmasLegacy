@@ -1,16 +1,31 @@
 package xmasLegacy.FirstRoleManager.Miner;
 
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Prefix;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
+import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
+import java.util.*;
+
 public class Miner extends AbstractFirstRole {
+	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.CHAIN_MINING);}
+	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Miner(int c1, int c2, XmasLegacy plugin) {
 		super(c1, c2, plugin);
@@ -18,11 +33,95 @@ public class Miner extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		ItemStack tool = p.getInventory().getItemInMainHand();
+		if (p.getCooldown(tool.getType()) > 0) {
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+			return;
+		}
+		List<Block> ores = getNearbyBlock(p.getLocation(), 5);
+		if (ores.isEmpty()) {
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 주변에 광물이 없습니다!"));
+			return;
+		}
+		if (!consumeEnergy(p, 3)) return;
+		for (Block ore : ores) {
+			ore.breakNaturally();
+		}
+		p.setCooldown(tool, this.getCooldown1() * 20);
+	}
+
+	private boolean isOre(Block block) {
+		String typeName = block.getType().name();
+		return typeName.contains("_ORE");
+	}
+
+	private List<Block> getNearbyBlock(Location loc, int loop) {
+		List<Block> result = new ArrayList<>();
+		Set<Block> visited = new HashSet<>();
+		collectOres(loc, loop, result, visited);
+
+		return result;
+	}
+
+	private void collectOres(Location loc, int loop, List<Block> result, Set<Block> visited) {
+		if (loop <= 0) return;
+
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				for (int k = -1; k <= 1; k++) {
+					if (i == 0 && j == 0 && k == 0) continue;
+
+					Block block = loc.clone().add(i, j, k).getBlock();
+
+					if (visited.contains(block) || !isOre(block)) continue;
+
+					visited.add(block);
+					result.add(block);
+
+					collectOres(block.getLocation(), loop - 1, result, visited);
+				}
+			}
+		}
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
+		ItemStack tool = p.getInventory().getChestplate();
+		if (tool == null || tool.getType() == Material.AIR) return;
 
+		if (p.getCooldown(tool.getType()) > 0) {
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+			return;
+		}
+		if (!consumeEnergy(p, 3)) return;
+		List<Block> result = new ArrayList<>();
+		for (int i = -15; i <= 15; i++) {
+			for (int j = -15; j <= 15; j++) {
+				for (int k = -15; k <= 15; k++) {
+					Block block = p.getLocation().clone().add(i, j, k).getBlock();
+					if (isOre(block)) {
+						result.add(block);
+					}
+				}
+			}
+		}
+		result.forEach(this::BlockGlow);
+		p.playSound(p.getLocation(), Sound.BLOCK_BELL_USE, 1.0f, 0.8f);
+		p.setCooldown(tool, this.getCooldown2() * 20);
+	}
+
+	private void BlockGlow(Block block) {
+		Location loc = block.getLocation();
+		loc.getWorld().spawn(loc, Shulker.class, s -> {
+			s.setAI(false);
+			s.setSilent(true);
+			s.setInvulnerable(true);
+			s.setInvisible(true);
+			s.setCollidable(false);
+			s.setPeek(0);
+			GlowUtils.setGlowColor(s, NamedTextColor.RED);
+			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, 40L);
+		});
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class Farmer extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
 			return;
 		}
-
+		if (!consumeEnergy(p, 3)) return;
 		List<Region> playerRegions = rm.getRegion(p);
 		if (playerRegions == null || playerRegions.isEmpty()) {
 			return;
@@ -89,7 +89,7 @@ public class Farmer extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
 			return;
 		}
-
+		if (!consumeEnergy(p, 3)) return;
 		List<Region> playerRegions = rm.getRegion(p);
 		if (playerRegions == null || playerRegions.isEmpty()) return;
 

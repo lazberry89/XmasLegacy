@@ -32,7 +32,6 @@ public class Archer extends AbstractFirstRole {
 		super(c1, c2, plugin);
 	}
 
-
 	@Override
 	public void useFirstSkill(Player p) {
         ItemStack bow = p.getInventory().getItemInMainHand();

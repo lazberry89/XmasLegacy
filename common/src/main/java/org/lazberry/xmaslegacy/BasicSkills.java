@@ -20,7 +20,10 @@ public enum BasicSkills {
 	STEROID,
 
 	RADIUS_HARVEST,
-	SPEED_GROWER;
+	SPEED_GROWER,
+
+	CHAIN_MINING,
+	ORE_EYE;
 
 	BasicSkills() {}
 
@@ -53,6 +56,10 @@ public enum BasicSkills {
 			//Farmer
 			case RADIUS_HARVEST -> SPEED_GROWER;
 			case SPEED_GROWER -> RADIUS_HARVEST;
+
+			//Miner
+			case CHAIN_MINING -> ORE_EYE;
+			case ORE_EYE -> CHAIN_MINING;
 		};
 	}
 	public String getSkillName() {
