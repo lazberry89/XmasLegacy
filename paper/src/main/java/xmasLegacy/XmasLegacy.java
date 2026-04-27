@@ -9,6 +9,7 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
+import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
@@ -96,6 +97,11 @@ public final class XmasLegacy extends JavaPlugin {
         this.warrior = new Warrior(4, 4, this);
 		this.priest = new Priest(4, 4, PM, SEM, this);
 
+		if (AgeableCrops.RegisterRecipe()) {
+			getLogger().info("Recipe Registered!");
+		} else {
+			getLogger().warning("Recipe Not Registered!");
+		}
 		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage, priest);
 		this.TC.setPM(PM);
 

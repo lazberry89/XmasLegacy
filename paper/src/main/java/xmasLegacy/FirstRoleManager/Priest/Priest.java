@@ -110,7 +110,7 @@ public class Priest extends AbstractFirstRole {
 	}
 
 	@Override
-	public Roles getRole() {
+	public @NotNull Roles getRole() {
 		return Roles.PRIEST;
 	}
 

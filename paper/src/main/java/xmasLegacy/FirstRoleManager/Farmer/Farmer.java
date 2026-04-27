@@ -2,12 +2,15 @@ package xmasLegacy.FirstRoleManager.Farmer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Prefix;
 import org.lazberry.xmaslegacy.Roles.Roles;
@@ -17,11 +20,13 @@ import xmasLegacy.Region.RegionManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Farmer extends AbstractFirstRole {
 	private final RegionManager rm;
+	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.RADIUS_HARVEST);}
+	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
 	public Farmer(int c1, int c2, XmasLegacy plugin, RegionManager rm) {
 		super(c1, c2, plugin);
@@ -47,6 +52,7 @@ public class Farmer extends AbstractFirstRole {
 
 			if (cropRegion != null && playerRegions.contains(cropRegion)) {
 				block.breakNaturally();
+				block.getLocation().getWorld().playSound(block.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			}
 		}
 
@@ -75,13 +81,49 @@ public class Farmer extends AbstractFirstRole {
 	}
 
 	@Override
-	public void useSecondSkill(Player player) {
+	public void useSecondSkill(Player p) {
+		ItemStack tool = p.getInventory().getChestplate();
+		if (tool == null || tool.getType() == Material.AIR) return;
 
+		if (p.getCooldown(tool.getType()) > 0) {
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
+			return;
+		}
+
+		List<Region> playerRegions = rm.getRegion(p);
+		if (playerRegions == null || playerRegions.isEmpty()) return;
+
+		int radius = 4;
+		Location center = p.getLocation();
+		boolean success = false;
+
+		for (int x = -radius; x <= radius; x++) {
+			for (int y = -2; y <= 2; y++) {
+				for (int z = -radius; z <= radius; z++) {
+					Block block = center.clone().add(x, y, z).getBlock();
+
+					if (block.getBlockData() instanceof Ageable ageable) {
+						Region cropRegion = rm.getRegionAt(block.getLocation());
+
+						if (cropRegion != null && playerRegions.contains(cropRegion) && ageable.getAge() < ageable.getMaximumAge()) {
+							ageable.setAge(ageable.getMaximumAge());
+							block.setBlockData(ageable);
+							block.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation().add(0.5, 0.5, 0.5), 5, 0.2, 0.2, 0.2);
+							success = true;
+						}
+					}
+				}
+			}
+		}
+		if (success) {
+			p.getLocation().getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
+			p.setCooldown(tool.getType(), this.getCooldown2() * 20);
+		}
 	}
 
 	@Override
-	public Roles getRole() {
-		return null;
+	public @NotNull Roles getRole() {
+		return Roles.MINER;
 	}
 
 	@Override

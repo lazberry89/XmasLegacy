@@ -146,7 +146,7 @@ public class Warrior extends AbstractFirstRole {
 	}
 
 	@Override
-	public Roles getRole() {
+	public @NotNull Roles getRole() {
 		return Roles.WARRIOR;
 	}
 

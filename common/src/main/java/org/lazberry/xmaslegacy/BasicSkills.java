@@ -17,10 +17,14 @@ public enum BasicSkills {
     GRAVITY,
 
 	COMPACT_HEAL,
-	STEROID;
+	STEROID,
+
+	RADIUS_HARVEST,
+	SPEED_GROWER;
 
 	BasicSkills() {}
 
+	@SuppressWarnings("DuplicatedCode")
 	public BasicSkills next() {
 		return switch (this) {
 			// Archer
@@ -45,6 +49,10 @@ public enum BasicSkills {
 			//Priest
 			case COMPACT_HEAL -> STEROID;
 			case STEROID -> COMPACT_HEAL;
+
+			//Farmer
+			case RADIUS_HARVEST -> SPEED_GROWER;
+			case SPEED_GROWER -> RADIUS_HARVEST;
 		};
 	}
 	public String getSkillName() {

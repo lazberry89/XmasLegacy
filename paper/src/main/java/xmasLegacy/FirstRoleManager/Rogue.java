@@ -133,7 +133,7 @@ public class Rogue extends AbstractFirstRole {
 	}
 
 	@Override
-	public Roles getRole() {
+	public @NotNull Roles getRole() {
 		return Roles.ROGUE;
 	}
 

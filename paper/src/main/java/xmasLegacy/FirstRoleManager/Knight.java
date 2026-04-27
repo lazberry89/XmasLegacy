@@ -129,7 +129,7 @@ public class Knight extends AbstractFirstRole {
         p.setCooldown(tool, this.getCooldown2() * 20);
 	}
 	@Override
-	public Roles getRole() {
+	public @NotNull Roles getRole() {
 		return Roles.KNIGHT;
 	}
 

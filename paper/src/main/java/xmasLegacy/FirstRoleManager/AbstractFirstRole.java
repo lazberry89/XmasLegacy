@@ -10,8 +10,8 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.XmasLegacy;
 
 public abstract class AbstractFirstRole {
-	private int cooldown1;
-	private int cooldown2;
+	private final int cooldown1;
+	private final int cooldown2;
     private final XmasLegacy plugin;
 
 	public AbstractFirstRole(int c1, int c2, XmasLegacy plugin) {
@@ -26,7 +26,7 @@ public abstract class AbstractFirstRole {
 
 	public abstract void useFirstSkill(Player p);
 	public abstract void useSecondSkill(Player p);
-	public abstract Roles getRole();
+	public abstract @NotNull Roles getRole();
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();
 
@@ -39,6 +39,7 @@ public abstract class AbstractFirstRole {
 	}
 	public void loadCooldown(String path) {}
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     protected boolean consumeEnergy(Player player, int hungerCost) {
         int currentFood = player.getFoodLevel();
 

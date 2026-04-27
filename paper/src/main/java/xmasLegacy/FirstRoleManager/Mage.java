@@ -186,7 +186,7 @@ public class Mage extends AbstractFirstRole {
 	}
 
 	@Override
-	public Roles getRole() {
+	public @NotNull Roles getRole() {
 		return Roles.MAGE;
 	}
 
