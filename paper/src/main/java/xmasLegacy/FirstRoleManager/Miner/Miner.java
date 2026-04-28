@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -55,6 +54,7 @@ public class Miner extends AbstractFirstRole {
 		return typeName.contains("_ORE");
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private List<Block> getNearbyBlock(Location loc, int loop) {
 		List<Block> result = new ArrayList<>();
 		Set<Block> visited = new HashSet<>();

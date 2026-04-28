@@ -38,6 +38,7 @@ public class Warrior extends AbstractFirstRole {
 		super(c1, c2, plugin);
 	}
 
+	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getChestplate();

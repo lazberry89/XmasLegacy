@@ -1,31 +1,42 @@
 package org.lazberry.xmaslegacy;
 
 public enum BasicSkills {
-	SHOCK_DART,
-	BACK_DASH,
+	SHOCK_DART("충격화살"),
+	BACK_DASH("백대시"),
 
-	SHARP_SWEEPING,
-	TAUNT,
+	SHARP_SWEEPING("칼날 돌진"),
+	TAUNT("광역 도발"),
 
-	DAGGER_RUSH,
-	SMOKE,
+	DAGGER_RUSH("돌진기"),
+	SMOKE("연막탄"),
 
-	TOMAHAWK,
-	BLOOD_FRENZY,
+	TOMAHAWK("토마호크"),
+	BLOOD_FRENZY("프렌지"),
 
-    COMPACT_INSANELY,
-    GRAVITY,
+    COMPACT_INSANELY("극점"),
+    GRAVITY("중력장"),
 
-	COMPACT_HEAL,
-	STEROID,
+	COMPACT_HEAL("컴팩트 힐"),
+	STEROID("불꽃의 가호"),
 
-	RADIUS_HARVEST,
-	SPEED_GROWER,
+	RADIUS_HARVEST("풍요의 손길"),
+	SPEED_GROWER("시간의 축복"),
 
-	CHAIN_MINING,
-	ORE_EYE;
+	CHAIN_MINING("연쇄 광질"),
+	ORE_EYE("광부의 눈"),
 
-	BasicSkills() {}
+	ETERNAL_POSE("회귀의 바늘"),
+	TRUTH_EYE("에테르의 눈");
+
+	private final String korName;
+
+	BasicSkills(String korName) {
+		this.korName = korName;
+	}
+
+	public String getKorName() {
+		return korName;
+	}
 
 	@SuppressWarnings("DuplicatedCode")
 	public BasicSkills next() {
@@ -46,23 +57,28 @@ public enum BasicSkills {
 			case TOMAHAWK -> BLOOD_FRENZY;
 			case BLOOD_FRENZY -> TOMAHAWK;
 
+			// Mage
             case COMPACT_INSANELY -> GRAVITY;
             case GRAVITY -> COMPACT_INSANELY;
 
-			//Priest
+			// Priest
 			case COMPACT_HEAL -> STEROID;
 			case STEROID -> COMPACT_HEAL;
 
-			//Farmer
+			// Farmer
 			case RADIUS_HARVEST -> SPEED_GROWER;
 			case SPEED_GROWER -> RADIUS_HARVEST;
 
-			//Miner
+			// Miner
 			case CHAIN_MINING -> ORE_EYE;
 			case ORE_EYE -> CHAIN_MINING;
+
+			// Gatherer
+			case ETERNAL_POSE -> TRUTH_EYE;
+			case TRUTH_EYE -> ETERNAL_POSE;
 		};
 	}
 	public String getSkillName() {
-		return "[ " + this.name() + " ]";
+		return "[ " + this.getKorName() + " ]";
 	}
 }

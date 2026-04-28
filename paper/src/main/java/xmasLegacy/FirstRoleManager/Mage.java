@@ -95,6 +95,7 @@ public class Mage extends AbstractFirstRole {
         }
     }
 
+	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public void useSecondSkill(Player p) {
         ItemStack tool = p.getInventory().getChestplate();
