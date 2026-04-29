@@ -10,6 +10,9 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
+import xmasLegacy.FirstRoleManager.Farmer.Farmer;
+import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
@@ -58,6 +61,9 @@ public final class XmasLegacy extends JavaPlugin {
     private Warrior warrior;
     private Mage mage;
 	private Priest priest;
+	private Farmer farmer;
+	private Miner miner;
+	private Gatherer gatherer;
 
 	@Override
 	public void onEnable() {
@@ -78,7 +84,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.RP = new RegionPermission(RGM);
 		this.RGCM = new RegionCommandManager(RGM);
 		this.RI = new RegionIndicator(RGM, UM, this);
-		this.TC = new TestCommands(SEM, this);
+		this.TC = new TestCommands(SEM, RGM, this);
         this.RGP = new RegionPreviewer(this,RGM);
         this.GMM = new GhostModeManager(this);
         this.GC = new GhostCommand(GMM);
@@ -96,13 +102,16 @@ public final class XmasLegacy extends JavaPlugin {
         this.mage = new Mage(4, 4,this, SEM);
         this.warrior = new Warrior(4, 4, this);
 		this.priest = new Priest(4, 4, PM, SEM, this);
+		this.farmer = new Farmer(4, 4, this, RGM);
+		this.miner = new Miner(4, 4, this);
+		this.gatherer = new Gatherer(4, 4, this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getLogger().info("Recipe Registered!");
 		} else {
 			getLogger().warning("Recipe Not Registered!");
 		}
-		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage, priest);
+		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage, priest, farmer, miner, gatherer);
 		this.TC.setPM(PM);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");

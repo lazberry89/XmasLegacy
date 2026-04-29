@@ -31,7 +31,6 @@ public class ServerJoinManager implements Listener {
 		// 기본 접속 메시지는 일단 안 보이게 설정 (로드 완료 후 직접 띄우기 위함)
 		e.joinMessage(null);
 
-
 		// 비동기 로드 시작
 		UM.onJoinAsync(p.getUniqueId(), p.getName(), true).thenAccept(user -> {
 			// [Async Thread] 로드 완료 시점

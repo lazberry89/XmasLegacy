@@ -60,7 +60,7 @@ public class Gatherer extends AbstractFirstRole {
 		p.getInventory().addItem(CompassBuilder(pose, p));
 
 		Particle.DustTransition dust = new Particle.DustTransition(Color.AQUA, Color.WHITE, 1.5f);
-		p.getWorld().spawnParticle(Particle.DUST, p.getLocation(), 15, 0.5, 0.5, 0.5, 0.01, dust);
+		p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 0.5, 0.5, 0.5, 0.01, dust);
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
 		p.setCooldown(tool, this.getCooldown1() * 20);
 	}
@@ -98,6 +98,7 @@ public class Gatherer extends AbstractFirstRole {
 				}
 			}
 		}
+		p.setCooldown(tool, this.getCooldown2() * 20);
 	}
 
 	private void BlockGlow(Block block) {

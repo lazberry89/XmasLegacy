@@ -14,6 +14,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.FirstRoleManager.*;
+import xmasLegacy.FirstRoleManager.Farmer.Farmer;
+import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.Priest;
 import xmasLegacy.XmasLegacy;
 
@@ -26,8 +29,20 @@ public class FirstRoleListener implements Listener {
 	private final Warrior warrior;
     private final Mage mage;
 	private final Priest priest;
+	private final Farmer farmer;
+	private final Miner miner;
+	private final Gatherer gatherer;
 
-	public FirstRoleListener(XmasLegacy plugin, Knight knight, Rogue rogue, Archer archer, Warrior warrior, Mage mage, Priest priest) {
+	public FirstRoleListener(XmasLegacy plugin,
+	                         Knight knight,
+	                         Rogue rogue,
+	                         Archer archer,
+	                         Warrior warrior,
+	                         Mage mage,
+	                         Priest priest,
+	                         Farmer farmer,
+	                         Miner miner,
+	                         Gatherer gatherer) {
 		this.plugin = plugin;
 		this.knight = knight;
 		this.rogue = rogue;
@@ -35,6 +50,9 @@ public class FirstRoleListener implements Listener {
 		this.warrior = warrior;
         this.mage = mage;
 		this.priest = priest;
+		this.farmer = farmer;
+		this.miner = miner;
+		this.gatherer = gatherer;
 	}
 
 	@EventHandler
@@ -97,6 +115,30 @@ public class FirstRoleListener implements Listener {
 							priest.useSecondSkill(p);
 						}
 					}
+					case "farmer" -> {
+						if (farmer.getCurrentSkill(p) == null) return;
+						if (farmer.getCurrentSkill(p) == BasicSkills.RADIUS_HARVEST) {
+							farmer.useFirstSkill(p);
+						} else if (farmer.getCurrentSkill(p) == BasicSkills.SPEED_GROWER) {
+							farmer.useSecondSkill(p);
+						}
+					}
+					case "miner" -> {
+						if (miner.getCurrentSkill(p) == null) return;
+						if (miner.getCurrentSkill(p) == BasicSkills.ORE_EYE) {
+							miner.useFirstSkill(p);
+						} else if (miner.getCurrentSkill(p) == BasicSkills.CHAIN_MINING) {
+							miner.useSecondSkill(p);
+						}
+					}
+					case "gatherer" -> {
+						if (gatherer.getCurrentSkill(p) == null) return;
+						if (gatherer.getCurrentSkill(p) == BasicSkills.TRUTH_EYE) {
+							gatherer.useFirstSkill(p);
+						} else if (gatherer.getCurrentSkill(p) == BasicSkills.ETERNAL_POSE) {
+							gatherer.useSecondSkill(p);
+						}
+					}
 				}
 			}
 		}
@@ -116,27 +158,39 @@ public class FirstRoleListener implements Listener {
 			switch (pdc) {
 				case "knight" -> {
 					knight.next(p);
-					p.sendActionBar(ColorUtils.chat("&8&l[ " + knight.getCurrentSkill(p).getSkillName() + " ]"));
+					p.sendActionBar(ColorUtils.chat("&8&l" + knight.getCurrentSkill(p).getSkillName()));
 				}
 				case "rogue" -> {
 					rogue.next(p);
-					p.sendActionBar(ColorUtils.chat("&8&l[ " + rogue.getCurrentSkill(p).getSkillName() + " ]"));
+					p.sendActionBar(ColorUtils.chat("&8&l" + rogue.getCurrentSkill(p).getSkillName()));
 				}
 				case "archer" -> {
 					archer.next(p);
-					p.sendActionBar(ColorUtils.chat("&8&l[ " + archer.getCurrentSkill(p).getSkillName() + " ]"));
+					p.sendActionBar(ColorUtils.chat("&8&l" + archer.getCurrentSkill(p).getSkillName()));
 				}
 				case "warrior" -> {
 					warrior.next(p);
-					p.sendActionBar(ColorUtils.chat("&8&l[ " + warrior.getCurrentSkill(p).getSkillName() + " ]"));
+					p.sendActionBar(ColorUtils.chat("&8&l" + warrior.getCurrentSkill(p).getSkillName()));
 				}
                 case "mage" -> {
                     mage.next(p);
-                    p.sendActionBar(ColorUtils.chat("&8&l[ " + mage.getCurrentSkill(p).getSkillName() + " ]"));
+                    p.sendActionBar(ColorUtils.chat("&8&l" + mage.getCurrentSkill(p).getSkillName()));
                 }
 				case "priest" -> {
 					priest.next(p);
-					p.sendActionBar(ColorUtils.chat("&8&l[ " + priest.getCurrentSkill(p).getSkillName() + " ]"));
+					p.sendActionBar(ColorUtils.chat("&8&l" + priest.getCurrentSkill(p).getSkillName()));
+				}
+				case "farmer" -> {
+					farmer.next(p);
+					p.sendActionBar(ColorUtils.chat("&8&l" + farmer.getCurrentSkill(p).getSkillName()));
+				}
+				case "miner" -> {
+					miner.next(p);
+					p.sendActionBar(ColorUtils.chat("&8&l" + miner.getCurrentSkill(p).getSkillName()));
+				}
+				case "gatherer" -> {
+					gatherer.next(p);
+					p.sendActionBar(ColorUtils.chat("&8&l" + gatherer.getCurrentSkill(p).getSkillName()));
 				}
 			}
 		}
@@ -161,8 +215,5 @@ public class FirstRoleListener implements Listener {
             Location loc = victim.getLocation();
 	        loc.getWorld().strikeLightning(loc);
         }
-
-
-
     }
 }

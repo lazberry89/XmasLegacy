@@ -133,13 +133,12 @@ public class ItemBuilder {
 		return this;
 	}
 
-    public ItemBuilder customPotionColor(Color color) {
-        PotionMeta meta = (PotionMeta) item.getItemMeta();
-        if (meta != null) {
-            meta.setColor(color);
-        }
-        return this;
-    }
+	public ItemBuilder customPotionColor(Color color) {
+		if (meta instanceof PotionMeta potionMeta) {
+			potionMeta.setColor(color);
+		}
+		return this;
+	}
 	/**
 	 * 여러 마법을 한꺼번에 부여합니다.
 	 * @param enchantments 마법 Map

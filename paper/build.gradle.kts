@@ -1,7 +1,7 @@
 plugins {
     id("java-library")
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("com.github.johnrengelman.shadow")
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 repositories {
@@ -44,20 +44,7 @@ tasks {
     }
 
     build {
-        // build 태스크 실행 시 자동으로 shadowJar가 실행되게 합니다.
+        // build 태스크 실행 시 기본 jar 대신 shadowJar가 실행되게 덮어씌움
         dependsOn(shadowJar)
-    }
-
-    processResources {
-        // 1. 중복 파일 처리 전략 명시 (ShadowJar 사용 시 필수)
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-        val props = mapOf("version" to project.version)
-        inputs.properties(props)
-
-        filesMatching("plugin.yml") {
-            // expand(props) 대신 아래 방식을 사용하면 'mode' 에러가 절대 나지 않습니다.
-            filter<org.apache.tools.ant.filters.ReplaceTokens>("tokens" to mapOf("version" to project.version.toString()))
-        }
     }
 }

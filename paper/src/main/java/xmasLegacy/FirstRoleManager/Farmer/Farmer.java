@@ -22,6 +22,7 @@ import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
+@SuppressWarnings("DuplicatedCode")
 public class Farmer extends AbstractFirstRole {
 	private final RegionManager rm;
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
@@ -85,11 +86,10 @@ public class Farmer extends AbstractFirstRole {
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
 
-		if (p.getCooldown(tool.getType()) > 0) {
+		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
 			return;
 		}
-		if (!consumeEnergy(p, 3)) return;
 		List<Region> playerRegions = rm.getRegion(p);
 		if (playerRegions == null || playerRegions.isEmpty()) return;
 
@@ -110,20 +110,25 @@ public class Farmer extends AbstractFirstRole {
 							block.setBlockData(ageable);
 							block.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation().add(0.5, 0.5, 0.5), 5, 0.2, 0.2, 0.2);
 							success = true;
+						} else {
+							p.sendMessage(ColorUtils.chat(Prefix.RED + " 적절한 사용 조건이 아닙니다."));
+							p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+							return;
 						}
 					}
 				}
 			}
 		}
 		if (success) {
+			if (!consumeEnergy(p, 3)) return;
 			p.getLocation().getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
-			p.setCooldown(tool.getType(), this.getCooldown2() * 20);
+			p.setCooldown(tool, this.getCooldown2() * 20);
 		}
 	}
 
 	@Override
 	public @NotNull Roles getRole() {
-		return Roles.MINER;
+		return Roles.FARMER;
 	}
 
 	@Override

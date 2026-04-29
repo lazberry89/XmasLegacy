@@ -2,7 +2,7 @@
 plugins {
     id("java-library")
     id("xyz.jpenilla.run-velocity")
-    id("com.github.johnrengelman.shadow")
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 repositories {
@@ -28,13 +28,13 @@ tasks {
     velocityVersion("3.5.0-SNAPSHOT")
 
   }
-    shadowJar {
-        archiveClassifier.set("")
-    }
-
-    build {
-        dependsOn(shadowJar)
-    }
+//    shadowJar {
+//        archiveClassifier.set("")
+//    }
+//
+//    build {
+//        dependsOn(shadowJar)
+//    }
 
 
     processResources {
