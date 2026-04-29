@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-//import org.geysermc.floodgate.api.FloodgateApi;
+import org.geysermc.floodgate.api.FloodgateApi;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Prefix;
 import org.lazberry.xmaslegacy.User.UserManager;
@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 public class ServerJoinManager implements Listener {
 	private final UserManager UM;
 	private final XmasLegacy plugin; // BukkitScheduler 사용을 위해 필요
-//	private final FloodgateApi gate = FloodgateApi.getInstance();
+	private final FloodgateApi gate = FloodgateApi.getInstance();
 
 	public ServerJoinManager(UserManager UM, XmasLegacy plugin) {
 		this.UM = UM;

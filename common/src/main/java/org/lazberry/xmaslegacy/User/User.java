@@ -15,6 +15,7 @@ public class User {
     private int dollars;
     private int inquireCount = 0;
     private int playTime = 0;
+    private boolean isMobile = false;
 	private boolean isNewUser = false;
     private boolean wantsCookie = true;
 
@@ -42,6 +43,8 @@ public class User {
 	public void setNewUser(boolean isNewUser) {this.isNewUser = isNewUser;}
 	public String getName() {return this.name;}
 	public void setName(String name) {this.name = name;}
+    public void setMobile(boolean mobile) {this.isMobile = mobile;}
+    public boolean isMobile() {return this.isMobile;}
 
     @Override
     public boolean equals(Object o) {
