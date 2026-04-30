@@ -4,6 +4,7 @@ version: '${version}'
 main: xmasLegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
+depend: [floodgate]
 commands:
   문의:
     usage: /문의 <내용>

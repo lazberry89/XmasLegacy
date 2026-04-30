@@ -152,8 +152,12 @@ public final class XmasLegacy extends JavaPlugin {
         }
 		//UM.getAllUsers().forEach(UM::saveUserToFile);
 		getLogger().info("모든 유저 데이터를 자동 저장했습니다.");
-		CM.stopCookieTimer();
-		BM.saveAllBags();
+		if (CM != null) {
+			CM.stopCookieTimer();
+		}
+		if (BM != null) {
+			BM.saveAllBags();
+		}
 		getLogger().info("모든 가방 데이터를 자동 저장했습니다.");
 	}
 

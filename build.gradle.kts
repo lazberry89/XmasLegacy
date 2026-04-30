@@ -24,12 +24,6 @@ allprojects {
 subprojects {
     apply(plugin = "java")
 
-    repositories {
-        mavenCentral()
-        maven("https://repo.papermc.io/repository/maven-public/") // Paper API
-        maven("https://nexus.velocitypowered.com/repository/maven-public/") // Velocity API
-    }
-
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
         targetCompatibility = "21"

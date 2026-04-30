@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.settings;
 
 public enum Prefix {
 	XmasLegacy("&c&l[&a&lX&c&lm&a&la&c&ls&a&lL&c&le&a&lg&c&la&a&lc&c&ly&a&l]&f"),

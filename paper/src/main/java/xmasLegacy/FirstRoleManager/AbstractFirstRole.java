@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Prefix;
+import org.lazberry.xmaslegacy.settings.Prefix;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.XmasLegacy;
 

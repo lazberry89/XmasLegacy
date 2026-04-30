@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
-import org.lazberry.xmaslegacy.Prefix;
+import org.lazberry.xmaslegacy.settings.Prefix;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.XmasLegacy;

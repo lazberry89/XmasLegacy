@@ -12,6 +12,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("DuplicatedCode")
 public class Region {
     private final UUID owner;
     private final String id;
@@ -76,7 +77,7 @@ public class Region {
     }
 
     private boolean WorldDiff(Location loc) {
-        return loc.getWorld().equals(world);
+        return !loc.getWorld().equals(world);
     }
 
 	public boolean overlaps(Region other) {

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
-import org.lazberry.xmaslegacy.Prefix;
+import org.lazberry.xmaslegacy.settings.Prefix;
 import xmasLegacy.Region.Region;
 import xmasLegacy.Region.RegionManager;
 

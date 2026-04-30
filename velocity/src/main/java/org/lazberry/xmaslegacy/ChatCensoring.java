@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.Player;
+import org.lazberry.xmaslegacy.settings.Prefix;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class ChatCensoring {

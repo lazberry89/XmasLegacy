@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.Prefix;
+import org.lazberry.xmaslegacy.settings.Prefix;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;

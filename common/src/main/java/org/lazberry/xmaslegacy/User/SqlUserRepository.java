@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class SqlUserRepository implements UserRepository {
 
-	private final String url = "jdbc:mysql://localhost:3306/your_database_name?useSSL=false";
+	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
 	private final String user = "root";
 	private final String password = "your_password";
 
@@ -68,7 +68,7 @@ public class SqlUserRepository implements UserRepository {
 		}
 		return null;
 	}
-
+	/*
 	@Override
 	public void saveUser(User user) {
 		String sql = "INSERT INTO users (uuid, name, role, dollars, inquireCount, playTime, isNewUser, wantsCookie) " +
@@ -97,7 +97,30 @@ public class SqlUserRepository implements UserRepository {
 			e.printStackTrace();
 		}
 	}
+	*/
+	@Override
+	public void saveUser(User user) {
+		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
+		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, isNewUser, wantsCookie) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+		try (Connection conn = getConnection();
+		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, user.getUUID().toString());
+			pstmt.setString(2, user.getName());
+			pstmt.setString(3, user.getRole() != null ? user.getRole().name() : Roles.USER.name());
+			pstmt.setInt(4, user.getDollars());
+			pstmt.setInt(5, user.getInquireCount());
+			pstmt.setInt(6, user.getPlayTime());
+			pstmt.setBoolean(7, user.isNewUser());
+			pstmt.setBoolean(8, user.ifWantsCookie());
+
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public boolean exist(UUID uuid) {
 		String sql = "SELECT 1 FROM users WHERE uuid = ? LIMIT 1";

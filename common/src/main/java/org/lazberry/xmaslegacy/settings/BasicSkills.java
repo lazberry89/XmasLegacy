@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.settings;
 
 public enum BasicSkills {
 	SHOCK_DART("충격화살"),

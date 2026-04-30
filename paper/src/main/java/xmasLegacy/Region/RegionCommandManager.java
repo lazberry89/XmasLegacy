@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Prefix;
+import org.lazberry.xmaslegacy.settings.Prefix;
 
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class RegionCommandManager implements CommandExecutor, TabCompleter {
@@ -20,19 +20,24 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 		this.RM = RM;
 	}
 
+	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
-			return true;
+			if (p.isOp()) {
+				p.getInventory().addItem(RegionIndicator.RegionBeacon());
+			} else {
+				p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
+				return true;
+			}
 		} else if (args.length == 3) {
 			Region region = RM.getRegion(args[0]);
 			if (region == null) {
 				p.sendMessage(ColorUtils.chat(Prefix.RED + " 아이디가 잘못되었습니다!"));
 				return true;
 			}
-			if (!p.isOp() || !region.getOwner().equals(p.getUniqueId())) {
+			if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
 				p.sendMessage(ColorUtils.chat(Prefix.RED + " 권한이 없습니다!"));
 				return true;
 			}
@@ -62,7 +67,7 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 				p.sendMessage(ColorUtils.chat(Prefix.RED + " 아이디가 잘못되었습니다!"));
 				return true;
 			}
-			if (!p.isOp() || !region.getOwner().equals(p.getUniqueId())) {
+			if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
 				p.sendMessage(ColorUtils.chat(Prefix.RED + " 권한이 없습니다!"));
 				return true;
 			}

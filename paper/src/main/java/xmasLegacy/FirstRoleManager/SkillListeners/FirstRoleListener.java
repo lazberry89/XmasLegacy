@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.BasicSkills;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
@@ -125,9 +125,9 @@ public class FirstRoleListener implements Listener {
 					}
 					case "miner" -> {
 						if (miner.getCurrentSkill(p) == null) return;
-						if (miner.getCurrentSkill(p) == BasicSkills.ORE_EYE) {
+						if (miner.getCurrentSkill(p) == BasicSkills.CHAIN_MINING) {
 							miner.useFirstSkill(p);
-						} else if (miner.getCurrentSkill(p) == BasicSkills.CHAIN_MINING) {
+						} else if (miner.getCurrentSkill(p) == BasicSkills.ORE_EYE) {
 							miner.useSecondSkill(p);
 						}
 					}

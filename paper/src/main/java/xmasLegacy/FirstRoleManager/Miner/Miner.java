@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.BasicSkills;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Prefix;
+import org.lazberry.xmaslegacy.settings.Prefix;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Utils.GlowUtils;
@@ -37,16 +37,23 @@ public class Miner extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
 		}
-		List<Block> ores = getNearbyBlock(p.getLocation(), 5);
-		if (ores.isEmpty()) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 주변에 광물이 없습니다!"));
+		Block targeted = p.getTargetBlockExact(7);
+		if (targeted != null) {
+			Location targetLoc = targeted.getLocation();
+			List<Block> ores = getNearbyBlock(targetLoc, 5);
+			if (ores.isEmpty()) {
+				p.sendMessage(ColorUtils.chat(Prefix.RED + " 주변에 광물이 없습니다!"));
+				return;
+			}
+			if (!consumeEnergy(p, 3)) return;
+			for (Block ore : ores) {
+				ore.breakNaturally();
+			}
+			p.setCooldown(tool, this.getCooldown1() * 20);
+		} else {
+			p.sendMessage(Prefix.RED + " 해당 블록이 없습니다!");
 			return;
 		}
-		if (!consumeEnergy(p, 3)) return;
-		for (Block ore : ores) {
-			ore.breakNaturally();
-		}
-		p.setCooldown(tool, this.getCooldown1() * 20);
 	}
 
 	private boolean isOre(Block block) {
