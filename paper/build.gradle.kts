@@ -4,25 +4,10 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.8"
 }
 
-repositories {
-    mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.opencollab.dev/main/")          // releases
-    maven("https://repo.opencollab.dev/maven-snapshots/") // snapshots
-    maven("https://repo.opencollab.dev/#/main")
-    maven("https://repo.opencollab.dev/#/maven-snapshots/org/geysermc")
-    maven {
-        name = "opencollabRepositoryMavenSnapshots"
-        url = uri("https://repo.opencollab.dev/maven-snapshots")
-    }
-}
-
-
-
 dependencies {
     implementation(project(":common"))
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
+    compileOnly("org.geysermc.geyser:api:2.9.5-SNAPSHOT")
 }
 
 java {

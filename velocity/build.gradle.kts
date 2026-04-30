@@ -5,11 +5,6 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.8"
 }
 
-repositories {
-    mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-}
-
 dependencies {
     implementation(project(":common"))
     compileOnly("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
