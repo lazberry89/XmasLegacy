@@ -28,16 +28,15 @@ public class InquiryCommandManager implements CommandExecutor {
 		}
 
 		if (args.length == 0) {
-			IM.Inquiry(p.getUniqueId(), null);
+			p.sendMessage(IM.Inquiry(p.getUniqueId(), null));
 			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 운영자를 호출했습니다. 조금만 기다려주세요!"));
 		} else {
 			String content = String.join(" ", args);
-			IM.Inquiry(p.getUniqueId(), content);
+			p.sendMessage(IM.Inquiry(p.getUniqueId(), content));
 			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 문의가 접수되었습니다."));
 		}
 		p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 		return true;
-
 	}
 }
 
