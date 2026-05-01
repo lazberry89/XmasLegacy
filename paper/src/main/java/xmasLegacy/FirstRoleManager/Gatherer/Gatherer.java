@@ -50,7 +50,7 @@ public class Gatherer extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		Block pose = p.getTargetBlockExact(4);
+		Block pose = p.getTargetBlockExact(7);
 		if (pose == null || pose.getType() != Material.SEA_LANTERN) return;
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
@@ -91,6 +91,7 @@ public class Gatherer extends AbstractFirstRole {
 			for (int j = -6; j <= 6; j++) {
 				for (int k = -6; k <= 6; k++) {
 					block = loc.clone().add(i, j, k).getBlock();
+					if (block == null || block.isAir()) continue;
 					if (block.getState() instanceof Container) {
 						BlockGlow(block);
 						block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 1.0f, 1.0f);
