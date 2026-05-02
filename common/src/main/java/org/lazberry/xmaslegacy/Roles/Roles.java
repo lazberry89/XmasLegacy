@@ -8,7 +8,7 @@ public enum Roles {
     PRIEST, //성직자 o
     ROGUE, //도적 o
     CRAFTER, //장인
-	GATHERER, //수집가
+	GATHERER, //수집가 o
 	FARMER, //농부 o
 	MINER, //광부 o
 	MERCHANT, //상인

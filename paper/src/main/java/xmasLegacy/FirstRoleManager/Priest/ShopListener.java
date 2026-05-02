@@ -72,11 +72,10 @@ public class ShopListener implements Listener {
     public void StockAddEvent(InventoryClickEvent e) {
         if (e.getClickedInventory() == null) return;
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (!(e.getInventory().getHolder() instanceof ShopInterface)) return;
-        if (!(e.getClickedInventory().getHolder() instanceof ShopInterface)) return;
+        if (!(e.getInventory().getHolder() instanceof StockInterface)) return;
+        if (!(e.getClickedInventory().getHolder() instanceof StockInterface)) return;
 
         int slot = e.getRawSlot();
-
         switch (slot) {
             case 3 -> {
                 e.setCancelled(true);
@@ -142,14 +141,20 @@ public class ShopListener implements Listener {
                 p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.0f);
             }
             case 6 -> {
+				e.setCancelled(true);
                 if (PSP.isShopEnabled()) {
                     p.sendMessage(ColorUtils.chat(Prefix.RED + " 이미 상점이 시작되었습니다!"));
                     p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
                 } else {
-                    PSP.enableShop();
-                    p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상점을 시작했습니다!"));
-                    p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-                    PSP.openShop(p, p);
+					if (PSP.getStockCount() == 0) {
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 재고가 없습니다!"));
+						p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+					} else {
+						PSP.enableShop();
+						p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상점을 시작했습니다!"));
+						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+						PSP.openShop(p, p);
+					}
                 }
             }
         }

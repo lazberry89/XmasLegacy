@@ -53,7 +53,7 @@ public class Gatherer extends AbstractFirstRole {
 		Block pose = p.getTargetBlockExact(7);
 		if (pose == null || pose.getType() != Material.SEA_LANTERN) return;
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
 		if (!consumeEnergy(p, 3)) return;
@@ -87,11 +87,11 @@ public class Gatherer extends AbstractFirstRole {
 				}, 40L);
 			}
 		});
-		for (int i = -6; i <= 6; i++) {
-			for (int j = -6; j <= 6; j++) {
-				for (int k = -6; k <= 6; k++) {
+		for (int i = -8; i <= 8; i++) {
+			for (int j = -8; j <= 8; j++) {
+				for (int k = -8; k <= 8; k++) {
 					block = loc.clone().add(i, j, k).getBlock();
-					if (block == null || block.isAir()) continue;
+					if (block.getType().isAir()) continue;
 					if (block.getState() instanceof Container) {
 						BlockGlow(block);
 						block.getWorld().playSound(block.getLocation(), Sound.BLOCK_CHEST_OPEN, 1.0f, 1.0f);

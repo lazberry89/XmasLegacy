@@ -8,7 +8,7 @@ public class Constants {
     //Economy
     public static int TAX_RATE = 3;
     public static int CURRENCY_MINIMUM = 100;
-    public static int MAX_CURRENCY_STACK = 100000;
+    public static int MAX_CURRENCY_STACK = 99;
 
     //Region
     public static int MINER_MINY = -100;
@@ -43,10 +43,7 @@ public class Constants {
 	public static int DRAGON_SATURATION_AMPLIFIER = 0;
 
 	public static int HEALER_POTION_DURATION = 5;
-	public static int HEALER_POTION_AMPLIFIER = 2
-			;
+	public static int HEALER_POTION_AMPLIFIER = 2;
 	public static int PROTECTION_POTION_DURATION = 7;
-	public static int PROTECTION_POTION_AMPLIFIER = 1;
-
 	public static int DEATH_SAVER_DURATION = 2;
 }

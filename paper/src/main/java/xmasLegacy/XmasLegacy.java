@@ -54,6 +54,8 @@ public final class XmasLegacy extends JavaPlugin {
 	private PriestShop PSP;
 	private PotionListener PL;
 	private PriestCommand PC;
+	private PriestSystemShopCommand PSSC;
+	private ShopListener SL;
 
     private Archer archer;
     private Knight knight;
@@ -95,6 +97,8 @@ public final class XmasLegacy extends JavaPlugin {
 		this.PSP = new PriestShop(CDI, EM);
 		this.PL = new PotionListener(this, CDI);
 		this.PC = new PriestCommand(CDI);
+		this.PSSC = new PriestSystemShopCommand(PSP);
+		this.SL = new ShopListener(PSP, UM, EM, CDI, BM, this);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -128,6 +132,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(RI, this);
         getServer().getPluginManager().registerEvents(GL, this);
 		getServer().getPluginManager().registerEvents(PL, this);
+		getServer().getPluginManager().registerEvents(SL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -143,6 +148,7 @@ public final class XmasLegacy extends JavaPlugin {
         getCommand("vanish").setExecutor(GC);
 		getCommand("potion").setExecutor(PC);
 		getCommand("potion").setTabCompleter(PC);
+		getCommand("system").setExecutor(PSSC);
 	}
 
 	@Override
