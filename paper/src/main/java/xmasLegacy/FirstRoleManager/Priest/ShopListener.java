@@ -15,7 +15,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.EconomyManager;
+import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.settings.Prefix;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.PlayerUtils.BagManager;
@@ -168,39 +170,90 @@ public class ShopListener implements Listener {
     }
 
 	@EventHandler
-	public void onTrade(PlayerTradeEvent e) {
-		Player viewer = e.getPlayer();
-		Player owner = PSP.getOwner(e.getMerchant());
+	public void onTrade(InventoryClickEvent e) {
+        if (!(e.getWhoClicked() instanceof Player viewer)) return;
+		Player owner = PSP.getOwner(e.getInventory());
+        User u = UM.getUser(viewer.getUniqueId());
         if (owner == null) return;
 		if (!owner.isOnline()) {
 			viewer.sendMessage(ColorUtils.chat(Prefix.RED + " 주인장이 문을 닫았네요!"));
 			e.setCancelled(true);
 			return;
 		}
-		List<ItemStack> ingredients = e.getTrade().getIngredients();
-        ItemStack purchase = checkType(e.getTrade().getResult());
-        ItemStack result = e.getTrade().getResult();
-		ItemStack money = ingredients.getFirst();
-		NamespacedKey key = plugin.getNamespacedKey("money");
-
-		Integer mc = money.getPersistentDataContainer().get(key, PersistentDataType.INTEGER);
-		if (mc == null) return;
-		int count = mc * money.getAmount();
-        int boughtAmount = result.getAmount();
-
-		if (count <= 0) return;
-        if (purchase.isSimilar(CDI.DragonPotion())) {
-            PSP.addDragonStock(-boughtAmount);
-        } else if (purchase.isSimilar(CDI.HealerPotion())) {
-            PSP.addHealerStock(-boughtAmount);
-        } else if (purchase.isSimilar(CDI.SpearPotion())) {
-            PSP.addSpearStock(-boughtAmount);
-        } else if (purchase.isSimilar(CDI.DeathSave())) {
-            PSP.addSaveStock(-boughtAmount);
-        } else if (purchase.isSimilar(CDI.ProtectionPotion())) {
-            PSP.addProtectionStock(-boughtAmount);
+        int slot = e.getRawSlot();
+        switch (slot) {
+            case 2 -> {
+                if (!ECM.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), Constants.DRAGON_BREATH_PRICE)) {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+                    viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+                } else {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다."));
+                    Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(CDI.DragonPotion());
+                    if (!leftOver.isEmpty()) {
+                        leftOver.values().forEach(s -> BAG.addItem(viewer, s, s.getAmount()));
+                        viewer.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다. &6확인하기: /가방"));
+                    }
+                    viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+                }
+            }
+            case 3 -> {
+                if (!ECM.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), Constants.HEALER_POTION_PRICE)) {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+                    viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+                } else {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다."));
+                    Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(CDI.HealerPotion());
+                    if (!leftOver.isEmpty()) {
+                        leftOver.values().forEach(s -> BAG.addItem(viewer, s, s.getAmount()));
+                        viewer.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다. &6확인하기: /가방"));
+                    }
+                    viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+                }
+            }
+            case 4 -> {
+                viewer.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다."));
+                if (!ECM.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), Constants.PROTECTION_POTION_PRICE)) {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+                    viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+                } else {
+                    Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(CDI.ProtectionPotion());
+                    if (!leftOver.isEmpty()) {
+                        leftOver.values().forEach(s -> BAG.addItem(viewer, s, s.getAmount()));
+                        viewer.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다. &6확인하기: /가방"));
+                    }
+                    viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+                }
+            }
+            case 5 -> {
+                viewer.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다."));
+                if (!ECM.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), Constants.SPEAR_POTION_PRICE)) {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+                    viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+                } else {
+                    Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(CDI.SpearPotion());
+                    if (!leftOver.isEmpty()) {
+                        leftOver.values().forEach(s -> BAG.addItem(viewer, s, s.getAmount()));
+                        viewer.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다. &6확인하기: /가방"));
+                    }
+                    viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+                }
+            }
+            case 6 -> {
+                viewer.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다."));
+                if (!ECM.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), Constants.DEATH_SAVER_PRICE)) {
+                    viewer.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+                    viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+                } else {
+                    Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(CDI.DeathSave());
+                    if (!leftOver.isEmpty()) {
+                        leftOver.values().forEach(s -> BAG.addItem(viewer, s, s.getAmount()));
+                        viewer.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다. &6확인하기: /가방"));
+                    }
+                    viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+                }
+            }
         }
-		ECM.deposit(owner.getUniqueId(), count);
+
         viewer.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 상품을 구매했습니다!"));
 		owner.playSound(owner, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 	}
@@ -210,7 +263,8 @@ public class ShopListener implements Listener {
         if (!(e.getPlayer() instanceof Player)) return;
         if (!(e.getInventory() instanceof MerchantInventory mi)) return;
         Merchant merchant = mi.getMerchant();
-        if (PSP.getOwner(merchant) == null) return;
-        PSP.removeShop(merchant);
+        if (PSP.getOwner(e.getInventory()) == null) return;
+        PSP.removeShop(e.getInventory());
+        if (PSP.getStockCount() == 0) PSP.disableShop();
     }
 }

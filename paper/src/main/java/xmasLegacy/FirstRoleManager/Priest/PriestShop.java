@@ -1,6 +1,7 @@
 package xmasLegacy.FirstRoleManager.Priest;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.Merchant;
 import org.jetbrains.annotations.Contract;
@@ -53,11 +54,11 @@ public class PriestShop {
         if (!isShopEnabled()) return;
     }
     @Contract("_ -> _")
-	public @Nullable Player getOwner(@Nullable Merchant merchant) {
-		return shopOwners.getOrDefault(merchant, null);
+	public @Nullable Player getOwner(@Nullable Inventory inv) {
+		return shopOwners.getOrDefault(inv == null ? null : inv.getHolder(), null);
 	}
 
-	public void removeShop(Merchant merchant) {
-		shopOwners.remove(merchant);
+	public void removeShop(Inventory inv) {
+		shopOwners.remove(inv.getHolder());
 	}
 }

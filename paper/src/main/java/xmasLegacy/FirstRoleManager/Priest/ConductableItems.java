@@ -3,6 +3,7 @@ package xmasLegacy.FirstRoleManager.Priest;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
