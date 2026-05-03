@@ -42,7 +42,7 @@ public class Gatherer extends AbstractFirstRole {
 				.build();
 		CompassMeta meta = (CompassMeta) compass.getItemMeta();
 		meta.setLodestone(target.getLocation());
-		meta.setLodestoneTracked(true);
+		meta.setLodestoneTracked(false);
 		compass.setItemMeta(meta);
 		return compass;
 	}
@@ -51,7 +51,10 @@ public class Gatherer extends AbstractFirstRole {
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		Block pose = p.getTargetBlockExact(7);
-		if (pose == null || pose.getType() != Material.SEA_LANTERN) return;
+		if (pose == null || pose.getType() != Material.SEA_LANTERN) {
+			p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 블록이 없습니다!"));
+			return;
+		}
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
@@ -67,7 +70,7 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		ItemStack tool = p.getInventory().getChestplate();
+		ItemStack tool = p.getInventory().getBoots();
 		Location loc = p.getLocation();
 		if (tool == null || tool.getType() == Material.AIR) return;
 		if (p.getCooldown(tool) > 0) {
@@ -100,6 +103,13 @@ public class Gatherer extends AbstractFirstRole {
 			}
 		}
 		p.setCooldown(tool, this.getCooldown2() * 20);
+	}
+
+	private boolean isContainer(@NotNull Block block) {
+		Material container = block.getType();
+		return container == Material.CHEST || container == Material.TRAPPED_CHEST ||
+				container == Material.ENDER_CHEST || container == Material.DISPENSER ||
+				container == Material.DROPPER || container == Material.HOPPER;
 	}
 
 	private void BlockGlow(Block block) {

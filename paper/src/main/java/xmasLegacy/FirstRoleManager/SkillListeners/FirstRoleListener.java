@@ -133,16 +133,19 @@ public class FirstRoleListener implements Listener {
 					}
 					case "gatherer" -> {
 						if (gatherer.getCurrentSkill(p) == null) return;
-						if (gatherer.getCurrentSkill(p) == BasicSkills.TRUTH_EYE) {
+						if (gatherer.getCurrentSkill(p) == BasicSkills.ETERNAL_POSE) {
 							gatherer.useFirstSkill(p);
-						} else if (gatherer.getCurrentSkill(p) == BasicSkills.ETERNAL_POSE) {
+							e.setCancelled(true);
+						} else if (gatherer.getCurrentSkill(p) == BasicSkills.TRUTH_EYE) {
 							gatherer.useSecondSkill(p);
+							e.setCancelled(true);
 						}
 					}
 				}
 			}
 		}
 	}
+
 	@EventHandler
 	public void onSkillChange(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();

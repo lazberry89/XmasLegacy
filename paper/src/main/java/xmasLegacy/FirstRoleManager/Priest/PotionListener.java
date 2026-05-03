@@ -156,6 +156,7 @@ public class PotionListener implements Listener {
 		if (item == null) return;
 		if (p.getCooldown(item) > 0) {
 			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 사용할 수 없습니다!"));
+			e.setCancelled(true);
 			return;
 		}
 		item.setAmount(e.getItem().getAmount() - 1);

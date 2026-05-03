@@ -12,6 +12,8 @@ import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.Merchant.PriceInterface;
+import xmasLegacy.FirstRoleManager.Merchant.TempCommand;
 import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
@@ -51,11 +53,14 @@ public final class XmasLegacy extends JavaPlugin {
     private EconomyManager EM;
     private PartyManager PM;
     private ConductableItems CDI;
-	private PriestShop PSP;
+	private PriestShopManager PSM;
 	private PotionListener PL;
 	private PriestCommand PC;
 	private PriestSystemShopCommand PSSC;
 	private ShopListener SL;
+	private PriceInterface PCI;
+	private xmasLegacy.FirstRoleManager.Merchant.ShopListener SPL;
+	private TempCommand TPC;
 
     private Archer archer;
     private Knight knight;
@@ -94,11 +99,14 @@ public final class XmasLegacy extends JavaPlugin {
         this.EM = new EconomyManager(UM);
         this.PM = new PartyManager(UM);
         this.CDI = new ConductableItems(this);
-		this.PSP = new PriestShop(CDI, EM);
 		this.PL = new PotionListener(this, CDI);
 		this.PC = new PriestCommand(CDI);
-		this.PSSC = new PriestSystemShopCommand(PSP);
-		this.SL = new ShopListener(PSP, UM, EM, CDI, BM, this);
+		this.PSM = new PriestShopManager(CDI, EM);
+		this.PSSC = new PriestSystemShopCommand(PSM);
+		this.SL = new ShopListener(PSM, UM, EM, CDI, BM, this);
+		this.PCI = new PriceInterface();
+		this.SPL = new xmasLegacy.FirstRoleManager.Merchant.ShopListener(PCI, UM);
+		this.TPC = new TempCommand(PCI);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -133,6 +141,7 @@ public final class XmasLegacy extends JavaPlugin {
         getServer().getPluginManager().registerEvents(GL, this);
 		getServer().getPluginManager().registerEvents(PL, this);
 		getServer().getPluginManager().registerEvents(SL, this);
+		getServer().getPluginManager().registerEvents(SPL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -149,6 +158,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("potion").setExecutor(PC);
 		getCommand("potion").setTabCompleter(PC);
 		getCommand("system").setExecutor(PSSC);
+		getCommand("shop").setExecutor(TPC);
 	}
 
 	@Override

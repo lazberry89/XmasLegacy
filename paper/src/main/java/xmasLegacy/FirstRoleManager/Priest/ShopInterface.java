@@ -3,6 +3,7 @@ package xmasLegacy.FirstRoleManager.Priest;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -55,7 +56,7 @@ public class ShopInterface implements InventoryHolder {
 		for (int i = 0; i < this.inv.getSize(); i++) this.inv.setItem(i, bg);
 		this.inv.setItem(2, PSP.getDragonStock() == 0 ? nonStock1 : CDI.DragonPotion());
 		this.inv.setItem(3, PSP.getHealerStock() == 0 ? nonStock2 : CDI.HealerPotion());
-		this.inv.setItem(4, PSP.getHealerStock() == 0 ? nonStock3 : CDI.ProtectionPotion());
+		this.inv.setItem(4, PSP.getProtectionStock() == 0 ? nonStock3 : CDI.ProtectionPotion());
 		this.inv.setItem(5, PSP.getSpearStock() == 0 ? nonStock4 : CDI.SpearPotion());
 		this.inv.setItem(6, PSP.getSaveStock() == 0 ? nonStock5 : CDI.DeathSave());
 	}
@@ -64,4 +65,6 @@ public class ShopInterface implements InventoryHolder {
 	public @NotNull Inventory getInventory() {
 		return this.inv;
 	}
+	public PriestShop getShop() {return PSP;}
+	public Player getOwner() {return PSP.getOwner();}
 }

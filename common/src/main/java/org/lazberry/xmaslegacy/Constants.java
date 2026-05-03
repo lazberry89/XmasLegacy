@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy;
 
+import net.kyori.adventure.text.Component;
+
 public class Constants {
 	//Consumable
 	public static int COOKIE_COUNT = 16;
@@ -46,4 +48,8 @@ public class Constants {
 	public static int HEALER_POTION_AMPLIFIER = 2;
 	public static int PROTECTION_POTION_DURATION = 7;
 	public static int DEATH_SAVER_DURATION = 2;
+
+	//Merchant
+	public static final Component PRICE_TITLE = ColorUtils.chat("&6&l상품 등록하기");
+	public static final Component SHOP_TITLE = ColorUtils.chat("&6&l상인 상점");
 }

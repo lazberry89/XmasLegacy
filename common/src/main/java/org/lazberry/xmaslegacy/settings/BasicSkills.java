@@ -26,7 +26,10 @@ public enum BasicSkills {
 	ORE_EYE("광부의 눈"),
 
 	ETERNAL_POSE("회귀의 바늘"),
-	TRUTH_EYE("에테르의 눈");
+	TRUTH_EYE("에테르의 눈"),
+
+	OPEN_STOCKS("구매품 보기"),
+	SELL_ITEMS("판매하기");
 
 	private final String korName;
 
@@ -76,6 +79,10 @@ public enum BasicSkills {
 			// Gatherer
 			case ETERNAL_POSE -> TRUTH_EYE;
 			case TRUTH_EYE -> ETERNAL_POSE;
+
+			//Merchant
+			case OPEN_STOCKS -> SELL_ITEMS;
+			case SELL_ITEMS -> OPEN_STOCKS;
 		};
 	}
 	public String getSkillName() {

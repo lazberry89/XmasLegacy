@@ -3,7 +3,6 @@ package xmasLegacy.FirstRoleManager.Priest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.Merchant;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.EconomyManager;
@@ -13,6 +12,7 @@ import java.util.*;
 public class PriestShop {
     private final ConductableItems CDI;
     private final EconomyManager EM;
+	private final Player owner;
 	private final Map<InventoryHolder, Player> shopOwners = new HashMap<>();
 
     private boolean isShopEnabled = false;
@@ -22,9 +22,10 @@ public class PriestShop {
     private int SpearStock = 0;
     private int SaveStock = 0;
 
-    public PriestShop(ConductableItems CDI,  EconomyManager EM) {
+    public PriestShop(ConductableItems CDI,  EconomyManager EM, Player owner) {
         this.CDI = CDI;
         this.EM = EM;
+		this.owner = owner;
     }
 
     public void setDragonStock(int DragonStock) {this.DragonStock = DragonStock;}
@@ -50,9 +51,12 @@ public class PriestShop {
     public void disableShop() {this.isShopEnabled = false;}
     public boolean isShopEnabled() {return this.isShopEnabled;}
 
-    public void openShop(Player viewer, Player owner) {
-        if (!isShopEnabled()) return;
-    }
+	public void openShop(Player viewer) {
+		if (!isShopEnabled()) return;
+		ShopInterface shopInterface = new ShopInterface(this, CDI);
+		viewer.openInventory(shopInterface.getInventory());
+	}
+
     @Contract("_ -> _")
 	public @Nullable Player getOwner(@Nullable Inventory inv) {
 		return shopOwners.getOrDefault(inv == null ? null : inv.getHolder(), null);
@@ -61,4 +65,6 @@ public class PriestShop {
 	public void removeShop(Inventory inv) {
 		shopOwners.remove(inv.getHolder());
 	}
+
+	public Player getOwner() {return this.owner;}
 }
