@@ -16,7 +16,7 @@ public class TempCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 		if (!(commandSender instanceof Player p)) return false;
-		p.openInventory(PCI.PriceSet());
+		p.openInventory(PCI.MerchantShop());
 		return false;
 	}
 }

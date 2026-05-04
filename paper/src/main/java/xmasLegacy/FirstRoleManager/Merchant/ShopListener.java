@@ -1,5 +1,6 @@
 package xmasLegacy.FirstRoleManager.Merchant;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -13,28 +14,34 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
+import org.lazberry.xmaslegacy.EconomyManager;
+import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Prefix;
 import xmasLegacy.XmasLegacy;
 
 import java.util.Map;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class ShopListener implements Listener {
 	private final PriceInterface PIF;
 	private final UserManager um;
+	private final EconomyManager em;
+	private boolean ignoreReset = false;
 
-	public ShopListener(PriceInterface PIF, UserManager um) {
+	public ShopListener(PriceInterface PIF, UserManager um, EconomyManager em) {
 		this.PIF = PIF;
 		this.um = um;
+		this.em = em;
 	}
 
+	@SuppressWarnings("DuplicatedCode")
 	@EventHandler
 	public void OwnerSetting(InventoryClickEvent e) {
 		int slot = e.getRawSlot();
 		if (!(e.getWhoClicked() instanceof Player p)) return;
 		Inventory inv = e.getInventory();
-		if (e.getInventory().equals(PIF.MerchantShop())) {
+		Component view = e.getView().title();
+		if (view.equals(Constants.SHOP_TITLE)) {
 			e.setCancelled(true);
 
 			if (!PIF.getAvailableSlot().contains(slot)) return;
@@ -42,15 +49,22 @@ public class ShopListener implements Listener {
 			if (prd == null) {
 				PIF.setSlot(slot);
 				p.openInventory(PIF.PriceSet());
+			} else {
+				PIF.setPurchaseItem(prd);
+				PIF.PurchaseInv(slot);
+				PIF.setSlot(slot);
+				p.openInventory(PIF.getPurchaseInv());
+				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			}
-		} else if (e.getInventory().equals(PIF.PriceSet())) {
+		} else if (view.equals(Constants.PRICE_TITLE)) {
 			switch (slot) {
 				case 0 -> {
 					e.setCancelled(true);
-					p.openInventory(PIF.MerchantShop());
 					ItemStack i = inv.getItem(4);
 					if (i != null && i.getType() != Material.AIR) {
 						Map<Integer, ItemStack> leftOver = p.getInventory().addItem(i);
+						inv.setItem(4, null);
+						PIF.removeProduct();
 						if (!leftOver.isEmpty()) {
 							for (ItemStack item : leftOver.values()) {
 								p.getWorld().dropItemNaturally(p.getLocation(), item);
@@ -58,86 +72,133 @@ public class ShopListener implements Listener {
 						}
 					}
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+					p.openInventory(PIF.MerchantShop());
 				}
-				case 3 -> {
-					e.setCancelled(true);
-					Product prd = PIF.getProduct(PIF.getSelectedSlot());
-					if (prd == null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
-						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
-					} else {
-						prd.addPrice(500);
-						p.openInventory(PIF.PriceSet());
-						p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-					}
+			case 3 -> {
+				e.setCancelled(true);
+				Product prd = PIF.getProduct(PIF.getSelectedSlot());
+				if (prd == null) {
+					p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+				} else {
+					prd.addPrice(500);
+					PIF.reloadIcons();
+					PIF.reloadShopIcons();
+					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 				}
-				/*
-				case 4 -> {
-					if (inv.getItem(4) == null) {
+			}
+
+			case 4 ->
+				Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(XmasLegacy.class), () -> {
+					ItemStack itemInSlot = inv.getItem(4);
+					if (itemInSlot == null || itemInSlot.getType() == Material.AIR) {
 						PIF.removeProduct();
 					} else {
-						Product prd = new Product(inv.getItem(4), 500);
+						Product prd = new Product(itemInSlot, 500);
 						PIF.setProduct(prd, prd.getPrice());
 					}
-				}
-				 */
-				case 4 ->
-					// 1틱 뒤에 실행하여 아이템이 슬롯에 들어간 후 데이터를 처리함
-					Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(XmasLegacy.class), () -> {
-						ItemStack itemInSlot = inv.getItem(4);
-						if (itemInSlot == null || itemInSlot.getType() == Material.AIR) {
-							PIF.removeProduct();
-						} else {
-							Product prd = new Product(itemInSlot, 500);
-							PIF.setProduct(prd, prd.getPrice());
-							p.openInventory(PIF.PriceSet());
-						}
-					});
-				case 5 -> {
-					e.setCancelled(true);
-					Product prd = PIF.getProduct(PIF.getSelectedSlot());
-					if (prd == null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					PIF.reloadIcons();
+					PIF.reloadShopIcons();
+				});
+			case 5 -> {
+				e.setCancelled(true);
+				Product prd = PIF.getProduct(PIF.getSelectedSlot());
+				if (prd == null) {
+					p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+				} else {
+					if (prd.getPrice() < 500) {
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 가격이 너무 낮습니다!"));
 						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
-					} else {
-						if (prd.getPrice() < 500) {
-							p.sendMessage(ColorUtils.chat(Prefix.RED + " 가격이 너무 낮습니다!"));
-							p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
-							return;
-						}
-						prd.removePrice(500);
-						p.openInventory(PIF.PriceSet());
-						p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+						return;
 					}
+					prd.removePrice(500);
+					PIF.reloadIcons();
+					PIF.reloadShopIcons();
+					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 				}
-				case 8 -> {
-					e.setCancelled(true);
-					Product prd = PIF.getProduct(PIF.getSelectedSlot());
-					if (prd == null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
-						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
-					} else {
-						e.getInventory().setItem(4, new ItemStack(Material.AIR));
-						PIF.setProduct(prd, prd.getPrice());
-						p.openInventory(PIF.MerchantShop());
-						p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품이 등록되었습니다!"));
-						p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-					}
-
+			}
+			case 8 -> {
+				e.setCancelled(true);
+				Product prd = PIF.getProduct(PIF.getSelectedSlot());
+				if (prd == null) {
+					p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+				} else {
+					e.getInventory().setItem(4, new ItemStack(Material.AIR));
+					PIF.setProduct(prd, prd.getPrice());
+					p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품이 등록되었습니다!"));
+					ignoreReset = true;
+					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+					PIF.reloadShopIcons();
+					Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(XmasLegacy.class),
+							() -> p.openInventory(PIF.MerchantShop()), 1L);
 				}
+			}
 				default -> {
 					if (slot < 9) e.setCancelled(true);
 				}
 			}
 		}
 	}
+	@EventHandler
+	@SuppressWarnings("DuplicatedCode")
+	public void onPurchase(InventoryClickEvent e) {
+		if (!(e.getWhoClicked() instanceof Player p)) return;
+		User user = um.getUser(p.getUniqueId());
+		Inventory inv = e.getInventory();
+		if (e.getView().title().equals(Constants.PURCHASE_TITLE)) {
+			e.setCancelled(true);
+			int slot = e.getRawSlot();
+			Product prd = PIF.getPurchaseItem();
+			if (prd == null) return;
+			switch (slot) {
+				case 12 -> {
+					if (user.getDollars() < prd.getPrice()) {
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+						return;
+					}
+					if (em.transferMoney(p.getUniqueId(), PIF.getOwner(), prd.getPrice())) {
+						p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다!"));
+						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+						Map<Integer, ItemStack> leftOver = p.getInventory().addItem(prd.getItem());
+						if (!leftOver.isEmpty()) {
+							for (ItemStack item : leftOver.values()) {
+								p.getWorld().dropItemNaturally(p.getLocation(), item);
+							}
+						}
+					} else {
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 구매에 실패하였습니다!"));
+						p.sendMessage(ColorUtils.chat(Prefix.RED + " 잔액부족 : &c" + user.getDollars()));
+						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+					}
+					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+					p.openInventory(PIF.MerchantShop());
+					PIF.removeProduct();
+					PIF.removePurchaseItem();
+					PIF.reloadShopIcons();
+				}
+				case 14 -> {
+					p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+					p.openInventory(PIF.MerchantShop());
+				}
+			}
+		}
+	}
+
 	@SuppressWarnings("DuplicatedCode")
 	@EventHandler
 	public void onRunAwayWhilePrice(InventoryCloseEvent e) {
 		if (!(e.getPlayer() instanceof Player p)) return;
 		Inventory inv = e.getInventory();
 		ItemStack item = inv.getItem(4);
-		if (inv.equals(PIF.PriceSet())) {
+		if (e.getView().title().equals(Constants.PRICE_TITLE)) {
+			inv.setItem(4, new ItemStack(Material.AIR));
+			if (!ignoreReset) {
+				PIF.removeProduct();
+			}
+			ignoreReset = false;
 			if (item != null && item.getType() != Material.AIR) {
 				Map<Integer, ItemStack> leftOver = p.getInventory().addItem(item);
 				if (!leftOver.isEmpty()) {
