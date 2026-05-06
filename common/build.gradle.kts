@@ -16,6 +16,7 @@ dependencies {
     compileOnly("net.kyori:adventure-text-minimessage:4.17.0")
     compileOnly("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.17.0")
+    compileOnly("org.slf4j:slf4j-api:2.0.9")
 }
 
 java {

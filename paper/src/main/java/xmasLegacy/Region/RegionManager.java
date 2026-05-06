@@ -36,7 +36,7 @@ public class RegionManager {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                plugin.getSLF4JLogger().error("파일생성중 문제: {}", e.getMessage(), e);
             }
         }
         config = YamlConfiguration.loadConfiguration(file);
@@ -59,8 +59,7 @@ public class RegionManager {
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().severe("구역 데이터를 저장하는 중 오류 발생!");
-            e.printStackTrace();
+            plugin.getSLF4JLogger().error("구역 데이터를 저장하는 중 오류: {}", e.getMessage(), e);
         }
     }
 
@@ -87,7 +86,7 @@ public class RegionManager {
 
             regions.computeIfAbsent(owner, k -> new ArrayList<>()).add(region);
         }
-        plugin.getLogger().info("[Region] " + regions.size() + "명의 유저 구역 데이터를 로드했습니다.");
+        plugin.getSLF4JLogger().info("[Region] {}명의 유저 구역 데이터를 로드했습니다.", regions.size());
     }
 
     public void addRegion(Player p, Region region) {
@@ -106,7 +105,7 @@ public class RegionManager {
 					regions.remove(ownerUUID);
 				}
 				saveAll();
-				plugin.getLogger().info("[Region] 구역이 삭제되었습니다. ID: " + region.getId());
+                plugin.getSLF4JLogger().info("[Region] 구역이 삭제되었습니다. ID: {}", region.getId());
 			}
 		}
 	}

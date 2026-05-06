@@ -1,11 +1,15 @@
 package org.lazberry.xmaslegacy.User;
 
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.UUID;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class SqlUserRepository implements UserRepository {
+	private static final Logger logger = LoggerFactory.getLogger(SqlUserRepository.class);
 
 	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
 	private final String user = "root";
@@ -32,10 +36,10 @@ public class SqlUserRepository implements UserRepository {
 				");";
 
 		try (Connection conn = getConnection();
-		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.execute();
+		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error occurred while Creating Table Task -> {}", e.getMessage(), e);
 		}
 	}
 
@@ -45,10 +49,10 @@ public class SqlUserRepository implements UserRepository {
 
 		// try-with-resources: conn과 pstmt를 다 쓰면 자동으로 닫아줍니다 (메모리 누수 방지)
 		try (Connection conn = getConnection();
-		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		     PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-			pstmt.setString(1, uuid.toString());
-			ResultSet rs = pstmt.executeQuery();
+			stmt.setString(1, uuid.toString());
+			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) { // 데이터가 존재한다면
 				String name = rs.getString("name");
@@ -64,10 +68,11 @@ public class SqlUserRepository implements UserRepository {
 				return loadedUser;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Sql error while loading User '{}' -> {}", uuid, e.getMessage(), e);
 		}
 		return null;
 	}
+	//for mongoDB
 	/*
 	@Override
 	public void saveUser(User user) {
@@ -118,7 +123,7 @@ public class SqlUserRepository implements UserRepository {
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("sql error while saving User -> {}", e.getMessage(), e);
 		}
 	}
 	@Override
@@ -130,7 +135,7 @@ public class SqlUserRepository implements UserRepository {
 			ResultSet rs = pstmt.executeQuery();
 			return rs.next();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Sql error during exist -> {}", e.getMessage(), e);
 			return false;
 		}
 	}

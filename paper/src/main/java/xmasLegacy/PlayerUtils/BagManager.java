@@ -71,7 +71,7 @@ public class BagManager {
 		try {
 			config.save(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			plugin.getSLF4JLogger().error("가방 정보를 저장하던 중 오류: {}", e.getMessage(), e);
 		}
 	}
 

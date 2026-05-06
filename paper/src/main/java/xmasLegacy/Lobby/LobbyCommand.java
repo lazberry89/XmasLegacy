@@ -1,5 +1,6 @@
 package xmasLegacy.Lobby;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -43,7 +44,14 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                 case "set" -> {
                     Location loc = p.getLocation();
                     LBM.setSpawn(loc);
-                    p.sendMessage(ColorUtils.chat(String.format("%s 스폰 위치가 정상적으로 등록되었습니다!&6 (%d, %d, %d)", Prefix.GREEN, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
+
+                    LBM.save().thenRun(() ->
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            p.sendMessage(ColorUtils.chat(String.format("%s 스폰 위치가 파일에 저장되었습니다!", Prefix.GREEN)));
+                            p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                        })
+                    );
+                    p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 위치 저장 중..."));
                 }
                 case "location" -> {
                     Location loc = LBM.getSpawn();
@@ -57,6 +65,22 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                 case "reset" -> {
                     LBM.resetSpawn();
                     p.sendMessage(Prefix.GREEN + " 성공적으로 위치가 초기화되었습니다.");
+                }
+                case "reload" -> {
+                    p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 위치 정보를 새로 불러오는 중..."));
+
+                    LBM.reload().thenAccept(success -> {
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            if (success) {
+                                p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 위치 정보를 성공적으로 새로 로드했습니다!"));
+                                p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.2f);
+                            } else {
+                                p.sendMessage(ColorUtils.chat(Prefix.RED + " 로드 중 오류가 발생했거나 스폰 설정이 없습니다."));
+                                p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+                            }
+                            plugin.playConsoleSound();
+                        });
+                    });
                 }
                 default -> {
                     p.sendMessage(ColorUtils.chat(Prefix.RED + " 올바른 명령어 사용법이 아닙니다."));

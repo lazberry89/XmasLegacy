@@ -86,7 +86,6 @@ public class UserManager {
 				if (isFloodgate) {
 					loaded.setDollars(loaded.getDollars() + 5000);
 				}
-
 				repository.saveUser(loaded);
 			}
 

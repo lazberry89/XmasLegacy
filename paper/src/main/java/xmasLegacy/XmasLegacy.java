@@ -124,9 +124,9 @@ public final class XmasLegacy extends JavaPlugin {
 		this.gatherer = new Gatherer(4, 4, this);
 
 		if (AgeableCrops.RegisterRecipe()) {
-			getLogger().info("Recipe Registered!");
+			getSLF4JLogger().info("Recipe Registered!");
 		} else {
-			getLogger().warning("Recipe Not Registered!");
+			getSLF4JLogger().error("Recipe Not Registered!");
 		}
 		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage, priest, farmer, miner, gatherer);
 		this.TC.setPM(PM);
@@ -172,14 +172,14 @@ public final class XmasLegacy extends JavaPlugin {
             RGM.saveAll();
         }
 		//UM.getAllUsers().forEach(UM::saveUserToFile);
-		getLogger().info("모든 유저 데이터를 자동 저장했습니다.");
+		getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
 		if (CM != null) {
 			CM.stopCookieTimer();
 		}
 		if (BM != null) {
 			BM.saveAllBags();
 		}
-		getLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+		getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
 	}
 
     public NamespacedKey getNamespacedKey(String key) {
@@ -187,8 +187,7 @@ public final class XmasLegacy extends JavaPlugin {
     }
 
     public void playConsoleSound() {
-        System.out.print("\u0007");
-        System.out.flush();
+		java.awt.Toolkit.getDefaultToolkit().beep();
     }
 	private void serverType() {
 		saveDefaultConfig();
@@ -196,16 +195,17 @@ public final class XmasLegacy extends JavaPlugin {
 		String serverType = getConfig().getString("server-type", "main");
 
 		if (serverType.equals("lobby")) {
+			getLogger().warning("Lobby 모드로 시작합니다.");
 			LobbyManager LM = new LobbyManager(this);
 			getServer().getPluginManager().registerEvents(
 					new LobbyListener(this, LM), this);
 			LobbyCommand LBC = new LobbyCommand(LM, this);
 			getCommand("lobby").setExecutor(LBC);
 			getCommand("lobby").setTabCompleter(LBC);
-			getLogger().warning("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"" + serverType + "\"");
+			getSLF4JLogger().warn("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 		} else if (serverType.equals("main")) {
 			getLogger().warning("Main 모드로 시작합니다.");
-			getLogger().warning("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"" + serverType + "\"");
+			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 		}
 	}
 
