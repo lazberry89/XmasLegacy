@@ -34,6 +34,10 @@ commands:
     usage: /vanish
     description: 리스트, 인게임에서 소멸 후 유저관찰
 
+  lobby:
+    usage: /lobby <set | location | reset>
+    description: 로비설정
+
   test:
 
   potion:

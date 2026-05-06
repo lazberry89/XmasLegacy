@@ -18,6 +18,9 @@ import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
+import xmasLegacy.Lobby.LobbyCommand;
+import xmasLegacy.Lobby.LobbyListener;
+import xmasLegacy.Lobby.LobbyManager;
 import xmasLegacy.PlayerUtils.BagCommandManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.Region.*;
@@ -74,6 +77,8 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		serverType();
+
         this.UM = new UserManager();
         this.SJM = new ServerJoinManager(UM, this);
         this.RM = new RuleManager(new ArrayList<>());
@@ -105,7 +110,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.PSSC = new PriestSystemShopCommand(PSM);
 		this.SL = new ShopListener(PSM, UM, EM, CDI, BM, this);
 		this.PCI = new PriceInterface();
-		this.SPL = new xmasLegacy.FirstRoleManager.Merchant.ShopListener(PCI, UM);
+		this.SPL = new xmasLegacy.FirstRoleManager.Merchant.ShopListener(PCI, UM, EM);
 		this.TPC = new TempCommand(PCI);
 
         this.archer = new Archer(4, 4, this);
@@ -185,4 +190,27 @@ public final class XmasLegacy extends JavaPlugin {
         System.out.print("\u0007");
         System.out.flush();
     }
+	private void serverType() {
+		saveDefaultConfig();
+
+		String serverType = getConfig().getString("server-type", "main");
+
+		if (serverType.equals("lobby")) {
+			LobbyManager LM = new LobbyManager(this);
+			getServer().getPluginManager().registerEvents(
+					new LobbyListener(this, LM), this);
+			LobbyCommand LBC = new LobbyCommand(LM, this);
+			getCommand("lobby").setExecutor(LBC);
+			getCommand("lobby").setTabCompleter(LBC);
+			getLogger().warning("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"" + serverType + "\"");
+		} else if (serverType.equals("main")) {
+			getLogger().warning("Main 모드로 시작합니다.");
+			getLogger().warning("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"" + serverType + "\"");
+		}
+	}
+
+	public String getServerType() {
+		saveDefaultConfig();
+		return getConfig().getString("server-type", "lobby");
+	}
 }
