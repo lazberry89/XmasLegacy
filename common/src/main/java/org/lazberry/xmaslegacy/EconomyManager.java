@@ -50,6 +50,13 @@ public class EconomyManager {
 	    return (user != null) ? user.getDollars() : 0;
     }
 
+	public boolean setBalance(UUID uuid, int amount) {
+		User user = um.getUser(uuid);
+		if (user == null) return false;
+		user.setDollars(amount);
+		return true;
+	}
+
     public boolean hasEnough(UUID uuid, int amount) {
         if (amount <= 0) return false;
         int userMoney = um.getUser(uuid).getDollars();
@@ -71,9 +78,6 @@ public class EconomyManager {
 
     public int getPriceAdjustment(String itemKey, int basePrice) {
         int soldCount = marketDemand.getOrDefault(itemKey, 0);
-
-        // 예시 공식: 5개 팔릴 때마다 기본 가격의 10%씩 인상
-        // 만약 할인도 적용하고 싶다면 soldCount의 기준점을 잡고 음수를 반환하도록 짜면 됩니다.
         double rate = ((double) soldCount / 5) * 0.10;
 
         return (int) (basePrice * rate);

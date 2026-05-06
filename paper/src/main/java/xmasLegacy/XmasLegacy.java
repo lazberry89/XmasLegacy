@@ -7,6 +7,9 @@ import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryRepository;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
+import xmasLegacy.Cosmetics.CosmeticManager;
+import xmasLegacy.Cosmetics.CosmeticsCommand;
+import xmasLegacy.Economy.OperatorCurrency;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
@@ -64,6 +67,9 @@ public final class XmasLegacy extends JavaPlugin {
 	private PriceInterface PCI;
 	private xmasLegacy.FirstRoleManager.Merchant.ShopListener SPL;
 	private TempCommand TPC;
+	private OperatorCurrency OC;
+	private CosmeticManager CSM;
+	private CosmeticsCommand CCC;
 
     private Archer archer;
     private Knight knight;
@@ -112,6 +118,10 @@ public final class XmasLegacy extends JavaPlugin {
 		this.PCI = new PriceInterface();
 		this.SPL = new xmasLegacy.FirstRoleManager.Merchant.ShopListener(PCI, UM, EM);
 		this.TPC = new TempCommand(PCI);
+		this.OC = new OperatorCurrency(EM);
+		this.CSM = new CosmeticManager();
+		this.CCC = new CosmeticsCommand(CSM);
+
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -164,6 +174,10 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("potion").setTabCompleter(PC);
 		getCommand("system").setExecutor(PSSC);
 		getCommand("shop").setExecutor(TPC);
+		getCommand("currency").setExecutor(OC);
+		getCommand("currency").setTabCompleter(OC);
+		getCommand("cos").setExecutor(CCC);
+		getCommand("cos").setTabCompleter(CCC);
 	}
 
 	@Override

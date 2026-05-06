@@ -38,6 +38,10 @@ commands:
     usage: /lobby <set | location | reset>
     description: 로비설정
 
+  currency:
+
+  cos:
+
   test:
 
   potion:
@@ -45,3 +49,5 @@ commands:
   system:
 
   shop:
+
+

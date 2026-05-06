@@ -58,7 +58,6 @@ public class ServerJoinManager implements Listener {
 			);
 			case "lobby" -> {
 				e.joinMessage(ColorUtils.chat(Prefix.XmasLegacy + " 입장을 환영합니다! 전방의 포탈로 게임을 시작하세요."));
-				p.playSound(p, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 			}
 		}
 	}

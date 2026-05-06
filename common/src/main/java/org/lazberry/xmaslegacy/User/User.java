@@ -34,7 +34,10 @@ public class User {
     public void setInquireCount(int inquireCount) {this.inquireCount = inquireCount;}
     public void setPlayTime(int playTime) {this.playTime = playTime;}
     public void setRole(@Nullable Roles role) {this.role = role;}
-    public void addDollars(int dollars) {this.dollars += dollars;}
+    public void addDollars(int dollars) {
+		this.dollars += dollars;
+		if (this.dollars < 0) this.dollars = 0;
+	}
     public void addInquireCount(int inquireCount) {this.inquireCount += inquireCount;}
     public void addPlayTime(int playTime) {this.playTime += playTime;}
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
