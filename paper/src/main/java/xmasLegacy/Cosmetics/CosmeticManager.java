@@ -11,7 +11,8 @@ public class CosmeticManager {
 	private final Map<String, Cosmetics> equippedCosmetics = new HashMap<>();
 
 	public void addCosmetics(ItemStack model, String name) {
-		Cosmetics cosmetic = new Cosmetics(model, name);
+		CosmeticType type = name.contains("head") ? CosmeticType.HEAD : CosmeticType.BODY;
+		Cosmetics cosmetic = new Cosmetics(model, name, type);
 		equippedCosmetics.put(name, cosmetic);
 	}
 

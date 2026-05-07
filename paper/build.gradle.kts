@@ -26,7 +26,7 @@ tasks {
 
     shadowJar {
         // 빌드된 파일 이름 뒤에 -all이 붙지 않도록 설정
-        archiveClassifier.set("")
+        archiveFileName.set("XmasLegacy.jar")
     }
 
     build {

@@ -17,6 +17,7 @@ public class Cosmetics {
 	private final String name;
 	private final Map<UUID, ItemDisplay> display = new HashMap<>();
 	private final Map<UUID, BukkitTask> task = new HashMap<>();
+	private final Map<UUID, Float> lastYaw = new HashMap<>();
 	private final XmasLegacy plugin = JavaPlugin.getPlugin(XmasLegacy.class);
 
 	public Cosmetics(ItemStack model, String name) {
@@ -37,15 +38,11 @@ public class Cosmetics {
 		// Billboard를 FIXED로 설정 (고정된 각도 유지)
 		display.setBillboard(Display.Billboard.FIXED);
 
-
-		// Transformation 설정: 위치 조정 및 크기 확대
-		// Y: -0.7f (내려옴), Z: -1.0f (더 뒤로)
-		// Scale: 1.3f (30% 더 큼)
 		org.bukkit.util.Transformation transformation = display.getTransformation();
 		transformation.getTranslation().set(0.0f, -0.7f, -1.0f);
 		transformation.getScale().set(1.3f, 1.3f, 1.3f);
 		display.setTransformation(transformation);
-		display.setInterpolationDuration(5);
+		display.setInterpolationDuration(3);
 
 		// 플레이어에게 passenger로 태움
 		p.addPassenger(display);
@@ -54,14 +51,15 @@ public class Cosmetics {
 	}
 
 	private void updateCosmeticDisplay(Player p, ItemDisplay display) {
-		org.bukkit.Location loc = p.getLocation();
-		float yaw = loc.getYaw();
-		float pitch = loc.getPitch();
+		UUID uuid = p.getUniqueId();
+		float bodyYaw = p.getYaw();
+		float pitch = p.getLocation().getPitch();
 
-		// 회전만 업데이트 (passenger로 태웠으므로 위치는 자동 동기화)
-		display.setRotation(yaw, 0);
+		if (Math.abs(bodyYaw - lastYaw.getOrDefault(uuid, bodyYaw)) > 1.0f) {
+			display.setRotation(bodyYaw, 0);
+			lastYaw.put(uuid, bodyYaw);
+		}
 
-		// 플레이어가 너무 아래를 볼 때 코스메틱 숨김
 		if (pitch > 60 && display.isVisibleByDefault()) {
 			display.setVisibleByDefault(false);
 		} else if (pitch <= 60 && !display.isVisibleByDefault()) {
@@ -89,7 +87,7 @@ public class Cosmetics {
 
 			updateCosmeticDisplay(p, d);
 
-		}, 0L, 1L);  // 매 틱마다 업데이트 (부드러운 동기화)
+		}, 0L, 1L);
 		this.task.put(uuid, newTask);
 	}
 
@@ -112,6 +110,7 @@ public class Cosmetics {
 			task.cancel();
 			this.task.remove(uuid);
 		}
+		lastYaw.remove(uuid);
 	}
 
 	@Override
