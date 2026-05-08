@@ -4,7 +4,8 @@ version: '${version}'
 main: xmasLegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
-depend: [floodgate]
+depend: [floodgate, geyser]
+softdepend: [oraxen]
 commands:
   문의:
     usage: /문의 <내용>
@@ -39,15 +40,16 @@ commands:
     description: 로비설정
 
   currency:
+    usage: /currency <add | remove | set | check | transfer> <Player(Player, Player)> <amount>
+    description: 금전 이동,확인,설정
 
   cos:
+    usage: /cos <add | remove | equip | unequip> <Name>
+    description: 치장을 관리합니다.
 
   test:
-
   potion:
-
   system:
-
   shop:
 
 

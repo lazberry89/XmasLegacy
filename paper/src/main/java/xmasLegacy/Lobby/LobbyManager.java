@@ -32,19 +32,6 @@ public class LobbyManager {
     public @Nullable Location getSpawn() {
         return this.spawn;
     }
-    /*
-    private void save() {
-        if (spawn == null) return;
-        FileConfiguration config = plugin.getConfig();
-        config.set("lobby.spawn.world", spawn.getWorld().getName());
-        config.set("lobby.spawn.x", spawn.getX());
-        config.set("lobby.spawn.y", spawn.getY());
-        config.set("lobby.spawn.z", spawn.getZ());
-        config.set("lobby.spawn.yaw", spawn.getYaw());
-        config.set("lobby.spawn.pitch", spawn.getPitch());
-        plugin.saveConfig();
-    }
-    */
     public CompletableFuture<Void> save() {
         if (spawn == null) return CompletableFuture.completedFuture(null);
 
@@ -60,6 +47,7 @@ public class LobbyManager {
             plugin.saveConfig();
         }, task -> Bukkit.getScheduler().runTaskAsynchronously(plugin, task));
     }
+
     private boolean load() {
         FileConfiguration config = plugin.getConfig();
         if (!config.contains("lobby.spawn")) return false;
@@ -81,15 +69,6 @@ public class LobbyManager {
         this.spawn = new Location(world, x, y, z, yaw, pitch);
         return true;
     }
-    /*
-    public boolean reload() {
-        if (load()) {
-            return false;
-        }
-        save();
-        return true;
-    }
-    */
 
     public CompletableFuture<Boolean> reload() {
         return CompletableFuture.supplyAsync(() -> {

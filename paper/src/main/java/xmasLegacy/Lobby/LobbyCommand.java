@@ -103,6 +103,7 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
             result.add("set");
             result.add("location");
             result.add("reset");
+            result.add("reload");
         }
         return result;
     }

@@ -29,11 +29,11 @@ public abstract class AbstractFirstRole {
 	public abstract @NotNull Roles getRole();
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();
+	public abstract @NotNull ItemStack roleBook();
 
 	public int getCooldown1() {
 		return cooldown1;
 	}
-
 	public int getCooldown2() {
 		return cooldown2;
 	}

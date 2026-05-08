@@ -8,6 +8,8 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -113,5 +115,16 @@ public class Archer extends AbstractFirstRole {
                 .hideAllFlags()
                 .build()
                 .clone();
+    }
+
+    @Override
+    public @NotNull ItemStack roleBook() {
+        ItemStack book = new ItemStack(Material.BOOK, 1);
+        ItemMeta meta = book.getItemMeta();
+        if (meta != null) {
+            BookMeta bookMeta = (BookMeta) meta;
+            bookMeta.author(ColorUtils.chat("&c&lSystem"));
+        }
+        return null;
     }
 }
