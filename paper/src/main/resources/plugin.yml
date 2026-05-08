@@ -4,7 +4,7 @@ version: '${version}'
 main: xmasLegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
-depend: [floodgate, geyser]
+depend: [floodgate]
 softdepend: [oraxen]
 commands:
   문의:

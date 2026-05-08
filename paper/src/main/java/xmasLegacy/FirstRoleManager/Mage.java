@@ -216,4 +216,39 @@ public class Mage extends AbstractFirstRole {
                 .setTag("role_id", "MageArmor")
                 .build().clone();
     }
+
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 마력의 심오함이 느껴지는 직업 설명
+		String page1 = """
+          &8&l[ MAGE ]
+          
+          &7마법사는 취약한 신체를 지녔으나
+          원소의 근원을 투사하여 전장을
+          지배하는 중·장거리의 지배자입니다.
+          
+          &8&m-----------------
+          &8&l[ ADVANCE ]
+          &8- &72차: 위자드, 엘리멘탈, 소환사
+          &8- &73차: 아크메이지
+          """;
+
+		// [페이지 2] 파괴적인 마법 스킬 설명
+		String page2 = String.format("""
+          &8&l[ SKILLS ]
+          
+          &8&l▶ 극점 [%d초]
+          &7잠재된 중력 응축 에너지를
+          &7느리지만 강력하게 발사합니다.
+          
+          &6&l▶ &e&l중력장 &8[%d초]
+          &7공간을 왜곡해 적들을 중심부로
+          &7강력하게 끌어당깁니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		// 부모 클래스의 메서드 활용 (2페이지 구성)
+		return createGuideBook("마법사", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }

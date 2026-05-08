@@ -160,4 +160,37 @@ public class Knight extends AbstractFirstRole {
                 .build()
                 .clone();
     }
+
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 강철의 위엄이 느껴지는 직업 설명
+		String page1 = """
+          &8&l[ KNIGHT ]
+          
+          &7기사는 강철의 갑주를 두르고
+          공방의 조화를 이루는 가장
+          신뢰받는 전장의 주역입니다.
+          
+          &8&m-----------------
+          &8&l[ ADVANCE ]
+          &8- &72차: 가디언, 디펜더
+          &8- &73차: 팔라딘
+          """;
+
+		// [페이지 2] 스킬 설명 및 쇼케이스
+		String page2 = String.format("""
+          &8&l[ SKILLS ]
+          
+          &8&l▶ 칼날돌진 [%d초]
+          &7연쇄 공격을 퍼부으며 &c&l돌격&r&7합니다.
+          
+          &8&l▶ &e&l광역 도발 [%d초]
+          &7주변 적의 시선을 강제합니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		// 부모 클래스의 메서드 활용 (2페이지 구성)
+		return createGuideBook("기사", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }

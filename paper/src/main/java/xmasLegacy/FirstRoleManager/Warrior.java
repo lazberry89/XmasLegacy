@@ -175,4 +175,39 @@ public class Warrior extends AbstractFirstRole {
 		        .setTag("role_id", "WarriorArmor")
 		        .build().clone();
     }
+
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 야성적인 파괴력을 강조한 직업 설명
+		String page1 = """
+          &8&l[ WARRIOR ]
+          
+          &7전사는 압도적인 파괴력과
+          강인한 생명력으로 전장의 최전선을
+          유린하는 거침없는 투사입니다.
+          
+          &8&m-----------------
+          &8&l[ &d&lADVANCE &8&l]&r
+          &8- &72차: 버서커, 파이터
+          &8- &73차: &8&o추후 공개 예정...
+          """;
+
+		// [페이지 2] 단순하고 강력한 스킬 설명
+		String page2 = String.format("""
+          &8&l[ &a&lSKILLS ]
+          
+          &8&l▶ &e&l토마호크 [%d초]
+          &7도끼를 투척해 적중 시 대상의
+          등 뒤로 소리 없이 도약합니다.
+          
+          &8&l▶ 프렌지 [%d초]
+          &7자신의 혈기를 방출하여 주변의
+          &7적들을 모두 공중으로 분쇄합니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		// 부모 클래스의 메서드 활용 (2페이지 구성)
+		return createGuideBook("전사", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }

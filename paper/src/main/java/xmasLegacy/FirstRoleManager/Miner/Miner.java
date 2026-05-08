@@ -160,5 +160,38 @@ public class Miner extends AbstractFirstRole {
 				.clone();
 	}
 
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 광산의 깊이감이 느껴지는 직업 설명
+		String page1 = """
+          &8&l[ MINER ]
+          
+          &7광부는 거친 암석 속에서
+          희귀 광물을 찾아내는 천부적인
+          생산의 대가이자 자원의 주인입니다.
+          
+          &8&m-----------------
+          &8&l[ ADVANCE ]
+          &8- &72차: &8&o추후 공개 예정...
+          &8- &73차: &8&o추후 공개 예정...
+          """;
 
+		// [페이지 2] 효율적인 채굴 스킬 설명
+		String page2 = String.format("""
+          &8&l[ SKILLS ]
+          
+          &8&l▶ 연쇄 광질 [%d초]
+          &7지맥을 울려 범위 내의 모든
+          &b&l광맥&r&7을 한 번에 채굴합니다.
+          
+          &8&l▶ 광부의 눈 [%d초]
+          &7심연 속 숨겨진 광물들의
+          &7위치를 꿰뚫어 발광시킵니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		// 부모 클래스의 메서드 활용 (2페이지 구성)
+		return createGuideBook("광부", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }

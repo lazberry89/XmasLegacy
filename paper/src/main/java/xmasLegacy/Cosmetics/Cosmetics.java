@@ -15,14 +15,15 @@ import java.util.UUID;
 public class Cosmetics {
 	private final ItemStack model;
 	private final String name;
+	private final CosmeticType type;
 	private final Map<UUID, ItemDisplay> display = new HashMap<>();
 	private final Map<UUID, BukkitTask> task = new HashMap<>();
-	private final Map<UUID, Float> lastYaw = new HashMap<>();
 	private final XmasLegacy plugin = JavaPlugin.getPlugin(XmasLegacy.class);
 
-	public Cosmetics(ItemStack model, String name) {
+	public Cosmetics(ItemStack model, String name, CosmeticType type) {
 		this.model = model;
 		this.name = name;
+		this.type = type;
 	}
 
 	public ItemStack getModel() {return model;}
@@ -35,53 +36,46 @@ public class Cosmetics {
 		display.setInvulnerable(true);
 		display.setGravity(false);
 
-		// Billboard를 FIXED로 설정 (고정된 각도 유지)
 		display.setBillboard(Display.Billboard.FIXED);
 
 		org.bukkit.util.Transformation transformation = display.getTransformation();
-		transformation.getTranslation().set(0.0f, -0.7f, -1.0f);
-		transformation.getScale().set(1.3f, 1.3f, 1.3f);
-		display.setTransformation(transformation);
-		display.setInterpolationDuration(3);
 
-		// 플레이어에게 passenger로 태움
+		if (type == CosmeticType.BODY) {
+			transformation.getTranslation().set(0.0f, -0.65f, -0.25f);
+			transformation.getScale().set(1.3f, 1.3f, 1.3f);
+		} else if (type == CosmeticType.HEAD) {
+			transformation.getTranslation().set(0.0f, 0.2f, 0.0f);
+			transformation.getScale().set(1.0f, 1.0f, 1.0f);
+		}
+
+		display.setTransformation(transformation);
+		display.setInterpolationDuration(0);
+
 		p.addPassenger(display);
 
 		this.display.put(p.getUniqueId(), display);
 	}
 
 	private void updateCosmeticDisplay(Player p, ItemDisplay display) {
-		UUID uuid = p.getUniqueId();
-		float bodyYaw = p.getYaw();
+		// 1인칭 시야 가림 방지 (Pitch 값에 따라 숨김)
 		float pitch = p.getLocation().getPitch();
-
-		if (Math.abs(bodyYaw - lastYaw.getOrDefault(uuid, bodyYaw)) > 1.0f) {
-			display.setRotation(bodyYaw, 0);
-			lastYaw.put(uuid, bodyYaw);
-		}
-
-		if (pitch > 60 && display.isVisibleByDefault()) {
-			display.setVisibleByDefault(false);
-		} else if (pitch <= 60 && !display.isVisibleByDefault()) {
-			display.setVisibleByDefault(true);
+		if (type == CosmeticType.BODY) {
+			if (pitch > 60 && display.isVisibleByDefault()) {
+				display.setVisibleByDefault(false);
+			} else if (pitch <= 60 && !display.isVisibleByDefault()) {
+				display.setVisibleByDefault(true);
+			}
 		}
 	}
 
 	private void startUpdateLoop(Player p) {
 		UUID uuid = p.getUniqueId();
-		ItemDisplay display = this.display.get(uuid);
-
-		if (display == null) return;
 
 		BukkitTask newTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
 			ItemDisplay d = this.display.get(uuid);
 
-			if (!p.isOnline() || d == null || d.isDead()) {
-				BukkitTask t = task.remove(uuid);
-				if (t != null) t.cancel();
-
-				if (d != null) d.remove();
-				Cosmetics.this.display.remove(uuid);
+			if (!p.isOnline() || d == null || d.isDead() || !p.getPassengers().contains(d)) {
+				unequip(p);
 				return;
 			}
 
@@ -110,7 +104,6 @@ public class Cosmetics {
 			task.cancel();
 			this.task.remove(uuid);
 		}
-		lastYaw.remove(uuid);
 	}
 
 	@Override

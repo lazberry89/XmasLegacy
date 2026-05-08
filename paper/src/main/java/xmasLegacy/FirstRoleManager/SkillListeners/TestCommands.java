@@ -35,55 +35,67 @@ public class TestCommands implements CommandExecutor {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) return true;
+		AbstractFirstRole k = new Knight(SEM, plugin);
+		AbstractFirstRole r = new Rogue(5, 5, SEM, plugin);
+		AbstractFirstRole a = new Archer(5, 5, plugin);
+		AbstractFirstRole w = new Warrior(4, 4, plugin);
+		AbstractFirstRole m = new Mage(4, 4, plugin, SEM);
+		AbstractFirstRole pr = new Priest(4, 4, PM, SEM, plugin);
+		AbstractFirstRole f = new Farmer(4, 4, plugin, RM);
+		AbstractFirstRole mi = new Miner(4, 4, plugin);
+		AbstractFirstRole g = new Gatherer(4, 4, plugin);
 
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("weapon")) {
 				switch (args[1]) {
 					case "knight" -> {
-						AbstractFirstRole k = new Knight(SEM, plugin);
 						p.getInventory().addItem(k.roleWeapon());
 						p.getInventory().addItem(k.roleArmor());
 					}
 					case "rogue" -> {
-						AbstractFirstRole r = new Rogue(5, 5, SEM, plugin);
 						p.getInventory().addItem(r.roleWeapon());
 						p.getInventory().addItem(r.roleArmor());
 					}
 					case "archer" -> {
-						AbstractFirstRole a = new Archer(5, 5, plugin);
 						p.getInventory().addItem(a.roleWeapon());
 						p.getInventory().addItem(a.roleArmor());
 					}
 					case "warrior" -> {
-						AbstractFirstRole w = new Warrior(4, 4, plugin);
 						p.getInventory().addItem(w.roleWeapon());
 						p.getInventory().addItem(w.roleArmor());
 					}
                     case "mage" -> {
-                        AbstractFirstRole m = new Mage(4, 4, plugin, SEM);
                         p.getInventory().addItem(m.roleWeapon());
                         p.getInventory().addItem(m.roleArmor());
                     }
 					case "priest" -> {
-						AbstractFirstRole pr = new Priest(4, 4, PM, SEM, plugin);
 						p.getInventory().addItem(pr.roleWeapon());
 						p.getInventory().addItem(pr.roleArmor());
 					}
 					case "farmer" -> {
-						AbstractFirstRole f = new Farmer(4, 4, plugin, RM);
 						p.getInventory().addItem(f.roleWeapon());
 						p.getInventory().addItem(f.roleArmor());
 					}
 					case "miner" -> {
-						AbstractFirstRole mi = new Miner(4, 4, plugin);
 						p.getInventory().addItem(mi.roleWeapon());
 						p.getInventory().addItem(mi.roleArmor());
 					}
 					case "gatherer" -> {
-						AbstractFirstRole g = new Gatherer(4, 4, plugin);
 						p.getInventory().addItem(g.roleWeapon());
 						p.getInventory().addItem(g.roleArmor());
 					}
+				}
+			} else if (args[0].equalsIgnoreCase("book")) {
+				switch (args[1]) {
+					case "knight" -> p.getInventory().addItem(k.roleBook());
+					case "rogue" -> p.getInventory().addItem(r.roleBook());
+					case "archer" -> p.getInventory().addItem(a.roleBook());
+					case "warrior" -> p.getInventory().addItem(w.roleBook());
+					case "mage" -> p.getInventory().addItem(m.roleBook());
+					case "priest" -> p.getInventory().addItem(pr.roleBook());
+					case "farmer" -> p.getInventory().addItem(f.roleBook());
+					case "miner" -> p.getInventory().addItem(mi.roleBook());
+					case "gatherer" -> p.getInventory().addItem(g.roleBook());
 				}
 			}
 		}

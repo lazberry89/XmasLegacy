@@ -159,4 +159,40 @@ public class Farmer extends AbstractFirstRole {
 				.build()
 				.clone();
 	}
+
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 대지의 생명력을 가꾸는 농부 설명
+		String page1 = """
+          &8&l[ &2&lFARMER &8&l]&r
+          
+          &7농부는 대지의 &6&l생명력&r&7을 깨워
+          &a&l풍요&r&7를 일구고, 모든 이의
+          &e&l갈증과 허기&r&7를 달래주는
+          &2&l생명의 수호자&r&7입니다.
+          
+          &8&m-----------------
+          &8&l[ ADVANCE ]
+          &8- &72차: &o추후 공개 예정...
+          &8- &73차: &o추후 공개 예정...
+          """;
+
+		// [페이지 2] 자연의 축복이 담긴 기술 설명
+		String page2 = String.format("""
+          &8&l[ SKILLS ]
+          
+          &8&l▶ 풍요의 손길 [%d초]
+          &7대지의 결실을 공명시켜 범위 내
+          모든 작물을 즉시 수확합니다.
+          
+          &8&l▶ 시간의 축복 [%d초]
+          &7자연의 시간을 가속하여 범위 내
+          &7작물들을 완전한 성장에 이르게 합니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		// 부모 클래스의 메서드 활용 (2페이지 구성)
+		return createGuideBook("농부", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }

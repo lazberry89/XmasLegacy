@@ -153,4 +153,39 @@ public class Gatherer extends AbstractFirstRole {
 				.addAttribute(Attribute.MOVEMENT_SPEED, 0.01, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
 				.build().clone();
 	}
+
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 신비로운 유적 탐사자 설명
+		String page1 = """
+          &8&l[ COLLECTOR]
+          
+          &7수집가는 금지된 유적의 봉인을 풀고
+          숨겨진 루트를 발견하는 고대의
+          에테르를 다루는 탐구자입니다.
+          
+          &8&m-----------------
+          &8&l[ ADVANCE ]
+          &8- &72차: &o추후 공개 예정...
+          &8- &73차: &o추후 공개 예정...
+          """;
+
+		// [페이지 2] 변칙적이고 신비로운 기술 설명
+		String page2 = String.format("""
+          &8&l[ &a&lSKILLS &8&l]&r
+          
+          &8&l▶ 회귀의 바늘 [%d초]
+          &7변칙적인 위치를 이터널포스로
+          &7고정하여 공간의 좌표를 새깁니다.
+          
+          &8&l▶ 에테르의 눈 [%d초]
+          &7주변의 생명체와 루트 상자를
+          &7꿰뚫어 선명하게 공명시킵니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		// 부모 클래스의 메서드 활용 (2페이지 구성)
+		return createGuideBook("수집가", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }

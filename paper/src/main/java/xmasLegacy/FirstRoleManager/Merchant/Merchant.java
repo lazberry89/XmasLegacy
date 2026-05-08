@@ -2,7 +2,6 @@ package xmasLegacy.FirstRoleManager.Merchant;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -72,5 +71,10 @@ public class Merchant extends AbstractFirstRole {
 				.hideAllFlags()
 				.setTag("role_id", "merchant")
 				.build().clone();
+	}
+
+	@Override
+	public @NotNull ItemStack roleBook() {
+		return null;
 	}
 }

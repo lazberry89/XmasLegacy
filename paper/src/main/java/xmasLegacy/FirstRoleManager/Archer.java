@@ -1,5 +1,6 @@
 package xmasLegacy.FirstRoleManager;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -117,14 +118,34 @@ public class Archer extends AbstractFirstRole {
                 .clone();
     }
 
-    @Override
-    public @NotNull ItemStack roleBook() {
-        ItemStack book = new ItemStack(Material.BOOK, 1);
-        ItemMeta meta = book.getItemMeta();
-        if (meta != null) {
-            BookMeta bookMeta = (BookMeta) meta;
-            bookMeta.author(ColorUtils.chat("&c&lSystem"));
-        }
-        return null;
-    }
+	@Override
+	public @NotNull ItemStack roleBook() {
+		// [페이지 1] 묵직한 다크톤 베이스의 직업 설명
+		String page1 = """
+          &8&l[ ARCHER ]
+          
+          &7아처는 원거리에서 치명적인
+          격통을 선사하는 전투 직업입니다.
+          
+          &8&m-----------------
+          &8&l[ ADVANCE ]
+          &8- &72차: 저격수, 유격병, 사냥꾼
+          &8- &73차: 윈드워커
+          """;
+
+		// [페이지 2] 가독성 중심의 스킬 설명
+		String page2 = String.format("""
+          &8&l[ SKILLS ]
+          
+          &8&l▶ 충격화살 [%d초]
+          &7적중 시 &b&l낙뢰&r&7를 소환합니다.
+          
+          &8&l▶ 백대시 [%d초]
+          &7폭발 반동으로 &f&l후방 이동&r&7합니다.
+          
+          &8&m-----------------
+          """, getCooldown1(), getCooldown2());
+
+		return createGuideBook("아처", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
+	}
 }
