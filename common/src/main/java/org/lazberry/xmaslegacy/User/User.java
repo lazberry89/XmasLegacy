@@ -11,7 +11,7 @@ import java.util.UUID;
 public class User {
     private final UUID uuid;
 	private String name;
-    private @Nullable Roles role;
+    private @NotNull Roles role;
     private int dollars;
     private int inquireCount = 0;
     private int playTime = 0;
@@ -26,14 +26,14 @@ public class User {
     }
 
     public UUID getUUID() {return this.uuid;}
-    public @Nullable Roles getRole() {return this.role;}
+    public @NotNull Roles getRole() {return this.role;}
     public Integer getDollars() {return this.dollars;}
     public int getInquireCount() {return this.inquireCount;}
     public int getPlayTime() {return this.playTime;}
     public void setDollars(int dollars) {this.dollars = dollars;}
     public void setInquireCount(int inquireCount) {this.inquireCount = inquireCount;}
     public void setPlayTime(int playTime) {this.playTime = playTime;}
-    public void setRole(@Nullable Roles role) {this.role = role;}
+    public void setRole(@NotNull Roles role) {this.role = role;}
     public void addDollars(int dollars) {
 		this.dollars += dollars;
 		if (this.dollars < 0) this.dollars = 0;

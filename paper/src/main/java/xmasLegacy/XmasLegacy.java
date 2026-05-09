@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Cosmetics.CosmeticManager;
 import xmasLegacy.Cosmetics.CosmeticsCommand;
-import xmasLegacy.Economy.OperatorCurrency;
+import xmasLegacy.Economy.Currency.OperatorCurrency;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
@@ -33,53 +33,53 @@ import java.util.ArrayList;
 @SuppressWarnings({"FieldCanBeLocal", "DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
 
-    private ServerJoinManager SJM;
-    private RuleManager RM;
-    private InquiryManager IM;
-    private InquiryCommandManager ICM;
-    private InquireTeleportCommand ITC;
-	private InquiryRepository IR;
-    private RuleCommandManager RCM;
-    private LogCommandManager LCM;
-    private UserManager UM;
-	private BagManager BM;
-	private BagCommandManager BCM;
-    private SkillEffectManager SEM;
-    private RegionManager RGM;
-	private FirstRoleListener FRL;
-	private TestCommands TC;
-	private ConsumableManager CM;
-	private RegionPermission RP;
-	private RegionCommandManager RGCM;
-	private RegionIndicator RI;
-    private RegionPreviewer RGP;
-    private GhostModeManager GMM;
-    private GhostCommand GC;
-    private GhostListener GL;
-    private EconomyManager EM;
-    private PartyManager PM;
-    private ConductableItems CDI;
-	private PriestShopManager PSM;
-	private PotionListener PL;
-	private PriestCommand PC;
-	private PriestSystemShopCommand PSSC;
-	private ShopListener SL;
-	private PriceInterface PCI;
-	private xmasLegacy.FirstRoleManager.Merchant.ShopListener SPL;
-	private TempCommand TPC;
-	private OperatorCurrency OC;
-	private CosmeticManager CSM;
-	private CosmeticsCommand CCC;
+    public ServerJoinManager SJM;
+	public RuleManager RM;
+	public InquiryManager IM;
+	public InquiryCommandManager ICM;
+    public InquireTeleportCommand ITC;
+	public InquiryRepository IR;
+    public RuleCommandManager RCM;
+    public LogCommandManager LCM;
+    public UserManager UM;
+	public BagManager BM;
+	public BagCommandManager BCM;
+    public SkillEffectManager SEM;
+    public RegionManager RGM;
+	public FirstRoleListener FRL;
+	public TestCommands TC;
+	public ConsumableManager CM;
+	public RegionPermission RP;
+	public RegionCommandManager RGCM;
+	public RegionIndicator RI;
+	public RegionPreviewer RGP;
+	public GhostModeManager GMM;
+	public GhostCommand GC;
+	public GhostListener GL;
+	public EconomyManager EM;
+	public PartyManager PM;
+	public ConductableItems CDI;
+	public PriestShopManager PSM;
+	public PotionListener PL;
+	public PriestCommand PC;
+	public PriestSystemShopCommand PSSC;
+	public ShopListener SL;
+	public PriceInterface PCI;
+	public xmasLegacy.FirstRoleManager.Merchant.ShopListener SPL;
+	public TempCommand TPC;
+	public OperatorCurrency OC;
+	public CosmeticManager CSM;
+	public CosmeticsCommand CCC;
 
-    private Archer archer;
-    private Knight knight;
-    private Rogue rogue;
-    private Warrior warrior;
-    private Mage mage;
-	private Priest priest;
-	private Farmer farmer;
-	private Miner miner;
-	private Gatherer gatherer;
+	public Archer archer;
+	public Knight knight;
+	public Rogue rogue;
+	public Warrior warrior;
+	public Mage mage;
+	public Priest priest;
+	public Farmer farmer;
+	public Miner miner;
+	public Gatherer gatherer;
 
 	@Override
 	public void onEnable() {
@@ -103,7 +103,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.RGCM = new RegionCommandManager(RGM);
 		this.RI = new RegionIndicator(RGM, UM, this);
 		this.TC = new TestCommands(SEM, RGM, this);
-        this.RGP = new RegionPreviewer(this,RGM);
+        this.RGP = new RegionPreviewer(this, RGM);
         this.GMM = new GhostModeManager(this);
         this.GC = new GhostCommand(GMM);
         this.GL = new GhostListener(GMM, this);
@@ -138,7 +138,7 @@ public final class XmasLegacy extends JavaPlugin {
 		} else {
 			getSLF4JLogger().error("Recipe Not Registered!");
 		}
-		this.FRL = new FirstRoleListener(this, knight, rogue, archer, warrior, mage, priest, farmer, miner, gatherer);
+		this.FRL = new FirstRoleListener(this);
 		this.TC.setPM(PM);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");

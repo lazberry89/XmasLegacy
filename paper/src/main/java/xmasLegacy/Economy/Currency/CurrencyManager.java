@@ -1,4 +1,4 @@
-package xmasLegacy.Economy;
+package xmasLegacy.Economy.Currency;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

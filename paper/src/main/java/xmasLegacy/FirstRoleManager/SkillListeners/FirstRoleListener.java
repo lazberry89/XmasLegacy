@@ -33,26 +33,17 @@ public class FirstRoleListener implements Listener {
 	private final Miner miner;
 	private final Gatherer gatherer;
 
-	public FirstRoleListener(XmasLegacy plugin,
-	                         Knight knight,
-	                         Rogue rogue,
-	                         Archer archer,
-	                         Warrior warrior,
-	                         Mage mage,
-	                         Priest priest,
-	                         Farmer farmer,
-	                         Miner miner,
-	                         Gatherer gatherer) {
+	public FirstRoleListener(XmasLegacy plugin) {
 		this.plugin = plugin;
-		this.knight = knight;
-		this.rogue = rogue;
-		this.archer = archer;
-		this.warrior = warrior;
-        this.mage = mage;
-		this.priest = priest;
-		this.farmer = farmer;
-		this.miner = miner;
-		this.gatherer = gatherer;
+		this.knight = this.plugin.knight;
+		this.rogue = this.plugin.rogue;
+		this.archer = this.plugin.archer;
+		this.warrior = this.plugin.warrior;
+		this.mage = this.plugin.mage;
+		this.priest = this.plugin.priest;
+		this.farmer = this.plugin.farmer;
+		this.miner = this.plugin.miner;
+		this.gatherer = this.plugin.gatherer;
 	}
 
 	@EventHandler
