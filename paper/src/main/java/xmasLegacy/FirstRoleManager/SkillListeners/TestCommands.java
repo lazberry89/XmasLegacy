@@ -9,6 +9,7 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.Merchant.Merchant;
 import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.Priest;
 import xmasLegacy.Region.RegionManager;
@@ -44,6 +45,7 @@ public class TestCommands implements CommandExecutor {
 		AbstractFirstRole f = new Farmer(4, 4, plugin, RM);
 		AbstractFirstRole mi = new Miner(4, 4, plugin);
 		AbstractFirstRole g = new Gatherer(4, 4, plugin);
+		AbstractFirstRole mc = new Merchant(4, 4, plugin);
 
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("weapon")) {
@@ -84,6 +86,10 @@ public class TestCommands implements CommandExecutor {
 						p.getInventory().addItem(g.roleWeapon());
 						p.getInventory().addItem(g.roleArmor());
 					}
+					case "merchant" -> {
+						p.getInventory().addItem(mc.roleWeapon());
+						p.getInventory().addItem(mc.roleArmor());
+					}
 				}
 			} else if (args[0].equalsIgnoreCase("book")) {
 				switch (args[1]) {
@@ -96,6 +102,7 @@ public class TestCommands implements CommandExecutor {
 					case "farmer" -> p.getInventory().addItem(f.roleBook());
 					case "miner" -> p.getInventory().addItem(mi.roleBook());
 					case "gatherer" -> p.getInventory().addItem(g.roleBook());
+					case "merchant" -> p.getInventory().addItem(mc.roleBook());
 				}
 			}
 		}

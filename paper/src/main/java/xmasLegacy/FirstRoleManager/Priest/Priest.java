@@ -165,8 +165,7 @@ public class Priest extends AbstractFirstRole {
       
       		&e&l▶ &0&l불꽃의 가호 &8[%d초]
       		&0주변 동료들에게 &c&l힘의 근원&r&0을
-     		&0부여하여 전투력을 높여줍니다.
-      
+     		&0부여하여 전투력을 높여줍니다.      
       		&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 		

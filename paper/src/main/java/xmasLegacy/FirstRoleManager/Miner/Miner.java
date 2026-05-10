@@ -185,7 +185,6 @@ public class Miner extends AbstractFirstRole {
       		&8&l▶ &0&l광부의 눈 &8[%d초]
       		&0숨겨진 광물을 감지하여 짧은
       		&0시간 동안 위치를 &e&l발광&r&0시킵니다.
-      
       		&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 

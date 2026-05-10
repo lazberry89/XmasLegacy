@@ -186,8 +186,7 @@ public class Knight extends AbstractFirstRole {
       
       		&1&l▶ &0&l광역 도발 &8[%d초]
       		&0함성을 내질러 주변 적들의
-      		&0&l시선&r&0을 자신에게 고정시킵니다.
-      
+      		&0&l시선&r&0을 자신에게 고정시킵니다.      
      	 	&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 

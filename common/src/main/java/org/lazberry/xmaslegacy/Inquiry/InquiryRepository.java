@@ -1,14 +1,18 @@
 package org.lazberry.xmaslegacy.Inquiry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class InquiryRepository {
-	private final String url = "jdbc:mysql://localhost:3306/db_name";
+	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
 	private final String user = "root";
 	private final String password = "password";
+	private static final Logger logger = LoggerFactory.getLogger(InquiryRepository.class);
 
 	public void saveInquiry(UUID uuid, String name, String message) {
 		String sql = "INSERT INTO inquiry_logs (uuid, player_name, message, status) VALUES (?, ?, ?, 'PENDING')";
@@ -18,7 +22,9 @@ public class InquiryRepository {
 			pstmt.setString(2, name);
 			pstmt.setString(3, message);
 			pstmt.executeUpdate();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) {
+			logger.error("Failed to save inquiry log for UUID: {}", uuid, e);
+		}
 	}
 
 	// 상태 업데이트 (RESOLVED 등)
@@ -29,7 +35,9 @@ public class InquiryRepository {
 			pstmt.setString(1, status);
 			pstmt.setString(2, uuid.toString());
 			pstmt.executeUpdate();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) {
+			logger.error("Failed to update status for UUID: {}", uuid, e);
+		}
 	}
 
 	// 특정 유저의 로그 가져오기
@@ -47,7 +55,9 @@ public class InquiryRepository {
                         rs.getString("message")
                 ));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) {
+			logger.error("Failed to get logs for UUID: {}", uuid, e);
+		}
 		return logs;
 	}
 }

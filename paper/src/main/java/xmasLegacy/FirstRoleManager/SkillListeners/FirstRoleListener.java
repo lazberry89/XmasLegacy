@@ -16,11 +16,11 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.Merchant.Merchant;
 import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.Priest;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class FirstRoleListener implements Listener {
 	private final XmasLegacy plugin;
 	private final Knight knight;
@@ -32,6 +32,7 @@ public class FirstRoleListener implements Listener {
 	private final Farmer farmer;
 	private final Miner miner;
 	private final Gatherer gatherer;
+	private final Merchant merchant;
 
 	public FirstRoleListener(XmasLegacy plugin) {
 		this.plugin = plugin;
@@ -44,6 +45,7 @@ public class FirstRoleListener implements Listener {
 		this.farmer = this.plugin.farmer;
 		this.miner = this.plugin.miner;
 		this.gatherer = this.plugin.gatherer;
+		this.merchant = this.plugin.merchant;
 	}
 
 	@EventHandler
@@ -132,6 +134,14 @@ public class FirstRoleListener implements Listener {
 							e.setCancelled(true);
 						}
 					}
+					case "merchant" -> {
+						if (merchant.getCurrentSkill(p) == null) return;
+						if (merchant.getCurrentSkill(p) == BasicSkills.OPEN_STOCKS) {
+							merchant.useFirstSkill(p);
+						} else if (merchant.getCurrentSkill(p) == BasicSkills.SELL_ITEMS) {
+							merchant.useSecondSkill(p);
+						}
+					}
 				}
 			}
 		}
@@ -185,6 +195,10 @@ public class FirstRoleListener implements Listener {
 				case "gatherer" -> {
 					gatherer.next(p);
 					p.sendActionBar(ColorUtils.chat("&8&l" + gatherer.getCurrentSkill(p).getSkillName()));
+				}
+				case "merchant" -> {
+					merchant.next(p);
+					p.sendActionBar(ColorUtils.chat("&8&l" + merchant.getCurrentSkill(p).getSkillName()));
 				}
 			}
 		}

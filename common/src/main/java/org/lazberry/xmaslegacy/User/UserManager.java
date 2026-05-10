@@ -102,4 +102,15 @@ public class UserManager {
 			}
 		});
 	}
+
+	public boolean startRole(UUID uuid, Roles role) {
+		User user = getUser(uuid);
+		if (user == null) return false;
+		Roles getRole = user.getRole();
+		if (Roles.USER.equals(getRole)) {
+			user.setRole(role);
+			return true;
+		}
+		return false;
+	}
 }

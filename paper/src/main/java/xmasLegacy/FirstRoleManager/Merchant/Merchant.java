@@ -23,29 +23,30 @@ public class Merchant extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.OPEN_STOCKS);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 	private final PriceInterface PIF;
+	private final MerchantStockInterface MSI;
 
-	public Merchant(int c1, int c2, PriceInterface PIF, XmasLegacy plugin) {
+	public Merchant(int c1, int c2, XmasLegacy plugin) {
 		super(c1, c2, plugin);
-		this.PIF = PIF;
+		this.PIF = plugin.PCI;
+		this.MSI = plugin.MSI;
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
-
+		ItemStack tool = p.getInventory().getHelmet();
+		if (tool == null || tool.getType().isAir()) return;
+		MSI.setOwner(p);
+		MSI.OpenStock(p);
+		p.playSound(p, Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, 1.0f, 1.0f);
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
-		if (!consumeEnergy(p, 3)) return;
+		if (tool.getType().isAir()) return;
 		p.openInventory(PIF.MerchantShop());
 		PIF.setOwner(p.getUniqueId());
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-		p.setCooldown(tool, this.getCooldown2() * 20);
 	}
 
 	@Override
@@ -75,6 +76,31 @@ public class Merchant extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleBook() {
-		return null;
+		String page1 = """
+          &0&l[ &4&l상인 가이드 &0&l ]&r
+          
+          &0상인은 마을 전체의 경제를 쥐고 흔들며,
+          &0농부, 광부의 생산품을 매입하고 판매합니다.
+          &7누구보다 비밀이 많은 직업입니다..
+		
+          &7&m-----------------
+          &0&l[ &1&l전직 계보 &0&l ]&r
+          &0- &82차 전직: &8&o..?
+          &0- &83차 전직: &8&o..?
+          """;
+
+		String page2 = String.format("""
+          &0&l[ &2&l보유 스킬 &0&l ]&r
+          
+          &4&l▶ &0&l재고 확인 &8[%d초]
+          &0매입한 상품들을 확인하고 시스템에
+          &0제출하여 수입을 챙길 수 있습니다.
+          
+          &4&l▶ &0&l상품판매 &8[%d초]
+          &0공식적으로 아이템을
+          &0판매하여 수익을 얻을 수 있습니다.
+          &7&m-----------------
+          """, getCooldown1(), getCooldown2());
+		return createGuideBook("상인", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
 	}
 }

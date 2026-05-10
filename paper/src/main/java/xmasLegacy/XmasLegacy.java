@@ -15,10 +15,10 @@ import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
-import xmasLegacy.FirstRoleManager.Merchant.PriceInterface;
-import xmasLegacy.FirstRoleManager.Merchant.TempCommand;
+import xmasLegacy.FirstRoleManager.Merchant.*;
 import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.*;
+import xmasLegacy.FirstRoleManager.Priest.ShopListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import xmasLegacy.Lobby.LobbyCommand;
@@ -70,6 +70,10 @@ public final class XmasLegacy extends JavaPlugin {
 	public OperatorCurrency OC;
 	public CosmeticManager CSM;
 	public CosmeticsCommand CCC;
+	public UserSellingManager USM;
+	public MerchantStockInterface MSI;
+	public StockListener SKL;
+	public ShopCommand SC;
 
 	public Archer archer;
 	public Knight knight;
@@ -80,6 +84,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public Farmer farmer;
 	public Miner miner;
 	public Gatherer gatherer;
+	public Merchant merchant;
 
 	@Override
 	public void onEnable() {
@@ -121,7 +126,10 @@ public final class XmasLegacy extends JavaPlugin {
 		this.OC = new OperatorCurrency(EM);
 		this.CSM = new CosmeticManager();
 		this.CCC = new CosmeticsCommand(CSM);
-
+		this.USM = new UserSellingManager();
+		this.MSI = new MerchantStockInterface(this);
+		this.SKL = new StockListener(this);
+		this.SC = new ShopCommand(this);
 
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
@@ -132,6 +140,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.farmer = new Farmer(4, 4, this, RGM);
 		this.miner = new Miner(4, 4, this);
 		this.gatherer = new Gatherer(4, 4, this);
+		this.merchant = new Merchant(4, 4, this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -157,6 +166,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(PL, this);
 		getServer().getPluginManager().registerEvents(SL, this);
 		getServer().getPluginManager().registerEvents(SPL, this);
+		getServer().getPluginManager().registerEvents(SKL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -178,6 +188,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("currency").setTabCompleter(OC);
 		getCommand("cos").setExecutor(CCC);
 		getCommand("cos").setTabCompleter(CCC);
+		getCommand("상점").setExecutor(SC);
 	}
 
 	@Override

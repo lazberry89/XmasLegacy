@@ -178,8 +178,7 @@ public class Gatherer extends AbstractFirstRole {
       
       		&6&l▶ &0&l에테르의 눈 &8[%d초]
       		&0에테르와 공명하여 주변의 적과
-      		&d&l루트 상자&r&0를 꿰뚫어 봅니다.
-      
+      		&d&l루트 상자&r&0를 꿰뚫어 봅니다.      
       		&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 

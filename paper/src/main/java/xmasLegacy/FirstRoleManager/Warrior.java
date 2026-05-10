@@ -203,7 +203,6 @@ public class Warrior extends AbstractFirstRole {
           &4&l▶ &0&l프렌지 &8[%d초]
           &0자신의 혈기를 소모하여 주변의
           &0적들을 &c&l공중&r&0으로 띄워버립니다.
-          
           &7&m-----------------
           """, getCooldown1(), getCooldown2());
 		// 부모 클래스의 메서드 활용 (2페이지 구성)

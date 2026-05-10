@@ -47,6 +47,10 @@ commands:
     usage: /cos <add | remove | equip | unequip> <Name>
     description: 치장을 관리합니다.
 
+  상점:
+    usage: /상점
+    description: 공용 상점을 여는 명령어에요.
+
   test:
   potion:
   system:

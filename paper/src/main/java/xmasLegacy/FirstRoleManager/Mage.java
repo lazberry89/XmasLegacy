@@ -243,7 +243,6 @@ public class Mage extends AbstractFirstRole {
       		&5&l▶ &0&l중력장 &8[%d초]
       		&0공간을 왜곡하여 주변의 적을
       		&0&l중심점&r&0으로 강하게 끌어당깁니다.
-      
       		&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 		// 부모 클래스의 메서드 활용 (2페이지 구성)

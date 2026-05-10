@@ -41,7 +41,7 @@ public class Cosmetics {
 		org.bukkit.util.Transformation transformation = display.getTransformation();
 
 		if (type == CosmeticType.BODY) {
-			transformation.getTranslation().set(0.0f, -0.65f, -0.25f);
+			transformation.getTranslation().set(0.0f, -0.65f, -0.55f);
 			transformation.getScale().set(1.3f, 1.3f, 1.3f);
 		} else if (type == CosmeticType.HEAD) {
 			transformation.getTranslation().set(0.0f, 0.2f, 0.0f);

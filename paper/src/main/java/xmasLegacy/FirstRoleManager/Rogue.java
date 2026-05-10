@@ -193,7 +193,6 @@ public class Rogue extends AbstractFirstRole {
       		&8&l▶ &0&l연막탄 &8[%d초]
       		&0연막 속으로 자취를 감추고
       		&b&l이동 속도&r&0가 크게 증가합니다.
-      	
       		&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 
