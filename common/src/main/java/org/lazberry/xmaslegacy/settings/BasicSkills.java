@@ -29,7 +29,10 @@ public enum BasicSkills {
 	TRUTH_EYE("에테르의 눈"),
 
 	OPEN_STOCKS("구매품 보기"),
-	SELL_ITEMS("판매하기");
+	SELL_ITEMS("판매하기"),
+
+	FIX("수리하기"),
+	TEMP_BUFF("일시 버프");
 
 	private final String korName;
 
@@ -83,6 +86,9 @@ public enum BasicSkills {
 			//Merchant
 			case OPEN_STOCKS -> SELL_ITEMS;
 			case SELL_ITEMS -> OPEN_STOCKS;
+
+			case FIX -> TEMP_BUFF;
+			case TEMP_BUFF -> FIX;
 		};
 	}
 	public String getSkillName() {

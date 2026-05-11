@@ -36,12 +36,12 @@ public class Cosmetics {
 		display.setInvulnerable(true);
 		display.setGravity(false);
 
-		display.setBillboard(Display.Billboard.FIXED);
+		display.setBillboard(Display.Billboard.VERTICAL);
 
 		org.bukkit.util.Transformation transformation = display.getTransformation();
 
 		if (type == CosmeticType.BODY) {
-			transformation.getTranslation().set(0.0f, -0.65f, -0.55f);
+			transformation.getTranslation().set(0.0f, -0.65f, -0.75f);
 			transformation.getScale().set(1.3f, 1.3f, 1.3f);
 		} else if (type == CosmeticType.HEAD) {
 			transformation.getTranslation().set(0.0f, 0.2f, 0.0f);

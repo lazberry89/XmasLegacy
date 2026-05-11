@@ -21,12 +21,15 @@ import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.Priest.ShopListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
+import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.Lobby.LobbyCommand;
 import xmasLegacy.Lobby.LobbyListener;
 import xmasLegacy.Lobby.LobbyManager;
 import xmasLegacy.PlayerUtils.BagCommandManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.Region.*;
+import xmasLegacy.RoleSelection.RoleCommand;
+import xmasLegacy.RoleSelection.RoleSelectCommand;
 import xmasLegacy.RoleSelection.SelectListener;
 
 import java.util.ArrayList;
@@ -90,6 +93,11 @@ public final class XmasLegacy extends JavaPlugin {
 
 	public RoleManager RLM;
 	public SelectListener STL;
+	public RoleSelectCommand RSC;
+	public RoleCommand RLC;
+
+	//Gacha
+	public GachaManager GM;
 
 	@Override
 	public void onEnable() {
@@ -150,6 +158,11 @@ public final class XmasLegacy extends JavaPlugin {
 
 		this.RLM = new RoleManager();
 		this.STL = new SelectListener(this);
+		this.RSC = new RoleSelectCommand(this);
+		this.RLC = new RoleCommand(this);
+
+		//Gacha
+		this.GM = new GachaManager(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -199,6 +212,9 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("cos").setExecutor(CCC);
 		getCommand("cos").setTabCompleter(CCC);
 		getCommand("상점").setExecutor(SC);
+		getCommand("직업선택").setExecutor(RSC);
+		getCommand("role").setExecutor(RLC);
+		getCommand("role").setTabCompleter(RLC);;
 	}
 
 	@Override

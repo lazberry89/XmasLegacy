@@ -50,6 +50,11 @@ commands:
   상점:
     usage: /상점
     description: 공용 상점을 여는 명령어에요.
+  
+  직업선택:
+    usage: /직업선택
+
+  role:
 
   test:
   potion:
