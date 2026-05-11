@@ -85,6 +85,9 @@ public final class XmasLegacy extends JavaPlugin {
 	public Miner miner;
 	public Gatherer gatherer;
 	public Merchant merchant;
+	public Crafter crafter;
+
+	public RoleManager RLM;
 
 	@Override
 	public void onEnable() {
@@ -141,6 +144,9 @@ public final class XmasLegacy extends JavaPlugin {
 		this.miner = new Miner(4, 4, this);
 		this.gatherer = new Gatherer(4, 4, this);
 		this.merchant = new Merchant(4, 4, this);
+		this.crafter = new Crafter(4, 4, this);
+
+		this.RLM = new RoleManager();
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");

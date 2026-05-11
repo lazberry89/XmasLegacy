@@ -143,8 +143,8 @@ public class Archer extends AbstractFirstRole {
       
       		&6&l▶ &0&l백대시 &8[%d초]
       		&0폭발의 반동을 이용해 신속하게
-      		&0&l후방&r&0으로 거리를 벌립니다.      
-     	 	&7&m-----------------
+			&0&l후방&r&0으로 거리를 벌립니다.
+			&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 
 		return createGuideBook("아처", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
