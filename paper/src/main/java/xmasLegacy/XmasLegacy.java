@@ -27,6 +27,7 @@ import xmasLegacy.Lobby.LobbyManager;
 import xmasLegacy.PlayerUtils.BagCommandManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.Region.*;
+import xmasLegacy.RoleSelection.SelectListener;
 
 import java.util.ArrayList;
 
@@ -88,6 +89,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public Crafter crafter;
 
 	public RoleManager RLM;
+	public SelectListener STL;
 
 	@Override
 	public void onEnable() {
@@ -147,6 +149,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.crafter = new Crafter(4, 4, this);
 
 		this.RLM = new RoleManager();
+		this.STL = new SelectListener(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -173,6 +176,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(SL, this);
 		getServer().getPluginManager().registerEvents(SPL, this);
 		getServer().getPluginManager().registerEvents(SKL, this);
+		getServer().getPluginManager().registerEvents(STL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);

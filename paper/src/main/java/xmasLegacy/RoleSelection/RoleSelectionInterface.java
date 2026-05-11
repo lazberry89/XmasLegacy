@@ -63,7 +63,9 @@ public class RoleSelectionInterface implements InventoryHolder {
     public @NotNull Inventory getInventory() {
         return this.inv;
     }
-
+    public @NotNull Roles getRole() {
+        return this.selectedRole;
+    }
     public @NotNull Component Title() {
         return this.title;
     }

@@ -48,6 +48,7 @@ public class RoleManager {
         this.roleInstance.put(Roles.FARMER, this.farmer);
         this.roleInstance.put(Roles.CRAFTER, this.crafter);
     }
+
     @Contract(value = "null -> null", pure = true)
     public AbstractFirstRole getRoleInstance(Roles role) {
         return this.roleInstance.get(role);

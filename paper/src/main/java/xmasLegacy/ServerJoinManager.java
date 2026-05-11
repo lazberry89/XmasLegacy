@@ -38,6 +38,11 @@ public class ServerJoinManager implements Listener {
 			UM.onJoinAsync(p.getUniqueId(), p.getName(), true).thenAccept(user ->
 					Bukkit.getScheduler().runTask(plugin, () -> {
 						if (!p.isOnline()) return;
+						if (user == null) {
+							p.sendMessage(ColorUtils.chat(Prefix.RED + " 당신의 유저정보 로드가 실패했어요. 관리자를 호출해 주세요!"));
+							plugin.getSLF4JLogger().error("서버 접속 중 유저 정보 로드 실패: {}, {}", p.getName(), p.getUniqueId());
+							return;
+						}
 						if (user.isNewUser()) {
 							Bukkit.broadcast(ColorUtils.chat(String.format(Prefix.XmasLegacy + "&6&l %s&f 님의 첫 접속입니다. 환영해주세요!\uD83C\uDF84", p.getName())));
 							p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);

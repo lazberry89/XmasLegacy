@@ -39,7 +39,7 @@ public class RoleSelectInterface implements InventoryHolder {
 				.hideAllFlags()
 				.build().clone();
 		ItemStack archer = ItemBuilder.of(plugin, Material.BOW)
-				.setName(ColorUtils.chat("&c&궁수"))
+				.setName(ColorUtils.chat("&c&l궁수"))
 				.setLore(ColorUtils.chat("&7원거리에서 강력한 공격을 가할 수 있습니다."))
 				.hideAllFlags()
 				.build().clone();
