@@ -7,6 +7,7 @@ plugins {
 dependencies {
     implementation(project(":common"))
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("com.github.oraxen:oraxen:1.187.0")
     compileOnly("org.geysermc.geyser:api:2.9.5-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
 }
