@@ -42,28 +42,9 @@ public class GachaManager {
 	}
 
 	public boolean removeGacha(String key, @NotNull BundleType type) {
-		switch (type) {
-			case HIGH_END -> {
-				highEndGachas.remove(key);
-				if (highEndGachas.containsKey(key)) return true;
-				return false;
-			}
-			case CHROMATIC_BUNDLE -> {
-				chromaticBundle.remove(key);
-				if (chromaticBundle.containsKey(key)) return true;
-				return false;
-			}
-			case CHROMATIC_BOX -> {
-				chromaticBox.remove(key);
-				if (chromaticBox.containsKey(key)) return true;
-				return false;
-			}
-			default -> {
-				normalGachas.remove(key);
-				if (normalGachas.containsKey(key)) return true;
-				return false;
-			}
-		}
+		boolean value = getGachaMaps(type).containsKey(key);
+		getGachaMaps(type).remove(key);
+		return value;
 	}
 
 	public @Nullable ItemStack getRandomItem(BundleType type) {

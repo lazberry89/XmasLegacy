@@ -21,6 +21,9 @@ import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.Priest.ShopListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
+import xmasLegacy.Gacha.GachaBundleListener;
+import xmasLegacy.Gacha.GachaCommand;
+import xmasLegacy.Gacha.GachaListener;
 import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.Lobby.LobbyCommand;
 import xmasLegacy.Lobby.LobbyListener;
@@ -98,6 +101,9 @@ public final class XmasLegacy extends JavaPlugin {
 
 	//Gacha
 	public GachaManager GM;
+	public GachaListener GCL;
+	public GachaBundleListener GBL;
+	public GachaCommand GCC;
 
 	@Override
 	public void onEnable() {
@@ -163,6 +169,9 @@ public final class XmasLegacy extends JavaPlugin {
 
 		//Gacha
 		this.GM = new GachaManager(this);
+		this.GBL = new GachaBundleListener(this);
+		this.GCL = new GachaListener(this);
+		this.GCC = new GachaCommand(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -190,6 +199,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(SPL, this);
 		getServer().getPluginManager().registerEvents(SKL, this);
 		getServer().getPluginManager().registerEvents(STL, this);
+		getServer().getPluginManager().registerEvents(GCL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -215,6 +225,8 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("직업선택").setExecutor(RSC);
 		getCommand("role").setExecutor(RLC);
 		getCommand("role").setTabCompleter(RLC);;
+		getCommand("gacha").setExecutor(GCC);
+		getCommand("gacha").setTabCompleter(GCC);
 	}
 
 	@Override

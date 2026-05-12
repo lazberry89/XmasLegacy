@@ -168,6 +168,9 @@ public class ShopListener implements Listener {
 								p.getWorld().dropItemNaturally(p.getLocation(), item);
 							}
 						}
+						PIF.removeProduct();
+						PIF.removePurchaseItem();
+						PIF.reloadShopIcons();
 					} else {
 						p.sendMessage(ColorUtils.chat(Prefix.RED + " 구매에 실패하였습니다!"));
 						p.sendMessage(ColorUtils.chat(Prefix.RED + " 잔액부족 : &c" + user.getDollars()));
@@ -175,9 +178,6 @@ public class ShopListener implements Listener {
 					}
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 					p.openInventory(PIF.MerchantShop());
-					PIF.removeProduct();
-					PIF.removePurchaseItem();
-					PIF.reloadShopIcons();
 				}
 				case 14 -> {
 					p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);

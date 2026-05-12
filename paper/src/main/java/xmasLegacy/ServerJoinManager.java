@@ -13,6 +13,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.settings.Prefix;
 import org.lazberry.xmaslegacy.User.UserManager;
+import xmasLegacy.UserInfo.UserBossBar;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class ServerJoinManager implements Listener {
@@ -57,13 +58,15 @@ public class ServerJoinManager implements Listener {
 						} else {
 							// 일반 접속 메시지
 							Bukkit.broadcast(ColorUtils.chat(String.format(Prefix.XmasLegacy + "&6&l %s&f 님이 접속했어요!", p.getName())));
+							UserBossBar bar = new UserBossBar();
+							bar.createBossBar();
+							bar.show(p);
+							bar.startRainbowProgress();
 						}
 						user.setNewUser(false);
 					})
 			);
-			case "lobby" -> {
-				e.joinMessage(ColorUtils.chat(Prefix.XmasLegacy + " 입장을 환영합니다! 전방의 포탈로 게임을 시작하세요."));
-			}
+			case "lobby" -> e.joinMessage(ColorUtils.chat(Prefix.XmasLegacy + " 입장을 환영합니다! 전방의 포탈로 게임을 시작하세요."));
 		}
 	}
 

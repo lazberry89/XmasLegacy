@@ -34,7 +34,7 @@ public class Gacha {
 		ItemStack showTem = item.clone();
 		NamespacedKey nameKey = JavaPlugin.getPlugin(XmasLegacy.class).getNamespacedKey("gacha");
 		List<Component> lore = new ArrayList<>();
-		lore.add(ColorUtils.chat("&6&lGRADE&f&l " + ColorUtils.chat(grade.toString())));
+		lore.add(ColorUtils.chat("&6&lGRADE&f&l " + grade.name()));
 		lore.add(ColorUtils.chat(String.format("&6&lCHANCE&f&l %.4f", chance)));
 
 		showTem.editMeta(meta -> {
