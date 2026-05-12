@@ -1,20 +1,44 @@
 package xmasLegacy.RoleSelection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
+import org.lazberry.xmaslegacy.ColorUtils;
+import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RoleViewDesign {
     private final XmasLegacy plugin;
-    private final Map<Integer, ItemStack[][]> ItemMap = new HashMap<>();
-    private final ItemStack RED = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-    private final ItemStack WHITE = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+    private final ItemStack[][][] allFrames = new ItemStack[3][9][3];
+    private final ItemStack RED;
+    private final ItemStack WHITE;
+
+    private int currentFrameIndex = 0;
+    private BukkitTask task;
 
     public RoleViewDesign(XmasLegacy plugin) {
         this.plugin = plugin;
+
+        this.RED = createGuiItem(Material.RED_STAINED_GLASS_PANE);
+        this.WHITE = createGuiItem(Material.WHITE_STAINED_GLASS_PANE);
+
+        // 프레임 3종 미리 생성
+        for (int f = 0; f < 3; f++) {
+            allFrames[f] = setupFrame(f);
+        }
+        startVisualLoop();
+    }
+
+    private ItemStack createGuiItem(Material material) {
+        return ItemBuilder.of(plugin, material)
+                .setName(ColorUtils.chat(""))
+                .setLore(ColorUtils.chat(""))
+                .hideAllFlags()
+                .build().clone();
     }
 
     public ItemStack[][] setupFrame(int frame) {
@@ -25,22 +49,59 @@ public class RoleViewDesign {
                 frameI[i][j] = WHITE;
             }
         }
+
+        // 사용자님의 3단계 패턴 로직
         switch (frame) {
             case 0 -> {
-                frameI[0][0] = RED;
-                frameI[2][0] = RED;
-                frameI[1][1] = RED;
-                frameI[0][2] = RED;
-                frameI[5][2] = RED;
-                frameI[4][1] = RED;
-                frameI[3][2] = RED;
-                frameI[8][0] = RED;
-                frameI[7][1] = RED;
-                frameI[6][2] = RED;
-                frameI[8][2] = RED;
+                frameI[0][0] = RED; frameI[2][0] = RED; frameI[1][1] = RED;
+                frameI[0][2] = RED; frameI[5][2] = RED; frameI[4][1] = RED;
+                frameI[3][2] = RED; frameI[8][0] = RED; frameI[7][1] = RED;
+                frameI[6][2] = RED; frameI[8][2] = RED;
             }
-            case 1 -> {}
+            case 1 -> {
+                frameI[1][0] = RED; frameI[0][1] = RED; frameI[4][0] = RED;
+                frameI[3][1] = RED; frameI[2][2] = RED; frameI[7][0] = RED;
+                frameI[6][1] = RED; frameI[5][2] = RED; frameI[8][1] = RED;
+                frameI[7][2] = RED;
+            }
+            case 2 -> {
+                frameI[2][0] = RED; frameI[1][1] = RED; frameI[0][2] = RED;
+                frameI[5][0] = RED; frameI[4][1] = RED; frameI[3][2] = RED;
+                frameI[8][0] = RED; frameI[7][1] = RED; frameI[6][2] = RED;
+            }
         }
         return frameI;
+    }
+
+    public void startVisualLoop() {
+        if (task != null) task.cancel();
+
+        task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            ItemStack[][] currentFrameData = allFrames[currentFrameIndex];
+
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                InventoryView view = p.getOpenInventory();
+                Inventory topInventory = view.getTopInventory();
+
+                if (topInventory.getHolder() instanceof RoleSelectionInterface) {
+
+                    for (int i = 0; i < 9; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            ItemStack item = currentFrameData[i][j];
+                            if (item == null) continue;
+                            topInventory.setItem((j + 1) * 9 + i, item);
+                        }
+                    }
+                }
+            }
+            currentFrameIndex = (currentFrameIndex + 1) % 3;
+        }, 0L, 5L);
+    }
+
+    public void stopVisualLoop() {
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
     }
 }
