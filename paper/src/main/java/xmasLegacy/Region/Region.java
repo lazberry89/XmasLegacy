@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.IDGenerator;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.UserManager;
 
@@ -35,7 +36,7 @@ public class Region {
         this.world = center.getWorld();
 		this.name = p.getName();
 
-        Roles role = UM.getUser(p.getUniqueId()).getRole();
+        Role role = UM.getUser(p.getUniqueId()).getRole();
 
         int minY = (Roles.MINER.equals(role)) ? Constants.MINER_MINY : Constants.USER_MINY;
         this.sMinY = minY;
@@ -120,7 +121,7 @@ public class Region {
         this.allowPublicInteraction = allowInteract;
         this.UM = UM;
 
-        Roles role = UM.getRoleByUUID(owner);
+        Role role = UM.getRoleByUUID(owner);
 
 	    int minY = (role == Roles.MINER) ? Constants.MINER_MINY : Constants.USER_MINY;
         this.sMinY = minY; this.oMinY = minY;

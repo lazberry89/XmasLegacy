@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
@@ -37,7 +38,7 @@ public class SelectListener implements Listener {
             sendErrorLog(p);
             return;
         }
-        Roles role = user.getRole();
+        Role role = user.getRole();
         if (!Roles.USER.equals(role)) {
             p.sendMessage(ColorUtils.chat(Prefix.RED + " 이미 직업을 선택했어요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);

@@ -4,11 +4,6 @@ plugins {
     id("io.github.goooler.shadow") version "8.1.8" apply false
 }
 
-repositories {
-    mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://jitpack.io")
-}
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
@@ -20,6 +15,13 @@ java {
 allprojects {
     group = "org.lazberry"
     version = "1.0-SNAPSHOT"
+    repositories {
+        mavenCentral()
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://repo.oraxen.com/releases")
+        maven("https://repo.opencollab.dev/main/")
+        maven("https://jitpack.io")
+    }
 }
 
 subprojects {

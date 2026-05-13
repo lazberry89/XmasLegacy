@@ -108,7 +108,7 @@ public class SqlUserRepository implements UserRepository {
 	@Override
 	public void saveUser(User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
-		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, isNewUser, wantsCookie) " +
+		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, isNewUser, wantsCookie) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
@@ -116,7 +116,7 @@ public class SqlUserRepository implements UserRepository {
 
 			pstmt.setString(1, user.getUUID().toString());
 			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getRole().name());
+			pstmt.setString(3, user.getRole().getKor());
 			pstmt.setInt(4, user.getDollars());
 			pstmt.setInt(5, user.getInquireCount());
 			pstmt.setInt(6, user.getPlayTime());

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Prefix;
+import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -39,6 +40,17 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 			p.openInventory(new BundleTypeInterface(plugin).getInventory());
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			return true;
+		}
+		if (args.length == 2) {
+			if (args[0].equalsIgnoreCase("bundle")) {
+				switch (args[1]) {
+					case "bundle" -> p.getInventory().addItem(gm.Bundle());
+					case "high_end" -> p.getInventory().addItem(gm.HighEndBundle());
+					case "chromatic_bundle" -> p.getInventory().addItem(gm.ChromaticBundle());
+					case "chromatic_box" -> p.getInventory().addItem(gm.ChromaticBox());
+					default -> plugin.infoMsg(InfoLevel.ERROR, p, "번들 종류는 bundle, high_end, chromatic_bundle, chromatic_box 중 하나여야 합니다! (예시: /gacha bundle bundle)");
+				}
+			}
 		}
 
 		String action = args[0].toLowerCase();
@@ -107,7 +119,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 		String action = args[0].toLowerCase();
 
 		if (args.length == 1) {
-			result.addAll(List.of("add", "remove", "inv", "inventory"));
+			result.addAll(List.of("add", "remove", "inv", "inventory", "bundle"));
 		} else if (action.equals("add")) {
 			switch (args.length) {
 				case 2 -> result.add("<이름>");
@@ -118,6 +130,8 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 		} else if (action.equals("remove")) {
 			if (args.length == 2) gm.getAll().forEach(gacha -> result.add(gacha.getKey()));
 			if (args.length == 3) Arrays.stream(BundleType.values()).map(Enum::name).forEach(result::add);
+		} else if (action.equalsIgnoreCase("bundle") && args.length == 2) {
+			result.addAll(List.of("bundle", "high_end", "chromatic_bundle", "chromatic_box"));
 		}
 
 		// 현재 입력 중인 단어로 필터링하여 반환

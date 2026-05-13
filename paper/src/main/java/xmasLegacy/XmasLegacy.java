@@ -11,6 +11,7 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Cosmetics.CosmeticManager;
 import xmasLegacy.Cosmetics.CosmeticsCommand;
+import xmasLegacy.Cosmetics.TestHeadCommand;
 import xmasLegacy.Economy.Currency.OperatorCurrency;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.*;
@@ -233,6 +234,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("role").setTabCompleter(RLC);;
 		getCommand("gacha").setExecutor(GCC);
 		getCommand("gacha").setTabCompleter(GCC);
+		getCommand("head").setExecutor(new TestHeadCommand());
 	}
 
 	@Override

@@ -7,8 +7,8 @@ plugins {
 dependencies {
     implementation(project(":common"))
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    compileOnly("org.geysermc.geyser:api:2.9.5-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
+    compileOnly("io.th0rgal:oraxen:1.213.0")
 }
 
 java {
@@ -17,20 +17,15 @@ java {
 
 tasks {
     runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.21.11")
         jvmArgs("-Xms2G", "-Xmx2G")
     }
 
     shadowJar {
-        // 빌드된 파일 이름 뒤에 -all이 붙지 않도록 설정
         archiveFileName.set("XmasLegacy.jar")
     }
 
     build {
-        // build 태스크 실행 시 기본 jar 대신 shadowJar가 실행되게 덮어씌움
         dependsOn(shadowJar)
     }
 }

@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.User;
 
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 
 import java.util.*;
@@ -40,7 +41,7 @@ public class UserManager {
             user.setDollars(user.getDollars() + amount);
         }
     }
-	public Roles getRoleByUUID(UUID uuid) {
+	public Role getRoleByUUID(UUID uuid) {
 		if (users.containsKey(uuid)) {
 			return users.get(uuid).getRole();
 		}
@@ -106,7 +107,7 @@ public class UserManager {
 	public boolean startRole(UUID uuid, Roles role) {
 		User user = getUser(uuid);
 		if (user == null) return false;
-		Roles getRole = user.getRole();
+		Role getRole = user.getRole();
 		if (Roles.USER.equals(getRole)) {
 			user.setRole(role);
 			return true;

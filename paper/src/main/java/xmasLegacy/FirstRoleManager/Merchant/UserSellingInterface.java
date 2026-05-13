@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
@@ -13,9 +14,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Economy.Currency.CurrencyManager;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
+import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ public class UserSellingInterface {
         List<MerchantRecipe> recipes = new ArrayList<>();
 
         switch (um.getUser(viewer.getUniqueId()).getRole()) {
-            case FARMER -> {
+            case Roles.FARMER -> {
                 ItemStack resultForWheat = CurrencyManager.currency(3);
 	            ItemMeta meta = resultForWheat.getItemMeta();
 				meta.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -61,7 +64,7 @@ public class UserSellingInterface {
                 sunflower.addIngredient(ingredient);
                 recipes.add(sunflower);
             }
-            case MINER -> {
+            case Roles.MINER -> {
 				ItemStack resultForCoal = CurrencyManager.currency(5);
 	            ItemMeta metac = resultForCoal.getItemMeta();
 	            metac.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -94,6 +97,10 @@ public class UserSellingInterface {
 				diamond.addIngredient(new ItemStack(Material.DIAMOND, 8));
 				recipes.add(diamond);
             }
+	        default -> {
+		        plugin.infoMsg(InfoLevel.WARN, viewer, "해당 직업이 아니네요!");
+				viewer.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+	        }
         }
     }
 	public Component getTitle() {return this.title;}
