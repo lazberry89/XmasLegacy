@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Prefix;
 import xmasLegacy.XmasLegacy;
@@ -27,7 +28,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
     }
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
 		if (!(sender instanceof Player p)) return true;
 
 		if (args.length == 0) {
@@ -101,7 +102,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
     }
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
 		List<String> result = new ArrayList<>();
 		String action = args[0].toLowerCase();
 

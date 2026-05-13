@@ -88,5 +88,4 @@ public class ScoreBoardManager {
 		Team team = scoreboard.getTeam(teamId);
 		if (team != null) team.suffix(suffix);
 	}
-
 }

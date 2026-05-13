@@ -1,28 +1,57 @@
 package org.lazberry.xmaslegacy.Roles;
 
-public enum SecondaryRoles {
-	GUARDIAN, //기사 2차전직 가디언
-	DEFENDER, //기사 2차전직 디펜더
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-	BERSERKER, //전사 2차전직 버서커(탱커)
-	FIGHTER, //전사 2차전직 격투가
+import java.util.Arrays;
+import java.util.List;
 
-	SNIPER, //궁수 2차전직 저격수
-	RANGER, //궁수 2차전직 유격병
-	TRAPPER, //궁수 2차전직 사냥꾼
+public enum SecondaryRoles implements Role {
+	GUARDIAN("가디언" ,Roles.KNIGHT, ThirdRoles.PALADIN), //기사 2차전직 가디언
+	DEFENDER("디펜더" ,Roles.KNIGHT, ThirdRoles.PALADIN), //기사 2차전직 디펜더
 
-	WIZARD, //마법사 2차전직 마법사(스킬변화)
-	ELEMENTAL, //마법사 2차전직 엘리멘탈(원소 마법)
-	SUMMONER, //마법사 2차전직 소환수
+	BERSERKER("버서커" ,Roles.WARRIOR), //전사 2차전직 버서커(탱커)
+	FIGHTER("격투가" ,Roles.WARRIOR), //전사 2차전직 격투가
 
-	BISHOP, //성직자 2차전직 주교
-	MONK, //성직자 2차전직 수도사
+	SNIPER("저격수" ,Roles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 저격수
+	RANGER("유격병" ,Roles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 유격병
+	TRAPPER("사냥꾼" ,Roles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 사냥꾼
 
-	ASSASSIN, //도적 2차전직 어쌔신
-	REAPER, //도적 2차전직 리퍼
+	WIZARD("위자드" ,Roles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 마법사(스킬변화)
+	ELEMENTAL("엘리멘탈" ,Roles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 엘리멘탈(원소 마법)
+	SUMMONER("소환수" ,Roles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 소환수
 
-	SMITH, //장인 2차전직 대장장이
-	ALCHEMIST, //장인 2차전직 연금술사
+	BISHOP("주교" ,Roles.PRIEST, ThirdRoles.SAINT), //성직자 2차전직 주교
+	MONK("수도사" ,Roles.PRIEST, ThirdRoles.SAINT), //성직자 2차전직 수도사
 
+	ASSASSIN("어쌔신" ,Roles.ROGUE, ThirdRoles.SHADOW_MASTER), //도적 2차전직 어쌔신
+	REAPER("리퍼" ,Roles.ROGUE, ThirdRoles.SHADOW_MASTER), //도적 2차전직 리퍼
 
+	SMITH("대장장이" ,Roles.CRAFTER), //장인 2차전직 대장장이
+	ALCHEMIST("연금술사" ,Roles.CRAFTER); //장인 2차전직 연금술사
+
+	private final Roles parent;
+	private final List<Role> next;
+	private final String kor;
+
+	SecondaryRoles(String kor , @NotNull Roles parent, @Nullable Role... next) {
+		this.parent = parent;
+		this.next = Arrays.asList(next);
+		this.kor = kor;
+	}
+	@Override
+	public @Nullable Role parent() {
+		return this.parent;
+	}
+	public @Nullable List<Role> next() {
+		return this.next;
+	}
+
+	@Override
+	public String getKor() {
+		return this.kor;
+	}
+
+	@Override
+	public int getTier() {return 2;}
 }

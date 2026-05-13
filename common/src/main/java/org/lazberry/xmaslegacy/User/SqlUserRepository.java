@@ -31,6 +31,7 @@ public class SqlUserRepository implements UserRepository {
 				"dollars INT, " +
 				"inquireCount INT, " +
 				"playTime INT, " +
+				"Exp DOUBLE, " +
 				"isNewUser BOOLEAN, " +
 				"wantsCookie BOOLEAN" +
 				");";
@@ -62,6 +63,7 @@ public class SqlUserRepository implements UserRepository {
 				loadedUser.setDollars(rs.getInt("dollars"));
 				loadedUser.setInquireCount(rs.getInt("inquireCount"));
 				loadedUser.setPlayTime(rs.getInt("playTime"));
+				loadedUser.setExp(rs.getDouble("Exp"));
 				loadedUser.setNewUser(rs.getBoolean("isNewUser"));
 				loadedUser.wantsCookie(rs.getBoolean("wantsCookie"));
 
@@ -114,12 +116,13 @@ public class SqlUserRepository implements UserRepository {
 
 			pstmt.setString(1, user.getUUID().toString());
 			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getRole() != null ? user.getRole().name() : Roles.USER.name());
+			pstmt.setString(3, user.getRole().name());
 			pstmt.setInt(4, user.getDollars());
 			pstmt.setInt(5, user.getInquireCount());
 			pstmt.setInt(6, user.getPlayTime());
-			pstmt.setBoolean(7, user.isNewUser());
-			pstmt.setBoolean(8, user.ifWantsCookie());
+			pstmt.setDouble(7, user.getExp());
+			pstmt.setBoolean(8, user.isNewUser());
+			pstmt.setBoolean(9, user.ifWantsCookie());
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {

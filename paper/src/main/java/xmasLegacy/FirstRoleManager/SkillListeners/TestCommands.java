@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
@@ -16,6 +17,7 @@ import xmasLegacy.Region.RegionManager;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
 
+@TestOnly
 public class TestCommands implements CommandExecutor {
 	private final SkillEffectManager SEM;
 	private PartyManager PM;

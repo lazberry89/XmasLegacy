@@ -1,7 +1,9 @@
 package xmasLegacy;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.*;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryRepository;
@@ -34,6 +36,7 @@ import xmasLegacy.Region.*;
 import xmasLegacy.RoleSelection.RoleCommand;
 import xmasLegacy.RoleSelection.RoleSelectCommand;
 import xmasLegacy.RoleSelection.SelectListener;
+import xmasLegacy.RoleSwitch.RoleExpManager;
 
 import java.util.ArrayList;
 
@@ -104,6 +107,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public GachaListener GCL;
 	public GachaBundleListener GBL;
 	public GachaCommand GCC;
+	public RoleExpManager REM;
 
 	@Override
 	public void onEnable() {
@@ -172,6 +176,8 @@ public final class XmasLegacy extends JavaPlugin {
 		this.GBL = new GachaBundleListener(this);
 		this.GCL = new GachaListener(this);
 		this.GCC = new GachaCommand(this);
+
+		this.REM = new RoleExpManager(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -270,6 +276,11 @@ public final class XmasLegacy extends JavaPlugin {
 			getLogger().warning("Main 모드로 시작합니다.");
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 		}
+	}
+
+	public void infoMsg(InfoLevel level, @NotNull Player p, String msg) {
+		p.sendMessage(level.Prefix() + " " + msg);
+		p.playSound(p, level.Sound(), 1.0f, 1.0f);
 	}
 
 	public String getServerType() {
