@@ -64,5 +64,7 @@ commands:
   potion:
   system:
   shop:
+  book:
+  delstand:
 
 

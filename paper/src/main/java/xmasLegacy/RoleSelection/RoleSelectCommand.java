@@ -5,9 +5,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 import xmasLegacy.XmasLegacy;
 
 @SuppressWarnings("ClassCanBeRecord")
+@TestOnly
 public class RoleSelectCommand implements CommandExecutor {
 	private final XmasLegacy plugin;
 

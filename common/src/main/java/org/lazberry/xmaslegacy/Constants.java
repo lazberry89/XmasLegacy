@@ -53,4 +53,7 @@ public class Constants {
 	public static final Component PRICE_TITLE = ColorUtils.chat("&6&l상품 등록하기");
 	public static final Component SHOP_TITLE = ColorUtils.chat("&6&l상인 상점");
 	public static final Component PURCHASE_TITLE = ColorUtils.chat("&6&l구매 확인");
+
+	//MagicBook
+	public static final String SELECT_BOOK = "rpgbooks:magicbook_v1";
 }

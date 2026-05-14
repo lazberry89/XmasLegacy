@@ -47,7 +47,7 @@ public class GachaManager {
 		return value;
 	}
 
-	public @Nullable ItemStack getRandomItem(BundleType type) {
+	public @Nullable Gacha getRandomItem(BundleType type) {
 		Map<String, Gacha> targetMap = getGachaMaps(type);
 
 		if (targetMap.isEmpty()) return null;
@@ -63,7 +63,7 @@ public class GachaManager {
 		for (Gacha gacha : targetMap.values()) {
 			cumulativeWeight += gacha.getChance();
 			if (pivot <= cumulativeWeight) {
-				return gacha.getItem().clone();
+				return gacha;
 			}
 		}
 		return null;

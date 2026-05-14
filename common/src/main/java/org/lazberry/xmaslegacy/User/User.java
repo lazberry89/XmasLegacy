@@ -4,15 +4,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
-import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 
 
 import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class User {
     private final UUID uuid;
-	private String name;
+	private @NotNull String name;
     private @NotNull Role role;
     private int dollars;
     private int inquireCount = 0;
@@ -30,7 +30,7 @@ public class User {
 
     public UUID getUUID() {return this.uuid;}
     public @NotNull Role getRole() {return this.role;}
-    public Integer getDollars() {return this.dollars;}
+    public int getDollars() {return this.dollars;}
     public int getInquireCount() {return this.inquireCount;}
     public int getPlayTime() {return this.playTime;}
     public void setDollars(int dollars) {this.dollars = dollars;}
@@ -47,13 +47,14 @@ public class User {
     public boolean ifWantsCookie() {return this.wantsCookie;}
 	public boolean isNewUser() {return this.isNewUser;}
 	public void setNewUser(boolean isNewUser) {this.isNewUser = isNewUser;}
-	public String getName() {return this.name;}
-	public void setName(String name) {this.name = name;}
+	public @NotNull String getName() {return this.name;}
+	public void setName(@NotNull String name) {this.name = name;}
     public void setMobile(boolean mobile) {this.isMobile = mobile;}
     public boolean isMobile() {return this.isMobile;}
     public void addExp(double amount) {this.exp += amount;}
     public void setExp(double amount) {this.exp = amount;}
     public double getExp() {return this.exp;}
+    public boolean hasRole() {return !Roles.USER.equals(this.role);}
 
     @Override
     public boolean equals(Object o) {

@@ -29,7 +29,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
     }
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull ... args) {
 		if (!(sender instanceof Player p)) return true;
 
 		if (args.length == 0) {

@@ -50,7 +50,7 @@ public class ScoreBoardManager {
 		createTeam("job", Component.text("직업: ").color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD),
 			Component.text(this.user.getRole().getKor()).color(NamedTextColor.GOLD), 8);
 		createTeam("money", Component.text("💰 돈: ").color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),
-			Component.text(user.getDollars().toString() + "$").color(NamedTextColor.GREEN), 7);
+			Component.text(user.getDollars() + "$").color(NamedTextColor.GREEN), 7);
 		createTeam("exp", Component.text("⭐ 경험치: ").color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD),
 			Component.text("0").color(NamedTextColor.BLUE), 6);
 

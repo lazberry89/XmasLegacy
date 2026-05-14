@@ -37,6 +37,9 @@ import xmasLegacy.Region.*;
 import xmasLegacy.RoleSelection.RoleCommand;
 import xmasLegacy.RoleSelection.RoleSelectCommand;
 import xmasLegacy.RoleSelection.SelectListener;
+import xmasLegacy.RoleSwitch.BookCommand;
+import xmasLegacy.RoleSwitch.DeleteStandCommand;
+import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.RoleSwitch.RoleExpManager;
 
 import java.util.ArrayList;
@@ -109,6 +112,9 @@ public final class XmasLegacy extends JavaPlugin {
 	public GachaBundleListener GBL;
 	public GachaCommand GCC;
 	public RoleExpManager REM;
+	public MagicBook MB;
+	public BookCommand BC;
+	public DeleteStandCommand DSC;
 
 	@Override
 	public void onEnable() {
@@ -179,6 +185,9 @@ public final class XmasLegacy extends JavaPlugin {
 		this.GCC = new GachaCommand(this);
 
 		this.REM = new RoleExpManager(this);
+		this.MB = new MagicBook(this);
+		this.BC = new BookCommand(this);
+		this.DSC = new DeleteStandCommand(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -231,10 +240,12 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("상점").setExecutor(SC);
 		getCommand("직업선택").setExecutor(RSC);
 		getCommand("role").setExecutor(RLC);
-		getCommand("role").setTabCompleter(RLC);;
+		getCommand("role").setTabCompleter(RLC);
 		getCommand("gacha").setExecutor(GCC);
 		getCommand("gacha").setTabCompleter(GCC);
 		getCommand("head").setExecutor(new TestHeadCommand());
+		getCommand("book").setExecutor(BC);
+		getCommand("delstand").setExecutor(DSC);
 	}
 
 	@Override
