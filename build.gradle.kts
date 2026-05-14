@@ -21,6 +21,8 @@ allprojects {
         maven("https://repo.oraxen.com/releases")
         maven("https://repo.opencollab.dev/main/")
         maven("https://jitpack.io")
+        maven("https://repo.codemc.io/repository/maven-releases/")
+        maven("https://repo.codemc.io/repository/maven-snapshots/")
     }
 }
 

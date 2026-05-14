@@ -38,7 +38,7 @@ public class SqlUserRepository implements UserRepository {
 
 		try (Connection conn = getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.execute();
+			 stmt.execute();
 		} catch (SQLException e) {
 			logger.error("Error occurred while Creating Table Task -> {}", e.getMessage(), e);
 		}
@@ -109,7 +109,7 @@ public class SqlUserRepository implements UserRepository {
 	public void saveUser(User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
 		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, isNewUser, wantsCookie) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {

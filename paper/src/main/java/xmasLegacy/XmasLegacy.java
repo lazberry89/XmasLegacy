@@ -292,7 +292,7 @@ public final class XmasLegacy extends JavaPlugin {
 	}
 
 	public void infoMsg(InfoLevel level, @NotNull Player p, String msg) {
-		p.sendMessage(level.Prefix() + " " + msg);
+		p.sendMessage(ColorUtils.chat(level.Prefix() + " " + msg));
 		p.playSound(p, level.Sound(), 1.0f, 1.0f);
 	}
 
