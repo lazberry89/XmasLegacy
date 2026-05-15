@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Roles;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.settings.Lang;
 
@@ -48,7 +49,7 @@ public enum HiddenRoles implements Role {
 	}
 
 	@Override
-	public List<Role> next() {
+	public @NotNull List<Role> next() {
 		return List.of();
 	}
 }

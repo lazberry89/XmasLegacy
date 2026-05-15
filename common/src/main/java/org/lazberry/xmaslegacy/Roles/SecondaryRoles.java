@@ -43,7 +43,7 @@ public enum SecondaryRoles implements Role {
 	public @Nullable Role parent() {
 		return this.parent;
 	}
-	public @Nullable List<Role> next() {
+	public @NotNull List<Role> next() {
 		return this.next;
 	}
 

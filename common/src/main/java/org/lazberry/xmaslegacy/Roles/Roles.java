@@ -41,7 +41,7 @@ public enum Roles implements Role {
     }
 
     @Override
-    public @Nullable List<Role> next() {
+    public @NotNull List<Role> next() {
         return this.next;
     }
 

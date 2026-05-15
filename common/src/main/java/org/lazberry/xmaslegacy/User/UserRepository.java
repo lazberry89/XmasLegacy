@@ -7,5 +7,7 @@ public interface UserRepository {
 
 	void saveUser(User user);
 
+	int getRank(UUID uuid);
+
 	boolean exist(UUID uuid);
 }

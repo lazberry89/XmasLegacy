@@ -28,5 +28,5 @@ public enum ThirdRoles implements Role {
 	@Override
 	public int getTier() {return 3;}
 	@Override
-	public List<Role> next() {return List.of();}
+	public @NotNull List<Role> next() {return List.of();}
 }

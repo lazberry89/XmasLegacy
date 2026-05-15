@@ -40,7 +40,7 @@ import xmasLegacy.RoleSelection.SelectListener;
 import xmasLegacy.RoleSwitch.BookCommand;
 import xmasLegacy.RoleSwitch.DeleteStandCommand;
 import xmasLegacy.RoleSwitch.MagicBook;
-import xmasLegacy.RoleSwitch.RoleExpManager;
+import xmasLegacy.RoleSwitch.ExpManager;
 
 import java.util.ArrayList;
 
@@ -111,7 +111,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public GachaListener GCL;
 	public GachaBundleListener GBL;
 	public GachaCommand GCC;
-	public RoleExpManager REM;
+	public ExpManager REM;
 	public MagicBook MB;
 	public BookCommand BC;
 	public DeleteStandCommand DSC;
@@ -184,7 +184,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.GCL = new GachaListener(this);
 		this.GCC = new GachaCommand(this);
 
-		this.REM = new RoleExpManager(this);
+		this.REM = new ExpManager(this);
 		this.MB = new MagicBook(this);
 		this.BC = new BookCommand(this);
 		this.DSC = new DeleteStandCommand(this);

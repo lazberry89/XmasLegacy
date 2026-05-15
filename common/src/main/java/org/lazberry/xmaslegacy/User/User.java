@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.RoleMastery;
+import org.lazberry.xmaslegacy.settings.Tier;
 
 
 import java.util.Objects;
@@ -14,10 +16,14 @@ public class User {
     private final UUID uuid;
 	private @NotNull String name;
     private @NotNull Role role;
-    private int dollars;
+    private int dollars = 0;
     private int inquireCount = 0;
     private int playTime = 0;
     private double exp = 0.0f;
+    private double roleExp = 0.0f;
+    private int level = 0;
+    private Tier Tier = org.lazberry.xmaslegacy.settings.Tier.VISITOR;
+    private RoleMastery mastery = RoleMastery.BEGINNER;
     private boolean isMobile = false;
 	private boolean isNewUser = false;
     private boolean wantsCookie = true;
@@ -55,6 +61,16 @@ public class User {
     public void setExp(double amount) {this.exp = amount;}
     public double getExp() {return this.exp;}
     public boolean hasRole() {return !Roles.USER.equals(this.role);}
+    public void addRoleExp(double amount) {this.roleExp += amount;}
+    public void setRoleExp(double amount) {this.roleExp = amount;}
+    public double getRoleExp() {return this.roleExp;}
+    public void addLevel(int amount) {this.level += amount;}
+    public void setLevel(int amount) {this.level = amount;}
+    public int getLevel() {return this.level;}
+    public @NotNull Tier getTier() {return this.Tier;}
+    public void setTier(@NotNull Tier tier) {this.Tier = tier;}
+    public @NotNull RoleMastery getMastery() {return mastery;}
+    public void setMastery(@NotNull RoleMastery mastery) {this.mastery = mastery;}
 
     @Override
     public boolean equals(Object o) {

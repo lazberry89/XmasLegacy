@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.User;
 
+import org.jetbrains.annotations.CheckReturnValue;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 
