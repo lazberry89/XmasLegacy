@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 
-public enum RoleMastery {
+public enum RoleMastery implements ServerPrefix {
     BEGINNER(ColorUtils.chat("&7&l⫝ BEGINNER")),
     BRONZE(ColorUtils.chat("&6&l⫚ BRONZE")),
     SILVER(ColorUtils.chat("&7&l⨈ SILVER")),

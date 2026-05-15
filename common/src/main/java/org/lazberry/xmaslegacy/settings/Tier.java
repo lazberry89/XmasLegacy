@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.settings;
 import net.kyori.adventure.text.Component;
 import org.lazberry.xmaslegacy.ColorUtils;
 
-public enum Tier {
+public enum Tier implements ServerPrefix {
     VISITOR(ColorUtils.chat("&8&l[ VISITOR ]")),
     USER(ColorUtils.chat("&7&l[ USER ]")),
     NEIGHBOR(ColorUtils.chat("&a&l[ NEIGHBOR ]")),

@@ -1,0 +1,68 @@
+package xmasLegacy.ServerPrefix;
+
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.RuleManager;
+import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.ServerPrefix;
+import xmasLegacy.InfoLevel;
+import xmasLegacy.XmasLegacy;
+
+public class ChatPrefixListener implements Listener {
+	private final XmasLegacy plugin;
+	private final PrefixManager PFM;
+	private final RuleManager RM;
+	private final UserManager UM;
+
+	public ChatPrefixListener(XmasLegacy plugin) {
+		this.plugin = plugin;
+		this.PFM = plugin.PFM;
+		this.RM = plugin.RM;
+		this.UM = plugin.UM;
+	}
+
+	@EventHandler
+	public void onChatPrefix(AsyncChatEvent e) {
+		var p = e.getPlayer();
+		String rawMsg = PlainTextComponentSerializer.plainText().serialize(e.message());
+		String msg;
+		if (RM.checkBadWords(rawMsg)) {
+			msg = RM.hideBadWords(rawMsg);
+			plugin.infoMsg(InfoLevel.ERROR, p, "욕설이 포함된 메시지는 제재를 받을 수 있습니다.");
+		} else {
+			msg = rawMsg;
+		}
+		e.renderer((source, sourceDisplayName, message, viewer) -> {
+			User user = UM.getUser(source.getUniqueId());
+			if (user == null) return Component.text()
+					.append(sourceDisplayName)
+					.append(Component.text(" : "))
+					.append(Component.text(msg))
+					.build();
+			ServerPrefix prefix = user.getEquipPrefix();
+			Component equipP = prefix == null ? ColorUtils.chat("") : prefix.prefix();
+			return Component.text()
+					.append(equipP)
+					.append(Component.text(" "))
+					.append(sourceDisplayName)
+					.append(Component.text(" : "))
+					.append(Component.text(msg))
+					.build();
+		});
+	}
+
+	@EventHandler
+	public void PrefixGui(InventoryClickEvent e) {
+		if (!(e.getInventory().getHolder() instanceof PrefixInterface pif)) return;
+		Player p = (Player) e.getWhoClicked();
+		e.setCancelled(true);
+		int slot = e.getRawSlot();
+	}
+}

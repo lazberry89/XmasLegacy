@@ -41,6 +41,7 @@ import xmasLegacy.RoleSwitch.BookCommand;
 import xmasLegacy.RoleSwitch.DeleteStandCommand;
 import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.RoleSwitch.ExpManager;
+import xmasLegacy.ServerPrefix.PrefixManager;
 
 import java.util.ArrayList;
 
@@ -115,6 +116,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public MagicBook MB;
 	public BookCommand BC;
 	public DeleteStandCommand DSC;
+	public PrefixManager PFM;
 
 	@Override
 	public void onEnable() {
@@ -188,6 +190,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.MB = new MagicBook(this);
 		this.BC = new BookCommand(this);
 		this.DSC = new DeleteStandCommand(this);
+		this.PFM = new PrefixManager(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");

@@ -55,5 +55,5 @@ public class Constants {
 	public static final Component PURCHASE_TITLE = ColorUtils.chat("&6&l구매 확인");
 
 	//MagicBook
-	public static final String SELECT_BOOK = "magicbook_v1_opened";
+	public static final String SELECT_BOOK = "magicbookopened";
 }

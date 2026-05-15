@@ -5,9 +5,11 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
+import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
 
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ public class User {
     private boolean isMobile = false;
 	private boolean isNewUser = false;
     private boolean wantsCookie = true;
+	private List<ServerPrefix> availablePrefix;
+	private @Nullable ServerPrefix equipPrefix;
 
     public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {
         this.uuid = uuid;
@@ -71,6 +75,16 @@ public class User {
     public void setTier(@NotNull Tier tier) {this.Tier = tier;}
     public @NotNull RoleMastery getMastery() {return mastery;}
     public void setMastery(@NotNull RoleMastery mastery) {this.mastery = mastery;}
+	public void addPrefix(@NotNull ServerPrefix prefix) {this.availablePrefix.add(prefix);}
+	public List<ServerPrefix> getAvailablePrefix() {return this.availablePrefix;}
+	public void removePrefix(@NotNull ServerPrefix prefix) {this.availablePrefix.remove(prefix);}
+	public @Nullable ServerPrefix getEquipPrefix() {return this.equipPrefix;}
+	public void setEquipPrefix(@Nullable ServerPrefix prefix) {this.equipPrefix = prefix;}
+	public boolean removeEquipped() {
+		if (this.equipPrefix == null) return false;
+		this.equipPrefix = null;
+		return true;
+	}
 
     @Override
     public boolean equals(Object o) {
