@@ -2,8 +2,9 @@ package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.User.User;
 
-public enum MissionPrefix implements ServerPrefix {
+public enum MissionPrefix implements ServerPrefix, Unreplicable {
 	FIRST_JOINER(ColorUtils.chat("FIRST JOINER")),
 	VIP(ColorUtils.chat("VIP")),
 	VVIP(ColorUtils.chat("VVIP")),
