@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Team;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 public class ScoreBoardManager {
@@ -27,7 +27,7 @@ public class ScoreBoardManager {
 		this.plugin = plugin;
 		this.um = plugin.UM;
 		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-		this.objective = scoreboard.registerNewObjective("xmas_board", Criteria.DUMMY, ColorUtils.chat(Prefix.XmasLegacy.toString()));
+		this.objective = scoreboard.registerNewObjective("xmas_board", Criteria.DUMMY, ColorUtils.chat(Alert.XmasLegacy.toString()));
 		this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		this.user = um.getUser(p.getUniqueId());
 		if (user == null) return;

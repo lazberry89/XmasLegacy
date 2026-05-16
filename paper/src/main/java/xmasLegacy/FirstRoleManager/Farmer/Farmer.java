@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Region.Region;
@@ -38,7 +38,7 @@ public class Farmer extends AbstractFirstRole {
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
 			return;
 		}
 		if (!consumeEnergy(p, 3)) return;
@@ -55,7 +55,7 @@ public class Farmer extends AbstractFirstRole {
 				block.breakNaturally();
 				block.getLocation().getWorld().playSound(block.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			} else {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 적절한 사용 조건이 아닙니다."));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 적절한 사용 조건이 아닙니다."));
 				p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 				return;
 			}
@@ -91,7 +91,7 @@ public class Farmer extends AbstractFirstRole {
 		if (tool == null || tool.getType() == Material.AIR) return;
 
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
 			return;
 		}
 		List<Region> playerRegions = rm.getRegion(p);
@@ -115,7 +115,7 @@ public class Farmer extends AbstractFirstRole {
 							block.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation().add(0.5, 0.5, 0.5), 5, 0.2, 0.2, 0.2);
 							success = true;
 						} else {
-							p.sendMessage(ColorUtils.chat(Prefix.RED + " 적절한 사용 조건이 아닙니다."));
+							p.sendMessage(ColorUtils.chat(Alert.RED + " 적절한 사용 조건이 아닙니다."));
 							p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 							return;
 						}

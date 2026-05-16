@@ -24,6 +24,8 @@ import xmasLegacy.XmasLegacy;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated(since = "1.21.4")
+@SuppressWarnings("FieldCanBeLocal, unused")
 public class UserSellingInterface {
     private final Merchant inv;
     private final UserManager um;
@@ -102,6 +104,7 @@ public class UserSellingInterface {
 				viewer.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
 	        }
         }
+		this.inv.setRecipes(recipes);
     }
 	public Component getTitle() {return this.title;}
 

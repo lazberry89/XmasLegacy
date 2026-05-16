@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
@@ -46,7 +46,7 @@ public class BookCommand implements CommandExecutor {
             plugin.infoMsg(InfoLevel.ERROR, p, "이미 생성되어 있어요! 제거 후 사용해주세요.");
             Component delStand = ColorUtils.chat("&c&l[삭제하기]").hoverEvent(HoverEvent.showEntity(Key.key("minecraft:armor_stand"), MB.getStand().getUniqueId()))
                     .clickEvent(ClickEvent.runCommand("/delstand"));
-            Component msg = ColorUtils.chat(Prefix.YELLOW + " 제거할까요? ").append(delStand);
+            Component msg = ColorUtils.chat(Alert.YELLOW + " 제거할까요? ").append(delStand);
             p.sendMessage(msg);
         }
         return true;

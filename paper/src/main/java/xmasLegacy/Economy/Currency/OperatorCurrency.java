@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,59 +30,59 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 		if (args.length == 3) { //currency add Lazberry89 100
 			Player target = Bukkit.getPlayerExact(args[1]);
 			if (target == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 플레이어가 아닙니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 플레이어가 아닙니다!"));
 				return true;
 			}
 			int amount;
 			try {
 				amount = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 올바른 숫자를 입력해주세요!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 올바른 숫자를 입력해주세요!"));
 				return true;
 			}
 
 			switch (args[0].toLowerCase()) {
 				case "add" -> {
 					if (amount < 0) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 음수는 입력할 수 없습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 음수는 입력할 수 없습니다!"));
 						return true;
 					}
 					if (ecm.deposit(target.getUniqueId(), amount)) {
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 해당 유저의 코인 -> " + amount));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 코인 -> " + amount));
 					} else {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 입금에 실패하였습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 입금에 실패하였습니다."));
 					}
 				}
 				case "remove" -> {
 					if (amount < 0) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 음수는 입력할 수 없습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 음수는 입력할 수 없습니다!"));
 						return true;
 					}
 					if (ecm.withdraw(target.getUniqueId(), amount)) {
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 해당 유저의 코인 -> " + amount));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 코인 -> " + amount));
 					} else {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 출금에 실패하였습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 출금에 실패하였습니다."));
 					}
 				}
 				case "set" -> {
 					if (amount < 0) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 음수는 입력할 수 없습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 음수는 입력할 수 없습니다!"));
 						return true;
 					}
 					if (ecm.setBalance(target.getUniqueId(), amount)) {
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 해당 유저의 코인 -> " + amount));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 코인 -> " + amount));
 					} else {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 자금설정에 실패하였습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 자금설정에 실패하였습니다."));
 					}
 				}
-				case "check" -> p.sendMessage(ColorUtils.chat(Prefix.YELLOW + target.getName() + "의 코인: " + ecm.checkBalance(target.getUniqueId())));
-				default -> p.sendMessage(ColorUtils.chat(Prefix.RED + " 잘못된 명령어입니다!"));
+				case "check" -> p.sendMessage(ColorUtils.chat(Alert.YELLOW + target.getName() + "의 코인: " + ecm.checkBalance(target.getUniqueId())));
+				default -> p.sendMessage(ColorUtils.chat(Alert.RED + " 잘못된 명령어입니다!"));
 			}
 		} else if (args.length == 4) {
 			Player target = Bukkit.getPlayerExact(args[1]);
 			Player toTarget = Bukkit.getPlayerExact(args[2]);
 			if (target == null || toTarget == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 플레이어가 아닙니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 플레이어가 아닙니다!"));
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("transfer")) {
@@ -90,23 +90,23 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 				try {
 					amount = Integer.parseInt(args[3]);
 				} catch (NumberFormatException e) {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 올바른 숫자를 입력해주세요!"));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 올바른 숫자를 입력해주세요!"));
 					return true;
 				}
 				if (amount < 0) {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 음수는 입력할 수 없습니다!"));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 음수는 입력할 수 없습니다!"));
 					return true;
 				}
 				if (ecm.transferMoney(target.getUniqueId(), toTarget.getUniqueId(), amount)) {
-					p.sendMessage(ColorUtils.chat(Prefix.YELLOW + target.getName() + "의 코인 -> " + amount + " -> " + toTarget.getName()));
+					p.sendMessage(ColorUtils.chat(Alert.YELLOW + target.getName() + "의 코인 -> " + amount + " -> " + toTarget.getName()));
 				} else {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 송금에 실패하였습니다."));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 송금에 실패하였습니다."));
 				}
 			} else {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 잘못된 명령어입니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 잘못된 명령어입니다!"));
 			}
 		} else {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 잘못된 명령어입니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 잘못된 명령어입니다!"));
 		}
 		return true;
 	}

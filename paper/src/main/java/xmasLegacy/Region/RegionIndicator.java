@@ -15,7 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
@@ -55,13 +55,13 @@ public class RegionIndicator implements Listener {
 		if (pdc != null && pdc.equals("user")) {
 			Location loc = e.getBlock().getLocation();
 			if (UM.getUser(p.getUniqueId()) == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 유저 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요."));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보를 불러오는 중입니다. 잠시 후 다시 시도해주세요."));
 				e.setCancelled(true);
 				return;
 			}
 
 			if (RM.getRegionAt(loc) != null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 이곳은 이미 누군가의 구역입니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 이곳은 이미 누군가의 구역입니다!"));
 				e.setCancelled(true);
 				return;
 			}
@@ -70,12 +70,12 @@ public class RegionIndicator implements Listener {
 
 			boolean isOverlapping = RM.getRegions().stream().anyMatch(r -> r.overlaps(newRegion));
 			if (isOverlapping) {
-				p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 다른 구역에 겹치는 구역이 있습니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 다른 구역에 겹치는 구역이 있습니다!"));
 				e.setCancelled(true);
 				return;
 			}
 			RM.addRegion(p, newRegion);
-			p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 구역을 생성했습니다. &6ID: " + newRegion.getId()));
+			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 생성했습니다. &6ID: " + newRegion.getId()));
 		}
 	}
 
@@ -89,6 +89,6 @@ public class RegionIndicator implements Listener {
 
 		if (!region.getCenter().equals(block.getLocation())) return;
 		RM.removeRegion(region);
-		p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.getId()));
+		p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.getId()));
 	}
 }

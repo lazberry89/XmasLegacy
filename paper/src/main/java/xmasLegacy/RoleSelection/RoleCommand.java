@@ -13,7 +13,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -33,31 +33,31 @@ public class RoleCommand implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 관리자용 명령어에요!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 관리자용 명령어에요!"));
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 			return true;
 		}
 		if (args.length == 2) {
 			Player target = Bukkit.getPlayerExact(args[0]);
 			if (target == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 플레이어를 찾을 수 없습니다."));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 플레이어를 찾을 수 없습니다."));
 				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 				return true;
 			}
 			User user = um.getUser(target.getUniqueId());
 			if (user == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 플레이어를 찾을 수 없습니다."));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 플레이어를 찾을 수 없습니다."));
 				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 				return true;
 			}
 			try {
 				user.setRole(Roles.valueOf(args[1]));
 			} catch (IllegalArgumentException e) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 역할을 찾을 수 없습니다."));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 역할을 찾을 수 없습니다."));
 				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 				return true;
 			}
-			p.sendMessage(ColorUtils.chat(Prefix.GREEN + " " + target.getName() + "님의 역할이 " + Roles.valueOf(args[1]).getKor() + "(으)로 설정되었습니다."));
+			p.sendMessage(ColorUtils.chat(Alert.GREEN + " " + target.getName() + "님의 역할이 " + Roles.valueOf(args[1]).getKor() + "(으)로 설정되었습니다."));
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 			return true;
 		}

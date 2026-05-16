@@ -6,11 +6,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,46 +32,46 @@ public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 			switch (args[0].toLowerCase()) {
 				case "add" -> {
 					if (CSM.getEquippedCosmetics(args[1]) != null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 이미 등록된 코스메틱입니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 등록된 코스메틱입니다!"));
 						return true;
 					}
 					ItemStack model = p.getInventory().getItemInMainHand();
 					if (model.getType().isAir()) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 손에 아이템을 들고 명령어를 입력해주세요!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 손에 아이템을 들고 명령어를 입력해주세요!"));
 					} else {
 						CSM.addCosmetics(model, args[1]);
-						p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 아이템이 " + args[1] + " 코스메틱으로 등록되었습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.GREEN + " 아이템이 " + args[1] + " 코스메틱으로 등록되었습니다!"));
 					}
 					return true;
 				}
 				case "remove" -> {
 					if (cosmetic == null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 등록된 코스메틱이 아닙니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 등록된 코스메틱이 아닙니다!"));
 						return true;
 					}
 					cosmetic.unequip(p);
 					CSM.deleteCosmetics(cosmetic);
-					p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 코스메틱이 제거되었습니다!"));
+					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 코스메틱이 제거되었습니다!"));
 				}
 				case "equip" -> {
 					if (cosmetic == null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 등록된 코스메틱이 아닙니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 등록된 코스메틱이 아닙니다!"));
 						return true;
 					}
 					cosmetic.equip(p);
-					p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 코스메틱이 장착되었습니다!"));
+					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 코스메틱이 장착되었습니다!"));
 				}
 				case "unequip" -> {
 					if (cosmetic == null) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 등록된 코스메틱이 아닙니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 등록된 코스메틱이 아닙니다!"));
 						return true;
 					}
 					cosmetic.unequip(p);
-					p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 코스메틱이 해제되었습니다!"));
+					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 코스메틱이 해제되었습니다!"));
 				}
 			}
 		} else {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 잘못된 명령어입니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 잘못된 명령어입니다!"));
 			return true;
 		}
 		return true;

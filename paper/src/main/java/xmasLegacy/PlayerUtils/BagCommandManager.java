@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.List;
 
@@ -31,14 +31,14 @@ public class BagCommandManager implements CommandExecutor, TabCompleter {
 			return true;
 		} else if (args.length == 1) {
 			if (!p.isOp()) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 권한이 없습니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 				p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 				return true;
 			} else {
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 				if (target.hasPlayedBefore()) {
 					p.openInventory(BM.getBag(target.getUniqueId()).getInventory());
-					p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 플레이어 &6" + target.getName() + "&f의 가방을 조회중입니다."));
+					p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 플레이어 &6" + target.getName() + "&f의 가방을 조회중입니다."));
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 					return true;
 				}

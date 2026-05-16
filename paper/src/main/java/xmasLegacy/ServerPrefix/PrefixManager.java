@@ -35,6 +35,7 @@ public class PrefixManager {
 		return false;
 	}
 
+	@CanIgnoreReturnValue
 	public boolean equipPrefix(@NotNull Player p, @NotNull ServerPrefix prefix) {
 		User user = um.getUser(p.getUniqueId());
 		if (user == null) return false;
@@ -43,6 +44,7 @@ public class PrefixManager {
 		return true;
 	}
 
+	@CanIgnoreReturnValue
 	public boolean unequipPrefix(@NotNull Player p) {
 		User user = um.getUser(p.getUniqueId());
 		if (user == null) return false;

@@ -1,22 +1,22 @@
 package xmasLegacy;
 
 import org.bukkit.Sound;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 public enum InfoLevel {
-    ERROR(Prefix.RED, Sound.BLOCK_NOTE_BLOCK_BASS),
-    WARN(Prefix.YELLOW, Sound.BLOCK_NOTE_BLOCK_BASS),
-    INFO(Prefix.GREEN, Sound.ENTITY_ARROW_HIT_PLAYER);
+    ERROR(Alert.RED, Sound.BLOCK_NOTE_BLOCK_BASS),
+    WARN(Alert.YELLOW, Sound.BLOCK_NOTE_BLOCK_BASS),
+    INFO(Alert.GREEN, Sound.ENTITY_ARROW_HIT_PLAYER);
 
-    private final Prefix prefix;
+    private final Alert prefix;
     private final Sound sound;
 
-    InfoLevel(Prefix prefix, Sound sound) {
+    InfoLevel(Alert prefix, Sound sound) {
         this.prefix = prefix;
         this.sound = sound;
     }
 
-    public Prefix Prefix() {
+    public Alert Prefix() {
         return this.prefix;
     }
     public Sound Sound() {

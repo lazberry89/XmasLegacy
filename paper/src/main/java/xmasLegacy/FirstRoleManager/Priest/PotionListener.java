@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
@@ -155,7 +155,7 @@ public class PotionListener implements Listener {
 		ItemStack item = e.getItem();
 		if (item == null) return;
 		if (p.getCooldown(item) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 사용할 수 없습니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 사용할 수 없습니다!"));
 			e.setCancelled(true);
 			return;
 		}

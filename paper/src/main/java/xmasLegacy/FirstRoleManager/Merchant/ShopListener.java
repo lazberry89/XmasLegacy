@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 import java.util.Map;
@@ -78,7 +78,7 @@ public class ShopListener implements Listener {
 				e.setCancelled(true);
 				Product prd = PIF.getProduct(PIF.getSelectedSlot());
 				if (prd == null) {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 상품을 먼저 올려주세요!"));
 					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 				} else {
 					prd.addPrice(500);
@@ -104,11 +104,11 @@ public class ShopListener implements Listener {
 				e.setCancelled(true);
 				Product prd = PIF.getProduct(PIF.getSelectedSlot());
 				if (prd == null) {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 상품을 먼저 올려주세요!"));
 					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 				} else {
 					if (prd.getPrice() < 500) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 가격이 너무 낮습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 가격이 너무 낮습니다!"));
 						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 						return;
 					}
@@ -122,12 +122,12 @@ public class ShopListener implements Listener {
 				e.setCancelled(true);
 				Product prd = PIF.getProduct(PIF.getSelectedSlot());
 				if (prd == null) {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 상품을 먼저 올려주세요!"));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 상품을 먼저 올려주세요!"));
 					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 				} else {
 					e.getInventory().setItem(4, new ItemStack(Material.AIR));
 					PIF.setProduct(prd, prd.getPrice());
-					p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품이 등록되었습니다!"));
+					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 상품이 등록되었습니다!"));
 					ignoreReset = true;
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 					PIF.reloadShopIcons();
@@ -155,12 +155,12 @@ public class ShopListener implements Listener {
 			switch (slot) {
 				case 12 -> {
 					if (user.getDollars() < prd.getPrice()) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 돈이 부족합니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 돈이 부족합니다!"));
 						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 						return;
 					}
 					if (em.transferMoney(p.getUniqueId(), PIF.getOwner(), prd.getPrice())) {
-						p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 상품을 구매하였습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.GREEN + " 상품을 구매하였습니다!"));
 						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 						Map<Integer, ItemStack> leftOver = p.getInventory().addItem(prd.getItem());
 						if (!leftOver.isEmpty()) {
@@ -172,8 +172,8 @@ public class ShopListener implements Listener {
 						PIF.removePurchaseItem();
 						PIF.reloadShopIcons();
 					} else {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 구매에 실패하였습니다!"));
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 잔액부족 : &c" + user.getDollars()));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 구매에 실패하였습니다!"));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 잔액부족 : &c" + user.getDollars()));
 						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 					}
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);

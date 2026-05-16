@@ -6,7 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
@@ -44,12 +44,12 @@ public class InquiryManager {
 			Component msg = ColorUtils.chat("이동하시겠습니까? ");
 			Component nt = ColorUtils.chat("&a&l[이동]")
 					.clickEvent(ClickEvent.runCommand("/이동문의 " + name))
-					.hoverEvent(HoverEvent.showText(ColorUtils.chat(Prefix.YELLOW + " 클릭 시 문의한 유저의 위치로 이동합니다.")));
+					.hoverEvent(HoverEvent.showText(ColorUtils.chat(Alert.YELLOW + " 클릭 시 문의한 유저의 위치로 이동합니다.")));
 			msg = msg.append(nt);
 			if (rm.checkBadWords(message)) {
 				Component bwt = ColorUtils.chat(" &c&l[처벌]")
 						.clickEvent(ClickEvent.runCommand("/ban " + name + " 욕설사용"))
-						.hoverEvent(HoverEvent.showText(ColorUtils.chat(Prefix.RED + " 클릭 시 유저를 밴 처리합니다.")));
+						.hoverEvent(HoverEvent.showText(ColorUtils.chat(Alert.RED + " 클릭 시 유저를 밴 처리합니다.")));
 				msg = msg.append(bwt);
 			}
 			return msg;

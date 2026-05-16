@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
@@ -81,7 +81,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 			for (BundleType type : types) {
 				gm.addGacha(key, item, grade, chance, type);
 			}
-			p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 가챠 아이템 등록 완료: " + key));
+			p.sendMessage(ColorUtils.chat(Alert.GREEN + " 가챠 아이템 등록 완료: " + key));
 			p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 			return true;
 		}
@@ -92,7 +92,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 			try {
 				BundleType type = BundleType.valueOf(args[2].toUpperCase());
 				if (gm.removeGacha(key, type)) {
-					p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 아이템을 삭제하였습니다."));
+					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 아이템을 삭제하였습니다."));
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 				} else {
 					error(p, "해당 타입에 존재하지 않는 아이템 이름입니다.");
@@ -109,7 +109,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 
 
     private void error(Player p, String msg) {
-        p.sendMessage(ColorUtils.chat(Prefix.RED + " " + msg));
+        p.sendMessage(ColorUtils.chat(Alert.RED + " " + msg));
         p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
     }
 

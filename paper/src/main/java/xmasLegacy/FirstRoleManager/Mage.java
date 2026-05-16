@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
@@ -39,7 +39,7 @@ public class Mage extends AbstractFirstRole {
         ItemStack tool = p.getInventory().getItemInMainHand();
 
         if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
             return;
         }
         if (!consumeEnergy(p, 6)) return;
@@ -102,7 +102,7 @@ public class Mage extends AbstractFirstRole {
 		if (tool == null || tool.getType() == Material.AIR) return;
 
         if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
             return;
         }
 
@@ -111,7 +111,7 @@ public class Mage extends AbstractFirstRole {
         final Location center = p.getEyeLocation().add(p.getLocation().getDirection().multiply(8));
 
         if (center.getBlock().getType().isSolid()) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 위치에 스킬을 사용할 수 없습니다!"));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 위치에 스킬을 사용할 수 없습니다!"));
             return;
         }
         List<BlockDisplay> cores = new ArrayList<>();

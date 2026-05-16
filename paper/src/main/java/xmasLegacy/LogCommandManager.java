@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Region.Region;
 import xmasLegacy.Region.RegionManager;
 
@@ -40,7 +40,7 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
         if (!(commandSender instanceof Player p)) return false;
         if (!p.isOp()) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 로그를 볼 수 있는 권한이 없습니다."));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 로그를 볼 수 있는 권한이 없습니다."));
             p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             return true;
         }
@@ -57,7 +57,7 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 		                List<String> logs = IM.getInquiryLogs(uuid);
 
 		                if (logs.isEmpty() || (logs.size() == 1 && logs.getFirst().contains("없습니다"))) {
-			                p.sendMessage(ColorUtils.chat(Prefix.RED + "'" + targetName + "' 유저의 기록이 없습니다."));
+			                p.sendMessage(ColorUtils.chat(Alert.RED + "'" + targetName + "' 유저의 기록이 없습니다."));
 
 		                } else {
 							logs.forEach(p::sendMessage);
@@ -69,18 +69,18 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 					if (of.hasPlayedBefore()) {
 						List<Region> regions = RM.getRegion(of.getUniqueId());
 						if (regions == null || regions.isEmpty()) {
-							p.sendMessage(ColorUtils.chat(Prefix.RED + " 구역이 없습니다."));
+							p.sendMessage(ColorUtils.chat(Alert.RED + " 구역이 없습니다."));
 							return true;
 						}
 						SendRegions(p, regions);
 					} else {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 유저가 존재하지 않습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 유저가 존재하지 않습니다."));
 						p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 						return true;
 					}
 	            }
                 default -> {
-                    p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 명령어가 아닙니다."));
+                    p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 명령어가 아닙니다."));
                     p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 					return true;
                 }
@@ -110,13 +110,13 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 				case "regions" -> {
 					List<Region> regions = RM.getRegions();
 					if (regions.isEmpty()) {
-						p.sendMessage(ColorUtils.chat(Prefix.RED + " 구역이 없습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.RED + " 구역이 없습니다."));
 						return true;
 					}
 					SendRegions(p, regions);
 				}
 				default -> {
-					p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 명령어가 아닙니다."));
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 명령어가 아닙니다."));
 					p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 				}
 			}

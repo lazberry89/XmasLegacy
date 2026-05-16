@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.SkillEffectManager;
@@ -43,7 +43,7 @@ public class Priest extends AbstractFirstRole {
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
 		}
 
@@ -53,7 +53,7 @@ public class Priest extends AbstractFirstRole {
 		Entity entity = p.getTargetEntity(15, false);
         if (entity != null) {
             if (!(entity instanceof Player target) || !PM.isParty(p.getUniqueId(), target.getUniqueId())) {
-                p.sendMessage(ColorUtils.chat(Prefix.RED + " 유효한 타겟이 아닙니다!"));
+                p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 타겟이 아닙니다!"));
                 GlowUtils.setGlowColor(entity, NamedTextColor.RED);
                 Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
                     if (entity.isValid()) {
@@ -82,7 +82,7 @@ public class Priest extends AbstractFirstRole {
 		if (tool == null || tool.getType() == Material.AIR) return;
 
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
 		}
 		if (!consumeEnergy(p, 3)) return;

@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
@@ -34,7 +34,7 @@ public class GachaListener implements Listener {
         e.setCancelled(true);
 
         if (!p.isOp()) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 관리자만 재고를 꺼낼 수 있어요!"));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 관리자만 재고를 꺼낼 수 있어요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             return;
         }
@@ -68,7 +68,7 @@ public class GachaListener implements Listener {
             p.updateInventory();
 
         } catch (IllegalArgumentException er) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 확률형 아이템의 형식이 잘못되었습니다."));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 확률형 아이템의 형식이 잘못되었습니다."));
             plugin.getSLF4JLogger().warn("Bundle build Error! ", er);
         }
     }

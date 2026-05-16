@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
@@ -33,16 +33,16 @@ public class Crafter extends AbstractFirstRole{
     public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 	    if (p.getCooldown(tool) > 0) {
-		    p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+		    p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 		    return;
 	    }
 	    Entity target = p.getTargetEntity(5, false);
 	    if (target == null) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 수리할 대상이 없습니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 대상이 없습니다!"));
 			return;
 	    }
 	    if (!(target instanceof Item itemEntity)) {
-		    p.sendMessage(ColorUtils.chat(Prefix.RED + " 수리할 아이템(드롭된 아이템)을 조준해주세요!"));
+		    p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 아이템(드롭된 아이템)을 조준해주세요!"));
 		    return;
 	    }
 	    ItemStack itemStack = itemEntity.getItemStack();
@@ -50,14 +50,14 @@ public class Crafter extends AbstractFirstRole{
 
 	    // 1. 내구도가 있는 아이템인지 확인 (검, 곡괭이 등)
 	    if (!(meta instanceof org.bukkit.inventory.meta.Damageable damageable)) {
-		    p.sendMessage(ColorUtils.chat(Prefix.RED + " 수리할 수 없는 아이템입니다!"));
+		    p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 수 없는 아이템입니다!"));
 		    return;
 	    }
 
 	    // 2. 현재 대미지 확인 (0이면 새것)
 	    int currentDamage = damageable.getDamage();
 	    if (currentDamage <= 0) {
-		    p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 이미 새 아이템입니다!"));
+		    p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 이미 새 아이템입니다!"));
 		    return;
 	    }
 
@@ -72,7 +72,7 @@ public class Crafter extends AbstractFirstRole{
 	    itemEntity.setItemStack(itemStack);
 
 	    // 5. 피드백
-	    p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 성공적으로 수리했습니다! &7(수리량: " + repairAmount + ")"));
+	    p.sendMessage(ColorUtils.chat(Alert.GREEN + " 성공적으로 수리했습니다! &7(수리량: " + repairAmount + ")"));
 	    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.2f);
 	    p.setCooldown(p.getInventory().getItemInMainHand().getType(), 100);
     }
@@ -84,14 +84,14 @@ public class Crafter extends AbstractFirstRole{
 
 		// 1. 쿨타임 체크
 		if (p.getCooldown(tool.getType()) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
 		}
 
 		// 2. 타겟 아이템 엔티티 확인
 		Entity target = p.getTargetEntity(5, false);
 		if (!(target instanceof Item itemEntity)) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 강화할 아이템(드롭된 아이템)을 조준해주세요!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 아이템(드롭된 아이템)을 조준해주세요!"));
 			return;
 		}
 
@@ -102,7 +102,7 @@ public class Crafter extends AbstractFirstRole{
 		// 3. 중복 강화 확인 (PDC 사용)
 		org.bukkit.NamespacedKey buffKey = new org.bukkit.NamespacedKey(getPlugin(), "crafter_buff");
 		if (meta.getPersistentDataContainer().has(buffKey, org.bukkit.persistence.PersistentDataType.BYTE)) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 이미 장인의 가호가 깃든 아이템입니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 장인의 가호가 깃든 아이템입니다!"));
 			return;
 		}
 
@@ -130,7 +130,7 @@ public class Crafter extends AbstractFirstRole{
 		}
 
 		if (!isApplied) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 강화할 수 있는 장비(무기/도구)가 아닙니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 수 있는 장비(무기/도구)가 아닙니다!"));
 			return;
 		}
 
@@ -143,7 +143,7 @@ public class Crafter extends AbstractFirstRole{
 		itemEntity.setItemStack(itemStack);
 
 		// 6. 피드백
-		p.sendMessage(ColorUtils.chat(Prefix.GREEN + " 장비에 임시 강화를 부여했습니다!"));
+		p.sendMessage(ColorUtils.chat(Alert.GREEN + " 장비에 임시 강화를 부여했습니다!"));
 		p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1.0f, 1.5f);
 		p.setCooldown(tool.getType(), 200); // 10초 쿨타임
 	}

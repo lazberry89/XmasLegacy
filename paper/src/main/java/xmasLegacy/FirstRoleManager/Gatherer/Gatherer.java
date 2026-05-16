@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.CompassMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Utils.GlowUtils;
@@ -52,11 +52,11 @@ public class Gatherer extends AbstractFirstRole {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		Block pose = p.getTargetBlockExact(7);
 		if (pose == null || pose.getType() != Material.SEA_LANTERN) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 해당 블록이 없습니다!"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 블록이 없습니다!"));
 			return;
 		}
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
 		if (!consumeEnergy(p, 3)) return;
@@ -74,7 +74,7 @@ public class Gatherer extends AbstractFirstRole {
 		Location loc = p.getLocation();
 		if (tool == null || tool.getType() == Material.AIR) return;
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Prefix.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
 		if (!consumeEnergy(p, 8)) return;

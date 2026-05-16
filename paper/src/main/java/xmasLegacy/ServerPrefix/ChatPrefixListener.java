@@ -3,10 +3,12 @@ package xmasLegacy.ServerPrefix;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NonBlocking;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
@@ -29,6 +31,7 @@ public class ChatPrefixListener implements Listener {
 	}
 
 	@EventHandler
+	@NonBlocking
 	public void onChatPrefix(AsyncChatEvent e) {
 		var p = e.getPlayer();
 		String rawMsg = PlainTextComponentSerializer.plainText().serialize(e.message());
@@ -61,8 +64,27 @@ public class ChatPrefixListener implements Listener {
 	@EventHandler
 	public void PrefixGui(InventoryClickEvent e) {
 		if (!(e.getInventory().getHolder() instanceof PrefixInterface pif)) return;
-		Player p = (Player) e.getWhoClicked();
+		var p = (Player) e.getWhoClicked();
+		User user = UM.getUser(p.getUniqueId());
+
 		e.setCancelled(true);
 		int slot = e.getRawSlot();
+
+		switch (slot) {
+			case 47 -> pif.prevPage(p);
+			case 49 -> p.closeInventory();
+			case 51 -> pif.nextPage(p);
+			default -> {
+				ServerPrefix prefix = pif.getPrefix(slot);
+				if (prefix == null) return;
+				PFM.unequipPrefix(p);
+				if (!prefix.equals(user.getEquipPrefix())) {
+					PFM.equipPrefix(p, prefix);
+				}
+				pif.update(p);
+
+				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+			}
+		}
 	}
 }

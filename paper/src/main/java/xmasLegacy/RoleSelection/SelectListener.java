@@ -13,7 +13,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 public class SelectListener implements Listener {
@@ -40,7 +40,7 @@ public class SelectListener implements Listener {
         }
         Role role = user.getRole();
         if (!Roles.USER.equals(role)) {
-            p.sendMessage(ColorUtils.chat(Prefix.RED + " 이미 직업을 선택했어요!"));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 직업을 선택했어요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             p.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
             return;
@@ -83,8 +83,8 @@ public class SelectListener implements Listener {
             case 20 -> {
                 if (UM.startRole(p.getUniqueId(), select)) {
                     p.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
-                    p.sendMessage(ColorUtils.chat(String.format("%s 직업 &6&l%s&f를 선택하셨군요! 좋은 선택입니다.",  Prefix.XmasLegacy, select)));
-                    p.sendMessage(ColorUtils.chat(String.format("%s 안내인의 지시를 따라 이제 &6'%s'&f(으)로의 삶을 즐겨보세요!", Prefix.YELLOW, select)));
+                    p.sendMessage(ColorUtils.chat(String.format("%s 직업 &6&l%s&f를 선택하셨군요! 좋은 선택입니다.",  Alert.XmasLegacy, select)));
+                    p.sendMessage(ColorUtils.chat(String.format("%s 안내인의 지시를 따라 이제 &6'%s'&f(으)로의 삶을 즐겨보세요!", Alert.YELLOW, select)));
                     p.playSound(p, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                 }
             }

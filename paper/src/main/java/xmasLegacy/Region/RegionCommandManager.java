@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.*;
 
@@ -28,52 +28,52 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 			if (p.isOp()) {
 				p.getInventory().addItem(RegionIndicator.RegionBeacon());
 			} else {
-				p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
+				p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
 				return true;
 			}
 		} else if (args.length == 3) {
 			Region region = RM.getRegion(args[0]);
 			if (region == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 아이디가 잘못되었습니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 				return true;
 			}
 			if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 권한이 없습니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 				return true;
 			}
 			switch (args[1]) {
 				case "입장" -> {
 					if (args[2].equals("허용")) {
 						region.setAllowPublicEntry(true);
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 입장을 허용했습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 입장을 허용했습니다."));
 					} else {
 						region.setAllowPublicEntry(false);
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 입장을 차단했습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 입장을 차단했습니다."));
 					}
 				}
 				case "상호작용" -> {
 					if (args[2].equals("허용")) {
 						region.setAllowPublicInteraction(true);
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 상호작용을 허용했습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 상호작용을 허용했습니다."));
 					} else {
 						region.setAllowPublicInteraction(false);
-						p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 상호작용을 차단했습니다."));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 상호작용을 차단했습니다."));
 					}
 				}
 			}
 		} else if (args.length == 2) {
 			Region region = RM.getRegion(args[0]);
 			if (region == null) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 아이디가 잘못되었습니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 				return true;
 			}
 			if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
-				p.sendMessage(ColorUtils.chat(Prefix.RED + " 권한이 없습니다!"));
+				p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 				return true;
 			}
 			if (args[1].equals("삭제")) {
 				RM.removeRegion(region);
-				p.sendMessage(ColorUtils.chat(Prefix.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.getId()));
+				p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.getId()));
 				return true;
 			}
 		}

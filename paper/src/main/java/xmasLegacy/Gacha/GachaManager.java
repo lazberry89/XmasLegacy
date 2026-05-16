@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
@@ -128,7 +128,7 @@ public class GachaManager {
 	public ItemStack Bundle() {
 		return ItemBuilder.of(plugin, Material.BUNDLE)
 				.setName(ColorUtils.chat("&c&l치장 번들"))
-				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Prefix.YELLOW)))
+				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)))
 				.hideAllFlags()
 				.setTag("gacha", "NORMAL")
 				.setMaxStackSize(16)
@@ -138,7 +138,7 @@ public class GachaManager {
 	public ItemStack HighEndBundle() {
 		return ItemBuilder.of(plugin, Material.ENDER_CHEST)
 				.setName(ColorUtils.chat("&b&l고급 치장 번들"))
-				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Prefix.YELLOW)))
+				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)))
 				.hideAllFlags()
 				.setGlint(true)
 				.setTag("gacha", "HIGH_END")
@@ -151,7 +151,7 @@ public class GachaManager {
 				.setGlint(true)
 				.setTag("gacha", "CHROMATIC_BUNDLE")
 				.setName(ColorUtils.chat("&6&l크로마틱 번들"))
-				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Prefix.YELLOW)), ColorUtils.chat(Prefix.YELLOW + " 해당 번들은 추가 아이템을 포함합니다."))
+				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)), ColorUtils.chat(Alert.YELLOW + " 해당 번들은 추가 아이템을 포함합니다."))
 				.setGlint(true)
 				.setItemModel("")
 				.setMaxStackSize(16)
@@ -164,7 +164,7 @@ public class GachaManager {
 				.setItemModel("")
 				.setMaxStackSize(4)
 				.setName(ColorUtils.chat("&6&l크로마틱 히든 꾸러미"))
-				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Prefix.YELLOW)), ColorUtils.chat(Prefix.XmasLegacy + "&7해당 상품은 특별 &6한정판 상품&r을 추가로 포함합니다."))
+				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)), ColorUtils.chat(Alert.XmasLegacy + "&7해당 상품은 특별 &6한정판 상품&r을 추가로 포함합니다."))
 				.setGlint(true)
 				.setTag("gacha", "CHROMATIC_BOX")
 				.setItemModel("")

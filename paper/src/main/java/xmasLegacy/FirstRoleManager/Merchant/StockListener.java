@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Prefix;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -114,7 +114,7 @@ public class StockListener implements Listener {
 	}
 	*/
 	private void sendError(Player p) {
-		p.sendMessage(ColorUtils.chat(Prefix.RED + " 제출할 재고가 없네요!"));
+		p.sendMessage(ColorUtils.chat(Alert.RED + " 제출할 재고가 없네요!"));
 		p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 	}
 }
