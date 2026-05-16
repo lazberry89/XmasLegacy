@@ -55,7 +55,7 @@ public class UserManager {
 	 * @param uuid uuid
 	 * @param name name
 	 */
-	public void onJoin(UUID uuid, String name) {
+	public void load(UUID uuid, String name) {
 		User loaded = repository.loadUser(uuid);
 		if (loaded == null) {
 			// 신규 유저 생성

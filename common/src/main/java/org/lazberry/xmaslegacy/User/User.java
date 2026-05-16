@@ -9,6 +9,7 @@ import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class User {
     private boolean isMobile = false;
 	private boolean isNewUser = false;
     private boolean wantsCookie = true;
-	private List<ServerPrefix> availablePrefix;
+	private List<ServerPrefix> availablePrefix = new ArrayList<>();
 	private @Nullable ServerPrefix equipPrefix;
 
     public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {

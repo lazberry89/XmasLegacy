@@ -78,9 +78,11 @@ public class ChatPrefixListener implements Listener {
 			default -> {
 				ServerPrefix prefix = pif.getPrefix(slot);
 				if (prefix == null) return;
-				PFM.unequipPrefix(p);
 				if (!prefix.equals(user.getEquipPrefix())) {
+					PFM.unequipPrefix(p);
 					PFM.equipPrefix(p, prefix);
+				} else {
+					PFM.unequipPrefix(p);
 				}
 				pif.update(p);
 

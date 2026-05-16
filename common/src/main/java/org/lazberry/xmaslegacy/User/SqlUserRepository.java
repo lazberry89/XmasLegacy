@@ -1,7 +1,7 @@
 package org.lazberry.xmaslegacy.User;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.*;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
@@ -51,6 +51,32 @@ public class SqlUserRepository implements UserRepository {
 		}
 	}
 
+	private Role parseRole(String roleName) {
+		if (roleName == null || roleName.isEmpty()) {
+			return Roles.USER; // 기본값 방어선
+		}
+
+		try {
+			// 1. 메인 직업(Roles)에서 먼저 찾아봅니다.
+			return Roles.valueOf(roleName);
+		} catch (IllegalArgumentException e) {
+			try {
+				return SecondaryRoles.valueOf(roleName);
+			} catch (IllegalArgumentException ex) {
+				try {
+					return ThirdRoles.valueOf(roleName);
+				} catch (IllegalArgumentException exx) {
+					try {
+						return HiddenRoles.valueOf(roleName);
+					} catch (IllegalArgumentException exc) {
+						logger.warn("알 수 없는 직업명이 DB에서 발견되어 기본값으로 로드합니다: {}", roleName);
+						return Roles.USER;
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public User loadUser(UUID uuid) {
 		String sql = "SELECT * FROM users WHERE uuid = ?";
@@ -64,7 +90,7 @@ public class SqlUserRepository implements UserRepository {
 
 			if (rs.next()) { // 데이터가 존재한다면
 				String name = rs.getString("name");
-				Roles role = Roles.valueOf(rs.getString("role"));
+				Role role = parseRole(rs.getString("role"));
 
 				User loadedUser = new User(uuid, role, name);
 				loadedUser.setDollars(rs.getInt("dollars"));

@@ -2,23 +2,22 @@ package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.User.User;
 
-public enum MissionPrefix implements ServerPrefix, Unreplicable {
-	FIRST_JOINER(ColorUtils.chat("FIRST JOINER")),
-	VIP(ColorUtils.chat("VIP")),
-	VVIP(ColorUtils.chat("VVIP")),
-	BOSS_HUNTER(ColorUtils.chat("BOSS HUNTER")),
-	MERRY_CHRISTMAS(ColorUtils.chat("Christmas!"));
+public enum MissionPrefix implements ServerPrefix {
+	FIRST_JOINER("FIRST JOINER"),
+	VIP("VIP"),
+	VVIP("VVIP"),
+	BOSS_HUNTER("BOSS HUNTER"),
+	MERRY_CHRISTMAS("Christmas!");
 
-	private final Component prefix;
+	private final String prefix;
 
-	MissionPrefix(Component prefix) {
+	MissionPrefix(String prefix) {
 		this.prefix = prefix;
 	}
 
 	@Override
 	public Component prefix() {
-		return this.prefix;
+		return ColorUtils.chat(this.prefix);
 	}
 }

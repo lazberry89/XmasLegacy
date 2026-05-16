@@ -121,6 +121,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public PrefixManager PFM;
 	public ChatPrefixListener CPL;
 	public PrefixCommand PFC;
+	public UserLoadCommand ULC;
 
 	@Override
 	public void onEnable() {
@@ -197,6 +198,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.PFM = new PrefixManager(this);
 		this.CPL = new ChatPrefixListener(this);
 		this.PFC = new PrefixCommand(this);
+		this.ULC = new UserLoadCommand(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -258,6 +260,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("delstand").setExecutor(DSC);
 		getCommand("prefix").setExecutor(PFC);
 		getCommand("prefix").setTabCompleter(PFC);
+		getCommand("0947345").setExecutor(ULC);
 	}
 
 	@Override
