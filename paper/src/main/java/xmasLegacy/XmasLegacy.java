@@ -41,6 +41,8 @@ import xmasLegacy.RoleSwitch.BookCommand;
 import xmasLegacy.RoleSwitch.DeleteStandCommand;
 import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.RoleSwitch.ExpManager;
+import xmasLegacy.ServerPrefix.ChatPrefixListener;
+import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
 
 import java.util.ArrayList;
@@ -117,6 +119,8 @@ public final class XmasLegacy extends JavaPlugin {
 	public BookCommand BC;
 	public DeleteStandCommand DSC;
 	public PrefixManager PFM;
+	public ChatPrefixListener CPL;
+	public PrefixCommand PFC;
 
 	@Override
 	public void onEnable() {
@@ -191,6 +195,8 @@ public final class XmasLegacy extends JavaPlugin {
 		this.BC = new BookCommand(this);
 		this.DSC = new DeleteStandCommand(this);
 		this.PFM = new PrefixManager(this);
+		this.CPL = new ChatPrefixListener(this);
+		this.PFC = new PrefixCommand(this);
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -219,6 +225,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(SKL, this);
 		getServer().getPluginManager().registerEvents(STL, this);
 		getServer().getPluginManager().registerEvents(GCL, this);
+		getServer().getPluginManager().registerEvents(CPL, this);
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -249,6 +256,8 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("head").setExecutor(new TestHeadCommand());
 		getCommand("book").setExecutor(BC);
 		getCommand("delstand").setExecutor(DSC);
+		getCommand("prefix").setExecutor(PFC);
+		getCommand("prefix").setTabCompleter(PFC);
 	}
 
 	@Override
@@ -257,7 +266,7 @@ public final class XmasLegacy extends JavaPlugin {
             RGM.saveAll();
         }
 		//UM.getAllUsers().forEach(UM::saveUserToFile);
-		getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
+		//getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
 		if (CM != null) {
 			CM.stopCookieTimer();
 		}

@@ -75,9 +75,17 @@ public class User {
     public void setTier(@NotNull Tier tier) {this.Tier = tier;}
     public @NotNull RoleMastery getMastery() {return mastery;}
     public void setMastery(@NotNull RoleMastery mastery) {this.mastery = mastery;}
-	public void addPrefix(@NotNull ServerPrefix prefix) {this.availablePrefix.add(prefix);}
+	public boolean addPrefix(@NotNull ServerPrefix prefix) {
+        if (this.availablePrefix.contains(prefix)) return false;
+        this.availablePrefix.add(prefix);
+        return true;
+    }
 	public List<ServerPrefix> getAvailablePrefix() {return this.availablePrefix;}
-	public void removePrefix(@NotNull ServerPrefix prefix) {this.availablePrefix.remove(prefix);}
+	public boolean removePrefix(@NotNull ServerPrefix prefix) {
+        if (!this.availablePrefix.contains(prefix)) return false;
+        this.availablePrefix.remove(prefix);
+        return true;
+    }
 	public @Nullable ServerPrefix getEquipPrefix() {return this.equipPrefix;}
 	public void setEquipPrefix(@Nullable ServerPrefix prefix) {this.equipPrefix = prefix;}
 	public boolean removeEquipped() {

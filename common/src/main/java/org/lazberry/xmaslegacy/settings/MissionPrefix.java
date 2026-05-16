@@ -7,7 +7,8 @@ public enum MissionPrefix implements ServerPrefix {
 	FIRST_JOINER(ColorUtils.chat("FIRST JOINER")),
 	VIP(ColorUtils.chat("VIP")),
 	VVIP(ColorUtils.chat("VVIP")),
-	BOSS_HUNTER(ColorUtils.chat("BOSS HUNTER"));
+	BOSS_HUNTER(ColorUtils.chat("BOSS HUNTER")),
+	MERRY_CHRISTMAS(ColorUtils.chat("Christmas!"));
 
 	private final Component prefix;
 

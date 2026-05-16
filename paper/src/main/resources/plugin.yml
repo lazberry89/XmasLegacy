@@ -54,6 +54,10 @@ commands:
   직업선택:
     usage: /직업선택
 
+  prefix:
+    usage: /prefix inv
+    description: 칭호를 설정합니다.
+
   role:
 
   gacha:

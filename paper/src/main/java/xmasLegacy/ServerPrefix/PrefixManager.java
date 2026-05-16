@@ -17,22 +17,16 @@ public class PrefixManager {
 		this.um = plugin.UM;
 	}
 
-	@CanIgnoreReturnValue
-	public int addPrefix(@NotNull Player p, @NotNull ServerPrefix prefix) {
+	public boolean addPrefix(@NotNull Player p, @NotNull ServerPrefix prefix) {
 		User user = um.getUser(p.getUniqueId());
-		if (user == null) return -1;
-		user.addPrefix(prefix);
-		return user.getAvailablePrefix().size();
+		if (user == null) return false;
+		return user.addPrefix(prefix);
 	}
 
 	public boolean removePrefix(@NotNull Player p, @NotNull ServerPrefix prefix) {
 		User user = um.getUser(p.getUniqueId());
 		if (user == null) return false;
-		if (user.getAvailablePrefix().contains(prefix)) {
-			user.removePrefix(prefix);
-			return true;
-		}
-		return false;
+		return user.removePrefix(prefix);
 	}
 
 	@CanIgnoreReturnValue
@@ -48,7 +42,6 @@ public class PrefixManager {
 	public boolean unequipPrefix(@NotNull Player p) {
 		User user = um.getUser(p.getUniqueId());
 		if (user == null) return false;
-		user.setEquipPrefix(null);
-		return true;
+		return user.removeEquipped();
 	}
 }
