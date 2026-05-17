@@ -85,7 +85,6 @@ public class ChatPrefixListener implements Listener {
 					PFM.unequipPrefix(p);
 				}
 				pif.update(p);
-
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			}
 		}

@@ -14,9 +14,11 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
-public abstract class AbstractFirstRole {
+@SuppressWarnings("DuplicatedCode, unused")
+public abstract class AbstractFirstRole implements UsingEnergy {
 	private final int cooldown1;
 	private final int cooldown2;
     private final XmasLegacy plugin;
@@ -47,7 +49,7 @@ public abstract class AbstractFirstRole {
 	public void loadCooldown(String path) {}
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    protected boolean consumeEnergy(Player player, int hungerCost) {
+    public boolean consumeEnergy(Player player, int hungerCost) {
         int currentFood = player.getFoodLevel();
 
         if (currentFood < hungerCost) {
@@ -61,6 +63,7 @@ public abstract class AbstractFirstRole {
 
         return true;
     }
+
 	@Contract(value = "null -> !null; !null -> !null", pure = true)
 	protected @NotNull Component LinkComponentMaker(@Nullable String path) {
 		if (path == null || path.trim().isEmpty()) {
@@ -72,13 +75,7 @@ public abstract class AbstractFirstRole {
 				.clickEvent(ClickEvent.openUrl(path))
 				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&e클릭하여 영상을 시청하세요!")));
 	}
-	/**
-	 * 고정된 형식의 가이드북을 생성합니다.
-	 * @param roleName 직업 이름
-	 * @param bodyText 상세 설명 (String.format이 완료된 문자열)
-	 * @param showcaseUrl 유튜브 등 쇼케이스 링크 (null 가능)
-	 * @return 완성된 가이드북 ItemStack
-	 */
+
 	/**
 	 * 여러 페이지를 가진 가이드북을 생성합니다.
 	 * @param roleName 직업 이름
