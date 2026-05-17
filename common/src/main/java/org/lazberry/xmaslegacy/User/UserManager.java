@@ -55,7 +55,7 @@ public class UserManager {
 	 * @param uuid uuid
 	 * @param name name
 	 */
-	public void load(UUID uuid, String name) {
+	public User load(UUID uuid, String name) {
 		User loaded = repository.loadUser(uuid);
 		if (loaded == null) {
 			// 신규 유저 생성
@@ -64,6 +64,7 @@ public class UserManager {
 			repository.saveUser(loaded);
 		}
 		users.put(uuid, loaded);
+		return loaded;
 	}
 
 	/**

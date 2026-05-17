@@ -1,6 +1,7 @@
 package xmasLegacy;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.ServerPrefix.UserTagManager;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class ServerJoinManager implements Listener {
@@ -39,23 +41,42 @@ public class ServerJoinManager implements Listener {
 		switch (plugin.getServerType().toLowerCase()) {
 			case "main" ->
 					UM.onJoinAsync(p.getUniqueId(), p.getName(), true).whenComplete((user, throwable) -> {
-						if (throwable != null) {
+						if (throwable != null || user == null) {
 							Bukkit.getScheduler().runTask(plugin, () -> {
-								Component reload = ColorUtils.chat(" &c&l[ 다시 로드하기 ]").clickEvent(ClickEvent.runCommand("/0947345")).hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")));
+								if (!p.isOnline()) return;
+
+								var options = ClickCallback.Options.builder()
+										.uses(1)
+										.lifetime(java.time.Duration.ofMinutes(3))
+										.build();
+
+								Component reload = ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
+										.hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
+										.clickEvent(ClickEvent.callback(audience -> {
+											if (audience instanceof Player t) {
+												// 클릭 시 비동기로 다시 로드를 시도합니다.
+												UM.onJoinAsync(t.getUniqueId(), t.getName(), true).whenComplete((reloadedUser, ex) -> Bukkit.getScheduler().runTask(plugin, () -> {
+                                                    if (ex != null || reloadedUser == null) {
+                                                        t.sendMessage(ColorUtils.chat(Alert.RED + " 다시 로드하는 데 실패했습니다. 관리자에게 문의하세요."));
+                                                    } else {
+                                                        plugin.infoMsg(InfoLevel.INFO, t, "유저정보다 성공적으로 로드되었습니다!");
+                                                        UserTagManager.createHoverTag(t, reloadedUser);
+                                                    }
+                                                }));
+											}
+										}, options));
+
 								p.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다!").append(reload));
 								plugin.getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", p.getUniqueId(), throwable);
 							});
 							return;
 						}
 
+						// 🔍 2. 로드 성공 시 메인 스레드에서 후속 처리
 						Bukkit.getScheduler().runTask(plugin, () -> {
 							if (!p.isOnline()) return;
 
-							if (user == null) {
-								p.sendMessage(ColorUtils.chat(Alert.RED + " 당신의 유저정보 로드가 실패했어요. 관리자를 호출해 주세요!"));
-								plugin.getSLF4JLogger().error("서버 접속 중 유저 정보 로드 실패 (null 반환): {}, {}", p.getName(), p.getUniqueId());
-								return;
-							}
+							// 💡 [정리] 위에서 이미 null 체크를 끝냈으므로 이 안의 user 객체는 100% @NotNull 안전 구역입니다.
 
 							if (user.isNewUser()) {
 								Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님의 첫 접속입니다. 환영해주세요!\uD83C\uDF84", p.getName())));
@@ -71,6 +92,8 @@ public class ServerJoinManager implements Listener {
 							} else {
 								Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님이 접속했어요!", p.getName())));
 							}
+							UserTagManager.createHoverTag(p, user);
+
 							user.setNewUser(false);
 						});
 					});
@@ -82,6 +105,8 @@ public class ServerJoinManager implements Listener {
 	@EventHandler
 	public void LeaveMsg(PlayerQuitEvent e) {
 		e.quitMessage(null);
-		UM.onQuitAsync(e.getPlayer().getUniqueId());
+		Player p = e.getPlayer();
+		UserTagManager.removeHoverTag(p);
+		UM.onQuitAsync(p.getUniqueId());
 	}
 }

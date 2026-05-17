@@ -37,6 +37,7 @@ public class User {
         this.uuid = uuid;
 		this.name = name;
         this.role = (role != null) ? role : Roles.USER;
+        this.availablePrefix.add(org.lazberry.xmaslegacy.settings.Tier.VISITOR);
     }
 
     public UUID getUUID() {return this.uuid;}

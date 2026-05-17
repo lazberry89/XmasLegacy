@@ -1,5 +1,10 @@
 package xmasLegacy.RoleSelection;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +19,11 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
+
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 public class SelectListener implements Listener {
     private final RoleSelectInterface RSTI = new RoleSelectInterface(JavaPlugin.getPlugin(XmasLegacy.class));
@@ -75,6 +84,31 @@ public class SelectListener implements Listener {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (!(e.getInventory().getHolder() instanceof RoleSelectionInterface holder)) return;
         Roles select = holder.getRole();
+
+        var user = UM.getUser(p.getUniqueId());
+        if (user == null) {
+            ClickCallback.Options options = ClickCallback.Options.builder()
+                    .uses(1)
+                    .lifetime(Duration.ofMinutes(3))
+                    .build();
+            Component reload = ColorUtils.chat("&c&l[ 정보 불러오기 ]").hoverEvent(HoverEvent.showText(ColorUtils.chat("&7유저정보를 다시 불러옵니다.")))
+                    .clickEvent(ClickEvent.callback(audience -> {
+                        if (audience instanceof Player t) {
+                            CompletableFuture.supplyAsync(() -> UM.load(t.getUniqueId(), t.getName())).whenComplete((loadUser, throwable) -> {
+                                if (throwable != null || loadUser == null) {
+                                    p.sendMessage(ColorUtils.chat(Alert.RED + " 로드에 실패했어요! 관리자에게 문의해주세요. '/문의 ..'"));
+                                    plugin.getSLF4JLogger().error("Error occurred while reloading User Info UUID -> {} ", t.getUniqueId(), throwable);
+                                    return;
+                                }
+                                plugin.infoMsg(InfoLevel.INFO, t, "유저정보를 성공적으로 불러왔습니다!");
+                            });
+                        }
+                    }, options));
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 유저정보를 불러오지 못했어요. 로드할까요? ").append(reload));
+            p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+
+            return;
+        }
 
         e.setCancelled(true);
         int slot = e.getRawSlot();
