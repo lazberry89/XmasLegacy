@@ -75,7 +75,7 @@ public class Defender extends AbstractSecondRole {
 
 		p.getNearbyEntities(4, 4, 4).stream()
 				.filter(e -> e != p && e instanceof LivingEntity)
-				.filter(e -> PM.isParty(p.getUniqueId(), e.getUniqueId()))
+				.filter(e -> !PM.isParty(p.getUniqueId(), e.getUniqueId()))
 				.map(e -> (LivingEntity) e)
 				.forEach(le -> {
 					le.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 20, true, false, false));
