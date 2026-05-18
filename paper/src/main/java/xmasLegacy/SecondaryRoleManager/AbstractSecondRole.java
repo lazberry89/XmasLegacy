@@ -2,11 +2,14 @@ package xmasLegacy.SecondaryRoleManager;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted, DuplicatedCode, FieldCanBeLocal, unused, BooleanMethodIsAlwaysConverted")
 public abstract class AbstractSecondRole implements UsingEnergy {
 	private final XmasLegacy plugin;
 
@@ -18,7 +21,6 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 	public abstract void useSecondSkill(Player p);
 	public abstract void usePassive(Player p);
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean consumeEnergy(Player player, int hungerCost) {
 		int currentFood = player.getFoodLevel();
 
@@ -33,4 +35,7 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 
 		return true;
 	}
+
+	public abstract @NotNull ItemStack roleWeapon();
+	public abstract @NotNull ItemStack roleArmor();
 }
