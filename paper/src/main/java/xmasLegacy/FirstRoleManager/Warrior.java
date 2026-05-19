@@ -1,11 +1,9 @@
 package xmasLegacy.FirstRoleManager;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -13,6 +11,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
@@ -21,6 +21,7 @@ import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import xmasLegacy.InfoLevel;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("DuplicatedCode")
 public class Warrior extends AbstractFirstRole {
     private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.BLOOD_FRENZY);}
@@ -38,7 +40,6 @@ public class Warrior extends AbstractFirstRole {
 		super(c1, c2, plugin);
 	}
 
-	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getChestplate();
@@ -47,20 +48,38 @@ public class Warrior extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
-        if (!consumeEnergy(p, 3)) return;
-		p.damage(8);
-		p.getWorld().strikeLightningEffect(p.getLocation());
-		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
 
-		for (Entity entity : p.getNearbyEntities(5, 5, 5)) {
-			if (entity instanceof LivingEntity le && !le.equals(p)) {
-				le.damage(4, p);
-				le.teleport(le.getLocation().add(0, 0.1, 0));
-				le.setVelocity(le.getVelocity().add(new Vector(0, 0.7, 0)));
-			}
+		AttributeInstance health = p.getAttribute(Attribute.MAX_HEALTH);
+		if (health == null) return;
+		double max = health.getBaseValue();
+
+		if (p.getHealth() <= max * 0.25) {
+			if (!consumeEnergy(p, 3)) return;
+			p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 2, true, true, false));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 1, true, false, false));
+			warriorEffect(p);
+			p.setCooldown(tool, getCooldown1() * 20);
+		} else if (p.getHealth() <= max * 0.5) {
+			if (!consumeEnergy(p, 3)) return;
+			p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 1, true, true, false));
+			warriorEffect(p);
+			p.setCooldown(tool, getCooldown1() * 20);
+		} else {
+			getPlugin().infoMsg(InfoLevel.ERROR, p, "체력수치가 조건 이상입니다.");
 		}
 
-		p.setCooldown(tool, getCooldown1() * 20);
+	}
+
+	private void warriorEffect(@NotNull Player p) {
+		p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 15, 0.3, 0.5, 0.3, 0.01);
+		GlowUtils.setGlowColor(p, NamedTextColor.DARK_RED);
+		p.setSprinting(true);
+		p.getWorld().playSound(p, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+		Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+			if (p.isValid()) {
+				GlowUtils.clearGlow(p);
+			}
+		}, 60L);
 	}
 
 	@Override

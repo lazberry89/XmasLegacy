@@ -41,6 +41,9 @@ import xmasLegacy.RoleSwitch.BookCommand;
 import xmasLegacy.RoleSwitch.DeleteStandCommand;
 import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.RoleSwitch.ExpManager;
+import xmasLegacy.SecondaryRoleManager.Berserker;
+import xmasLegacy.SecondaryRoleManager.Defender;
+import xmasLegacy.SecondaryRoleManager.Guardian;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
@@ -103,6 +106,10 @@ public final class XmasLegacy extends JavaPlugin {
 	public Gatherer gatherer;
 	public Merchant merchant;
 	public Crafter crafter;
+
+	public Defender defender;
+	public Guardian guardian;
+	public Berserker berserker;
 
 	public RoleManager RLM;
 	public SelectListener STL;
@@ -168,6 +175,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.SKL = new StockListener(this);
 		this.SC = new ShopCommand(this);
 
+		//FirstRole
         this.archer = new Archer(4, 4, this);
         this.knight = new Knight(SEM, this);
         this.rogue  = new Rogue(4, 4, SEM, this);
@@ -179,6 +187,12 @@ public final class XmasLegacy extends JavaPlugin {
 		this.gatherer = new Gatherer(4, 4, this);
 		this.merchant = new Merchant(4, 4, this);
 		this.crafter = new Crafter(4, 4, this);
+
+		//SecondaryRole
+		this.defender = new Defender(this);
+		this.guardian = new Guardian(this);
+		this.berserker = new Berserker(this);
+
 
 		this.RLM = new RoleManager();
 		this.STL = new SelectListener(this);

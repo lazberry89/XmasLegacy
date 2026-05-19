@@ -59,7 +59,6 @@ public abstract class AbstractFirstRole implements UsingEnergy {
         }
 
         player.setFoodLevel(Math.max(0, currentFood - hungerCost));
-        player.setSaturation(0);
 
         return true;
     }

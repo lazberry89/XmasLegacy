@@ -1,20 +1,23 @@
 package xmasLegacy.SecondaryRoleManager;
 
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
 import xmasLegacy.SkillEffectManager;
+import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 import java.util.HashMap;
@@ -63,6 +66,46 @@ public class Defender extends AbstractSecondRole {
 		p.setCooldown(tool, 20);
 	}
 
+	public void spawnShockWave(Location center) {
+		new BukkitRunnable() {
+			int ticks = 0;
+			final int duration = 8;
+			final double maxRadius = 5.0;
+
+			@Override
+			public void run() {
+				if (ticks >= duration) {
+					this.cancel();
+					return;
+				}
+
+				double radius = maxRadius * ((double) ticks / duration);
+				double circumference = 2 * Math.PI * radius;
+				int points = (int) (circumference / 0.2); // 촘촘하게
+				if (points < 1) points = 1;
+
+				for (int i = 0; i < points; i++) {
+					double angle = (2 * Math.PI / points) * i;
+					double x = Math.cos(angle) * radius;
+					double z = Math.sin(angle) * radius;
+
+					// 두 파티클 겹쳐서 강렬한 느낌
+					center.getWorld().spawnParticle(
+							Particle.SWEEP_ATTACK,
+							center.clone().add(x, 0.1, z),
+							1, 0, 0, 0, 0
+					);
+					center.getWorld().spawnParticle(
+							Particle.SOUL_FIRE_FLAME,
+							center.clone().add(x, 0.1, z),
+							1, 0, 0, 0, 0
+					);
+				}
+				ticks++;
+			}
+		}.runTaskTimer(getPlugin(), 0L, 1L);
+	}
+
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
@@ -72,31 +115,50 @@ public class Defender extends AbstractSecondRole {
 			return;
 		}
 		if (!consumeEnergy(p, 3)) return;
-
-		p.getNearbyEntities(4, 4, 4).stream()
+		Location loc = p.getLocation();
+		spawnShockWave(loc);
+		p.getNearbyEntities(5, 5, 5).stream()
 				.filter(e -> e != p && e instanceof LivingEntity)
 				.filter(e -> !PM.isParty(p.getUniqueId(), e.getUniqueId()))
 				.map(e -> (LivingEntity) e)
 				.forEach(le -> {
-					le.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 20, true, false, false));
-					le.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, le.getLocation().clone().add(0, 1, 0), 5, 0.1, 0.1, 0.1, 0.01);
+					le.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 30));
+					le.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 20, 30));
+					le.setPose(Pose.SLEEPING, true);
+					le.damage(6, p);
+					Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+						if (le.isValid() && le.getPose().equals(Pose.SLEEPING)) le.setPose(Pose.STANDING, true);
+					}, 20L);
 				});
 		p.getWorld().playSound(p, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1.0f, 0.8f);
 		p.setCooldown(tool, 20);
 	}
 
 	@Override
-	public void usePassive(Player p) {
+	public void usePassive(Player p) {}
 
+	@Override
+	public @NotNull Role getRole() {
+		return SecondaryRoles.DEFENDER;
 	}
 
 	@Override
-	public @NonNull ItemStack roleWeapon() {
-		return null;
+	public @NotNull ItemStack roleWeapon() {
+		return ItemBuilder.of(getPlugin(), Material.IRON_SWORD)
+				.setName(ColorUtils.chat("&7&l단단한 철검"))
+				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+				.setTag("role_id", "defender")
+				.hideAllFlags()
+				.build().clone();
 	}
 
 	@Override
-	public @NonNull ItemStack roleArmor() {
-		return null;
+	public @NotNull ItemStack roleArmor() {
+		return ItemBuilder.of(getPlugin(), Material.IRON_CHESTPLATE)
+				.setName(ColorUtils.chat("&7&l단단한 갑옷"))
+				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+				.setTag("role_id", "defender")
+				.hideAllFlags()
+				.build().clone();
 	}
 }

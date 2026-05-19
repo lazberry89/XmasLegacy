@@ -1,0 +1,278 @@
+package xmasLegacy.SecondaryRoleManager;
+
+import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.SecondarySkill;
+import xmasLegacy.InfoLevel;
+import xmasLegacy.Utils.ItemBuilder;
+import xmasLegacy.XmasLegacy;
+
+import java.util.*;
+
+@SuppressWarnings("DuplicatedCode, unused")
+public class Guardian extends AbstractSecondRole {
+    private final PartyManager PM;
+    private final Map<UUID, SecondarySkill> currentSkill = new HashMap<>();
+    public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.TARGET_GUARD);}
+    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+    private final Map<Player, LivingEntity> targetMap = new HashMap<>();
+    private final Set<UUID> activeSkill = new HashSet<>();
+
+    public Guardian(XmasLegacy plugin) {
+        super(plugin);
+        this.PM = plugin.PM;
+    }
+
+    public @Nullable LivingEntity link(Player p) {
+        return this.targetMap.get(p);
+    }
+
+    public void LinkToTarget(@NotNull Player p, @NotNull LivingEntity target) {
+        if (targetMap.containsKey(p)) {
+            targetMap.remove(p);
+            p.sendActionBar(ColorUtils.chat(Alert.YELLOW + " 타겟과 연결이 해제됨"));
+            return;
+        }
+
+        targetMap.put(p, target);
+        String div = target instanceof Player targetP && PM.isParty(p.getUniqueId(), targetP.getUniqueId()) ? "&a아군&f" : "&c적군&f";
+        getPlugin().infoMsg(InfoLevel.INFO, p, div + " 타겟과 연결됨");
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!targetMap.containsKey(p) || !target.isValid() || !p.isOnline()) {
+                    targetMap.remove(p);
+                    p.sendActionBar(ColorUtils.chat(Alert.YELLOW + " &c타겟과 연결이 끊어짐"));
+                    this.cancel();
+                    return;
+                }
+
+                Location from = p.getEyeLocation();
+                Location to = target.getEyeLocation();
+
+                RayTraceResult ray = p.getWorld().rayTraceBlocks(
+                        from,
+                        to.toVector().subtract(from.toVector()).normalize(),
+                        from.distance(to)
+                );
+                if (ray != null && ray.getHitBlock() != null) {
+                    targetMap.remove(p);
+                    p.sendActionBar(ColorUtils.chat(Alert.YELLOW + " &c장애물로 인해 연결이 끊어짐"));
+                    this.cancel();
+                    return;
+                }
+                boolean isAlly = PM.isParty(p.getUniqueId(), target.getUniqueId());
+
+                drawBeam(from, to, isAlly);
+            }
+        }.runTaskTimer(getPlugin(), 0L, 1L);
+    }
+
+    private void drawBeam(Location from, Location to, boolean isAlly) {
+        Particle.DustTransition allyTrans = new Particle.DustTransition(Color.GREEN, Color.WHITE, 1.5f);
+        Particle.DustTransition enemyTrans = new Particle.DustTransition(Color.RED, Color.YELLOW, 1.5f);
+
+        Vector direction = to.toVector().subtract(from.toVector());
+        double distance = direction.length();
+        direction.normalize();
+
+        for (double d = 0; d < distance; d += 0.3) {
+            Location point = from.clone().add(direction.clone().multiply(d));
+            from.getWorld().spawnParticle(
+                    Particle.DUST_COLOR_TRANSITION,
+                    point,
+                    1,
+                    0, 0, 0,
+                    0,
+                    isAlly ? allyTrans : enemyTrans
+            );
+        }
+    }
+
+    @Override
+    public void useFirstSkill(Player p) {
+        ItemStack tool = p.getInventory().getItemInMainHand();
+        if (tool.getType().isAir()) return;
+        if (p.getCooldown(tool) > 0) {
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+            return;
+        }
+        LivingEntity target = targetMap.get(p);
+        if (target == null) {
+            getPlugin().infoMsg(InfoLevel.ERROR, p, "연결된 타겟이 없습니다!");
+            return;
+        }
+        if (activeSkill.contains(p.getUniqueId())) {
+            activeSkill.remove(p.getUniqueId());
+            p.sendActionBar(ColorUtils.chat("&c스킬 비활성화"));
+            p.setCooldown(tool, 60);
+            return;
+        }
+
+        activeSkill.add(p.getUniqueId());
+        p.sendActionBar(ColorUtils.chat("&a스킬 활성화"));
+        boolean isAlly = target instanceof Player t && PM.isParty(p.getUniqueId(), t.getUniqueId());
+
+        new BukkitRunnable() {
+            int ticks = 0;
+
+            @Override
+            public void run() {
+                if (!activeSkill.contains(p.getUniqueId())
+                        || !targetMap.containsKey(p)
+                        || !target.isValid()
+                        || !p.isOnline()) {
+                    activeSkill.remove(p.getUniqueId());
+                    if (isAlly) {
+                        target.removePotionEffect(PotionEffectType.RESISTANCE);
+                        target.removePotionEffect(PotionEffectType.REGENERATION);
+                    } else {
+                        target.removePotionEffect(PotionEffectType.SLOWNESS);
+                        target.removePotionEffect(PotionEffectType.WEAKNESS);
+                    }
+                    p.sendActionBar(ColorUtils.chat("&c스킬 비활성화"));
+                    this.cancel();
+                    p.setCooldown(tool, 60);
+                    return;
+                }
+
+
+                if (ticks % 20 == 0) {
+                    if (!consumeEnergy(p, 1)) {
+                        activeSkill.remove(p.getUniqueId());
+                        this.cancel();
+                        getPlugin().infoMsg(InfoLevel.ERROR, p, "에너지가 모두 소모되었습니다.");
+                        p.sendActionBar(ColorUtils.chat("&c스킬 비활성화"));
+                        p.setCooldown(tool, 60);
+                        return;
+                    }
+                    if (!isAlly) {
+                        target.damage(3, p);
+                    }
+                }
+
+                // 매 틱 포션 갱신
+                if (isAlly) {
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 2, 0, true, false, false));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2, 0, true, false, false));
+                } else {
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2, 1, true, false, false));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2, 0, true, false, false));
+                }
+                ticks++;
+            }
+        }.runTaskTimer(getPlugin(), 0L, 1L);
+    }
+
+    @Override
+    public void useSecondSkill(Player p) {
+        ItemStack tool = p.getInventory().getItemInMainHand();
+        if (tool.getType().isAir()) return;
+        if (p.getCooldown(tool) > 0) {
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+            return;
+        }
+
+        LivingEntity target = targetMap.get(p);
+        if (target == null) {
+            getPlugin().infoMsg(InfoLevel.ERROR, p, "연결된 타겟이 없습니다!");
+            return;
+        }
+        if (!consumeEnergy(p, 4)) return;
+
+        Location center = target.getLocation();
+
+        // 타겟 수평 기준 X자 4방향
+        Vector[] directions = {
+                new Vector( 1, 0,  1).normalize(),
+                new Vector( 1, 0, -1).normalize(),
+                new Vector(-1, 0,  1).normalize(),
+                new Vector(-1, 0, -1).normalize()
+        };
+
+        Set<UUID> hitEntities = new HashSet<>();
+
+        new BukkitRunnable() {
+            double distance = 0;
+            final double maxDistance = 6.0;
+
+            @Override
+            public void run() {
+                if (distance >= maxDistance) {
+                    this.cancel();
+                    return;
+                }
+
+                for (Vector dir : directions) {
+                    Location point = center.clone().add(dir.clone().multiply(distance));
+
+                    // 파티클
+                    point.getWorld().spawnParticle(Particle.SWEEP_ATTACK, point, 1, 0, 0, 0, 0);
+                    point.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, point, 2, 0.1, 0.1, 0.1, 0);
+
+                    point.getWorld().playSound(point, Sound.ENTITY_GENERIC_EXPLODE, 0.4f, 1.5f); // 볼륨 낮게
+                    point.getWorld().spawnParticle(Particle.EXPLOSION, point, 1, 0, 0, 0, 0);
+
+                    for (Entity e : point.getWorld().getNearbyEntities(point, 1.0, 1.0, 1.0)) {
+                        if (e instanceof LivingEntity le
+                                && !e.equals(p)
+                                && !PM.isParty(p.getUniqueId(), e.getUniqueId())
+                                && !hitEntities.contains(e.getUniqueId())) {
+                            le.damage(4.0, p);
+                            hitEntities.add(e.getUniqueId());
+                        }
+                    }
+                }
+                distance += 0.5;
+            }
+        }.runTaskTimer(getPlugin(), 0L, 1L);
+
+        p.setCooldown(tool, 60);
+    }
+
+    @Override
+    public void usePassive(Player p) {}
+
+    @Override
+    public @NotNull Role getRole() {
+        return SecondaryRoles.GUARDIAN;
+    }
+
+    @Override
+    public @NotNull ItemStack roleWeapon() {
+        return ItemBuilder.of(getPlugin(), Material.IRON_SPEAR)
+                .setName(ColorUtils.chat("&8&l가디언의 창"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .setTag("role_id", "guardian")
+                .hideAllFlags()
+                .addEnchant(Enchantment.LUNGE, 2)
+                .build().clone();
+    }
+
+    @Override
+    public @NotNull ItemStack roleArmor() {
+        return ItemBuilder.of(getPlugin(), Material.DIAMOND_HELMET)
+                .setName(ColorUtils.chat("&b&l마계의 오래된 갑옷"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .setTag("role_id", "guardian")
+                .hideAllFlags()
+                .build().clone();
+    }
+}

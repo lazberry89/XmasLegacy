@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
@@ -21,6 +22,7 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 	public abstract void useSecondSkill(Player p);
 	public abstract void usePassive(Player p);
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean consumeEnergy(Player player, int hungerCost) {
 		int currentFood = player.getFoodLevel();
 
@@ -31,11 +33,13 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 		}
 
 		player.setFoodLevel(Math.max(0, currentFood - hungerCost));
-		player.setSaturation(0);
 
 		return true;
 	}
-
+	public XmasLegacy getPlugin() {
+		return this.plugin;
+	}
+	public abstract @NotNull Role getRole();
 	public abstract @NotNull ItemStack roleWeapon();
 	public abstract @NotNull ItemStack roleArmor();
 }
