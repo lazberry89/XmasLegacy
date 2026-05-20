@@ -44,6 +44,6 @@ public enum SecondarySkill {
 	}
 
 	public String getSkillName() {
-		return "[ " + this.getKorName() + " ]";
+		return "&e&l[ " + this.getKorName() + " ]";
 	}
 }

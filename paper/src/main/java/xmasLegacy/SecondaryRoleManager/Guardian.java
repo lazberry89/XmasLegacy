@@ -64,7 +64,7 @@ public class Guardian extends AbstractSecondRole {
                     return;
                 }
 
-                Location from = p.getEyeLocation();
+                Location from = p.getLocation().add(0, 1, 0);
                 Location to = target.getEyeLocation();
 
                 RayTraceResult ray = p.getWorld().rayTraceBlocks(
@@ -86,8 +86,8 @@ public class Guardian extends AbstractSecondRole {
     }
 
     private void drawBeam(Location from, Location to, boolean isAlly) {
-        Particle.DustTransition allyTrans = new Particle.DustTransition(Color.GREEN, Color.WHITE, 1.5f);
-        Particle.DustTransition enemyTrans = new Particle.DustTransition(Color.RED, Color.YELLOW, 1.5f);
+        Particle.DustTransition allyTrans = new Particle.DustTransition(Color.GREEN, Color.WHITE, 0.5f);
+        Particle.DustTransition enemyTrans = new Particle.DustTransition(Color.RED, Color.YELLOW, 0.5f);
 
         Vector direction = to.toVector().subtract(from.toVector());
         double distance = direction.length();
@@ -100,7 +100,7 @@ public class Guardian extends AbstractSecondRole {
                     point,
                     1,
                     0, 0, 0,
-                    0,
+                    0.5,
                     isAlly ? allyTrans : enemyTrans
             );
         }
@@ -155,7 +155,7 @@ public class Guardian extends AbstractSecondRole {
 
 
                 if (ticks % 20 == 0) {
-                    if (!consumeEnergy(p, 1)) {
+                    if (!consumeEnergy(p, 1) || ticks >= 80) {
                         activeSkill.remove(p.getUniqueId());
                         this.cancel();
                         getPlugin().infoMsg(InfoLevel.ERROR, p, "에너지가 모두 소모되었습니다.");

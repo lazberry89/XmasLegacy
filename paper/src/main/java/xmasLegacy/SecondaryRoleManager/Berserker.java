@@ -20,6 +20,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
 import xmasLegacy.Utils.GlowUtils;
+import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
@@ -188,13 +189,14 @@ public class Berserker extends AbstractSecondRole {
         p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 100, 2, true, false, false));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2, true, false, false));
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            this.usedPassive.remove(p.getUniqueId());
             GlowUtils.clearGlow(p);
             p.setInvulnerable(false);
             p.setInvisible(false);
             p.setHealth(0.0);
         }, 100L);
     }
+
+	public void setAvailable(Player p) {this.usedPassive.remove(p.getUniqueId());}
 
     public boolean used(@NotNull Player p) {
         return this.usedPassive.contains(p.getUniqueId());
@@ -207,11 +209,21 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public @NotNull ItemStack roleWeapon() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.IRON_SWORD)
+		        .setName(ColorUtils.chat("&7&l단단한 철검"))
+		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+		        .setTag("role_id", "berserker")
+		        .hideAllFlags()
+		        .build().clone();
     }
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.IRON_BOOTS)
+		        .setName(ColorUtils.chat("&7&l재빠른 신발"))
+		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+		        .setTag("role_id", "berserker")
+		        .hideAllFlags()
+		        .build().clone();
     }
 }

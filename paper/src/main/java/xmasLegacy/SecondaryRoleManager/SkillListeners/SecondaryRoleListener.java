@@ -3,22 +3,36 @@ package xmasLegacy.SecondaryRoleManager.SkillListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.SecondarySkill;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
 import xmasLegacy.SecondaryRoleManager.Guardian;
 import xmasLegacy.XmasLegacy;
 
+import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
+
+@SuppressWarnings("DuplicatedCode, unused")
 public class SecondaryRoleListener implements Listener {
     private final XmasLegacy plugin;
     private final UserManager um;
@@ -43,7 +57,7 @@ public class SecondaryRoleListener implements Listener {
         if (user == null) return;
 
         Role role = user.getRole();
-        if (!SecondaryRoles.DEFENDER.equals(role)) return;
+        if (!DEFENDER.equals(role)) return;
 
         long partyCount = p.getNearbyEntities(3, 3, 3).stream()
                 .filter(n -> n instanceof LivingEntity)
@@ -66,7 +80,7 @@ public class SecondaryRoleListener implements Listener {
         for (Player guardians : Bukkit.getOnlinePlayers()) {
             User user = um.getUser(guardians.getUniqueId());
             if (user == null) continue;
-            if (!(SecondaryRoles.GUARDIAN.equals(user.getRole()))) continue;
+            if (!(GUARDIAN.equals(user.getRole()))) continue;
 
             LivingEntity linked = guardian.link(guardians);
             if (linked == null || !linked.equals(victim)) continue;
@@ -92,17 +106,133 @@ public class SecondaryRoleListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void berserkerPassive(EntityDamageEvent e) {
-        if (!(e.getEntity() instanceof Player p)) return;
-        User user = um.getUser(p.getUniqueId());
-        if (user == null) return;
-        if (!SecondaryRoles.BERSERKER.equals(user.getRole())) return;
-        if (berserker.used(p)) return;
+	@EventHandler
+	public void berserkerPassive(PlayerDeathEvent e) {
+		Player p = e.getPlayer();
+		ItemStack item = p.getInventory().getItemInMainHand();
+		if (item.getType().isAir()) return;
 
-        if (p.getHealth() - e.getFinalDamage() <= 0) {
-            e.setCancelled(true); // 피해 취소
-            berserker.usePassive(p);
-        }
-    }
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return;
+
+		PersistentDataContainer pdc = meta.getPersistentDataContainer();
+		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		if (type == null) return;
+		if (!type.equalsIgnoreCase("berserker")) return;
+		if (berserker.used(p)) {
+			berserker.setAvailable(p);
+			return;
+		}
+
+		e.setCancelled(true);
+		p.setHealth(2.0);
+		berserker.usePassive(p);
+	}
+
+	@EventHandler
+	public void guardianLink(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		User user = um.getUser(p.getUniqueId());
+		if (user == null) return;
+
+		if (!e.getAction().isLeftClick()) return;
+
+
+		ItemStack item = p.getInventory().getItemInMainHand();
+		if (item.getType().isAir()) return;
+
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return;
+
+		PersistentDataContainer pdc = meta.getPersistentDataContainer();
+		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		if (type == null) return;
+		if (!type.equalsIgnoreCase("guardian")) return;
+
+		Entity targetEntity = p.getTargetEntity(10, false);
+		if (!(targetEntity instanceof LivingEntity le)) return;
+
+		guardian.LinkToTarget(p, le);
+	}
+
+	@EventHandler
+	public void skillChange(PlayerToggleSneakEvent e) {
+		if (e.isSneaking()) return;
+		Player p = e.getPlayer();
+		User user = um.getUser(p.getUniqueId());
+		if (user == null) return;
+
+		ItemStack item = p.getInventory().getItemInMainHand();
+		if (item.getType().isAir()) return;
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return;
+
+		PersistentDataContainer pdc = meta.getPersistentDataContainer();
+		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		if (type == null) return;
+
+		e.setCancelled(true);
+		switch (type) {
+			case "defender" -> {
+				defender.next(p);
+				p.sendActionBar(ColorUtils.chat(defender.getCurrentSkill(p).getSkillName()));
+			}
+			case "guardian" -> {
+				guardian.next(p);
+				p.sendActionBar(ColorUtils.chat(guardian.getCurrentSkill(p).getSkillName()));
+			}
+			case "berserker" -> {
+				berserker.next(p);
+				p.sendActionBar(ColorUtils.chat(berserker.getCurrentSkill(p).getSkillName()));
+			}
+		}
+	}
+
+	@EventHandler
+	public void skillUse(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		User user = um.getUser(p.getUniqueId());
+		if (user == null) return;
+
+		if (!e.getAction().isRightClick()) return;
+
+		ItemStack item = p.getInventory().getItemInMainHand();
+		if (item.getType().isAir()) return;
+
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return;
+
+		PersistentDataContainer pdc = meta.getPersistentDataContainer();
+		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		if (type == null) return;
+		e.setCancelled(true);
+		switch (type) {
+			case "defender" -> {
+				if (defender.getCurrentSkill(p) == null) return;
+				if (defender.getCurrentSkill(p) == SecondarySkill.MAGNETIC_FIELD) {
+					defender.useFirstSkill(p);
+				} else {
+					defender.useSecondSkill(p);
+				}
+			}
+			case "guardian" -> {
+				if (guardian.getCurrentSkill(p) == null) return;
+				if (guardian.getCurrentSkill(p) == SecondarySkill.TARGET_GUARD) {
+					guardian.useFirstSkill(p);
+				} else {
+					guardian.useSecondSkill(p);
+				}
+			}
+			case "berserker" -> {
+				if (berserker.getCurrentSkill(p) == null) return;
+				if (berserker.getCurrentSkill(p) == SecondarySkill.MADNESS) {
+					berserker.useFirstSkill(p);
+				} else {
+					berserker.useSecondSkill(p);}
+			}
+		}
+		p.swingMainHand();
+		p.playSound(p, "xmaslegacy:skill_use", 1.0f, 1.0f);
+	}
+
 }

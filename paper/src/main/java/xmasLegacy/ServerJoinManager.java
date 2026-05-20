@@ -61,6 +61,7 @@ public class ServerJoinManager implements Listener {
                                                     } else {
                                                         plugin.infoMsg(InfoLevel.INFO, t, "유저정보다 성공적으로 로드되었습니다!");
                                                         UserTagManager.createHoverTag(t, reloadedUser);
+														UserTagManager.runTask();
                                                     }
                                                 }));
 											}
@@ -71,12 +72,8 @@ public class ServerJoinManager implements Listener {
 							});
 							return;
 						}
-
-						// 🔍 2. 로드 성공 시 메인 스레드에서 후속 처리
 						Bukkit.getScheduler().runTask(plugin, () -> {
 							if (!p.isOnline()) return;
-
-							// 💡 [정리] 위에서 이미 null 체크를 끝냈으므로 이 안의 user 객체는 100% @NotNull 안전 구역입니다.
 
 							if (user.isNewUser()) {
 								Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님의 첫 접속입니다. 환영해주세요!\uD83C\uDF84", p.getName())));

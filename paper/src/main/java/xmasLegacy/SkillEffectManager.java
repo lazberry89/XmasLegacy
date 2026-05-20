@@ -1,12 +1,15 @@
 package xmasLegacy;
 
+import io.th0rgal.oraxen.api.OraxenItems;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -163,10 +166,7 @@ public class SkillEffectManager {
             if (checkDamage(point, hitEntities, damage, shooter, penetrate)) return true;
         }
 
-        // 3. 벽 체크
-        if (point.getBlock().getType().isSolid() && !penetrate) return true;
-
-        return false;
+	    return point.getBlock().getType().isSolid() && !penetrate;
     }
 
     private boolean checkDamage(Location point, Set<UUID> hitEntities, float damage, Player shooter, boolean penetrate) {
@@ -177,20 +177,18 @@ public class SkillEffectManager {
                 target.damage(damage, shooter);
                 hitEntities.add(target.getUniqueId());
 
-                if (!penetrate) return true; // 관통 불가 시 즉시 중단 신호
+                if (!penetrate) return true;
             }
         }
         return false;
     }
 	public void followParticle(Player p, Particle particle, double duration) {
 		new BukkitRunnable() {
-			// 1틱마다 실행 (0.05초)
 			double elapsed = 0;
 			final double maxTicks = duration * 20;
 
 			@Override
 			public void run() {
-				// 1. 시간이 다 됐거나 플레이어가 나갔으면 종료
 				if (elapsed >= maxTicks || !p.isOnline()) {
 					this.cancel();
 					return;
@@ -202,7 +200,7 @@ public class SkillEffectManager {
 				// 3. 카운트 증가
 				elapsed++;
 			}
-		}.runTaskTimer(plugin, 0L, 1L); // 1L(1틱) 간격으로 무지하게 부드럽게 출력
+		}.runTaskTimer(plugin, 0L, 1L);
 	}
 	public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
 		new BukkitRunnable() {
@@ -225,6 +223,41 @@ public class SkillEffectManager {
 				// 3. 카운트 증가
 				elapsed++;
 			}
-		}.runTaskTimerAsynchronously(plugin, 0L, 1L); // 1L(1틱) 간격으로 무지하게 부드럽게 출력
+		}.runTaskTimerAsynchronously(plugin, 0L, 1L);
+	}
+
+	public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc) {
+		var haki = OraxenItems.getItemById("haki_wave");
+		if (haki == null) {
+			plugin.getSLF4JLogger().error("Oraxen id is not Correct! : \"haki_wave\"");
+			return;
+		}
+		ItemStack hakiWave = haki.build();
+
+		Location spawnLoc = loc.clone().add(0, 1.5, 0);
+		spawnLoc.setPitch(0.0f);
+
+		ItemDisplay display = spawnLoc.getWorld().spawn(spawnLoc, ItemDisplay.class, w -> {
+			w.setItemStack(hakiWave);
+			w.setBrightness(new Display.Brightness(15, 15));
+			w.setBillboard(Display.Billboard.FIXED);
+
+			Transformation init = w.getTransformation();
+			init.getScale().set(1.0f, 1.0f, 1.0f);
+			w.setTransformation(init);
+		});
+
+		Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			if (!display.isValid()) return;
+
+			display.setInterpolationDuration(6);
+			display.setInterpolationDelay(0);
+
+			Transformation targetTrans = display.getTransformation();
+			targetTrans.getScale().set(15.0f, 1.0f, 15.0f);
+			display.setTransformation(targetTrans);
+		}, 2L);
+
+		Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
 	}
 }

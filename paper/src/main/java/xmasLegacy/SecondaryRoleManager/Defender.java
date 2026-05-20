@@ -116,7 +116,8 @@ public class Defender extends AbstractSecondRole {
 		}
 		if (!consumeEnergy(p, 3)) return;
 		Location loc = p.getLocation();
-		spawnShockWave(loc);
+		//spawnShockWave(loc);
+		SkillEffectManager.startHakiWave(getPlugin(), p.getLocation());
 		p.getNearbyEntities(5, 5, 5).stream()
 				.filter(e -> e != p && e instanceof LivingEntity)
 				.filter(e -> !PM.isParty(p.getUniqueId(), e.getUniqueId()))
@@ -130,7 +131,7 @@ public class Defender extends AbstractSecondRole {
 						if (le.isValid() && le.getPose().equals(Pose.SLEEPING)) le.setPose(Pose.STANDING, true);
 					}, 20L);
 				});
-		p.getWorld().playSound(p, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1.0f, 0.8f);
+		p.getWorld().playSound(p, Sound.ENTITY_WARDEN_SONIC_BOOM, 0.6f, 1.3f);
 		p.setCooldown(tool, 20);
 	}
 

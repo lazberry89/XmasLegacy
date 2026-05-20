@@ -44,6 +44,8 @@ import xmasLegacy.RoleSwitch.ExpManager;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
 import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondTestCommand;
+import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondaryRoleListener;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
@@ -115,6 +117,8 @@ public final class XmasLegacy extends JavaPlugin {
 	public SelectListener STL;
 	public RoleSelectCommand RSC;
 	public RoleCommand RLC;
+	public SecondaryRoleListener SRL;
+	public SecondTestCommand STC;
 
 	//Gacha
 	public GachaManager GM;
@@ -198,6 +202,8 @@ public final class XmasLegacy extends JavaPlugin {
 		this.STL = new SelectListener(this);
 		this.RSC = new RoleSelectCommand(this);
 		this.RLC = new RoleCommand(this);
+		this.SRL = new SecondaryRoleListener(this);
+		this.STC = new SecondTestCommand(this);
 
 		//Gacha
 		this.GM = new GachaManager(this);
@@ -242,6 +248,8 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(STL, this);
 		getServer().getPluginManager().registerEvents(GCL, this);
 		getServer().getPluginManager().registerEvents(CPL, this);
+		getServer().getPluginManager().registerEvents(SRL, this);
+
 
 		getCommand("문의").setExecutor(ICM);
 		getCommand("이동문의").setExecutor(ITC);
@@ -275,6 +283,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getCommand("prefix").setExecutor(PFC);
 		getCommand("prefix").setTabCompleter(PFC);
 		getCommand("0947345").setExecutor(ULC);
+		getCommand("second").setExecutor(STC);
 	}
 
 	@Override
