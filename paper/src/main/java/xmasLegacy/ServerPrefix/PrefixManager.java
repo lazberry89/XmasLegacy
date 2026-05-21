@@ -12,9 +12,18 @@ public class PrefixManager {
 	private final XmasLegacy plugin;
 	private final UserManager um;
 
-	public PrefixManager(XmasLegacy plugin) {
-		this.plugin = plugin;
-		this.um = plugin.UM;
+	private static PrefixManager instance;
+
+	private PrefixManager() {
+		this.plugin = XmasLegacy.getInstance();
+		this.um = UserManager.getInstance();
+	}
+
+	public static PrefixManager getInstance() {
+		if (instance == null) {
+			instance = new PrefixManager();
+		}
+		return instance;
 	}
 
 	public boolean addPrefix(@NotNull Player p, @NotNull ServerPrefix prefix) {

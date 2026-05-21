@@ -34,8 +34,8 @@ public class FirstRoleListener implements Listener {
 	private final Gatherer gatherer;
 	private final Merchant merchant;
 
-	public FirstRoleListener(XmasLegacy plugin) {
-		this.plugin = plugin;
+	public FirstRoleListener() {
+		this.plugin = XmasLegacy.getInstance();
 		this.knight = this.plugin.knight;
 		this.rogue = this.plugin.rogue;
 		this.archer = this.plugin.archer;

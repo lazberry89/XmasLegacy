@@ -14,7 +14,6 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.XmasLegacy;
 
@@ -22,22 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class ShopListener implements Listener {
 	private final PriestShopManager PSM;
-	private final UserManager UM;
 	private final EconomyManager ECM;
     private final ConductableItems CDI;
 	private final XmasLegacy plugin;
     private final BagManager BAG;
 
-	public ShopListener(PriestShopManager PSM, UserManager UM, EconomyManager ECM, ConductableItems CDI, BagManager BAG, XmasLegacy plugin) {
-		this.PSM = PSM;
-		this.UM = UM;
-		this.ECM = ECM;
-        this.CDI = CDI;
-        this.BAG = BAG;
-		this.plugin = plugin;
+	public ShopListener() {
+		this.PSM = PriestShopManager.getInstance();
+		this.ECM = EconomyManager.getInstance();
+        this.CDI = ConductableItems.getInstance();
+        this.BAG = BagManager.getInstance();
+		this.plugin = XmasLegacy.getInstance();
 	}
 
     private boolean isConductableItem(ItemStack item) {
@@ -69,7 +65,7 @@ public class ShopListener implements Listener {
     public void StockAddEvent(InventoryClickEvent e) {
         if (e.getClickedInventory() == null) return;
         if (!(e.getWhoClicked() instanceof Player p)) return;
-        if (!(e.getInventory().getHolder() instanceof StockInterface si)) return;
+        if (!(e.getInventory().getHolder() instanceof StockInterface)) return;
         if (!(e.getClickedInventory().getHolder() instanceof StockInterface)) return;
 
 		PriestShop shop = PSM.get(p.getUniqueId());

@@ -30,9 +30,9 @@ public class SelectListener implements Listener {
     private final XmasLegacy plugin;
     private final UserManager UM;
 
-    public SelectListener(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.UM = plugin.UM;
+    public SelectListener() {
+        this.plugin = XmasLegacy.getInstance();
+        this.UM = UserManager.getInstance();
     }
 
     @EventHandler

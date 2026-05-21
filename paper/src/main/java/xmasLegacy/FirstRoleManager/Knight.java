@@ -32,9 +32,9 @@ public class Knight extends AbstractFirstRole {
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHARP_SWEEPING);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Knight(SkillEffectManager SEM, XmasLegacy plugin) {
-		super(4, 4, plugin);
-        this.SEM = SEM;
+	public Knight() {
+		super(Roles.KNIGHT);
+        this.SEM = SkillEffectManager.getInstance();
 	}
 
 	@Override

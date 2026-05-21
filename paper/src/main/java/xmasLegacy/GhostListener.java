@@ -9,14 +9,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class GhostListener implements Listener {
     private final GhostModeManager GMM;
     private final XmasLegacy plugin;
 
-    public GhostListener(GhostModeManager GMM, XmasLegacy plugin) {
-        this.GMM = GMM;
-        this.plugin = plugin;
+    public GhostListener() {
+        this.GMM = GhostModeManager.getInstance();
+        this.plugin = XmasLegacy.getInstance();
     }
 
     @EventHandler
@@ -31,8 +30,8 @@ public class GhostListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player joined = e.getPlayer();
-        for (UUID uuid : GMM.isGhostMode().keySet()) {
-            if (GMM.isGhostMode().get(uuid)) {
+        for (UUID uuid : GMM.isGhostMode()) {
+            if (GMM.isGhostMode(uuid)) {
                 Player admin = Bukkit.getPlayer(uuid);
                 if (admin != null) joined.hidePlayer(plugin, admin);
             }

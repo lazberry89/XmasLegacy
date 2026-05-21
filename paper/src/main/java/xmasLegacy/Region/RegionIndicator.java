@@ -20,16 +20,15 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class RegionIndicator implements Listener {
 	private final RegionManager RM;
 	private final UserManager UM;
 	private final XmasLegacy plugin;
 
-	public RegionIndicator(RegionManager RM, UserManager UM, XmasLegacy plugin) {
-		this.RM = RM;
-		this.UM = UM;
-		this.plugin = plugin;
+	public RegionIndicator() {
+		this.RM = RegionManager.getInstance();
+		this.UM = UserManager.getInstance();
+		this.plugin = XmasLegacy.getInstance();
 	}
 
 	public static @NotNull ItemStack RegionBeacon() {

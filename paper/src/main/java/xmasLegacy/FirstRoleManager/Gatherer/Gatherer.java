@@ -30,8 +30,8 @@ public class Gatherer extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.ETERNAL_POSE);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Gatherer(int c1, int c2, XmasLegacy plugin) {
-		super(c1, c2, plugin);
+	public Gatherer() {
+		super(Roles.GATHERER);
 	}
 
 	private ItemStack CompassBuilder(Block target, Player p) {

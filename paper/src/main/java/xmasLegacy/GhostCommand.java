@@ -6,12 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class GhostCommand implements CommandExecutor {
     private final GhostModeManager GMM;
 
-    public  GhostCommand(GhostModeManager GMM) {
-        this.GMM = GMM;
+    public  GhostCommand() {
+        this.GMM = GhostModeManager.getInstance();
     }
 
     @Override

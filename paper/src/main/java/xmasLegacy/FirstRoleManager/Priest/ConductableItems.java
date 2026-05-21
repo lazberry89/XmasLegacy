@@ -8,12 +8,19 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class ConductableItems {
     private final XmasLegacy plugin;
+    private static ConductableItems instance;
 
-    public ConductableItems(XmasLegacy plugin) {
-        this.plugin = plugin;
+    public static ConductableItems getInstance() {
+        if (instance == null) {
+            instance = new ConductableItems();
+        }
+        return instance;
+    }
+
+    private ConductableItems() {
+        this.plugin = XmasLegacy.getInstance();
     }
 
     //값싼 기초물약

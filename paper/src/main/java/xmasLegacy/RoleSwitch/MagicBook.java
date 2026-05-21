@@ -25,11 +25,17 @@ public class MagicBook {
     private final XmasLegacy plugin;
     private final UserManager um;
     private ArmorStand stand;
+    private static MagicBook instance;
 
-    public MagicBook(XmasLegacy plugin) {
-        this.plugin = plugin;
+    public static MagicBook getInstance() {
+        if (instance == null) instance = new MagicBook();
+        return instance;
+    }
+
+    private MagicBook() {
+        this.plugin = XmasLegacy.getInstance();
         this.magicBook = magicBook();
-        this.um = plugin.UM;
+        this.um = UserManager.getInstance();
     }
 
     @Contract(pure = true)

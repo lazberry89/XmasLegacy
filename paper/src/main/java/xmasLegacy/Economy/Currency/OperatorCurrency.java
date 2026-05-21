@@ -15,12 +15,11 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	private final EconomyManager ecm;
 
-	public OperatorCurrency(EconomyManager ecm) {
-		this.ecm = ecm;
+	public OperatorCurrency() {
+		this.ecm = EconomyManager.getInstance();
 	}
 
 	@Override

@@ -13,13 +13,12 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
@@ -29,9 +28,9 @@ public class Mage extends AbstractFirstRole {
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
     private final SkillEffectManager SEM;
 
-	public Mage(int c1, int c2, XmasLegacy plugin, SkillEffectManager SEM) {
-		super(c1, c2, plugin);
-        this.SEM = SEM;
+	public Mage() {
+		super(Roles.MAGE);
+        this.SEM = SkillEffectManager.getInstance();
 	}
 
 	@Override

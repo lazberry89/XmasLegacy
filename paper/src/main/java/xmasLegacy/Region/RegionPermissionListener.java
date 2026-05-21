@@ -9,12 +9,11 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-@SuppressWarnings("ClassCanBeRecord")
-public class RegionPermission implements Listener {
+public class RegionPermissionListener implements Listener {
 	private final RegionManager RM;
 
-	public RegionPermission(RegionManager RM) {
-		this.RM = RM;
+	public RegionPermissionListener() {
+		this.RM = RegionManager.getInstance();
 	}
 
 	// 권한이 있는지 확인하는 공통 메서드

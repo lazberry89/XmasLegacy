@@ -16,9 +16,9 @@ public class LobbyListener implements Listener {
     private final XmasLegacy plugin;
     private final LobbyManager LBM;
 
-    public LobbyListener(XmasLegacy plugin, LobbyManager LBM) {
-        this.plugin = plugin;
-        this.LBM = LBM;
+    public LobbyListener() {
+        this.plugin = XmasLegacy.getInstance();
+        this.LBM = LobbyManager.getInstance();
     }
 
     @EventHandler

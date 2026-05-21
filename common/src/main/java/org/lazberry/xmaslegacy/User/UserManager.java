@@ -1,6 +1,5 @@
 package org.lazberry.xmaslegacy.User;
 
-import org.jetbrains.annotations.CheckReturnValue;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 
@@ -12,7 +11,15 @@ public class UserManager {
     private final Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final UserRepository repository = new SqlUserRepository();
 
-	public UserManager() {
+	private static UserManager instance;
+
+	private UserManager() {}
+
+	public static UserManager getInstance() {
+		if (instance == null) {
+			instance = new UserManager();
+		}
+		return instance;
 	}
 
 	public void addUser(User user) {
@@ -58,7 +65,6 @@ public class UserManager {
 	public User load(UUID uuid, String name) {
 		User loaded = repository.loadUser(uuid);
 		if (loaded == null) {
-			// 신규 유저 생성
 			loaded = new User(uuid, Roles.USER, name);
 			loaded.setNewUser(true);
 			repository.saveUser(loaded);

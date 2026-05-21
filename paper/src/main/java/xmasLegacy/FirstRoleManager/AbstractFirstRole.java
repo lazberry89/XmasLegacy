@@ -12,21 +12,19 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
 @SuppressWarnings("DuplicatedCode, unused")
 public abstract class AbstractFirstRole implements UsingEnergy {
-	private final int cooldown1;
-	private final int cooldown2;
+	private final Roles role;
     private final XmasLegacy plugin;
 
-	public AbstractFirstRole(int c1, int c2, XmasLegacy plugin) {
-		this.cooldown1 = c1;
-		this.cooldown2 = c2;
-		this.plugin = plugin;
+	public AbstractFirstRole(Roles role) {
+		this.plugin = XmasLegacy.getInstance();
+		this.role = role;
 	}
 
     public XmasLegacy getPlugin() {

@@ -24,11 +24,19 @@ public class ConsumableManager implements Listener {
     private boolean isRunning = false;
     private final UserManager UM;
 	private final BagManager BM;
+    private static ConsumableManager instance;
 
-    public ConsumableManager(XmasLegacy plugin, UserManager UM, BagManager BM) {
-        this.plugin = plugin;
-        this.UM = UM;
-		this.BM = BM;
+    public static ConsumableManager getInstance() {
+        if (instance == null) {
+            instance = new ConsumableManager();
+        }
+        return instance;
+    }
+
+    private ConsumableManager() {
+        this.plugin = XmasLegacy.getInstance();
+        this.UM = UserManager.getInstance();
+		this.BM = BagManager.getInstance();
     }
 
     public static ItemStack basicFood(int amount) {

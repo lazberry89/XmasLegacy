@@ -11,10 +11,18 @@ public class PriestShopManager {
 	private final Map<UUID, PriestShop> shops = new ConcurrentHashMap<>();
 	private final ConductableItems CDI;
 	private final EconomyManager EM;
+	private static PriestShopManager instance;
 
-	public PriestShopManager(ConductableItems CDI, EconomyManager EM) {
-		this.CDI = CDI;
-		this.EM = EM;
+	public static PriestShopManager getInstance() {
+		if (instance == null) {
+			instance = new PriestShopManager();
+		}
+		return instance;
+	}
+
+	private PriestShopManager() {
+		this.CDI = ConductableItems.getInstance();
+		this.EM = EconomyManager.getInstance();
 	}
 
 	public PriestShop getOrCreate(Player owner) {

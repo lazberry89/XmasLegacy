@@ -16,14 +16,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class SkillEffectManager {
     private final XmasLegacy plugin;
 
-    public SkillEffectManager(XmasLegacy plugin) {
-        this.plugin = plugin;
+    private static SkillEffectManager instance;
+
+    public SkillEffectManager() {
+        this.plugin = XmasLegacy.getInstance();
     }
 
+    public static SkillEffectManager getInstance() {
+        if (instance == null) {
+            instance = new SkillEffectManager();
+        }
+        return instance;
+    }
 
     public void knockbackEntity(Player player, LivingEntity target, double force, double yForce) {
         Vector direction = target.getLocation().toVector().subtract(player.getLocation().toVector());

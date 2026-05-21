@@ -29,12 +29,13 @@ import java.util.List;
 public class UserSellingInterface {
     private final Merchant inv;
     private final UserManager um;
-    private final XmasLegacy plugin = JavaPlugin.getPlugin(XmasLegacy.class);
+    private final XmasLegacy plugin;
 	private final Component title = ColorUtils.chat("&c&lSystem - &7&l매입");
 	private final NamespacedKey key;
 
     public UserSellingInterface(Player viewer) {
-        this.um = this.plugin.UM;
+        this.um = UserManager.getInstance();
+		this.plugin = XmasLegacy.getInstance();
         this.inv = Bukkit.createMerchant(title);
 		this.key = plugin.getNamespacedKey("merchant_money");
         List<MerchantRecipe> recipes = new ArrayList<>();

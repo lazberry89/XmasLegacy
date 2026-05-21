@@ -41,10 +41,10 @@ public class SecondaryRoleListener implements Listener {
     private final Guardian guardian;
     private final Berserker berserker;
 
-    public SecondaryRoleListener(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.um = plugin.UM;
-        this.pm = plugin.PM;
+    public SecondaryRoleListener() {
+        this.plugin = XmasLegacy.getInstance();
+        this.um = UserManager.getInstance();
+        this.pm = PartyManager.getInstance();
         this.defender = plugin.defender;
         this.guardian = plugin.guardian;
         this.berserker = plugin.berserker;
@@ -91,7 +91,7 @@ public class SecondaryRoleListener implements Listener {
             if (isAlly) {
                 double absorbed = e.getDamage() * 0.2;
                 e.setDamage(e.getDamage() - absorbed);
-                if (!guardians.equals(victim)) { // Guardian이 본인 링크한 경우 방지
+                if (!guardians.equals(victim)) {
                     guardians.damage(absorbed);
                 }
             } else {

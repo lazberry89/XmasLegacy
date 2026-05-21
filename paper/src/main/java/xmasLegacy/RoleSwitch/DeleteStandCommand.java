@@ -12,9 +12,9 @@ public class DeleteStandCommand implements CommandExecutor {
     private final XmasLegacy plugin;
     private final MagicBook MB;
 
-    public DeleteStandCommand(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.MB = plugin.MB;
+    public DeleteStandCommand() {
+        this.plugin = XmasLegacy.getInstance();
+        this.MB = MagicBook.getInstance();
     }
 
     @Override

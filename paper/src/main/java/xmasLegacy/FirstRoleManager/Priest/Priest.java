@@ -33,10 +33,10 @@ public class Priest extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_HEAL);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Priest(int c1, int c2, PartyManager PM, SkillEffectManager SEM, XmasLegacy plugin) {
-		super(c1, c2, plugin);
-        this.PM = PM;
-        this.SEM = SEM;
+	public Priest() {
+		super(Roles.PRIEST);
+        this.PM = PartyManager.getInstance();
+        this.SEM = SkillEffectManager.getInstance();
 	}
 
 	@Override

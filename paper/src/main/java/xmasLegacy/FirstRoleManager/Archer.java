@@ -28,8 +28,8 @@ public class Archer extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHOCK_DART);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Archer(int c1, int c2, XmasLegacy plugin) {
-		super(c1, c2, plugin);
+	public Archer() {
+		super(Roles.ARCHER);
 	}
 
 	@Override

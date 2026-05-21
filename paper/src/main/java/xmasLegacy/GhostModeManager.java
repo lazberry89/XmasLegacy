@@ -4,22 +4,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class GhostModeManager {
-    private final Map<UUID, Boolean> isGhostMode = new HashMap<>();
+    private final Set<UUID> isGhostMode = new HashSet<>();
     private final Map<UUID, ItemStack[]> saveArmor = new HashMap<>();
     private final XmasLegacy plugin;
+    private static GhostModeManager instance;
 
-    public GhostModeManager(XmasLegacy plugin) {
-        this.plugin = plugin;
+    public static GhostModeManager getInstance() {
+        if (instance == null) instance = new GhostModeManager();
+        return instance;
+    }
+
+    private GhostModeManager() {
+        this.plugin = XmasLegacy.getInstance();
     }
 
     public void ghostMode(Player p) {
         if (!p.isOp()) return;
-        if (Boolean.TRUE.equals(isGhostMode.get(p.getUniqueId()))) return;
+        if (isGhostMode.contains(p.getUniqueId())) return;
         ItemStack[] saveArmor = p.getInventory().getArmorContents();
         this.saveArmor.put(p.getUniqueId(),  saveArmor);
         p.getInventory().setArmorContents(new ItemStack[4]);
@@ -30,11 +34,11 @@ public class GhostModeManager {
 
         p.setInvisible(true);
         p.setCollidable(false);
-        isGhostMode.put(p.getUniqueId(), Boolean.TRUE);
+        isGhostMode.add(p.getUniqueId());
     }
 
     public void DeGhostMode(Player p) {
-        if (Boolean.FALSE.equals(isGhostMode.get(p.getUniqueId()))) return;
+        if (!isGhostMode.contains(p.getUniqueId())) return;
         p.getInventory().setArmorContents(saveArmor.get(p.getUniqueId()));
         p.setInvisible(false);
         p.setCollidable(true);
@@ -42,22 +46,25 @@ public class GhostModeManager {
             online.showPlayer(plugin, p);
         }
         saveArmor.remove(p.getUniqueId());
-        isGhostMode.put(p.getUniqueId(), Boolean.FALSE);
+        isGhostMode.add(p.getUniqueId());
     }
 
     public void toggle(Player p) {
-        if (isGhostMode.getOrDefault(p.getUniqueId(), false)) {
+        if (isGhostMode.contains(p.getUniqueId())) {
             DeGhostMode(p);
         } else {
             ghostMode(p);
         }
     }
 
-    public boolean  isGhostMode(Player p) {
-        return isGhostMode.getOrDefault(p.getUniqueId(), false);
+    public boolean isGhostMode(Player p) {
+        return isGhostMode.contains(p.getUniqueId());
+    }
+    public boolean isGhostMode(UUID uuid) {
+        return isGhostMode.contains(uuid);
     }
 
-    public Map<UUID, Boolean> isGhostMode() {
+    public Set<UUID> isGhostMode() {
         return isGhostMode;
     }
 }

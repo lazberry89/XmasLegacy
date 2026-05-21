@@ -8,12 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.UserManager;
 
 public class UserLoadCommand implements CommandExecutor {
-	private final XmasLegacy plugin;
 	private final UserManager um;
 
-	public UserLoadCommand(XmasLegacy plugin) {
-		this.plugin = plugin;
-		this.um = plugin.UM;
+	public UserLoadCommand() {
+		this.um = UserManager.getInstance();
 	}
 
 	@Override

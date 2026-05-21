@@ -10,10 +10,16 @@ import xmasLegacy.XmasLegacy;
 public class ExpManager {
     private final XmasLegacy plugin;
     private final UserManager um;
+    private static ExpManager instance;
 
-    public ExpManager(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.um = plugin.UM;
+    public static ExpManager getInstance() {
+        if (instance == null) instance = new ExpManager();
+        return instance;
+    }
+
+    public ExpManager() {
+        this.plugin = XmasLegacy.getInstance();
+        this.um = UserManager.getInstance();
     }
     /*
     @Contract(pure = true)

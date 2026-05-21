@@ -27,10 +27,10 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
     private final PrefixManager PFM;
     private final UserManager UM;
 
-    public PrefixCommand(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.PFM = plugin.PFM;
-        this.UM = plugin.UM;
+    public PrefixCommand() {
+        this.plugin = XmasLegacy.getInstance();
+        this.PFM = PrefixManager.getInstance();
+        this.UM = UserManager.getInstance();
     }
 
     @Override

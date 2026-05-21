@@ -10,12 +10,11 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class InquiryCommandManager implements CommandExecutor {
 	private final InquiryManager IM;
 
-	public InquiryCommandManager(InquiryManager IM) {
-		this.IM = IM;
+	public InquiryCommandManager() {
+		this.IM = InquiryManager.getInstance();
 	}
 
 	@Override

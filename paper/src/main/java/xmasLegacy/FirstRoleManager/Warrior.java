@@ -36,8 +36,8 @@ public class Warrior extends AbstractFirstRole {
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.BLOOD_FRENZY);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Warrior(int c1, int c2, XmasLegacy plugin) {
-		super(c1, c2, plugin);
+	public Warrior() {
+		super(Roles.WARRIOR);
 	}
 
 	@Override

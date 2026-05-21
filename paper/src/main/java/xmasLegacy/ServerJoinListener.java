@@ -20,14 +20,13 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.ServerPrefix.UserTagManager;
 
-@SuppressWarnings("ClassCanBeRecord")
-public class ServerJoinManager implements Listener {
+public class ServerJoinListener implements Listener {
 	private final UserManager UM;
 	private final XmasLegacy plugin;
 
-	public ServerJoinManager(UserManager UM, XmasLegacy plugin) {
-		this.UM = UM;
-		this.plugin = plugin;
+	public ServerJoinListener() {
+		this.UM = UserManager.getInstance();
+		this.plugin = XmasLegacy.getInstance();
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

@@ -23,8 +23,16 @@ public class RoleManager {
     private final AbstractFirstRole gatherer;
     private final AbstractFirstRole farmer;
     private final AbstractFirstRole crafter;
+    private static RoleManager instance;
 
-    public RoleManager() {
+    public static RoleManager getInstance() {
+        if (instance == null) {
+            instance = new RoleManager();
+        }
+        return instance;
+    }
+
+    private RoleManager() {
         this.warrior = plugin.warrior;
         this.rogue = plugin.rogue;
         this.mage = plugin.mage;

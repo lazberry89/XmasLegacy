@@ -12,8 +12,8 @@ public class BundleTypeInterface implements InventoryHolder {
     private final Inventory inv;
     private final GachaManager gm;
 
-    public BundleTypeInterface(XmasLegacy plugin) {
-        this.gm = plugin.GM;
+    public BundleTypeInterface() {
+        this.gm = GachaManager.getInstance();
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&c&l확률형 번들 &f4&r&l / 9"));
         for (ItemStack bundle : gm.getBundles()) {
             this.inv.addItem(bundle);

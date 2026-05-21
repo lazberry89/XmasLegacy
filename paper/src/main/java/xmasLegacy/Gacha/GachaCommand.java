@@ -23,9 +23,9 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
     private final XmasLegacy plugin;
     private final GachaManager gm;
 
-    public GachaCommand(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.gm = plugin.GM;
+    public GachaCommand() {
+        this.plugin = XmasLegacy.getInstance();
+        this.gm = GachaManager.getInstance();
     }
 
 	@Override
@@ -37,7 +37,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 			return true;
 		}
 		if (args.length == 1 && args[0].equalsIgnoreCase("inv") || args[0].equalsIgnoreCase("inventory")) {
-			p.openInventory(new BundleTypeInterface(plugin).getInventory());
+			p.openInventory(new BundleTypeInterface().getInventory());
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			return true;
 		}

@@ -13,12 +13,11 @@ import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryStatus;
 import org.lazberry.xmaslegacy.settings.Alert;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class InquireTeleportCommand implements CommandExecutor {
 	private final InquiryManager IM;
 
-	public InquireTeleportCommand(InquiryManager IM) {
-		this.IM = IM;
+	public InquireTeleportCommand() {
+		this.IM = InquiryManager.getInstance();
 	}
 
 	@Override

@@ -10,9 +10,17 @@ import java.util.UUID;
 public class EconomyManager {
     private final UserManager um;
     private final Map<String, Integer> marketDemand = new HashMap<>();
+    private static EconomyManager instance;
 
-    public EconomyManager(UserManager um) {
-        this.um = um;
+    public static EconomyManager getInstance() {
+        if (instance == null) {
+            instance = new EconomyManager();
+        }
+        return instance;
+    }
+
+    public EconomyManager() {
+        this.um = UserManager.getInstance();
     }
 
     public boolean deposit(UUID uuid, int amount) {

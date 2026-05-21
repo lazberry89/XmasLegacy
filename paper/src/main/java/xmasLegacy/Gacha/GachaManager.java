@@ -20,11 +20,19 @@ public class GachaManager {
 	private final Map<String, Gacha> highEndGachas = new HashMap<>();
 	private final Map<String, Gacha> chromaticBundle = new HashMap<>();
 	private final Map<String, Gacha> chromaticBox = new HashMap<>();
+	private static GachaManager instance;
+
+	public static GachaManager getInstance() {
+		if (instance == null) {
+			instance = new GachaManager();
+		}
+		return instance;
+	}
 
 	private final List<ItemStack> bundles = new ArrayList<>();
 
-	public GachaManager(XmasLegacy plugin) {
-		this.plugin = plugin;
+	private GachaManager() {
+		this.plugin = XmasLegacy.getInstance();
 		appendBundles();
 	}
 

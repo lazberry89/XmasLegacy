@@ -24,11 +24,11 @@ public class ChatPrefixListener implements Listener {
 	private final RuleManager RM;
 	private final UserManager UM;
 
-	public ChatPrefixListener(XmasLegacy plugin) {
-		this.plugin = plugin;
+	public ChatPrefixListener() {
+		this.plugin = XmasLegacy.getInstance();
 		this.PFM = plugin.PFM;
 		this.RM = plugin.RM;
-		this.UM = plugin.UM;
+		this.UM = UserManager.getInstance();
 	}
 
 	@EventHandler

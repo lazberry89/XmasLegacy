@@ -13,13 +13,12 @@ import xmasLegacy.XmasLegacy;
 
 @TestOnly
 public class SecondTestCommand implements CommandExecutor {
-	private final XmasLegacy plugin;
 	private final Berserker berserker;
 	private final Defender defender;
 	private final Guardian guardian;
 
-	public SecondTestCommand(XmasLegacy plugin) {
-		this.plugin = plugin;
+    public SecondTestCommand() {
+        XmasLegacy plugin = XmasLegacy.getInstance();
 		this.berserker = plugin.berserker;
 		this.defender = plugin.defender;
 		this.guardian = plugin.guardian;

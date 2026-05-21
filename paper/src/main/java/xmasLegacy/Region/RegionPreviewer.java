@@ -22,10 +22,16 @@ public class RegionPreviewer {
     private final XmasLegacy plugin;
     private final RegionManager RM;
     private final HashMap<UUID, List<BlockDisplay>> activePreviews = new HashMap<>();
+    private static RegionPreviewer instance;
 
-    public RegionPreviewer(XmasLegacy plugin, RegionManager RM) {
-        this.plugin = plugin;
-        this.RM = RM;
+    public static RegionPreviewer getInstance() {
+        if (instance == null) instance = new RegionPreviewer();
+        return instance;
+    }
+
+    private RegionPreviewer() {
+        this.plugin = XmasLegacy.getInstance();
+        this.RM = RegionManager.getInstance();
         startTask();
     }
 

@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 public class TempCommand implements CommandExecutor {
 	private final PriceInterface PCI;
 
-	public TempCommand(PriceInterface PCI) {
-		this.PCI = PCI;
+	public TempCommand() {
+		this.PCI = PriceInterface.getInstance();
 	}
 
 	@Override

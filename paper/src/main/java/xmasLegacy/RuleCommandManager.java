@@ -15,12 +15,11 @@ import org.lazberry.xmaslegacy.RuleManager;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class RuleCommandManager implements CommandExecutor, TabCompleter {
     private final RuleManager RM;
 
-    public RuleCommandManager(RuleManager RM) {
-        this.RM = RM;
+    public RuleCommandManager() {
+        this.RM = RuleManager.getInstance();
     }
 
     @Override

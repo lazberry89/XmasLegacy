@@ -22,9 +22,9 @@ public class GachaListener implements Listener {
     private final XmasLegacy plugin;
     private final GachaManager GM;
 
-    public GachaListener(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.GM = plugin.GM;
+    public GachaListener() {
+        this.plugin = XmasLegacy.getInstance();
+        this.GM = GachaManager.getInstance();
     }
 
     @EventHandler

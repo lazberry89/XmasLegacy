@@ -29,9 +29,9 @@ public class Farmer extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.RADIUS_HARVEST);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Farmer(int c1, int c2, XmasLegacy plugin, RegionManager rm) {
-		super(c1, c2, plugin);
-		this.rm = rm;
+	public Farmer() {
+		super(Roles.FARMER);
+		this.rm = RegionManager.getInstance();
 	}
 
 	@Override

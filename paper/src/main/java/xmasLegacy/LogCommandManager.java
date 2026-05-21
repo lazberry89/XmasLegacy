@@ -26,15 +26,13 @@ import java.util.UUID;
 public class LogCommandManager implements CommandExecutor, TabCompleter {
     private final InquiryManager IM;
     private final XmasLegacy plugin;
-	private RegionManager RM;
+	private final RegionManager RM;
 
-    public LogCommandManager(InquiryManager IM, XmasLegacy plugin) {
-        this.IM = IM;
-        this.plugin = plugin;
+    public LogCommandManager() {
+        this.IM = InquiryManager.getInstance();
+        this.plugin = XmasLegacy.getInstance();
+		this.RM = RegionManager.getInstance();
     }
-	public void setRM(RegionManager RM) {
-		this.RM = RM;
-	}
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {

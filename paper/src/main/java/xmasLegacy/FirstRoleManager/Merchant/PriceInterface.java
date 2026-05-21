@@ -29,8 +29,14 @@ public class PriceInterface {
 			.setLore(ColorUtils.chat(""))
 			.hideAllFlags()
 			.build();
+	private static PriceInterface instance;
 
-	public PriceInterface() {
+	public static PriceInterface getInstance() {
+		if (instance == null) instance = new PriceInterface();
+		return instance;
+	}
+
+	private PriceInterface() {
 		this.priceInv = Bukkit.createInventory(null, 9, Constants.PRICE_TITLE);
 		this.purchaseInv = Bukkit.createInventory(null, 27, Constants.PURCHASE_TITLE);
 	}

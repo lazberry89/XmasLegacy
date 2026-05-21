@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RuleManager {
-	private List<String> badWords;
+	private final List<String> badWords;
 
-    public RuleManager(List<String> initialWords) {
+	private static RuleManager instance;
+
+    private RuleManager(List<String> initialWords) {
         this.badWords = new ArrayList<>(initialWords);
 	    if (this.badWords.isEmpty()) {
 		    this.badWords.addAll(List.of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
 	    }
     }
 
+	public static RuleManager getInstance() {
+		if (instance == null) {
+			instance = new RuleManager(new ArrayList<>());
+		}
+		return instance;
+	}
 
 	public boolean checkBadWords(String s) {
 		return badWords.stream().anyMatch(s::contains);

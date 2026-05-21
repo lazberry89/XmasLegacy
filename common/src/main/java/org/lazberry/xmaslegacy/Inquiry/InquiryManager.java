@@ -24,10 +24,19 @@ public class InquiryManager {
 	private final RuleManager rm;
 	private final InquiryRepository repository;
 
-	public InquiryManager(UserManager um, RuleManager rm, InquiryRepository repository) {
-		this.um = um;
-		this.rm = rm;
-		this.repository = repository;
+	private static InquiryManager instance;
+
+	private InquiryManager() {
+		this.um = UserManager.getInstance();
+		this.rm = RuleManager.getInstance();
+		this.repository = new InquiryRepository();
+	}
+
+	public static InquiryManager getInstance() {
+		if (instance == null) {
+			instance = new InquiryManager();
+		}
+		return instance;
 	}
 
 	public Component Inquiry(UUID uuid, @Nullable String message) {

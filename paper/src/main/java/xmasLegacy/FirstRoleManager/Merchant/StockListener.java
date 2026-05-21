@@ -14,11 +14,9 @@ import xmasLegacy.XmasLegacy;
 @SuppressWarnings("FieldCanBeLocal")
 public class StockListener implements Listener {
 	private final MerchantStockInterface msi;
-	private final XmasLegacy plugin;
 
-	public StockListener(XmasLegacy plugin) {
-		this.plugin = plugin;
-		this.msi = plugin.MSI;
+	public StockListener() {
+		this.msi = MerchantStockInterface.getInstance();
 	}
 
 	@EventHandler

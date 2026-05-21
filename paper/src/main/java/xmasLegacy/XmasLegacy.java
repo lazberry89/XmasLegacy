@@ -6,9 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.*;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
-import org.lazberry.xmaslegacy.Inquiry.InquiryRepository;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.User.UserRepository;
 import xmasLegacy.Cosmetics.CosmeticManager;
 import xmasLegacy.Cosmetics.CosmeticsCommand;
 import xmasLegacy.Cosmetics.TestHeadCommand;
@@ -24,7 +25,6 @@ import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.Priest.ShopListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
-import xmasLegacy.Gacha.GachaBundleListener;
 import xmasLegacy.Gacha.GachaCommand;
 import xmasLegacy.Gacha.GachaListener;
 import xmasLegacy.Gacha.GachaManager;
@@ -50,52 +50,8 @@ import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
 
-import java.util.ArrayList;
-
 @SuppressWarnings({"FieldCanBeLocal", "DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
-
-    public ServerJoinManager SJM;
-	public RuleManager RM;
-	public InquiryManager IM;
-	public InquiryCommandManager ICM;
-    public InquireTeleportCommand ITC;
-	public InquiryRepository IR;
-    public RuleCommandManager RCM;
-    public LogCommandManager LCM;
-    public UserManager UM;
-	public BagManager BM;
-	public BagCommandManager BCM;
-    public SkillEffectManager SEM;
-    public RegionManager RGM;
-	public FirstRoleListener FRL;
-	public TestCommands TC;
-	public ConsumableManager CM;
-	public RegionPermission RP;
-	public RegionCommandManager RGCM;
-	public RegionIndicator RI;
-	public RegionPreviewer RGP;
-	public GhostModeManager GMM;
-	public GhostCommand GC;
-	public GhostListener GL;
-	public EconomyManager EM;
-	public PartyManager PM;
-	public ConductableItems CDI;
-	public PriestShopManager PSM;
-	public PotionListener PL;
-	public PriestCommand PC;
-	public PriestSystemShopCommand PSSC;
-	public ShopListener SL;
-	public PriceInterface PCI;
-	public xmasLegacy.FirstRoleManager.Merchant.ShopListener SPL;
-	public TempCommand TPC;
-	public OperatorCurrency OC;
-	public CosmeticManager CSM;
-	public CosmeticsCommand CCC;
-	public UserSellingManager USM;
-	public MerchantStockInterface MSI;
-	public StockListener SKL;
-	public ShopCommand SC;
 
 	public Archer archer;
 	public Knight knight;
@@ -113,220 +69,198 @@ public final class XmasLegacy extends JavaPlugin {
 	public Guardian guardian;
 	public Berserker berserker;
 
-	public RoleManager RLM;
-	public SelectListener STL;
-	public RoleSelectCommand RSC;
-	public RoleCommand RLC;
-	public SecondaryRoleListener SRL;
-	public SecondTestCommand STC;
+	private static XmasLegacy instance;
 
-	//Gacha
-	public GachaManager GM;
-	public GachaListener GCL;
-	public GachaBundleListener GBL;
-	public GachaCommand GCC;
-	public ExpManager REM;
-	public MagicBook MB;
-	public BookCommand BC;
-	public DeleteStandCommand DSC;
-	public PrefixManager PFM;
-	public ChatPrefixListener CPL;
-	public PrefixCommand PFC;
-	public UserLoadCommand ULC;
+	public static XmasLegacy getInstance() {
+		return instance;
+	}
 
 	@Override
 	public void onEnable() {
-		serverType();
+		// 1. 공통 필수 초기화 (어떤 서버 타입이든 기본으로 쓰는 고정 매니저들)
+		instance = this;
 
-        this.UM = new UserManager();
-        this.SJM = new ServerJoinManager(UM, this);
-        this.RM = new RuleManager(new ArrayList<>());
-		this.IR = new InquiryRepository();
-        this.ICM = new InquiryCommandManager(IM);
-        this.IM = new InquiryManager(UM, RM, IR);
-        this.ITC = new InquireTeleportCommand(IM);
-        this.RCM = new RuleCommandManager(RM);
-        this.LCM = new LogCommandManager(IM, this);
-		this.BM = new BagManager(this);
-		this.BCM = new BagCommandManager(BM);
-        this.SEM = new SkillEffectManager(this);
-        this.RGM = new RegionManager(this, UM);
-		this.CM = new ConsumableManager(this, UM, BM);
-		this.RP = new RegionPermission(RGM);
-		this.RGCM = new RegionCommandManager(RGM);
-		this.RI = new RegionIndicator(RGM, UM, this);
-		this.TC = new TestCommands(SEM, RGM, this);
-        this.RGP = new RegionPreviewer(this, RGM);
-        this.GMM = new GhostModeManager(this);
-        this.GC = new GhostCommand(GMM);
-        this.GL = new GhostListener(GMM, this);
-        this.EM = new EconomyManager(UM);
-        this.PM = new PartyManager(UM);
-        this.CDI = new ConductableItems(this);
-		this.PL = new PotionListener(this, CDI);
-		this.PC = new PriestCommand(CDI);
-		this.PSM = new PriestShopManager(CDI, EM);
-		this.PSSC = new PriestSystemShopCommand(PSM);
-		this.SL = new ShopListener(PSM, UM, EM, CDI, BM, this);
-		this.PCI = new PriceInterface();
-		this.SPL = new xmasLegacy.FirstRoleManager.Merchant.ShopListener(PCI, UM, EM);
-		this.TPC = new TempCommand(PCI);
-		this.OC = new OperatorCurrency(EM);
-		this.CSM = new CosmeticManager();
-		this.CCC = new CosmeticsCommand(CSM);
-		this.USM = new UserSellingManager();
-		this.MSI = new MerchantStockInterface(this);
-		this.SKL = new StockListener(this);
-		this.SC = new ShopCommand(this);
-
-		//FirstRole
-        this.archer = new Archer(4, 4, this);
-        this.knight = new Knight(SEM, this);
-        this.rogue  = new Rogue(4, 4, SEM, this);
-        this.mage = new Mage(4, 4,this, SEM);
-        this.warrior = new Warrior(4, 4, this);
-		this.priest = new Priest(4, 4, PM, SEM, this);
-		this.farmer = new Farmer(4, 4, this, RGM);
-		this.miner = new Miner(4, 4, this);
-		this.gatherer = new Gatherer(4, 4, this);
-		this.merchant = new Merchant(4, 4, this);
-		this.crafter = new Crafter(4, 4, this);
-
-		//SecondaryRole
-		this.defender = new Defender(this);
-		this.guardian = new Guardian(this);
-		this.berserker = new Berserker(this);
-
-
-		this.RLM = new RoleManager();
-		this.STL = new SelectListener(this);
-		this.RSC = new RoleSelectCommand(this);
-		this.RLC = new RoleCommand(this);
-		this.SRL = new SecondaryRoleListener(this);
-		this.STC = new SecondTestCommand(this);
-
-		//Gacha
-		this.GM = new GachaManager(this);
-		this.GBL = new GachaBundleListener(this);
-		this.GCL = new GachaListener(this);
-		this.GCC = new GachaCommand(this);
-
-		this.REM = new ExpManager(this);
-		this.MB = new MagicBook(this);
-		this.BC = new BookCommand(this);
-		this.DSC = new DeleteStandCommand(this);
-		this.PFM = new PrefixManager(this);
-		this.CPL = new ChatPrefixListener(this);
-		this.PFC = new PrefixCommand(this);
-		this.ULC = new UserLoadCommand(this);
+		UserManager.getInstance();
+		RuleManager.getInstance();
+		InquiryManager.getInstance();
+		PrefixManager.getInstance();
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
 		} else {
 			getSLF4JLogger().error("Recipe Not Registered!");
 		}
-		this.FRL = new FirstRoleListener(this);
-		this.TC.setPM(PM);
+
+		// 2. 공통 이벤트 리스너 등록
+		getServer().getPluginManager().registerEvents(new ServerJoinListener(), this);
+		getServer().getPluginManager().registerEvents(new ChatPrefixListener(), this);
+
+		// 3. 공통 명령어 등록
+		getCommand("문의").setExecutor(new InquiryCommandManager());
+		getCommand("이동문의").setExecutor(new InquireTeleportCommand());
+		getCommand("filter").setExecutor(new RuleCommandManager());
+		getCommand("filter").setTabCompleter(new RuleCommandManager());
+		getCommand("log").setExecutor(new LogCommandManager());
+		getCommand("log").setTabCompleter(new LogCommandManager());
+
+		// 4. 서버 타입 정밀 분석 후 격리 기동 시작
+		serverType();
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
-        UM.getAllUsers();
-		CM.runCookieTimer(this);
-		this.BM.loadAllBags();
-		this.LCM.setRM(RGM);
-
-		getServer().getPluginManager().registerEvents(SJM, this);
-		getServer().getPluginManager().registerEvents(FRL, this);
-		getServer().getPluginManager().registerEvents(CM, this);
-		getServer().getPluginManager().registerEvents(RP, this);
-		getServer().getPluginManager().registerEvents(RI, this);
-        getServer().getPluginManager().registerEvents(GL, this);
-		getServer().getPluginManager().registerEvents(PL, this);
-		getServer().getPluginManager().registerEvents(SL, this);
-		getServer().getPluginManager().registerEvents(SPL, this);
-		getServer().getPluginManager().registerEvents(SKL, this);
-		getServer().getPluginManager().registerEvents(STL, this);
-		getServer().getPluginManager().registerEvents(GCL, this);
-		getServer().getPluginManager().registerEvents(CPL, this);
-		getServer().getPluginManager().registerEvents(SRL, this);
-
-
-		getCommand("문의").setExecutor(ICM);
-		getCommand("이동문의").setExecutor(ITC);
-        getCommand("filter").setExecutor(RCM);
-        getCommand("filter").setTabCompleter(RCM);
-        getCommand("log").setExecutor(LCM);
-        getCommand("log").setTabCompleter(LCM);
-		getCommand("가방").setExecutor(BCM);
-		getCommand("가방").setTabCompleter(BCM);
-		getCommand("test").setExecutor(TC);
-		getCommand("구역").setExecutor(RGCM);
-		getCommand("구역").setTabCompleter(RGCM);
-        getCommand("vanish").setExecutor(GC);
-		getCommand("potion").setExecutor(PC);
-		getCommand("potion").setTabCompleter(PC);
-		getCommand("system").setExecutor(PSSC);
-		getCommand("shop").setExecutor(TPC);
-		getCommand("currency").setExecutor(OC);
-		getCommand("currency").setTabCompleter(OC);
-		getCommand("cos").setExecutor(CCC);
-		getCommand("cos").setTabCompleter(CCC);
-		getCommand("상점").setExecutor(SC);
-		getCommand("직업선택").setExecutor(RSC);
-		getCommand("role").setExecutor(RLC);
-		getCommand("role").setTabCompleter(RLC);
-		getCommand("gacha").setExecutor(GCC);
-		getCommand("gacha").setTabCompleter(GCC);
-		getCommand("head").setExecutor(new TestHeadCommand());
-		getCommand("book").setExecutor(BC);
-		getCommand("delstand").setExecutor(DSC);
-		getCommand("prefix").setExecutor(PFC);
-		getCommand("prefix").setTabCompleter(PFC);
-		getCommand("0947345").setExecutor(ULC);
-		getCommand("second").setExecutor(STC);
 	}
 
 	@Override
 	public void onDisable() {
-        if (RGM != null) {
-            RGM.saveAll();
-        }
-		//UM.getAllUsers().forEach(UM::saveUserToFile);
-		//getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
-		if (CM != null) {
-			CM.stopCookieTimer();
+		var rm = RegionManager.getInstance();
+		var cm = ConsumableManager.getInstance();
+		var bg = BagManager.getInstance();
+		if (rm != null) {
+			rm.saveAll();
 		}
-		if (BM != null) {
-			BM.saveAllBags();
+		if (UserManager.getInstance() != null) {
+			UserRepository repository = new SqlUserRepository();
+			UserManager.getInstance().getAllUsers().forEach(repository::saveUser);
+			getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
 		}
-		getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+		if (cm != null) {
+			cm.stopCookieTimer();
+		}
+		if (bg != null) {
+			bg.saveAllBags();
+			getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+		}
 	}
 
-    public NamespacedKey getNamespacedKey(String key) {
-        return new NamespacedKey(this, key);
-    }
-
-    public void playConsoleSound() {
-		java.awt.Toolkit.getDefaultToolkit().beep();
-    }
 	private void serverType() {
 		saveDefaultConfig();
-
 		String serverType = getConfig().getString("server-type", "main");
 
+		// ------------------ [LOBBY MODE] ------------------
 		if (serverType.equals("lobby")) {
 			getLogger().warning("Lobby 모드로 시작합니다.");
-			LobbyManager LM = new LobbyManager(this);
-			getServer().getPluginManager().registerEvents(
-					new LobbyListener(this, LM), this);
-			LobbyCommand LBC = new LobbyCommand(LM, this);
-			getCommand("lobby").setExecutor(LBC);
-			getCommand("lobby").setTabCompleter(LBC);
+			LobbyManager.getInstance();
+
+			// 로비 전용 리스너 등록
+			getServer().getPluginManager().registerEvents(new LobbyListener(), this);
+
+			// 로비 전용 명령어 등록
+			getCommand("lobby").setExecutor(new LobbyCommand());
+			getCommand("lobby").setTabCompleter(new LobbyCommand());
+
 			getSLF4JLogger().warn("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
+
+			// ------------------ [MAIN GAME MODE] ------------------
 		} else if (serverType.equals("main")) {
 			getLogger().warning("Main 모드로 시작합니다.");
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
+
+			// [메인 서버 전용 인스턴스 초기화]
+			BagManager.getInstance();
+			SkillEffectManager.getInstance();
+			RegionManager.getInstance();
+			ConsumableManager.getInstance();
+			RegionPreviewer.getInstance();
+			GhostModeManager.getInstance();
+
+			EconomyManager.getInstance();
+			PartyManager.getInstance();
+			ConductableItems.getInstance();
+			PriestShopManager.getInstance();
+			PriceInterface.getInstance();
+			CosmeticManager.getInstance();
+			MerchantStockInterface.getInstance();
+
+			// FirstRole 초기화
+			this.archer = new Archer();
+			this.knight = new Knight();
+			this.rogue  = new Rogue();
+			this.mage = new Mage();
+			this.warrior = new Warrior();
+			this.priest = new Priest();
+			this.farmer = new Farmer();
+			this.miner = new Miner();
+			this.gatherer = new Gatherer();
+			this.merchant = new Merchant();
+			this.crafter = new Crafter();
+
+			// SecondaryRole 초기화
+			this.defender = new Defender(this);
+			this.guardian = new Guardian(this);
+			this.berserker = new Berserker(this);
+
+			RoleManager.getInstance();
+
+			// Gacha 초기화
+			GachaManager.getInstance();
+			ExpManager.getInstance();
+			MagicBook.getInstance();
+
+			//this.TC.setPM(PM); TestCommands
+			//this.LCM.setRM(RGM); LogCommandManager
+			ConsumableManager.getInstance().runCookieTimer(this);
+			BagManager.getInstance().loadAllBags();
+
+			// [메인 서버 전용 리스너 등록]
+			var pm = getServer().getPluginManager();
+			pm.registerEvents(new FirstRoleListener(), this);
+			pm.registerEvents(ConsumableManager.getInstance(), this);
+			pm.registerEvents(new RegionPermissionListener(), this);
+			pm.registerEvents(new RegionIndicator(), this);
+			pm.registerEvents(new GhostListener(), this);
+			pm.registerEvents(new PotionListener(), this);
+			pm.registerEvents(new ShopListener(), this);
+			pm.registerEvents(new xmasLegacy.FirstRoleManager.Merchant.ShopListener(), this);
+			pm.registerEvents(new StockListener(), this);
+			pm.registerEvents(new SelectListener(), this);
+			pm.registerEvents(new GachaListener(), this);
+			pm.registerEvents(new SecondaryRoleListener(), this);
+
+			// [메인 서버 전용 명령어 등록]
+			var bag = new BagCommandManager();
+			getCommand("가방").setExecutor(bag);
+			getCommand("가방").setTabCompleter(bag);
+			getCommand("test").setExecutor(new TestCommands());
+			var region = new RegionCommandManager();
+			getCommand("구역").setExecutor(region);
+			getCommand("구역").setTabCompleter(region);
+			getCommand("vanish").setExecutor(new GhostCommand());
+			var priest = new PriestCommand();
+			getCommand("potion").setExecutor(priest);
+			getCommand("potion").setTabCompleter(priest);
+			getCommand("system").setExecutor(new PriestSystemShopCommand());
+			getCommand("shop").setExecutor(new TempCommand());
+			var oc = new OperatorCurrency();
+			getCommand("currency").setExecutor(oc);
+			getCommand("currency").setTabCompleter(oc);
+			var cos = new CosmeticsCommand();
+			getCommand("cos").setExecutor(cos);
+			getCommand("cos").setTabCompleter(cos);
+			getCommand("상점").setExecutor(new ShopCommand());
+			getCommand("직업선택").setExecutor(new RoleSelectCommand());
+			var role = new RoleCommand();
+			getCommand("role").setExecutor(role);
+			getCommand("role").setTabCompleter(role);
+			var gacha = new GachaCommand();
+			getCommand("gacha").setExecutor(gacha);
+			getCommand("gacha").setTabCompleter(gacha);
+			getCommand("head").setExecutor(new TestHeadCommand());
+			getCommand("book").setExecutor(new BookCommand());
+			getCommand("delstand").setExecutor(new DeleteStandCommand());
+			var prefix = new PrefixCommand();
+			getCommand("prefix").setExecutor(prefix);
+			getCommand("prefix").setTabCompleter(prefix);
+			getCommand("0947345").setExecutor(new UserLoadCommand());
+			getCommand("second").setExecutor(new SecondTestCommand());
 		}
+	}
+
+	public NamespacedKey getNamespacedKey(String key) {
+		return new NamespacedKey(this, key);
+	}
+
+	public void playConsoleSound() {
+		java.awt.Toolkit.getDefaultToolkit().beep();
 	}
 
 	public void infoMsg(InfoLevel level, @NotNull Player p, String msg) {

@@ -10,8 +10,8 @@ public class PriestSystemShopCommand implements CommandExecutor {
 	StockInterface shopInterface = new StockInterface();
 	private final PriestShopManager PSM;
 
-	public PriestSystemShopCommand(PriestShopManager PSM) {
-		this.PSM = PSM;
+	public PriestSystemShopCommand() {
+		this.PSM = PriestShopManager.getInstance();
 	}
 
 	@Override
@@ -21,8 +21,7 @@ public class PriestSystemShopCommand implements CommandExecutor {
 		if (args.length == 0) {
 			p.openInventory(shopInterface.getInventory());
 		} else {
-			Player priestA = p;
-			PriestShop priestAShop = PSM.get(priestA.getUniqueId());
+            PriestShop priestAShop = PSM.get(p.getUniqueId());
 			if (priestAShop == null || !priestAShop.isShopEnabled()) {
 				p.sendMessage("상점이 열려있지 않습니다!");
 				return true;

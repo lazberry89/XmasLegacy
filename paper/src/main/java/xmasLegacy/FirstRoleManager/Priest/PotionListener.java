@@ -27,14 +27,14 @@ public class PotionListener implements Listener {
 	private final ConductableItems CDI;
 	private final Set<UUID> deathSaver = new HashSet<>();
 
-	public PotionListener(XmasLegacy plugin, ConductableItems CDI) {
-		this.plugin = plugin;
-		this.CDI = CDI;
+	public PotionListener() {
+		this.plugin = XmasLegacy.getInstance();
+		this.CDI = ConductableItems.getInstance();
 	}
 
 	@EventHandler
 	public void onPotionUse(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
+		var p = e.getPlayer();
 		if (!e.getAction().name().contains("RIGHT_CLICK")) return;
 		if (e.getItem() == null) return;
 

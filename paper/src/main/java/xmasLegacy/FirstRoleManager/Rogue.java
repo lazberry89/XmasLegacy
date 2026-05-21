@@ -29,9 +29,9 @@ public class Rogue extends AbstractFirstRole {
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.DAGGER_RUSH);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Rogue(int c1, int c2, SkillEffectManager SEM, XmasLegacy plugin) {
-		super(c1, c2, plugin);
-		this.SEM = SEM;
+	public Rogue() {
+		super(Roles.ROGUE);
+		this.SEM = SkillEffectManager.getInstance();
 	}
 
 	@Override

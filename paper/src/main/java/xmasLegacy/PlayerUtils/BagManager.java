@@ -23,8 +23,17 @@ public class BagManager {
 	private final Map<UUID, TempBag> bags = new HashMap<>();
 	private final XmasLegacy plugin;
 
-	public BagManager(XmasLegacy plugin) {
-		this.plugin = plugin;
+	private static BagManager instance;
+
+	public BagManager() {
+		this.plugin = XmasLegacy.getInstance();
+	}
+
+	public static BagManager getInstance() {
+		if (instance == null) {
+			instance = new BagManager();
+		}
+		return instance;
 	}
 
 	public @NotNull TempBag getUserBags(Player p) {

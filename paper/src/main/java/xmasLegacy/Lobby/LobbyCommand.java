@@ -21,9 +21,9 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
     private final LobbyManager LBM;
     private final XmasLegacy plugin;
 
-    public LobbyCommand(LobbyManager LBM, XmasLegacy plugin) {
-        this.LBM = LBM;
-        this.plugin = plugin;
+    public LobbyCommand() {
+        this.LBM = LobbyManager.getInstance();
+        this.plugin = XmasLegacy.getInstance();
     }
 
     @Override

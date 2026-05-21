@@ -8,9 +8,17 @@ import java.util.*;
 public class PartyManager {
     private final UserManager UM;
 	private final Map<User, Party> partyMap = new HashMap<>();
+	private static PartyManager instance;
 
-    public PartyManager(UserManager UM) {
-        this.UM = UM;
+	public static PartyManager getInstance() {
+		if (instance == null) {
+			instance = new PartyManager();
+		}
+		return instance;
+	}
+
+    private PartyManager() {
+        this.UM = UserManager.getInstance();
     }
 
 	public boolean joinParty(User leader, User join) {

@@ -24,10 +24,10 @@ public class TestCommands implements CommandExecutor {
 	private final RegionManager RM;
 	private final XmasLegacy plugin;
 
-	public TestCommands(SkillEffectManager SEM, RegionManager RM, XmasLegacy plugin) {
-		this.SEM = SEM;
-		this.RM = RM;
-		this.plugin = plugin;
+	public TestCommands() {
+		this.SEM = SkillEffectManager.getInstance();
+		this.RM = RegionManager.getInstance();
+		this.plugin = XmasLegacy.getInstance();
 	}
 
 	public void setPM(PartyManager PM) {

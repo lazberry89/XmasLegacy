@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 	private final CosmeticManager CSM;
 
-	public CosmeticsCommand(CosmeticManager CSM) {
-		this.CSM = CSM;
+	public CosmeticsCommand() {
+		this.CSM = CosmeticManager.getInstance();
 	}
 
 	@Override

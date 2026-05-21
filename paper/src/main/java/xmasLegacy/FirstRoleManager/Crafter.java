@@ -12,10 +12,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
@@ -25,8 +24,8 @@ public class Crafter extends AbstractFirstRole{
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.FIX);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-    public Crafter(int c1, int c2, XmasLegacy plugin) {
-        super(c1, c2, plugin);
+    public Crafter() {
+        super(Roles.CRAFTER);
     }
 
     @Override

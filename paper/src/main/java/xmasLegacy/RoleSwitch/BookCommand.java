@@ -20,9 +20,9 @@ public class BookCommand implements CommandExecutor {
     private final @NotNull XmasLegacy plugin;
     private final @NotNull MagicBook MB;
 
-    public BookCommand(XmasLegacy plugin) {
-        this.plugin = plugin;
-        this.MB = plugin.MB;
+    public BookCommand() {
+        this.plugin = XmasLegacy.getInstance();
+        this.MB = MagicBook.getInstance();
     }
 
     @Override

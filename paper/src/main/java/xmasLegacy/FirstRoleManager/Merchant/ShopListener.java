@@ -28,10 +28,10 @@ public class ShopListener implements Listener {
 	private final EconomyManager em;
 	private boolean ignoreReset = false;
 
-	public ShopListener(PriceInterface PIF, UserManager um, EconomyManager em) {
-		this.PIF = PIF;
-		this.um = um;
-		this.em = em;
+	public ShopListener() {
+		this.PIF = PriceInterface.getInstance();
+		this.um = UserManager.getInstance();
+		this.em = EconomyManager.getInstance();
 	}
 
 	@SuppressWarnings("DuplicatedCode")

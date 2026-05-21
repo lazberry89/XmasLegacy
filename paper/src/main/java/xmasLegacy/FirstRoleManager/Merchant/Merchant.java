@@ -24,10 +24,10 @@ public class Merchant extends AbstractFirstRole {
 	private final PriceInterface PIF;
 	private final MerchantStockInterface MSI;
 
-	public Merchant(int c1, int c2, XmasLegacy plugin) {
-		super(c1, c2, plugin);
-		this.PIF = plugin.PCI;
-		this.MSI = plugin.MSI;
+	public Merchant() {
+		super(Roles.MERCHANT);
+		this.PIF = PriceInterface.getInstance();
+		this.MSI = MerchantStockInterface.getInstance();
 	}
 
 	@Override

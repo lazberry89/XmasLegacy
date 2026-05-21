@@ -16,8 +16,8 @@ import java.util.*;
 public class RegionCommandManager implements CommandExecutor, TabCompleter {
 	private final RegionManager RM;
 
-	public RegionCommandManager(RegionManager RM) {
-		this.RM = RM;
+	public RegionCommandManager() {
+		this.RM = RegionManager.getInstance();
 	}
 
 	@SuppressWarnings("DuplicatedCode")

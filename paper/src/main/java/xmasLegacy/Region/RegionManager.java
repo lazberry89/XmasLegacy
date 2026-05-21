@@ -20,11 +20,20 @@ public class RegionManager {
     private File file;
     private FileConfiguration config;
 
-    public RegionManager(XmasLegacy plugin, UserManager UM) {
-        this.plugin = plugin;
-        this.UM = UM;
+    private static RegionManager instance;
+
+    private RegionManager() {
+        this.plugin = XmasLegacy.getInstance();
+        this.UM = UserManager.getInstance();
         setupFile();
         loadAll();
+    }
+
+    public static RegionManager getInstance() {
+        if (instance == null) {
+            instance = new RegionManager();
+        }
+        return instance;
     }
 
     private void setupFile() {

@@ -10,12 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class PriestCommand implements CommandExecutor, TabCompleter {
 	private final ConductableItems CDI;
 
-	public PriestCommand(ConductableItems CDI) {
-		this.CDI = CDI;
+	public PriestCommand() {
+		this.CDI = ConductableItems.getInstance();
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
-import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
@@ -28,7 +27,6 @@ public class MerchantStockInterface {
 	private final @NotNull Inventory farmInv;
 	private final @NotNull Inventory minerInv;
 	private final HashMap<Material, Integer> stock = new HashMap<>();
-	private final UserManager um;
 	private final EconomyManager em;
 	private final XmasLegacy plugin;
 
@@ -41,11 +39,16 @@ public class MerchantStockInterface {
 	public @Nullable UUID getOwner() {
 		return this.owner;
 	}
+	private static MerchantStockInterface instance;
 
-	public MerchantStockInterface(XmasLegacy plugin) {
-		this.plugin = plugin;
-		this.um = plugin.UM;
-		this.em = plugin.EM;
+	public static MerchantStockInterface getInstance() {
+		if (instance == null) instance = new MerchantStockInterface();
+		return instance;
+	}
+
+	private MerchantStockInterface() {
+		this.plugin = XmasLegacy.getInstance();
+		this.em = EconomyManager.getInstance();
 		//Main
 		this.inv = Bukkit.createInventory(null, 9, title);
 		ItemStack bg = ItemBuilder.of(plugin, Material.BLACK_STAINED_GLASS_PANE)

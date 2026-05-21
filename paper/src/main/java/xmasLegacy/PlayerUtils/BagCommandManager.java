@@ -15,12 +15,11 @@ import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class BagCommandManager implements CommandExecutor, TabCompleter {
 	private final BagManager BM;
 
-	public BagCommandManager(BagManager BM) {
-		this.BM = BM;
+	public BagCommandManager() {
+		this.BM = BagManager.getInstance();
 	}
 
 	@Override

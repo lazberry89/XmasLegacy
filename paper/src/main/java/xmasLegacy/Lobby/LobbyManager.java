@@ -13,9 +13,18 @@ public class LobbyManager {
     private Location spawn;
     private final XmasLegacy plugin;
 
-    public LobbyManager(XmasLegacy plugin) {
-        this.plugin = plugin;
+    private static LobbyManager instance;
+
+    private LobbyManager() {
+        this.plugin = XmasLegacy.getInstance();
         load();
+    }
+
+    public static LobbyManager getInstance() {
+        if (instance == null) {
+            instance = new LobbyManager();
+        }
+        return instance;
     }
 
     public void setSpawn(Location loc) {
