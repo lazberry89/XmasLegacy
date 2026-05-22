@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class SkillEffectManager {
     private final XmasLegacy plugin;
-
     private static SkillEffectManager instance;
 
     public SkillEffectManager() {
@@ -26,9 +26,7 @@ public class SkillEffectManager {
     }
 
     public static SkillEffectManager getInstance() {
-        if (instance == null) {
-            instance = new SkillEffectManager();
-        }
+        if (instance == null) instance = new SkillEffectManager();
         return instance;
     }
 

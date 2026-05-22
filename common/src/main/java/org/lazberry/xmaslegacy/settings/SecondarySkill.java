@@ -1,7 +1,7 @@
 package org.lazberry.xmaslegacy.settings;
 
 @SuppressWarnings("DuplicatedCode")
-public enum SecondarySkill {
+public enum SecondarySkill implements Skill {
 	//Defender
 	MAGNETIC_FIELD("자기장 영역"),
 	KARMA("카르마"),
@@ -40,11 +40,12 @@ public enum SecondarySkill {
 		};
 	}
 
-	public String getKorName() {
+	@Override
+	public String getKor() {
 		return this.kor;
 	}
 
 	public String getSkillName() {
-		return "&e&l[ " + this.getKorName() + " ]";
+		return "&e&l[ " + this.getKor() + " ]";
 	}
 }

@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.settings;
 
-public enum BasicSkills {
+public enum BasicSkills implements Skill {
 	SHOCK_DART("충격화살"),
 	BACK_DASH("백대시"),
 
@@ -40,7 +40,8 @@ public enum BasicSkills {
 		this.korName = korName;
 	}
 
-	public String getKorName() {
+	@Override
+	public String getKor() {
 		return korName;
 	}
 
@@ -92,6 +93,6 @@ public enum BasicSkills {
 		};
 	}
 	public String getSkillName() {
-		return "[ " + this.getKorName() + " ]";
+		return "[ " + this.getKor() + " ]";
 	}
 }

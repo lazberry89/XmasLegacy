@@ -16,7 +16,7 @@ import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings("DuplicatedCode, unused")
 public class Fighter extends AbstractSecondRole {
     private final Map<UUID, SecondarySkill> currentSkill = new HashMap<>();
     public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.COUNTER);}
@@ -75,8 +75,8 @@ public class Fighter extends AbstractSecondRole {
             ortho = new Vector(-dir.getZ(), 0, dir.getX()).normalize();
         }
 
-        double radius = 0.5;       // 👈 나선 반지름 (원 크기 조절)
-        double spiralTightness = 3.5; // 👈 숫자가 높을수록 나선이 촘촘하게 꼬입니다.
+        double radius = 0.5;
+        double spiralTightness = 3.5;
         ortho.multiply(radius);
         Particle.DustOptions option = new Particle.DustOptions(Color.BLUE, 1.1f);
         Particle.DustTransition trs = new Particle.DustTransition(Color.BLUE, Color.AQUA, 1.1f);
@@ -118,4 +118,14 @@ public class Fighter extends AbstractSecondRole {
     public @NotNull ItemStack roleArmor() {
         return null;
     }
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return null;
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return null;
+	}
 }

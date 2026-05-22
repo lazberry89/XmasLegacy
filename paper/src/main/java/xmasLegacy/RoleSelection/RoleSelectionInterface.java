@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
-import xmasLegacy.FirstRoleManager.RoleManager;
+import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
@@ -19,7 +19,7 @@ import xmasLegacy.XmasLegacy;
 public class RoleSelectionInterface implements InventoryHolder {
     private final Inventory inv;
     private final XmasLegacy plugin;
-    private final RoleManager rlm;
+    private final FirstRoleManager rlm;
     private final Roles selectedRole;
     private final Component title;
     private final AbstractFirstRole selInst;

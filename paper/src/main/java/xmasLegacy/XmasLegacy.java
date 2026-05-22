@@ -44,6 +44,7 @@ import xmasLegacy.RoleSwitch.ExpManager;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
 import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondTestCommand;
 import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondaryRoleListener;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
@@ -187,13 +188,14 @@ public final class XmasLegacy extends JavaPlugin {
 			this.gatherer = new Gatherer();
 			this.merchant = new Merchant();
 			this.crafter = new Crafter();
+			FirstRoleManager.getInstance().init();
 
 			// SecondaryRole 초기화
 			this.defender = new Defender();
 			this.guardian = new Guardian();
 			this.berserker = new Berserker();
+			SecondRoleManager.getInstance().init();
 
-			RoleManager.getInstance();
 
 			// Gacha 초기화
 			GachaManager.getInstance();

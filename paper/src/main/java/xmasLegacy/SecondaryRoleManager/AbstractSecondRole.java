@@ -25,7 +25,6 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 	public abstract void useSecondSkill(Player p);
 	public abstract void usePassive(Player p);
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean consumeEnergy(Player player, int hungerCost) {
 		int currentFood = player.getFoodLevel();
 
@@ -42,7 +41,10 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 	public XmasLegacy getPlugin() {
 		return this.plugin;
 	}
+
 	public abstract @NotNull Role getRole();
 	public abstract @NotNull ItemStack roleWeapon();
 	public abstract @NotNull ItemStack roleArmor();
+	public abstract @NotNull ItemStack TargetEmblem();
+	public abstract @NotNull ItemStack RangeEmblem();
 }
