@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.settings;
 
+@SuppressWarnings("DuplicatedCode")
 public enum SecondarySkill {
 	//Defender
 	MAGNETIC_FIELD("자기장 영역"),

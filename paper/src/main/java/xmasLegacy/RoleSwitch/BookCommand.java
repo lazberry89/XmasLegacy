@@ -40,7 +40,7 @@ public class BookCommand implements CommandExecutor {
         }
         Location loc = targetLoc.getLocation();
         if (MB.getStand() == null) {
-            MB.setStand(MB.BookStand(loc));
+            MB.setDisplay(MB.BookStand(loc));
             plugin.infoMsg(InfoLevel.INFO, p, "직업책이 생성되었어요.");
         } else {
             plugin.infoMsg(InfoLevel.ERROR, p, "이미 생성되어 있어요! 제거 후 사용해주세요.");

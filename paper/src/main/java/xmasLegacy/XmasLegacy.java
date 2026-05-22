@@ -98,10 +98,12 @@ public final class XmasLegacy extends JavaPlugin {
 		// 3. 공통 명령어 등록
 		getCommand("문의").setExecutor(new InquiryCommandManager());
 		getCommand("이동문의").setExecutor(new InquireTeleportCommand());
-		getCommand("filter").setExecutor(new RuleCommandManager());
-		getCommand("filter").setTabCompleter(new RuleCommandManager());
-		getCommand("log").setExecutor(new LogCommandManager());
-		getCommand("log").setTabCompleter(new LogCommandManager());
+		var rule = new RuleCommandManager();
+		getCommand("filter").setExecutor(rule);
+		getCommand("filter").setTabCompleter(rule);
+		var log = new LogCommandManager();
+		getCommand("log").setExecutor(log);
+		getCommand("log").setTabCompleter(log);
 
 		// 4. 서버 타입 정밀 분석 후 격리 기동 시작
 		serverType();
@@ -170,6 +172,8 @@ public final class XmasLegacy extends JavaPlugin {
 			PriceInterface.getInstance();
 			CosmeticManager.getInstance();
 			MerchantStockInterface.getInstance();
+			ExpManager.getInstance();
+			MagicBook.getInstance();
 
 			// FirstRole 초기화
 			this.archer = new Archer();
@@ -185,16 +189,14 @@ public final class XmasLegacy extends JavaPlugin {
 			this.crafter = new Crafter();
 
 			// SecondaryRole 초기화
-			this.defender = new Defender(this);
-			this.guardian = new Guardian(this);
-			this.berserker = new Berserker(this);
+			this.defender = new Defender();
+			this.guardian = new Guardian();
+			this.berserker = new Berserker();
 
 			RoleManager.getInstance();
 
 			// Gacha 초기화
 			GachaManager.getInstance();
-			ExpManager.getInstance();
-			MagicBook.getInstance();
 
 			//this.TC.setPM(PM); TestCommands
 			//this.LCM.setRM(RGM); LogCommandManager

@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
@@ -13,9 +14,11 @@ import xmasLegacy.XmasLegacy;
 @SuppressWarnings("BooleanMethodIsAlwaysInverted, DuplicatedCode, FieldCanBeLocal, unused, BooleanMethodIsAlwaysConverted")
 public abstract class AbstractSecondRole implements UsingEnergy {
 	private final XmasLegacy plugin;
+	private final SecondaryRoles role;
 
-	public AbstractSecondRole(XmasLegacy plugin) {
-		this.plugin = plugin;
+	public AbstractSecondRole(SecondaryRoles role) {
+		this.plugin = XmasLegacy.getInstance();
+		this.role = role;
 	}
 
 	public abstract void useFirstSkill(Player p);

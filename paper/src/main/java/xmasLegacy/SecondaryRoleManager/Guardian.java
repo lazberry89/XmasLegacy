@@ -21,7 +21,6 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
@@ -34,9 +33,9 @@ public class Guardian extends AbstractSecondRole {
     private final Map<Player, LivingEntity> targetMap = new HashMap<>();
     private final Set<UUID> activeSkill = new HashSet<>();
 
-    public Guardian(XmasLegacy plugin) {
-        super(plugin);
-        this.PM = plugin.PM;
+    public Guardian() {
+        super(SecondaryRoles.GUARDIAN);
+        this.PM = PartyManager.getInstance();
     }
 
     public @Nullable LivingEntity link(Player p) {
@@ -53,6 +52,7 @@ public class Guardian extends AbstractSecondRole {
         targetMap.put(p, target);
         String div = target instanceof Player targetP && PM.isParty(p.getUniqueId(), targetP.getUniqueId()) ? "&a아군&f" : "&c적군&f";
         getPlugin().infoMsg(InfoLevel.INFO, p, div + " 타겟과 연결됨");
+        p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
 
         new BukkitRunnable() {
             @Override
@@ -60,6 +60,7 @@ public class Guardian extends AbstractSecondRole {
                 if (!targetMap.containsKey(p) || !target.isValid() || !p.isOnline()) {
                     targetMap.remove(p);
                     p.sendActionBar(ColorUtils.chat(Alert.YELLOW + " &c타겟과 연결이 끊어짐"));
+                    p.playSound(p, Sound.BLOCK_BEACON_DEACTIVATE, 0.3f, 1.3f);
                     this.cancel();
                     return;
                 }
@@ -168,7 +169,6 @@ public class Guardian extends AbstractSecondRole {
                     }
                 }
 
-                // 매 틱 포션 갱신
                 if (isAlly) {
                     target.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 2, 0, true, false, false));
                     target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2, 0, true, false, false));
@@ -199,7 +199,6 @@ public class Guardian extends AbstractSecondRole {
 
         Location center = target.getLocation();
 
-        // 타겟 수평 기준 X자 4방향
         Vector[] directions = {
                 new Vector( 1, 0,  1).normalize(),
                 new Vector( 1, 0, -1).normalize(),

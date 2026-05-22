@@ -32,10 +32,10 @@ public class Defender extends AbstractSecondRole {
 	public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.MAGNETIC_FIELD);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	public Defender(XmasLegacy plugin) {
-		super(plugin);
-		this.SEM = plugin.SEM;
-		this.PM = plugin.PM;
+	public Defender() {
+		super(SecondaryRoles.DEFENDER);
+		this.SEM = SkillEffectManager.getInstance();
+		this.PM = PartyManager.getInstance();
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class Defender extends AbstractSecondRole {
 
 				double radius = maxRadius * ((double) ticks / duration);
 				double circumference = 2 * Math.PI * radius;
-				int points = (int) (circumference / 0.2); // 촘촘하게
+				int points = (int) (circumference / 0.2);
 				if (points < 1) points = 1;
 
 				for (int i = 0; i < points; i++) {
@@ -89,7 +89,6 @@ public class Defender extends AbstractSecondRole {
 					double x = Math.cos(angle) * radius;
 					double z = Math.sin(angle) * radius;
 
-					// 두 파티클 겹쳐서 강렬한 느낌
 					center.getWorld().spawnParticle(
 							Particle.SWEEP_ATTACK,
 							center.clone().add(x, 0.1, z),

@@ -21,7 +21,6 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
@@ -33,9 +32,9 @@ public class Berserker extends AbstractSecondRole {
     private final Set<UUID> usedPassive = new HashSet<>();
     private final PartyManager PM;
 
-    public Berserker(XmasLegacy plugin) {
-        super(plugin);
-        this.PM = plugin.PM;
+    public Berserker() {
+        super(SecondaryRoles.BERSERKER);
+        this.PM = PartyManager.getInstance();
     }
 
     @Override
@@ -54,6 +53,10 @@ public class Berserker extends AbstractSecondRole {
         Vector velocity = vector.normalize().multiply(2);
         p.setVelocity(velocity);
 
+        p.getWorld().playSound(p, Sound.ENTITY_GHAST_SCREAM, 0.8f, 1.5f);
+        Particle.DustTransition option = new Particle.DustTransition(Color.RED, Color.BLACK, 1.5f);
+        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 20, 1.4, 1.4, 1.4, 0.01, option);
+
         GlowUtils.setGlowColor(p, NamedTextColor.RED);
         p.setInvulnerable(true);
         p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 100, 1, true, false, false));
@@ -71,9 +74,9 @@ public class Berserker extends AbstractSecondRole {
 
         Vector direction = startLoc.getDirection().clone().normalize();
         direction.add(new Vector(
-                (Math.random() - 0.5) * 0.15,  // X 오차
-                (Math.random() - 0.5) * 0.15,  // Y 오차
-                (Math.random() - 0.5) * 0.15   // Z 오차
+                (Math.random() - 0.5) * 0.15,
+                (Math.random() - 0.5) * 0.15,
+                (Math.random() - 0.5) * 0.15
         )).normalize();
 
         final float playerYaw = p.getLocation().getYaw();
@@ -112,7 +115,7 @@ public class Berserker extends AbstractSecondRole {
                 double rotation = ticks * 0.6;
                 axeStand.setRightArmPose(new EulerAngle(rotation, 0, 0));
 
-                for (Entity entity : axeStand.getNearbyEntities(1.2, 1.2, 1.2)) {
+                for (Entity entity : axeStand.getNearbyEntities(1.1, 1.1, 1.1)) {
                     if (entity instanceof LivingEntity target
                             && !entity.equals(p)
                             && !hit.contains(entity.getUniqueId())) {
@@ -133,7 +136,7 @@ public class Berserker extends AbstractSecondRole {
                     this.cancel();
                     return;
                 }
-
+                currentLoc.getWorld().playSound(currentLoc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5f, 1.0f);
                 ticks++;
             }
         }.runTaskTimer(getPlugin(), 0L, 1L);
@@ -181,17 +184,18 @@ public class Berserker extends AbstractSecondRole {
                     e.knockback(1.0, -dir.getX(), -dir.getZ());
                 });
 
-        p.getWorld().playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
-        p.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, p.getLocation(), 10, 0.4, 0.4, 0.4, 0.01);
+        p.getWorld().playSound(p, Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
+        p.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, p.getLocation(), 20, 0.7, 1.0, 0.7, 0.01);
         GlowUtils.setGlowColor(p, NamedTextColor.DARK_RED);
         p.setInvulnerable(true);
         p.setInvisible(true);
         p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 100, 2, true, false, false));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2, true, false, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1, true, false, false));
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
             GlowUtils.clearGlow(p);
             p.setInvulnerable(false);
             p.setInvisible(false);
+            p.getWorld().playSound(p, Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
             p.setHealth(0.0);
         }, 100L);
     }

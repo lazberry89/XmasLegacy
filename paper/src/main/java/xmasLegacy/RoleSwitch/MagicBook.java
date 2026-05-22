@@ -6,12 +6,16 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.User;
@@ -24,7 +28,7 @@ public class MagicBook {
     private final ItemStack magicBook;
     private final XmasLegacy plugin;
     private final UserManager um;
-    private ArmorStand stand;
+    private ItemDisplay display;
     private static MagicBook instance;
 
     public static MagicBook getInstance() {
@@ -43,7 +47,7 @@ public class MagicBook {
         if (OraxenItems.exists(Constants.SELECT_BOOK)) {
             return OraxenItems.getItemById(Constants.SELECT_BOOK).build();
         }
-        return new ItemStack(Material.BOOK);
+        return new ItemStack(Material.BARRIER);
     }
 
     public void openRoleSelection(@NotNull Player p) {
@@ -57,27 +61,25 @@ public class MagicBook {
     }
 
     @CanIgnoreReturnValue
-    public ArmorStand BookStand(@NotNull Location loc) {
+    public ItemDisplay BookStand(@NotNull Location loc) {
         NamespacedKey key = plugin.getNamespacedKey("book");
-        return loc.getWorld().spawn(loc, ArmorStand.class, s -> {
-           s.setCollidable(false);
-           s.setInvisible(true);
-           s.setInvulnerable(true);
+        return loc.getWorld().spawn(loc.clone().add(0, 1, 0), ItemDisplay.class, i -> {
+            i.setItemStack(magicBook());
+            i.setBrightness(new Display.Brightness(8, 8));
+            Transformation tr = i.getTransformation();
+            tr.getScale().set(1.3f, 1.3f, 1.3f);
 
-           double tilt = Math.toRadians(25);
-           s.setHeadPose(new org.bukkit.util.EulerAngle(tilt, 0, 0));
-           s.getEquipment().setHelmet(this.magicBook);
-
-           s.getPersistentDataContainer().set(key, PersistentDataType.STRING, "rpgbook");
-           s.setBasePlate(false);
+            i.getPersistentDataContainer().set(key, PersistentDataType.STRING, "rpgbook");
+            i.customName(ColorUtils.chat("&c&k### ##"));
+            i.setCustomNameVisible(true);
         });
     }
 
-    public void setStand(ArmorStand stand) {
-        this.stand = stand;
+    public void setDisplay(ItemDisplay display) {
+        this.display = display;
     }
 
-    public @Nullable ArmorStand getStand() {
-        return this.stand;
+    public @Nullable ItemDisplay getStand() {
+        return this.display;
     }
 }
