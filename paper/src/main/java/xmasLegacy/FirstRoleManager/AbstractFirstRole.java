@@ -5,6 +5,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -17,10 +19,15 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
+import java.io.File;
+import java.io.IOException;
+
 @SuppressWarnings("DuplicatedCode, unused")
 public abstract class AbstractFirstRole implements UsingEnergy {
 	private final Roles role;
     private final XmasLegacy plugin;
+	protected int cooldown1;
+	protected int cooldown2;
 
 	public AbstractFirstRole(Roles role) {
 		this.plugin = XmasLegacy.getInstance();
@@ -44,7 +51,34 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 	public int getCooldown2() {
 		return cooldown2;
 	}
-	public void loadCooldown(String path) {}
+	protected abstract void loadCustomStats(FileConfiguration config);
+
+	public void loadRoleData(String path) {
+		File roleFolder = new File(plugin.getDataFolder(), "roles");
+		if (!roleFolder.exists()) {
+			boolean mkdir = roleFolder.mkdirs();
+			if (!mkdir) plugin.getSLF4JLogger().error("Making Role folder Failed. Disabling plugin.");
+			plugin.getServer().getPluginManager().disablePlugin(plugin);
+		}
+
+		File roleFile = new File(roleFolder, path + ".yml");
+		FileConfiguration config = YamlConfiguration.loadConfiguration(roleFile);
+
+		config.addDefault("cooldown.skill1", 0);
+		config.addDefault("cooldown.skill2", 0);
+
+		this.loadCustomStats(config);
+
+		config.options().copyDefaults(true);
+		try {
+			config.save(roleFile);
+		} catch (IOException e) {
+			plugin.getSLF4JLogger().error("\uD83D\uDEA8 {}.yml 파일을 저장하는 중 오류가 발생했습니다.", path);
+		}
+
+		this.cooldown1 = config.getInt("cooldown.skill1");
+		this.cooldown2 = config.getInt("cooldown.skill2");
+	}
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean consumeEnergy(Player player, int hungerCost) {

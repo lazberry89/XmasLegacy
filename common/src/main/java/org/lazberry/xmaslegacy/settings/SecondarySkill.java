@@ -45,6 +45,7 @@ public enum SecondarySkill implements Skill {
 		return this.kor;
 	}
 
+	@Override
 	public String getSkillName() {
 		return "&e&l[ " + this.getKor() + " ]";
 	}

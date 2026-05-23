@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.User;
 
+import org.jetbrains.annotations.Blocking;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
 
@@ -62,6 +63,7 @@ public class UserManager {
 	 * @param uuid uuid
 	 * @param name name
 	 */
+	@Blocking
 	public User load(UUID uuid, String name) {
 		User loaded = repository.loadUser(uuid);
 		if (loaded == null) {
@@ -77,6 +79,7 @@ public class UserManager {
 	 * !!비동기 권장!!
 	 * @param uuid uuid
 	 */
+	@Blocking
 	public void onQuit(UUID uuid) {
 		User u = users.remove(uuid);
 		if (u != null) {

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
@@ -23,11 +24,13 @@ public class TestCommands implements CommandExecutor {
 	private PartyManager PM;
 	private final RegionManager RM;
 	private final XmasLegacy plugin;
+	private final FirstRoleManager frm;
 
 	public TestCommands() {
 		this.SEM = SkillEffectManager.getInstance();
 		this.RM = RegionManager.getInstance();
 		this.plugin = XmasLegacy.getInstance();
+		this.frm = FirstRoleManager.getInstance();
 	}
 
 	public void setPM(PartyManager PM) {
@@ -38,16 +41,16 @@ public class TestCommands implements CommandExecutor {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) return true;
-		AbstractFirstRole k = new Knight(SEM, plugin);
-		AbstractFirstRole r = new Rogue(5, 5, SEM, plugin);
-		AbstractFirstRole a = new Archer(5, 5, plugin);
-		AbstractFirstRole w = new Warrior(4, 4, plugin);
-		AbstractFirstRole m = new Mage(4, 4, plugin, SEM);
-		AbstractFirstRole pr = new Priest(4, 4, PM, SEM, plugin);
-		AbstractFirstRole f = new Farmer(4, 4, plugin, RM);
-		AbstractFirstRole mi = new Miner(4, 4, plugin);
-		AbstractFirstRole g = new Gatherer(4, 4, plugin);
-		AbstractFirstRole mc = new Merchant(4, 4, plugin);
+		AbstractFirstRole k = frm.getRoleInstance(Roles.KNIGHT);
+		AbstractFirstRole r = frm.getRoleInstance(Roles.ROGUE);
+		AbstractFirstRole a = frm.getRoleInstance(Roles.ARCHER);
+		AbstractFirstRole w = frm.getRoleInstance(Roles.WARRIOR);
+		AbstractFirstRole m = frm.getRoleInstance(Roles.MAGE);
+		AbstractFirstRole pr = frm.getRoleInstance(Roles.PRIEST);
+		AbstractFirstRole f = frm.getRoleInstance(Roles.FARMER);
+		AbstractFirstRole mi = frm.getRoleInstance(Roles.MINER);
+		AbstractFirstRole g = frm.getRoleInstance(Roles.GATHERER);
+		AbstractFirstRole mc = frm.getRoleInstance(Roles.MERCHANT);
 
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("weapon")) {

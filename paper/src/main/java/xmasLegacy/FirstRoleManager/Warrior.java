@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,14 +18,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +35,63 @@ public class Warrior extends AbstractFirstRole {
     private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
     public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.BLOOD_FRENZY);}
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+	private Material weapon_item;
+	private Material armor_item;
+	private double first_skill_usable_rate;
+	private double first_skill_usable_higher_rate;
+	private int first_skill_hunger_cost;
+	private int first_skill_duration;
+	private int first_skill_strength_amplifier;
+	private int first_skill_strength_amplifier2;
+	private int first_skill_speed_amplifier;
+	private int second_skill_hunger_cost;
+	private int second_skill_damage;
 
 	public Warrior() {
 		super(Roles.WARRIOR);
+		this.loadRoleData(getRole().name().toLowerCase());
+	}
+
+	@Override
+	protected void loadCustomStats(FileConfiguration config) {
+		config.addDefault("stats.first_skill_usable_higher_rate", 0.25);
+		config.addDefault("stats.first_skill_usable_rate", 0.5);
+		config.addDefault("stats.first_skill_hunger_cost", 3);
+		config.addDefault("stats.first_skill_duration", 60);
+		config.addDefault("stats.first_skill_strength_amplifier2", 2);
+		config.addDefault("stats.first_skill_strength_amplifier", 1);
+		config.addDefault("stats.first_skill_speed_amplifier", 1);
+		config.addDefault("stats.second_skill_hunger_cost", 3);
+		config.addDefault("stats.second_skill_damage", 6);
+
+		config.addDefault("tool.role_weapon", "IRON_AXE");
+		config.addDefault("tool.role_armor", "IRON_CHESTPLATE");
+
+		this.first_skill_usable_higher_rate = config.getDouble("first_skill_usable_higher_rate", 0.25);
+		this.first_skill_usable_rate = config.getDouble("stats.first_skill_usable_rate", 0.5);
+		this.first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
+		this.first_skill_duration = config.getInt("stats.first_skill_duration", 60);
+		this.first_skill_strength_amplifier2 = config.getInt("stats.first_skill_strength_amplifier2", 2);
+		this.first_skill_strength_amplifier = config.getInt("stats.first_skill_strength_amplifier", 1);
+		this.first_skill_speed_amplifier = config.getInt("stats.first_skill_speed_amplifier", 1);
+		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 3);
+		this.second_skill_damage = config.getInt("stats.second_skill_hunger_cost", 3);
+
+		Material weapon;
+		try {
+			weapon = Material.valueOf(config.getString("tool.role_weapon"));
+		} catch (IllegalArgumentException e) {
+			weapon = Material.IRON_AXE;
+		}
+		this.weapon_item = weapon;
+
+		Material armor;
+		try {
+			armor = Material.valueOf(config.getString("tool.role_armor"));
+		} catch (IllegalArgumentException e) {
+			armor = Material.IRON_CHESTPLATE;
+		}
+		this.armor_item = armor;
 	}
 
 	@Override
@@ -53,15 +107,15 @@ public class Warrior extends AbstractFirstRole {
 		if (health == null) return;
 		double max = health.getBaseValue();
 
-		if (p.getHealth() <= max * 0.25) {
-			if (!consumeEnergy(p, 3)) return;
-			p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 2, true, true, false));
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 1, true, false, false));
+		if (p.getHealth() <= max * this.first_skill_usable_higher_rate) {
+			if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
+			p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, this.first_skill_duration, this.first_skill_strength_amplifier2, true, true, false));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, this.first_skill_duration, this.first_skill_speed_amplifier, true, false, false));
 			warriorEffect(p);
 			p.setCooldown(tool, getCooldown1() * 20);
-		} else if (p.getHealth() <= max * 0.5) {
-			if (!consumeEnergy(p, 3)) return;
-			p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 60, 1, true, true, false));
+		} else if (p.getHealth() <= max * this.first_skill_usable_rate) {
+			if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
+			p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, this.first_skill_duration, this.first_skill_strength_amplifier, true, true, false));
 			warriorEffect(p);
 			p.setCooldown(tool, getCooldown1() * 20);
 		} else {
@@ -85,12 +139,12 @@ public class Warrior extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool.getType()) > 0) {
+		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat( Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
 
-		if (!consumeEnergy(p, 3)) return;
+		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		Location startLoc = p.getEyeLocation();
 		final Vector direction = startLoc.getDirection().clone().normalize().multiply(1.0);
 		final float playerYaw = p.getLocation().getYaw();
@@ -172,7 +226,7 @@ public class Warrior extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleWeapon() {
-		return ItemBuilder.of(getPlugin(), Material.IRON_AXE)
+		return ItemBuilder.of(getPlugin(), weapon_item)
 				.setName(ColorUtils.chat("&8&l무거운 도끼"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
@@ -183,7 +237,7 @@ public class Warrior extends AbstractFirstRole {
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return ItemBuilder.of(getPlugin(), Material.IRON_CHESTPLATE)
+        return ItemBuilder.of(getPlugin(), armor_item)
 		        .setName(ColorUtils.chat("&8&l전사의 갑옷"))
 		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 		        .setUnbreakable()
@@ -194,6 +248,7 @@ public class Warrior extends AbstractFirstRole {
 		        .setTag("role_id", "WarriorArmor")
 		        .build().clone();
     }
+
 
 	@Override
 	public @NotNull ItemStack roleBook() {
@@ -227,4 +282,5 @@ public class Warrior extends AbstractFirstRole {
 		// 부모 클래스의 메서드 활용 (2페이지 구성)
 		return createGuideBook("전사", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
 	}
+
 }

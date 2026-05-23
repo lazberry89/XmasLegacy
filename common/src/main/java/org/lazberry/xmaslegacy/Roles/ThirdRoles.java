@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.Roles;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.settings.Skill;
 
 import java.util.List;
 
@@ -29,4 +30,14 @@ public enum ThirdRoles implements Role {
 	public int getTier() {return 3;}
 	@Override
 	public @NotNull List<Role> next() {return List.of();}
+
+	@Override
+	public Skill bindTarget() {
+		return null;
+	}
+
+	@Override
+	public List<Skill> rangeTarget() {
+		return List.of();
+	}
 }

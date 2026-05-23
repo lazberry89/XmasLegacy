@@ -25,9 +25,10 @@ public class PromoteInterface implements InventoryHolder {
     private final Inventory inv;
     private final UserManager um;
     private final Map<Integer, Role> roleMap = new HashMap<>();
+    private final XmasLegacy plugin = XmasLegacy.getInstance();
 
-    public PromoteInterface(XmasLegacy plugin, Player view) {
-        this.um = plugin.UM;
+    public PromoteInterface(Player view) {
+        this.um = UserManager.getInstance();
         User user = um.getUser(view.getUniqueId());
 
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&b&l전직 루트 선택"));

@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.Roles;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.settings.Skill;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface Role {
     @Nullable Role parent();
     int getTier();
     @NotNull List<Role> next();
+    Skill bindTarget();
+    List<Skill> rangeTarget();
 }
