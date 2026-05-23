@@ -19,6 +19,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
+import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -31,10 +32,12 @@ public class Berserker extends AbstractSecondRole {
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
     private final Set<UUID> usedPassive = new HashSet<>();
     private final PartyManager PM;
+	private final Emblem emblem;
 
     public Berserker() {
         super(SecondaryRoles.BERSERKER);
         this.PM = PartyManager.getInstance();
+		this.emblem = new Emblem(getRole());
     }
 
     @Override
@@ -230,4 +233,14 @@ public class Berserker extends AbstractSecondRole {
 		        .hideAllFlags()
 		        .build().clone();
     }
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return this.emblem.getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return this.emblem.getRangeEmblem();
+	}
 }

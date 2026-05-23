@@ -16,6 +16,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
+import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
@@ -31,11 +32,13 @@ public class Defender extends AbstractSecondRole {
 	private final Map<UUID, SecondarySkill> currentSkill = new HashMap<>();
 	public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.MAGNETIC_FIELD);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+	private final Emblem emblem;
 
 	public Defender() {
 		super(SecondaryRoles.DEFENDER);
 		this.SEM = SkillEffectManager.getInstance();
 		this.PM = PartyManager.getInstance();
+		this.emblem = new Emblem(getRole());
 	}
 
 	@Override
@@ -160,5 +163,15 @@ public class Defender extends AbstractSecondRole {
 				.setTag("role_id", "defender")
 				.hideAllFlags()
 				.build().clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return this.emblem.getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return this.emblem.getRangeEmblem();
 	}
 }

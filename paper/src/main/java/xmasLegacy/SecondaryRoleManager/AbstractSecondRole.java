@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("BooleanMethodIsAlwaysInverted, DuplicatedCode, FieldCanBeLocal, unused, BooleanMethodIsAlwaysConverted")
+@SuppressWarnings("DuplicatedCode, FieldCanBeLocal, unused, BooleanMethodIsAlwaysConverted")
 public abstract class AbstractSecondRole implements UsingEnergy {
 	private final XmasLegacy plugin;
 	private final SecondaryRoles role;

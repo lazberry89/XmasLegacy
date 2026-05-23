@@ -6,6 +6,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
@@ -13,25 +14,94 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings("DuplicatedCode, unused")
 public class Gatherer extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.ETERNAL_POSE);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
+	private Material weapon_item;
+	private Material armor_item;
+	private double weapon_movement_speed;
+	private double armor_movement_speed;
+	private int first_skill_hunger_cost;
+	private int first_skill_target_range;
+	private int first_skill_particle_count;
+	private double first_skill_particle_offset;
+	private double first_skill_particle_speed;
+	private float first_skill_particle_size;
+	private int second_skill_hunger_cost;
+	private int second_skill_entity_range;
+	private int second_skill_container_range;
+	private long second_skill_glow_duration;
+
 	public Gatherer() {
 		super(Roles.GATHERER);
+		this.loadRoleData(getRole().name().toLowerCase());
+	}
+
+	@Override
+	protected void loadCustomStats(FileConfiguration config) {
+		config.addDefault("stats.weapon_movement_speed", 0.01);
+		config.addDefault("stats.armor_movement_speed", 0.01);
+
+		config.addDefault("stats.first_skill_hunger_cost", 3);
+		config.addDefault("stats.first_skill_target_range", 7);
+		config.addDefault("stats.first_skill_particle_count", 15);
+		config.addDefault("stats.first_skill_particle_offset", 0.5);
+		config.addDefault("stats.first_skill_particle_speed", 0.01);
+		config.addDefault("stats.first_skill_particle_size", 1.5);
+
+		config.addDefault("stats.second_skill_hunger_cost", 8);
+		config.addDefault("stats.second_skill_entity_range", 12);
+		config.addDefault("stats.second_skill_container_range", 8);
+		config.addDefault("stats.second_skill_glow_duration", 40L);
+
+		config.addDefault("tool.role_weapon", "COMPASS");
+		config.addDefault("tool.role_armor", "GOLDEN_BOOTS");
+
+		this.weapon_movement_speed = config.getDouble("stats.weapon_movement_speed", 0.01);
+		this.armor_movement_speed = config.getDouble("stats.armor_movement_speed", 0.01);
+
+		this.first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
+		this.first_skill_target_range = config.getInt("stats.first_skill_target_range", 7);
+		this.first_skill_particle_count = config.getInt("stats.first_skill_particle_count", 15);
+		this.first_skill_particle_offset = config.getDouble("stats.first_skill_particle_offset", 0.5);
+		this.first_skill_particle_speed = config.getDouble("stats.first_skill_particle_speed", 0.01);
+		this.first_skill_particle_size = (float) config.getDouble("stats.first_skill_particle_size", 1.5);
+
+		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 8);
+		this.second_skill_entity_range = config.getInt("stats.second_skill_entity_range", 12);
+		this.second_skill_container_range = config.getInt("stats.second_skill_container_range", 8);
+		this.second_skill_glow_duration = config.getLong("stats.second_skill_glow_duration", 40L);
+
+		Material weapon;
+		try {
+			weapon = Material.valueOf(config.getString("tool.role_weapon"));
+		} catch (IllegalArgumentException e) {
+			weapon = Material.COMPASS;
+		}
+		this.weapon_item = weapon;
+
+		Material armor;
+		try {
+			armor = Material.valueOf(config.getString("tool.role_armor"));
+		} catch (IllegalArgumentException e) {
+			armor = Material.GOLDEN_BOOTS;
+		}
+		this.armor_item = armor;
 	}
 
 	private ItemStack CompassBuilder(Block target, Player p) {
@@ -50,7 +120,7 @@ public class Gatherer extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		Block pose = p.getTargetBlockExact(7);
+		Block pose = p.getTargetBlockExact(this.first_skill_target_range);
 		if (pose == null || pose.getType() != Material.SEA_LANTERN) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 블록이 없습니다!"));
 			return;
@@ -59,11 +129,20 @@ public class Gatherer extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
-		if (!consumeEnergy(p, 3)) return;
+		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		p.getInventory().addItem(CompassBuilder(pose, p));
 
-		Particle.DustTransition dust = new Particle.DustTransition(Color.AQUA, Color.WHITE, 1.5f);
-		p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 0.5, 0.5, 0.5, 0.01, dust);
+		Particle.DustTransition dust = new Particle.DustTransition(Color.AQUA, Color.WHITE, this.first_skill_particle_size);
+		p.getWorld().spawnParticle(
+				Particle.DUST_COLOR_TRANSITION,
+				p.getLocation(),
+				this.first_skill_particle_count,
+				this.first_skill_particle_offset,
+				this.first_skill_particle_offset,
+				this.first_skill_particle_offset,
+				this.first_skill_particle_speed,
+				dust
+		);
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.0f);
 		p.setCooldown(tool, this.getCooldown1() * 20);
 	}
@@ -77,22 +156,22 @@ public class Gatherer extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
-		if (!consumeEnergy(p, 8)) return;
+		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 
 		Block block;
-		p.getNearbyEntities(12, 12, 12).forEach(e -> {
+		p.getNearbyEntities(this.second_skill_entity_range, this.second_skill_entity_range, this.second_skill_entity_range).forEach(e -> {
 			if (e instanceof LivingEntity le) {
 				GlowUtils.setGlowColor(le, NamedTextColor.GOLD);
 				Bukkit.getScheduler().runTaskLater(getPlugin(),t -> {
 					if (le.isValid()) {
 						GlowUtils.clearGlow(le);
 					}
-				}, 40L);
+				}, this.second_skill_glow_duration);
 			}
 		});
-		for (int i = -8; i <= 8; i++) {
-			for (int j = -8; j <= 8; j++) {
-				for (int k = -8; k <= 8; k++) {
+		for (int i = -this.second_skill_container_range; i <= this.second_skill_container_range; i++) {
+			for (int j = -this.second_skill_container_range; j <= this.second_skill_container_range; j++) {
+				for (int k = -this.second_skill_container_range; k <= this.second_skill_container_range; k++) {
 					block = loc.clone().add(i, j, k).getBlock();
 					if (block.getType().isAir()) continue;
 					if (block.getState() instanceof Container) {
@@ -122,7 +201,7 @@ public class Gatherer extends AbstractFirstRole {
 			s.setCollidable(false);
 			s.setPeek(0);
 			GlowUtils.setGlowColor(s, NamedTextColor.GOLD);
-			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, 40L);
+			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, this.second_skill_glow_duration);
 		});
 	}
 
@@ -133,24 +212,24 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleWeapon() {
-		return ItemBuilder.of(getPlugin(), Material.COMPASS)
+		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&6&l최후의 길잡이"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setTag("role_id", "gatherer")
 				.hideAllFlags()
-				.addAttribute(Attribute.MOVEMENT_SPEED, 0.01, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND)
+				.addAttribute(Attribute.MOVEMENT_SPEED, this.weapon_movement_speed, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND)
 				.build().clone();
 	}
 
 	@Override
 	public @NotNull ItemStack roleArmor() {
-		return ItemBuilder.of(getPlugin(), Material.GOLDEN_BOOTS)
+		return ItemBuilder.of(getPlugin(), this.armor_item)
 				.setName(ColorUtils.chat("&6&l길잡이의 유물"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setTag("role_id", "gatherer")
 				.hideAllFlags()
 				.setUnbreakable()
-				.addAttribute(Attribute.MOVEMENT_SPEED, 0.01, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
+				.addAttribute(Attribute.MOVEMENT_SPEED, this.armor_movement_speed, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
 				.build().clone();
 	}
 
@@ -178,11 +257,10 @@ public class Gatherer extends AbstractFirstRole {
       
       		&6&l▶ &0&l에테르의 눈 &8[%d초]
       		&0에테르와 공명하여 주변의 적과
-      		&d&l루트 상자&r&0를 꿰뚫어 봅니다.      
+      		&d&l루트 상자&r&0를 꿰뚫어 봅니다.
       		&7&m-----------------
       		""", getCooldown1(), getCooldown2());
 
-		// 부모 클래스의 메서드 활용 (2페이지 구성)
 		return createGuideBook("수집가", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
 	}
 }

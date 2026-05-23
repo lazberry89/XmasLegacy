@@ -45,7 +45,7 @@ public class Warrior extends AbstractFirstRole {
 	private int first_skill_strength_amplifier2;
 	private int first_skill_speed_amplifier;
 	private int second_skill_hunger_cost;
-	private int second_skill_damage;
+	private double second_skill_damage;
 
 	public Warrior() {
 		super(Roles.WARRIOR);
@@ -62,7 +62,7 @@ public class Warrior extends AbstractFirstRole {
 		config.addDefault("stats.first_skill_strength_amplifier", 1);
 		config.addDefault("stats.first_skill_speed_amplifier", 1);
 		config.addDefault("stats.second_skill_hunger_cost", 3);
-		config.addDefault("stats.second_skill_damage", 6);
+		config.addDefault("stats.second_skill_damage", 6.0);
 
 		config.addDefault("tool.role_weapon", "IRON_AXE");
 		config.addDefault("tool.role_armor", "IRON_CHESTPLATE");
@@ -75,7 +75,7 @@ public class Warrior extends AbstractFirstRole {
 		this.first_skill_strength_amplifier = config.getInt("stats.first_skill_strength_amplifier", 1);
 		this.first_skill_speed_amplifier = config.getInt("stats.first_skill_speed_amplifier", 1);
 		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 3);
-		this.second_skill_damage = config.getInt("stats.second_skill_hunger_cost", 3);
+		this.second_skill_damage = config.getDouble("stats.second_skill_damage", 6.0);
 
 		Material weapon;
 		try {
@@ -161,7 +161,7 @@ public class Warrior extends AbstractFirstRole {
 			loc.setYaw(playerYaw);
 			stand.teleport(loc);
 
-			stand.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_AXE));
+			stand.getEquipment().setItemInMainHand(new ItemStack(weapon_item));
 		});
 
 		p.setCooldown(tool, this.getCooldown2() * 20);
@@ -199,7 +199,7 @@ public class Warrior extends AbstractFirstRole {
 
 						p.teleport(backLoc);
 						p.playSound(backLoc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.5f);
-						target.damage(6.0, p);
+						target.damage(second_skill_damage, p);
 
 						axeStand.remove();
 						this.cancel();
@@ -207,7 +207,6 @@ public class Warrior extends AbstractFirstRole {
 					}
 				}
 
-				// 벽 충돌 시 제거
 				if (currentLoc.getBlock().getType().isSolid()) {
 					axeStand.remove();
 					this.cancel();

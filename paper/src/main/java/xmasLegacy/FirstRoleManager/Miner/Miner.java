@@ -6,18 +6,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
@@ -26,33 +26,80 @@ public class Miner extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.CHAIN_MINING);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
+	private Material weapon_item;
+	private Material armor_item;
+	private int first_skill_hunger_cost;
+	private int first_skill_target_range;
+	private int first_skill_ore_chain_loop;
+	private int second_skill_hunger_cost;
+	private int second_skill_scan_range;
+	private long second_skill_glow_duration;
+
 	public Miner() {
 		super(Roles.MINER);
+		this.loadRoleData(getRole().name().toLowerCase());
+	}
+
+	@Override
+	protected void loadCustomStats(FileConfiguration config) {
+		config.addDefault("stats.first_skill_hunger_cost", 3);
+		config.addDefault("stats.first_skill_target_range", 7);
+		config.addDefault("stats.first_skill_ore_chain_loop", 5);
+
+		config.addDefault("stats.second_skill_hunger_cost", 3);
+		config.addDefault("stats.second_skill_scan_range", 15);
+		config.addDefault("stats.second_skill_glow_duration", 40L);
+
+		config.addDefault("tool.role_weapon", "IRON_PICKAXE");
+		config.addDefault("tool.role_armor", "IRON_CHESTPLATE");
+
+		this.first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
+		this.first_skill_target_range = config.getInt("stats.first_skill_target_range", 7);
+		this.first_skill_ore_chain_loop = config.getInt("stats.first_skill_ore_chain_loop", 5);
+
+		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 3);
+		this.second_skill_scan_range = config.getInt("stats.second_skill_scan_range", 15);
+		this.second_skill_glow_duration = config.getLong("stats.second_skill_glow_duration", 40L);
+
+		Material weapon;
+		try {
+			weapon = Material.valueOf(config.getString("tool.role_weapon"));
+		} catch (IllegalArgumentException e) {
+			weapon = Material.IRON_PICKAXE;
+		}
+		this.weapon_item = weapon;
+
+		Material armor;
+		try {
+			armor = Material.valueOf(config.getString("tool.role_armor"));
+		} catch (IllegalArgumentException e) {
+			armor = Material.IRON_CHESTPLATE;
+		}
+		this.armor_item = armor;
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool.getType()) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+		if (p.getCooldown(tool) > 0) {
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
-		Block targeted = p.getTargetBlockExact(7);
+		Block targeted = p.getTargetBlockExact(this.first_skill_target_range);
 		if (targeted != null) {
 			Location targetLoc = targeted.getLocation();
-			List<Block> ores = getNearbyBlock(targetLoc, 5);
+			List<Block> ores = getNearbyBlock(targetLoc, this.first_skill_ore_chain_loop);
 			if (ores.isEmpty()) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 주변에 광물이 없습니다!"));
 				return;
 			}
-			if (!consumeEnergy(p, 3)) return;
+			if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 			for (Block ore : ores) {
 				ore.breakNaturally();
 			}
 			p.setCooldown(tool, this.getCooldown1() * 20);
 		} else {
 			p.sendMessage(Alert.RED + " 해당 블록이 없습니다!");
-			return;
 		}
 	}
 
@@ -96,15 +143,15 @@ public class Miner extends AbstractFirstRole {
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
 
-		if (p.getCooldown(tool.getType()) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
+		if (p.getCooldown(tool) > 0) {
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
 		}
-		if (!consumeEnergy(p, 3)) return;
+		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		List<Block> result = new ArrayList<>();
-		for (int i = -15; i <= 15; i++) {
-			for (int j = -15; j <= 15; j++) {
-				for (int k = -15; k <= 15; k++) {
+		for (int i = -this.second_skill_scan_range; i <= this.second_skill_scan_range; i++) {
+			for (int j = -this.second_skill_scan_range; j <= this.second_skill_scan_range; j++) {
+				for (int k = -this.second_skill_scan_range; k <= this.second_skill_scan_range; k++) {
 					Block block = p.getLocation().clone().add(i, j, k).getBlock();
 					if (isOre(block)) {
 						result.add(block);
@@ -127,7 +174,7 @@ public class Miner extends AbstractFirstRole {
 			s.setCollidable(false);
 			s.setPeek(0);
 			GlowUtils.setGlowColor(s, NamedTextColor.RED);
-			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, 40L);
+			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, this.second_skill_glow_duration);
 		});
 	}
 
@@ -138,7 +185,7 @@ public class Miner extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleWeapon() {
-		return ItemBuilder.of(getPlugin(), Material.IRON_PICKAXE)
+		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&l광부의 곡괭이"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
@@ -150,7 +197,7 @@ public class Miner extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleArmor() {
-		return ItemBuilder.of(getPlugin(), Material.IRON_CHESTPLATE)
+		return ItemBuilder.of(getPlugin(), this.armor_item)
 				.setName(ColorUtils.chat("&7&l철제 보호구"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()

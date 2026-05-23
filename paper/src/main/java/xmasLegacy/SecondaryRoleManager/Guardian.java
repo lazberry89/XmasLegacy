@@ -19,6 +19,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
+import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -32,9 +33,11 @@ public class Guardian extends AbstractSecondRole {
     public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
     private final Map<Player, LivingEntity> targetMap = new HashMap<>();
     private final Set<UUID> activeSkill = new HashSet<>();
+	private final Emblem roleEmblem;
 
     public Guardian() {
         super(SecondaryRoles.GUARDIAN);
+		this.roleEmblem = new Emblem(getRole());
         this.PM = PartyManager.getInstance();
     }
 
@@ -222,7 +225,6 @@ public class Guardian extends AbstractSecondRole {
                 for (Vector dir : directions) {
                     Location point = center.clone().add(dir.clone().multiply(distance));
 
-                    // 파티클
                     point.getWorld().spawnParticle(Particle.SWEEP_ATTACK, point, 1, 0, 0, 0, 0);
                     point.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, point, 2, 0.1, 0.1, 0.1, 0);
 
@@ -274,4 +276,14 @@ public class Guardian extends AbstractSecondRole {
                 .hideAllFlags()
                 .build().clone();
     }
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return roleEmblem.getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return roleEmblem.getRangeEmblem();
+	}
 }

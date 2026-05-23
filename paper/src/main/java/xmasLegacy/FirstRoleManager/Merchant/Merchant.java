@@ -2,6 +2,7 @@ package xmasLegacy.FirstRoleManager.Merchant;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,6 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +24,36 @@ public class Merchant extends AbstractFirstRole {
 	private final PriceInterface PIF;
 	private final MerchantStockInterface MSI;
 
+	private Material weapon_item;
+	private Material armor_item;
+
 	public Merchant() {
 		super(Roles.MERCHANT);
 		this.PIF = PriceInterface.getInstance();
 		this.MSI = MerchantStockInterface.getInstance();
+		this.loadRoleData(getRole().name().toLowerCase());
+	}
+
+	@Override
+	protected void loadCustomStats(FileConfiguration config) {
+		config.addDefault("tool.role_weapon", "ENDER_CHEST");
+		config.addDefault("tool.role_armor", "IRON_HELMET");
+
+		Material weapon;
+		try {
+			weapon = Material.valueOf(config.getString("tool.role_weapon"));
+		} catch (IllegalArgumentException e) {
+			weapon = Material.ENDER_CHEST;
+		}
+		this.weapon_item = weapon;
+
+		Material armor;
+		try {
+			armor = Material.valueOf(config.getString("tool.role_armor"));
+		} catch (IllegalArgumentException e) {
+			armor = Material.IRON_HELMET;
+		}
+		this.armor_item = armor;
 	}
 
 	@Override
@@ -55,7 +81,7 @@ public class Merchant extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleWeapon() {
-		return ItemBuilder.of(getPlugin(), Material.ENDER_CHEST)
+		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&d&l상인의 보자기"))
 				.setLore(ColorUtils.chat("&7상점을 열거나 매입품을 확인할 수 있어요."))
 				.hideAllFlags()
@@ -65,7 +91,7 @@ public class Merchant extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleArmor() {
-		return ItemBuilder.of(getPlugin(), Material.IRON_HELMET)
+		return ItemBuilder.of(getPlugin(), this.armor_item)
 				.setName(ColorUtils.chat("&d&l상인대가리 보호막"))
 				.setLore(ColorUtils.chat("&7상인한테 과연 이런게 필요할까?"), ColorUtils.chat("&7아 근데 스킬쓸려면 필요함 ㅇㅇ"))
 				.hideAllFlags()

@@ -12,6 +12,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
+import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
@@ -24,11 +25,13 @@ public class Fighter extends AbstractSecondRole {
     public final Set<UUID> counter = new HashSet<>();
     private final XmasLegacy plugin;
     private final PartyManager pm;
+	private final Emblem emblem;
 
     public Fighter() {
         super(SecondaryRoles.FIGHTER);
         this.plugin = XmasLegacy.getInstance();
         this.pm = PartyManager.getInstance();
+		this.emblem = new Emblem(SecondaryRoles.FIGHTER);
     }
 
     @Override
@@ -121,11 +124,11 @@ public class Fighter extends AbstractSecondRole {
 
 	@Override
 	public @NotNull ItemStack TargetEmblem() {
-		return null;
+		return emblem.getTargetEmblem();
 	}
 
 	@Override
 	public @NotNull ItemStack RangeEmblem() {
-		return null;
+		return emblem.getRangeEmblem();
 	}
 }

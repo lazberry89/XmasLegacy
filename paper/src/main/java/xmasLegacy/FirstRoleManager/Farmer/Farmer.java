@@ -6,19 +6,19 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.Region.Region;
 import xmasLegacy.Region.RegionManager;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
@@ -29,9 +29,65 @@ public class Farmer extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.RADIUS_HARVEST);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
+	private Material weapon_item;
+	private Material armor_item;
+	private double armor_state_value;
+	private int first_skill_hunger_cost;
+	private int first_skill_radius;
+	private int second_skill_hunger_cost;
+	private int second_skill_radius;
+	private int second_skill_y_range;
+	private int second_skill_particle_count;
+	private double second_skill_particle_offset;
+
 	public Farmer() {
 		super(Roles.FARMER);
 		this.rm = RegionManager.getInstance();
+		this.loadRoleData(getRole().name().toLowerCase());
+	}
+
+	@Override
+	protected void loadCustomStats(FileConfiguration config) {
+		config.addDefault("stats.armor_state_value", 5.0);
+
+		config.addDefault("stats.first_skill_hunger_cost", 3);
+		config.addDefault("stats.first_skill_radius", 4);
+
+		config.addDefault("stats.second_skill_hunger_cost", 3);
+		config.addDefault("stats.second_skill_radius", 4);
+		config.addDefault("stats.second_skill_y_range", 2);
+		config.addDefault("stats.second_skill_particle_count", 5);
+		config.addDefault("stats.second_skill_particle_offset", 0.2);
+
+		config.addDefault("tool.role_weapon", "IRON_HOE");
+		config.addDefault("tool.role_armor", "LEATHER_CHESTPLATE");
+
+		this.armor_state_value = config.getDouble("stats.armor_state_value", 5.0);
+
+		this.first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
+		this.first_skill_radius = config.getInt("stats.first_skill_radius", 4);
+
+		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 3);
+		this.second_skill_radius = config.getInt("stats.second_skill_radius", 4);
+		this.second_skill_y_range = config.getInt("stats.second_skill_y_range", 2);
+		this.second_skill_particle_count = config.getInt("stats.second_skill_particle_count", 5);
+		this.second_skill_particle_offset = config.getDouble("stats.second_skill_particle_offset", 0.2);
+
+		Material weapon;
+		try {
+			weapon = Material.valueOf(config.getString("tool.role_weapon"));
+		} catch (IllegalArgumentException e) {
+			weapon = Material.IRON_HOE;
+		}
+		this.weapon_item = weapon;
+
+		Material armor;
+		try {
+			armor = Material.valueOf(config.getString("tool.role_armor"));
+		} catch (IllegalArgumentException e) {
+			armor = Material.LEATHER_CHESTPLATE;
+		}
+		this.armor_item = armor;
 	}
 
 	@Override
@@ -41,13 +97,13 @@ public class Farmer extends AbstractFirstRole {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
 			return;
 		}
-		if (!consumeEnergy(p, 3)) return;
+		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		List<Region> playerRegions = rm.getRegion(p);
 		if (playerRegions == null || playerRegions.isEmpty()) {
 			return;
 		}
 
-		List<Block> crops = getFullyGrownCrops(p, 4);
+		List<Block> crops = getFullyGrownCrops(p, this.first_skill_radius);
 		for (Block block : crops) {
 			Region cropRegion = rm.getRegionAt(block.getLocation());
 
@@ -97,13 +153,12 @@ public class Farmer extends AbstractFirstRole {
 		List<Region> playerRegions = rm.getRegion(p);
 		if (playerRegions == null || playerRegions.isEmpty()) return;
 
-		int radius = 4;
 		Location center = p.getLocation();
 		boolean success = false;
 
-		for (int x = -radius; x <= radius; x++) {
-			for (int y = -2; y <= 2; y++) {
-				for (int z = -radius; z <= radius; z++) {
+		for (int x = -this.second_skill_radius; x <= this.second_skill_radius; x++) {
+			for (int y = -this.second_skill_y_range; y <= this.second_skill_y_range; y++) {
+				for (int z = -this.second_skill_radius; z <= this.second_skill_radius; z++) {
 					Block block = center.clone().add(x, y, z).getBlock();
 
 					if (block.getBlockData() instanceof Ageable ageable) {
@@ -112,7 +167,14 @@ public class Farmer extends AbstractFirstRole {
 						if (cropRegion != null && playerRegions.contains(cropRegion) && ageable.getAge() < ageable.getMaximumAge()) {
 							ageable.setAge(ageable.getMaximumAge());
 							block.setBlockData(ageable);
-							block.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, block.getLocation().add(0.5, 0.5, 0.5), 5, 0.2, 0.2, 0.2);
+							block.getWorld().spawnParticle(
+									Particle.HAPPY_VILLAGER,
+									block.getLocation().add(0.5, 0.5, 0.5),
+									this.second_skill_particle_count,
+									this.second_skill_particle_offset,
+									this.second_skill_particle_offset,
+									this.second_skill_particle_offset
+							);
 							success = true;
 						} else {
 							p.sendMessage(ColorUtils.chat(Alert.RED + " 적절한 사용 조건이 아닙니다."));
@@ -124,7 +186,7 @@ public class Farmer extends AbstractFirstRole {
 			}
 		}
 		if (success) {
-			if (!consumeEnergy(p, 3)) return;
+			if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 			p.getLocation().getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
 			p.setCooldown(tool, this.getCooldown2() * 20);
 		}
@@ -137,7 +199,7 @@ public class Farmer extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleWeapon() {
-		return ItemBuilder.of(getPlugin(), Material.IRON_HOE)
+		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&e&l눙부의 낫"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
@@ -149,12 +211,12 @@ public class Farmer extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleArmor() {
-		return ItemBuilder.of(getPlugin(), Material.LEATHER_CHESTPLATE)
+		return ItemBuilder.of(getPlugin(), this.armor_item)
 				.setName(ColorUtils.chat("&e&l조끼"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
-				.setArmorState(5.0, EquipmentSlotGroup.CHEST)
+				.setArmorState(this.armor_state_value, EquipmentSlotGroup.CHEST)
 				.setTag("role_id", "farmer")
 				.build()
 				.clone();

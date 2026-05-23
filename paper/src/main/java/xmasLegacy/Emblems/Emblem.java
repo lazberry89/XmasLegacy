@@ -21,12 +21,10 @@ public class Emblem {
 	private final @NotNull ItemStack TargetEmblem;
 	private final @NotNull ItemStack RangeEmblem;
 	private final @NotNull Role role;
-	private final @NotNull EmblemType type;
 	private final XmasLegacy plugin;
 
-	public Emblem(@NotNull Role role, @NotNull EmblemType type) {
+	public Emblem(@NotNull Role role) {
 		this.role = role;
-		this.type = type;
 		this.plugin = XmasLegacy.getInstance();
 		TargetEmblem = targetEmblem();
 		RangeEmblem = rangeEmblem();
@@ -73,8 +71,5 @@ public class Emblem {
 	}
 	public @NotNull Role getRole() {
 		return this.role;
-	}
-	public @NotNull EmblemType getType() {
-		return this.type;
 	}
 }
