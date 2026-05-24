@@ -58,6 +58,6 @@ public class Constants {
 	public static final String SELECT_BOOK = "magicbookopened_v2";
 
 	//Emblem
-	public static final String TARGET_EMBLEM = "";
-	public static final String RANGE_EMBLEM = "";
+	public static final String TARGET_EMBLEM = "target_emblem";
+	public static final String RANGE_EMBLEM = "range_emblem";
 }

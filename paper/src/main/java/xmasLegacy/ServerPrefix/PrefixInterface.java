@@ -31,10 +31,10 @@ public class PrefixInterface implements InventoryHolder {
 	private int page = 0;
 	private int MAX_PAGE = 0;
 
-	public PrefixInterface(XmasLegacy plugin, @NotNull Player p) {
-		this.plugin = plugin;
-		this.PFM = plugin.PFM;
-		this.UM = plugin.UM;
+	public PrefixInterface(@NotNull Player p) {
+		this.plugin = XmasLegacy.getInstance();
+		this.PFM = PrefixManager.getInstance();
+		this.UM = UserManager.getInstance();
 
 		this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat("&c&l칭호관리"));
 		for (int i = 45; i < 54; i++) this.inv.setItem(i, bg());

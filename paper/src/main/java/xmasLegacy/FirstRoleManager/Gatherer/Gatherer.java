@@ -46,8 +46,14 @@ public class Gatherer extends AbstractFirstRole {
 	private int second_skill_entity_range;
 	private int second_skill_container_range;
 	private long second_skill_glow_duration;
+	private static Gatherer instance;
 
-	public Gatherer() {
+	public static Gatherer getInstance() {
+		if (instance == null) instance = new Gatherer();
+		return instance;
+	}
+
+	private Gatherer() {
 		super(Roles.GATHERER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

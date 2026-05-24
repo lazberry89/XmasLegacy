@@ -31,7 +31,7 @@ public class RoleSelectionInterface implements InventoryHolder {
 
     public RoleSelectionInterface(Roles roles) {
         this.plugin = JavaPlugin.getPlugin(XmasLegacy.class);
-        this.rlm = plugin.RLM;
+        this.rlm = FirstRoleManager.getInstance();
         this.selectedRole = roles;
         this.title = ColorUtils.chat(String.format("&c&l[ %s ]", roles.getKor()));
         this.inv = Bukkit.createInventory(this, 36, title);

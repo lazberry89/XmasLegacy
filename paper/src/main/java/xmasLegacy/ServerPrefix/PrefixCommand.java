@@ -112,11 +112,11 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                 }
             } else if (args.length == 1) {
                 if (args[0].startsWith("inv")) {
-                    p.openInventory(new PrefixInterface(plugin, p).getInventory());
+                    p.openInventory(new PrefixInterface(p).getInventory());
                 }
-            } else if (args.length == 0) p.openInventory(new PrefixInterface(plugin, p).getInventory());
+            } else if (args.length == 0) p.openInventory(new PrefixInterface(p).getInventory());
         } else {
-            if (args.length == 1 && args[0].startsWith("inv") || args.length == 0) p.openInventory(new PrefixInterface(plugin, p).getInventory());
+            if (args.length == 1 && args[0].startsWith("inv") || args.length == 0) p.openInventory(new PrefixInterface(p).getInventory());
         }
         return true;
     }

@@ -20,7 +20,7 @@ public class GachaStockInterface implements InventoryHolder {
     public GachaStockInterface(XmasLegacy plugin, @NotNull BundleType type) {
         this.plugin = plugin;
         this.type = type;
-        this.GM = plugin.GM;
+        this.GM = GachaManager.getInstance();
         this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat(String.format("&c&l%s : %d(개) / %d(전체)" ,type.getKor() ,GM.getAllSortedByChance(type).size(), GM.getAll().size())));
         ItemStack none = ItemBuilder.of(plugin, Material.BARRIER).setName(ColorUtils.chat("")).setLore(ColorUtils.chat("")).hideAllFlags().build();
         if (GM.getAllSortedByChance(type).isEmpty()) {

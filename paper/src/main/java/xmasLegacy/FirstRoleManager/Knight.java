@@ -52,8 +52,14 @@ public class Knight extends AbstractFirstRole {
 	private double second_skill_knockback;
 	private double second_skill_knockback_y;
 	private long second_skill_ai_restore_delay;
+	private static Knight instance;
 
-	public Knight() {
+	public static Knight getInstance() {
+		if (instance == null) instance = new Knight();
+		return instance;
+	}
+
+	private Knight() {
 		super(Roles.KNIGHT);
 		this.SEM = SkillEffectManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

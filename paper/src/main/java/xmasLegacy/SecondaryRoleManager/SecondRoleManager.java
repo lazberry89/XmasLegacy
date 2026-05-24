@@ -13,6 +13,7 @@ public class SecondRoleManager {
 	private Berserker berserker;
 	private Defender defender;
 	private Guardian guardian;
+	private Fighter fighter;
 	private XmasLegacy plugin;
 	private final Map<SecondaryRoles, AbstractSecondRole> roleInstance = new HashMap<>();
 	private static SecondRoleManager instance;
@@ -27,15 +28,16 @@ public class SecondRoleManager {
 	}
 
 	public void init() {
-		this.berserker = plugin.berserker;
-		this.defender = plugin.defender;
-		this.guardian = plugin.guardian;
+		this.berserker = Berserker.getInstance();
+		this.defender = Defender.getInstance();
+		this.guardian = Guardian.getInstance();
+		this.fighter = Fighter.getInstance();
 		this.roleInstance.put(SecondaryRoles.BERSERKER, this.berserker);
 		this.roleInstance.put(SecondaryRoles.DEFENDER, this.defender);
 		this.roleInstance.put(SecondaryRoles.GUARDIAN, this.guardian);
 	}
 
-	public @NotNull AbstractSecondRole getRoleInstance(@NotNull SecondaryRoles role) {
+	public AbstractSecondRole getRoleInstance(@NotNull SecondaryRoles role) {
 		return this.roleInstance.get(role);
 	}
 

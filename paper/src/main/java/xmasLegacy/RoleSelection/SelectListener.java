@@ -26,7 +26,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 public class SelectListener implements Listener {
-    private final RoleSelectInterface RSTI = new RoleSelectInterface(JavaPlugin.getPlugin(XmasLegacy.class));
+    private final RoleSelectInterface RSTI = new RoleSelectInterface();
     private final XmasLegacy plugin;
     private final UserManager UM;
 

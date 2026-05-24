@@ -33,7 +33,6 @@ public class Priest extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_HEAL);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	// 💡 설정 파일(priest.yml) 연동을 위한 전용 필드 선언
 	private Material weapon_item;
 	private Material armor_item;
 	private double weapon_attack_damage;
@@ -47,8 +46,14 @@ public class Priest extends AbstractFirstRole {
 	private int second_skill_strength_duration;
 	private int second_skill_strength_amplifier;
 	private double second_skill_radius;
+	private static Priest instance;
 
-	public Priest() {
+	public static Priest getInstance() {
+		if (instance == null) instance = new Priest();
+		return instance;
+	}
+
+	private Priest() {
 		super(Roles.PRIEST);
 		this.PM = PartyManager.getInstance();
 		this.SEM = SkillEffectManager.getInstance();

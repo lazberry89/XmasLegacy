@@ -33,8 +33,14 @@ public class Berserker extends AbstractSecondRole {
     private final Set<UUID> usedPassive = new HashSet<>();
     private final PartyManager PM;
 	private final Emblem emblem;
+	private static Berserker instance;
 
-    public Berserker() {
+	public static Berserker getInstance() {
+		if (instance == null) instance = new Berserker();
+		return instance;
+	}
+
+    private Berserker() {
         super(SecondaryRoles.BERSERKER);
         this.PM = PartyManager.getInstance();
 		this.emblem = new Emblem(getRole());

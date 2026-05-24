@@ -47,7 +47,14 @@ public class Warrior extends AbstractFirstRole {
 	private int second_skill_hunger_cost;
 	private double second_skill_damage;
 
-	public Warrior() {
+	private static Warrior instance;
+
+	public static Warrior getInstance() {
+		if (instance == null) instance = new Warrior();
+		return instance;
+	}
+
+	private Warrior() {
 		super(Roles.WARRIOR);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

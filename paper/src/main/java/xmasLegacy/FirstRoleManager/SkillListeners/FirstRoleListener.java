@@ -2,7 +2,10 @@ package xmasLegacy.FirstRoleManager.SkillListeners;
 
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -11,8 +14,8 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
@@ -21,6 +24,7 @@ import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.Priest;
 import xmasLegacy.XmasLegacy;
 
+@SuppressWarnings("unused")
 public class FirstRoleListener implements Listener {
 	private final XmasLegacy plugin;
 	private final Knight knight;
@@ -36,16 +40,16 @@ public class FirstRoleListener implements Listener {
 
 	public FirstRoleListener() {
 		this.plugin = XmasLegacy.getInstance();
-		this.knight = this.plugin.knight;
-		this.rogue = this.plugin.rogue;
-		this.archer = this.plugin.archer;
-		this.warrior = this.plugin.warrior;
-		this.mage = this.plugin.mage;
-		this.priest = this.plugin.priest;
-		this.farmer = this.plugin.farmer;
-		this.miner = this.plugin.miner;
-		this.gatherer = this.plugin.gatherer;
-		this.merchant = this.plugin.merchant;
+		this.knight = Knight.getInstance();
+		this.rogue = Rogue.getInstance();
+		this.archer = Archer.getInstance();
+		this.warrior = Warrior.getInstance();
+		this.mage = Mage.getInstance();
+		this.priest = Priest.getInstance();
+		this.farmer = Farmer.getInstance();
+		this.miner = Miner.getInstance();
+		this.gatherer = Gatherer.getInstance();
+		this.merchant = Merchant.getInstance();
 	}
 
 	@EventHandler

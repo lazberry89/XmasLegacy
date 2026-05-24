@@ -25,7 +25,7 @@ public class ScoreBoardManager {
 
 	public ScoreBoardManager(XmasLegacy plugin, Player p) {
 		this.plugin = plugin;
-		this.um = plugin.UM;
+		this.um = UserManager.getInstance();
 		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		this.objective = scoreboard.registerNewObjective("xmas_board", Criteria.DUMMY, ColorUtils.chat(Alert.XmasLegacy.toString()));
 		this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);

@@ -34,8 +34,14 @@ public class Guardian extends AbstractSecondRole {
     private final Map<Player, LivingEntity> targetMap = new HashMap<>();
     private final Set<UUID> activeSkill = new HashSet<>();
 	private final Emblem roleEmblem;
+	private static Guardian instance;
 
-    public Guardian() {
+	public static Guardian getInstance() {
+		if (instance == null) instance = new Guardian();
+		return instance;
+	}
+
+    private Guardian() {
         super(SecondaryRoles.GUARDIAN);
 		this.roleEmblem = new Emblem(getRole());
         this.PM = PartyManager.getInstance();

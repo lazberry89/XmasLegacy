@@ -30,14 +30,32 @@ public class Fighter extends AbstractSecondRole {
     private final XmasLegacy plugin;
     private final PartyManager pm;
 	private final Emblem emblem;
+	private static Fighter instance;
 
-    public Fighter() {
+	public static Fighter getInstance() {
+		if (instance == null) instance = new Fighter();
+		return instance;
+	}
+
+    private Fighter() {
         super(SecondaryRoles.FIGHTER);
         this.plugin = XmasLegacy.getInstance();
         this.pm = PartyManager.getInstance();
 		this.emblem = new Emblem(SecondaryRoles.FIGHTER);
     }
 
+	public boolean isCounter(Player p) {
+		return counter.contains(p.getUniqueId());
+	}
+	public boolean isCounter(UUID uuid) {
+		return counter.contains(uuid);
+	}
+	public void stopCounter(Player p) {
+		counter.remove(p.getUniqueId());
+	}
+	public void stopCounter(UUID uuid) {
+		counter.remove(uuid);
+	}
     @Override
     public void useFirstSkill(Player p) {
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -75,21 +93,20 @@ public class Fighter extends AbstractSecondRole {
         Location startLoc = p.getLocation().add(0, 1, 0);
         Vector dir = vector.clone().normalize();
 
-        Vector ortho;
+        Vector vector1;
         if (Math.abs(dir.getY()) > 0.9) {
-            ortho = new Vector(1, 0, 0);
+            vector1 = new Vector(1, 0, 0);
         } else {
-            ortho = new Vector(-dir.getZ(), 0, dir.getX()).normalize();
+            vector1 = new Vector(-dir.getZ(), 0, dir.getX()).normalize();
         }
 
         double radius = 0.5;
         double spiralTightness = 3.5;
-        ortho.multiply(radius);
+        vector1.multiply(radius);
         Particle.DustOptions option = new Particle.DustOptions(Color.BLUE, 1.1f);
         Particle.DustTransition trs = new Particle.DustTransition(Color.BLUE, Color.AQUA, 1.1f);
 
         for (double d = 0; d < 6.0; d += 0.15) {
-            // 중심축에 놓일 중앙 좌표
             Location centerPoint = startLoc.clone().add(dir.clone().multiply(d));
             p.getWorld().spawnParticle(Particle.DUST, centerPoint, 1, 0, 0, 0, 0, option);
             centerPoint.getNearbyEntitiesByType(LivingEntity.class, 0.5, 0.5)
@@ -98,7 +115,7 @@ public class Fighter extends AbstractSecondRole {
                     .forEach(s -> s.damage(2.0, p));
 
             double radians = d * spiralTightness;
-            Vector rotatedOffset = ortho.clone().rotateAroundAxis(dir, radians);
+            Vector rotatedOffset = vector1.clone().rotateAroundAxis(dir, radians);
 
             Location spiralPoint = centerPoint.clone().add(rotatedOffset);
 

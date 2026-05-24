@@ -4,9 +4,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.*;
+import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserRepository;
@@ -15,12 +17,9 @@ import xmasLegacy.Cosmetics.CosmeticsCommand;
 import xmasLegacy.Cosmetics.TestHeadCommand;
 import xmasLegacy.Economy.Currency.OperatorCurrency;
 import xmasLegacy.Env.ConsumableManager;
-import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
-import xmasLegacy.FirstRoleManager.Farmer.Farmer;
-import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.FirstRoleManager.Merchant.*;
-import xmasLegacy.FirstRoleManager.Miner.Miner;
 import xmasLegacy.FirstRoleManager.Priest.*;
 import xmasLegacy.FirstRoleManager.Priest.ShopListener;
 import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
@@ -39,11 +38,8 @@ import xmasLegacy.RoleSelection.RoleSelectCommand;
 import xmasLegacy.RoleSelection.SelectListener;
 import xmasLegacy.RoleSwitch.BookCommand;
 import xmasLegacy.RoleSwitch.DeleteStandCommand;
-import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.RoleSwitch.ExpManager;
-import xmasLegacy.SecondaryRoleManager.Berserker;
-import xmasLegacy.SecondaryRoleManager.Defender;
-import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondTestCommand;
 import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondaryRoleListener;
@@ -53,23 +49,6 @@ import xmasLegacy.ServerPrefix.PrefixManager;
 
 @SuppressWarnings({"FieldCanBeLocal", "DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
-
-	public Archer archer;
-	public Knight knight;
-	public Rogue rogue;
-	public Warrior warrior;
-	public Mage mage;
-	public Priest priest;
-	public Farmer farmer;
-	public Miner miner;
-	public Gatherer gatherer;
-	public Merchant merchant;
-	public Crafter crafter;
-
-	public Defender defender;
-	public Guardian guardian;
-	public Berserker berserker;
-
 	private static XmasLegacy instance;
 
 	public static XmasLegacy getInstance() {
@@ -78,7 +57,6 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// 1. 공통 필수 초기화 (어떤 서버 타입이든 기본으로 쓰는 고정 매니저들)
 		instance = this;
 
 		UserManager.getInstance();
@@ -105,8 +83,6 @@ public final class XmasLegacy extends JavaPlugin {
 		var log = new LogCommandManager();
 		getCommand("log").setExecutor(log);
 		getCommand("log").setTabCompleter(log);
-
-		// 4. 서버 타입 정밀 분석 후 격리 기동 시작
 		serverType();
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
@@ -177,25 +153,10 @@ public final class XmasLegacy extends JavaPlugin {
 			MagicBook.getInstance();
 
 			// FirstRole 초기화
-			this.archer = new Archer();
-			this.knight = new Knight();
-			this.rogue  = new Rogue();
-			this.mage = new Mage();
-			this.warrior = new Warrior();
-			this.priest = new Priest();
-			this.farmer = new Farmer();
-			this.miner = new Miner();
-			this.gatherer = new Gatherer();
-			this.merchant = new Merchant();
-			this.crafter = new Crafter();
 			FirstRoleManager.getInstance().init();
 
 			// SecondaryRole 초기화
-			this.defender = new Defender();
-			this.guardian = new Guardian();
-			this.berserker = new Berserker();
 			SecondRoleManager.getInstance().init();
-
 
 			// Gacha 초기화
 			GachaManager.getInstance();

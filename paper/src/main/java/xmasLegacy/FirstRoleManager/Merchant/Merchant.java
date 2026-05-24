@@ -23,11 +23,17 @@ public class Merchant extends AbstractFirstRole {
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 	private final PriceInterface PIF;
 	private final MerchantStockInterface MSI;
-
 	private Material weapon_item;
 	private Material armor_item;
 
-	public Merchant() {
+	private static Merchant instance;
+
+	public static Merchant getInstance() {
+		if (instance == null) instance = new Merchant();
+		return instance;
+	}
+
+	private Merchant() {
 		super(Roles.MERCHANT);
 		this.PIF = PriceInterface.getInstance();
 		this.MSI = MerchantStockInterface.getInstance();

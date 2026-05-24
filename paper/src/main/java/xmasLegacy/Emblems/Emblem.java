@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.Skill;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -31,11 +32,13 @@ public class Emblem {
 	}
 
 	private @NotNull ItemStack targetEmblem() {
-		ItemStack target = OraxenItems.getItemById(Constants.TARGET_EMBLEM).build();
+		var targetB = OraxenItems.getItemById(Constants.TARGET_EMBLEM);
+		if (targetB == null) return new ItemStack(Material.BARRIER);
+		ItemStack target = targetB.build();
 		if (target == null) return new ItemStack(Material.BARRIER);
 		target.editMeta(meta -> {
-			meta.displayName(ColorUtils.chat("&#FF0000T&#FF1515a&#FF2A2Ar&#FF3F3Fg&#FE5454e&#FE6969t &#FE9494E&#FEA9A9m&#FEBEBEb&#FDD3D3l&#FDE8E8e&#FDFDFDm"));
-			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : " + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + role.bindTarget().getKor())));
+			meta.displayName(ColorUtils.chat("&cTarget Emblem"));
+			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : &6" + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + role.bindTarget().getKor())));
 			meta.lore(lore);
 			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING, "target");
 			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_role"), PersistentDataType.STRING, role.name());
@@ -45,11 +48,16 @@ public class Emblem {
 	}
 
 	private @NotNull ItemStack rangeEmblem() {
-		ItemStack target = OraxenItems.getItemById(Constants.RANGE_EMBLEM).build();
+		var targetB = OraxenItems.getItemById(Constants.RANGE_EMBLEM);
+		if (targetB == null) return new ItemStack(Material.BARRIER);
+		ItemStack target = targetB.build();
 		if (target == null) return new ItemStack(Material.BARRIER);
 		target.editMeta(meta -> {
 			meta.displayName(ColorUtils.chat("&#0E00FFR&#2417FFa&#392EFFn&#4F45FEg&#655CFEe &#908AFEE&#A6A1FEm&#BCB8FEb&#D2CFFDl&#E7E6FDe&#FDFDFDm"));
-			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : &6" + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + role.rangeTarget())));
+			String skillListString = role.rangeTarget().stream()
+					.map(Skill::getKor)
+					.collect(java.util.stream.Collectors.joining(", "));
+			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : &6" + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + skillListString)));
 			meta.lore(lore);
 			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING, "range");
 			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_role"), PersistentDataType.STRING, role.name());

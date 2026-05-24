@@ -1,9 +1,12 @@
 package xmasLegacy.FirstRoleManager;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.lazberry.xmaslegacy.Roles.Roles;
-import xmasLegacy.XmasLegacy;
+import xmasLegacy.FirstRoleManager.Farmer.Farmer;
+import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
+import xmasLegacy.FirstRoleManager.Merchant.Merchant;
+import xmasLegacy.FirstRoleManager.Miner.Miner;
+import xmasLegacy.FirstRoleManager.Priest.Priest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +14,6 @@ import java.util.Map;
 @SuppressWarnings("FieldCanBeLocal")
 public class FirstRoleManager {
     private final Map<Roles, AbstractFirstRole> roleInstance = new HashMap<>();
-    private final XmasLegacy plugin;
     private AbstractFirstRole warrior;
     private AbstractFirstRole rogue;
     private AbstractFirstRole mage;
@@ -30,22 +32,20 @@ public class FirstRoleManager {
         return instance;
     }
 
-    private FirstRoleManager() {
-		this.plugin = XmasLegacy.getInstance();
-    }
+    private FirstRoleManager() {}
 
 	public void init() {
-		this.warrior = plugin.warrior;
-		this.rogue = plugin.rogue;
-		this.mage = plugin.mage;
-		this.knight = plugin.knight;
-		this.archer = plugin.archer;
-		this.priest = plugin.priest;
-		this.miner = plugin.miner;
-		this.merchant = plugin.merchant;
-		this.gatherer = plugin.gatherer;
-		this.farmer = plugin.farmer;
-		this.crafter = plugin.crafter;
+		this.warrior = Warrior.getInstance();
+		this.rogue = Rogue.getInstance();
+		this.mage = Mage.getInstance();
+		this.knight = Knight.getInstance();
+		this.archer = Archer.getInstance();
+		this.priest = Priest.getInstance();
+		this.miner = Miner.getInstance();
+		this.merchant = Merchant.getInstance();
+		this.gatherer = Gatherer.getInstance();
+		this.farmer = Farmer.getInstance();
+		this.crafter = Crafter.getInstance();
 		this.roleInstance.put(Roles.WARRIOR, this.warrior);
 		this.roleInstance.put(Roles.ROGUE, this.rogue);
 		this.roleInstance.put(Roles.MAGE, this.mage);

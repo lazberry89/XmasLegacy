@@ -25,7 +25,6 @@ public class Crafter extends AbstractFirstRole {
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.FIX);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 
-	// 💡 설정 파일(crafter.yml) 연동을 위한 전용 필드 선언
 	private Material weapon_item;
 	private Material armor_item;
 	private int first_skill_raytrace_range;
@@ -37,10 +36,15 @@ public class Crafter extends AbstractFirstRole {
 	private double second_skill_attack_damage_buff;
 	private int second_skill_hunger_cost;
 	private int second_skill_cooldown_ticks;
+	private static Crafter instance;
 
-	public Crafter() {
+	public static Crafter getInstance() {
+		if (instance == null) instance = new Crafter();
+		return instance;
+	}
+
+	private Crafter() {
 		super(Roles.CRAFTER);
-		// 💡 [추가] 부모 데이터 바인딩 파이프라인 가동
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

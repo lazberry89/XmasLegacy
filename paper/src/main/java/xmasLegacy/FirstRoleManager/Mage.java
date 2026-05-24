@@ -47,7 +47,14 @@ public class Mage extends AbstractFirstRole {
 	private double second_skill_pull_strength;
 	private double second_skill_pull_threshold;
 
-	public Mage() {
+	private static Mage instance;
+
+	public static Mage getInstance() {
+		if (instance == null) instance = new Mage();
+		return instance;
+	}
+
+	private Mage() {
 		super(Roles.MAGE);
 		this.SEM = SkillEffectManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

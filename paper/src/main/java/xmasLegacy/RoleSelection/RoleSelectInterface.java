@@ -15,8 +15,8 @@ public class RoleSelectInterface implements InventoryHolder {
 	private final XmasLegacy plugin;
 	private final Inventory inv;
 
-	public RoleSelectInterface(XmasLegacy plugin) {
-		this.plugin = plugin;
+	public RoleSelectInterface() {
+		this.plugin = XmasLegacy.getInstance();
 		this.inv = Bukkit.createInventory(this, 36, ColorUtils.chat("&c&l역할 선택"));
 		ItemStack warrior = ItemBuilder.of(plugin, Material.IRON_AXE)
 				.setName(ColorUtils.chat("&c&l전사"))

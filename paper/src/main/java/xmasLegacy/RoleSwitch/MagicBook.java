@@ -57,7 +57,7 @@ public class MagicBook {
             plugin.infoMsg(InfoLevel.ERROR, p, "이미 직업이 선택되었어요.");
             return;
         }
-        p.openInventory(new RoleSelectInterface(plugin).getInventory());
+        p.openInventory(new RoleSelectInterface().getInventory());
     }
 
     @CanIgnoreReturnValue

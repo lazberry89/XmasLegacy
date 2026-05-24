@@ -34,7 +34,14 @@ public class Defender extends AbstractSecondRole {
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 	private final Emblem emblem;
 
-	public Defender() {
+	private static Defender instance;
+
+	public static Defender getInstance() {
+		if (instance == null) instance = new Defender();
+		return instance;
+	}
+
+	private Defender() {
 		super(SecondaryRoles.DEFENDER);
 		this.SEM = SkillEffectManager.getInstance();
 		this.PM = PartyManager.getInstance();

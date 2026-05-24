@@ -28,7 +28,6 @@ public class Farmer extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.RADIUS_HARVEST);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-
 	private Material weapon_item;
 	private Material armor_item;
 	private double armor_state_value;
@@ -39,8 +38,14 @@ public class Farmer extends AbstractFirstRole {
 	private int second_skill_y_range;
 	private int second_skill_particle_count;
 	private double second_skill_particle_offset;
+	private static Farmer instance;
 
-	public Farmer() {
+	public static Farmer getInstance() {
+		if (instance == null) instance = new Farmer();
+		return instance;
+	}
+
+	private Farmer() {
 		super(Roles.FARMER);
 		this.rm = RegionManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

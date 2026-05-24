@@ -40,8 +40,14 @@ public class Rogue extends AbstractFirstRole {
 	private double dagger_rush_damage;
 	private int second_skill_hunger_cost;
 	private long second_skill_duration;
+	private static Rogue instance;
 
-	public Rogue() {
+	public static Rogue getInstance() {
+		if (instance == null) instance = new Rogue();
+		return instance;
+	}
+
+	private Rogue() {
 		super(Roles.ROGUE);
 		this.SEM = SkillEffectManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

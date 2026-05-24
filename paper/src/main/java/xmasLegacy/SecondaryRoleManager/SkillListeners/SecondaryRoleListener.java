@@ -8,36 +8,36 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.SecondarySkill;
-import xmasLegacy.FirstRoleManager.FirstRoleManager;
+import xmasLegacy.RoleManager;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
+import xmasLegacy.SecondaryRoleManager.Fighter;
 import xmasLegacy.SecondaryRoleManager.Guardian;
 import xmasLegacy.XmasLegacy;
 
-import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
+import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.DEFENDER;
+import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.GUARDIAN;
 
-@SuppressWarnings("DuplicatedCode, unused")
+@SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal, LoggingSimilarMessage")
 public class SecondaryRoleListener implements Listener {
     private final XmasLegacy plugin;
     private final UserManager um;
     private final PartyManager pm;
+	private final RoleManager rlm;
     private final Defender defender;
     private final Guardian guardian;
     private final Berserker berserker;
@@ -46,9 +46,10 @@ public class SecondaryRoleListener implements Listener {
         this.plugin = XmasLegacy.getInstance();
         this.um = UserManager.getInstance();
         this.pm = PartyManager.getInstance();
-        this.defender = plugin.defender;
-        this.guardian = plugin.guardian;
-        this.berserker = plugin.berserker;
+		this.rlm = RoleManager.getInstance();
+        this.defender = Defender.getInstance();
+        this.guardian = Guardian.getInstance();
+        this.berserker = Berserker.getInstance();
     }
 
     @EventHandler
@@ -157,13 +158,28 @@ public class SecondaryRoleListener implements Listener {
 	}
 
 	@EventHandler
+	public void FighterCounter(EntityDamageByEntityEvent e) {
+		if (!(e.getEntity() instanceof Player victim)) return;
+		if (!(e.getDamager() instanceof LivingEntity attacker)) return;
+
+		User user = um.getUser(victim.getUniqueId());
+		if (user == null) return;
+		if (user.getRole() != SecondaryRoles.FIGHTER) return;
+		if  (Fighter.getInstance().isCounter(victim)) {
+			attacker.damage(e.getDamage() * 0.5);
+			e.setCancelled(true);
+			Fighter.getInstance().stopCounter(victim);
+		}
+	}
+
+	@EventHandler
 	public void skillUse(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
 		PersistentDataContainer container = tool.getItemMeta().getPersistentDataContainer();
 		String type = container.get(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING);
-		String roleS = container.get(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING);
+		String roleS = container.get(plugin.getNamespacedKey("emblem_role"), PersistentDataType.STRING);
 		if (type == null || roleS == null) return;
 		Role role;
 		try {
@@ -175,11 +191,16 @@ public class SecondaryRoleListener implements Listener {
 		if (role == null) return;
 		switch (type) {
 			case "range" -> {
-
+				if (role instanceof Roles fr) rlm.getRoleInstance(fr).useSecondSkill(p);
+				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useSecondSkill(p);
+				else plugin.getSLF4JLogger().error("Role type mismatch. Role: {}", role.name());
 			}
 			case "target" -> {
-
+				if (role instanceof Roles fr) rlm.getRoleInstance(fr).useFirstSkill(p);
+				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useFirstSkill(p);
+				else plugin.getSLF4JLogger().error("Role type mismatch. Role: {}", role.name());
 			}
+			default -> plugin.getSLF4JLogger().error("Emblem type mismatch. Type: {}", type);
 		}
 	}
 }

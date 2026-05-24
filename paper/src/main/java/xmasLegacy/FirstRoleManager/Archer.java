@@ -39,8 +39,14 @@ public class Archer extends AbstractFirstRole {
 	private double second_skill_backdash_multiplier;
 	private double second_skill_backdash_y;
 	private long second_skill_invulnerable_duration;
+	private static Archer instance;
 
-	public Archer() {
+	public static Archer getInstance() {
+		if (instance == null) instance = new Archer();
+		return instance;
+	}
+
+	private Archer() {
 		super(Roles.ARCHER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

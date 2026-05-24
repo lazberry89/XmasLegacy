@@ -34,8 +34,14 @@ public class Miner extends AbstractFirstRole {
 	private int second_skill_hunger_cost;
 	private int second_skill_scan_range;
 	private long second_skill_glow_duration;
+	private static Miner instance;
 
-	public Miner() {
+	public static Miner getInstance() {
+		if (instance == null) instance = new Miner();
+		return instance;
+	}
+
+	private Miner() {
 		super(Roles.MINER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
