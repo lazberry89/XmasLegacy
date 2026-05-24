@@ -1,8 +1,11 @@
 package xmasLegacy.SecondaryRoleManager;
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +16,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
 import xmasLegacy.Emblems.Emblem;
+import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
@@ -73,7 +77,7 @@ public class Fighter extends AbstractSecondRole {
 
         Vector ortho;
         if (Math.abs(dir.getY()) > 0.9) {
-            ortho = new Vector(1, 0, 0); // 수직으로 하늘을 볼 때 예외 처리
+            ortho = new Vector(1, 0, 0);
         } else {
             ortho = new Vector(-dir.getZ(), 0, dir.getX()).normalize();
         }
@@ -114,12 +118,22 @@ public class Fighter extends AbstractSecondRole {
 
     @Override
     public @NotNull ItemStack roleWeapon() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.IRON_HOE)
+                .setName(ColorUtils.chat("&c&l복서의 글러브"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .setTag("role_id", "fighter")
+                .setCustomModelData(1)//custom model data = 1
+                .build().clone();
     }
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.IRON_HELMET)
+                .setName(ColorUtils.chat("&7&l복서의 투구"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .setTag("role_id", "fighter")
+                .addAttribute(Attribute.ATTACK_SPEED, 0.01, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND)
+                .build().clone();
     }
 
 	@Override

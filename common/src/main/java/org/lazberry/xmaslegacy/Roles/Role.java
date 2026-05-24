@@ -14,4 +14,12 @@ public interface Role {
     @NotNull List<Role> next();
     Skill bindTarget();
     List<Skill> rangeTarget();
+
+    static Role valueOf(String name) {
+        try { return Roles.valueOf(name); } catch (IllegalArgumentException ignored) {}
+        try { return SecondaryRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
+        try { return ThirdRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
+        try { return HiddenRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
+        throw new IllegalArgumentException("No Role constant found with name: " + name);
+    }
 }

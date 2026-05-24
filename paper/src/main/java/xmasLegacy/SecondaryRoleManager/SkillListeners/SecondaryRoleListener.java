@@ -25,6 +25,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.SecondarySkill;
+import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
 import xmasLegacy.SecondaryRoleManager.Guardian;
@@ -156,83 +157,29 @@ public class SecondaryRoleListener implements Listener {
 	}
 
 	@EventHandler
-	public void skillChange(PlayerToggleSneakEvent e) {
-		if (e.isSneaking()) return;
-		Player p = e.getPlayer();
-		User user = um.getUser(p.getUniqueId());
-		if (user == null) return;
-
-		ItemStack item = p.getInventory().getItemInMainHand();
-		if (item.getType().isAir()) return;
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return;
-
-		PersistentDataContainer pdc = meta.getPersistentDataContainer();
-		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
-		if (type == null) return;
-
-		e.setCancelled(true);
-		switch (type) {
-			case "defender" -> {
-				defender.next(p);
-				p.sendActionBar(ColorUtils.chat(defender.getCurrentSkill(p).getSkillName()));
-			}
-			case "guardian" -> {
-				guardian.next(p);
-				p.sendActionBar(ColorUtils.chat(guardian.getCurrentSkill(p).getSkillName()));
-			}
-			case "berserker" -> {
-				berserker.next(p);
-				p.sendActionBar(ColorUtils.chat(berserker.getCurrentSkill(p).getSkillName()));
-			}
-		}
-	}
-
-	@EventHandler
 	public void skillUse(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
-		User user = um.getUser(p.getUniqueId());
-		if (user == null) return;
-
-		if (!e.getAction().isRightClick()) return;
-
-		ItemStack item = p.getInventory().getItemInMainHand();
-		if (item.getType().isAir()) return;
-
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return;
-
-		PersistentDataContainer pdc = meta.getPersistentDataContainer();
-		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
-		if (type == null) return;
-		e.setCancelled(true);
+		ItemStack tool = p.getInventory().getItemInMainHand();
+		if (tool.getType().isAir()) return;
+		PersistentDataContainer container = tool.getItemMeta().getPersistentDataContainer();
+		String type = container.get(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING);
+		String roleS = container.get(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING);
+		if (type == null || roleS == null) return;
+		Role role;
+		try {
+			role = Role.valueOf(roleS);
+		} catch (IllegalArgumentException ex) {
+			plugin.getSLF4JLogger().error("Role method 'valueOf(String name)' invoked error. -> \"{}\"", roleS, ex);
+			role = null;
+		}
+		if (role == null) return;
 		switch (type) {
-			case "defender" -> {
-				if (defender.getCurrentSkill(p) == null) return;
-				if (defender.getCurrentSkill(p) == SecondarySkill.MAGNETIC_FIELD) {
-					defender.useFirstSkill(p);
-				} else {
-					defender.useSecondSkill(p);
-				}
+			case "range" -> {
+
 			}
-			case "guardian" -> {
-				if (guardian.getCurrentSkill(p) == null) return;
-				if (guardian.getCurrentSkill(p) == SecondarySkill.TARGET_GUARD) {
-					guardian.useFirstSkill(p);
-				} else {
-					guardian.useSecondSkill(p);
-				}
-			}
-			case "berserker" -> {
-				if (berserker.getCurrentSkill(p) == null) return;
-				if (berserker.getCurrentSkill(p) == SecondarySkill.MADNESS) {
-					berserker.useFirstSkill(p);
-				} else {
-					berserker.useSecondSkill(p);}
+			case "target" -> {
+
 			}
 		}
-		p.swingMainHand();
-		p.playSound(p, "xmaslegacy:skill_use", 1.0f, 1.0f);
 	}
-
 }
