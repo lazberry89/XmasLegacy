@@ -161,14 +161,14 @@ public class SecondaryRoleListener implements Listener {
 	public void FighterCounter(EntityDamageByEntityEvent e) {
 		if (!(e.getEntity() instanceof Player victim)) return;
 		if (!(e.getDamager() instanceof LivingEntity attacker)) return;
-
+		var fighter = Fighter.getInstance();
 		User user = um.getUser(victim.getUniqueId());
 		if (user == null) return;
-		if (user.getRole() != SecondaryRoles.FIGHTER) return;
-		if  (Fighter.getInstance().isCounter(victim)) {
+		// if (user.getRole() != SecondaryRoles.FIGHTER) return;
+		if  (fighter.isCounter(victim)) {
 			attacker.damage(e.getDamage() * 0.5);
 			e.setCancelled(true);
-			Fighter.getInstance().stopCounter(victim);
+			fighter.stopCounter(victim);
 		}
 	}
 

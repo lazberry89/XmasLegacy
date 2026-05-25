@@ -89,7 +89,7 @@ public class Fighter extends AbstractSecondRole {
         if (!consumeEnergy(p, 3)) return;
         if (!(p.getTargetEntity(2, false) instanceof LivingEntity target)) return;
         Vector vector = p.getLocation().getDirection();
-        p.setVelocity(vector.multiply(2.5));
+        target.setVelocity(vector.multiply(3));
         Location startLoc = p.getLocation().add(0, 1, 0);
         Vector dir = vector.clone().normalize();
 

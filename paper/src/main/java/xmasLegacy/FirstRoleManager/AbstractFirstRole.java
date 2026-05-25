@@ -64,8 +64,8 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 		File roleFile = new File(roleFolder, path + ".yml");
 		FileConfiguration config = YamlConfiguration.loadConfiguration(roleFile);
 
-		config.addDefault("cooldown.skill1", 0);
-		config.addDefault("cooldown.skill2", 0);
+		config.addDefault("cooldown.skill1", 4);
+		config.addDefault("cooldown.skill2", 4);
 
 		this.loadCustomStats(config);
 

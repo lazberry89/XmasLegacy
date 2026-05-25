@@ -35,6 +35,7 @@ public class SecondRoleManager {
 		this.roleInstance.put(SecondaryRoles.BERSERKER, this.berserker);
 		this.roleInstance.put(SecondaryRoles.DEFENDER, this.defender);
 		this.roleInstance.put(SecondaryRoles.GUARDIAN, this.guardian);
+		this.roleInstance.put(SecondaryRoles.FIGHTER, this.fighter);
 	}
 
 	public AbstractSecondRole getRoleInstance(@NotNull SecondaryRoles role) {
