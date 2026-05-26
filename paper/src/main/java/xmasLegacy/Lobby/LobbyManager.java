@@ -29,7 +29,7 @@ public class LobbyManager {
 
     public void setSpawn(Location loc) {
         this.spawn = loc;
-        //save();
+        save();
     }
 
     public void resetSpawn() {

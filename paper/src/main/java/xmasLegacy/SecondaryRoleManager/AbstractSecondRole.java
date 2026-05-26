@@ -8,6 +8,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
@@ -15,10 +16,12 @@ import xmasLegacy.XmasLegacy;
 public abstract class AbstractSecondRole implements UsingEnergy {
 	private final XmasLegacy plugin;
 	private final SecondaryRoles role;
+	protected final Emblem emblem;
 
 	public AbstractSecondRole(SecondaryRoles role) {
 		this.plugin = XmasLegacy.getInstance();
 		this.role = role;
+		this.emblem = new Emblem(role);
 	}
 
 	public abstract void useFirstSkill(Player p);

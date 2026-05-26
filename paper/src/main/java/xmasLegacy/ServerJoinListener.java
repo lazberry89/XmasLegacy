@@ -58,7 +58,7 @@ public class ServerJoinListener implements Listener {
                                                     if (ex != null || reloadedUser == null) {
                                                         t.sendMessage(ColorUtils.chat(Alert.RED + " 다시 로드하는 데 실패했습니다. 관리자에게 문의하세요."));
                                                     } else {
-                                                        plugin.infoMsg(InfoLevel.INFO, t, "유저정보다 성공적으로 로드되었습니다!");
+                                                        plugin.infoMsg(InfoLevel.INFO, t, "유저정보가 성공적으로 로드되었습니다!");
                                                         UserTagManager.createHoverTag(t, reloadedUser);
 														UserTagManager.runTask();
                                                     }

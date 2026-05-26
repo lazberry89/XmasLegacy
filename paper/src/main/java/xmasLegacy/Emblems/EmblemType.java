@@ -1,6 +1,6 @@
 package xmasLegacy.Emblems;
 
 public enum EmblemType {
-	GENERAL,
+	TARGET,
 	RANGE
 }

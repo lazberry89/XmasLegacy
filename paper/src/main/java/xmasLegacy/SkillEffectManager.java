@@ -10,15 +10,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class SkillEffectManager {
     private final XmasLegacy plugin;
+    private final Map<UUID, Long> stun = new HashMap<>();
+    private final Set<UUID> activeStunTimers = new HashSet<>();
+    private final Set<LivingEntity> hideMap = new HashSet<>();
     private static SkillEffectManager instance;
 
     public SkillEffectManager() {
@@ -28,6 +30,73 @@ public class SkillEffectManager {
     public static SkillEffectManager getInstance() {
         if (instance == null) instance = new SkillEffectManager();
         return instance;
+    }
+
+    public void hideEntity(LivingEntity le) {
+        this.hideMap.add(le);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.hideEntity(plugin, le);
+        }
+        if (le instanceof Player player) {
+            player.setInvisible(true);
+
+            for (Entity nearby : player.getNearbyEntities(32, 32, 32)) {
+                if (nearby instanceof Mob mob && player.equals(mob.getTarget())) {
+                    mob.setTarget(null);
+                }
+            }
+        }
+    }
+    public Set<LivingEntity> getHiddenEntity() {
+        return this.hideMap;
+    }
+    public void showEntity(LivingEntity le) {
+        if (this.hideMap.remove(le)) {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.showEntity(plugin, le);
+            }
+            if (le instanceof Player player) {
+                player.setInvisible(false);
+            }
+        }
+    }
+
+
+    @Unmodifiable
+    public Set<UUID> stunMap() {
+        return Collections.unmodifiableSet(this.activeStunTimers);
+    }
+
+
+    public void deStun(UUID uuid) {
+        this.activeStunTimers.remove(uuid);
+    }
+
+    public void StunEntity(UUID uuid) {
+        this.activeStunTimers.add(uuid);
+    }
+
+    public void StunEntity(UUID uuid, long period) {
+        stun.put(uuid, stun.getOrDefault(uuid, 0L) + period);
+
+        if (activeStunTimers.contains(uuid)) return;
+        activeStunTimers.add(uuid);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Long current = stun.get(uuid);
+
+                if (current == null || current <= 0L) {
+                    stun.remove(uuid);
+                    activeStunTimers.remove(uuid);
+                    this.cancel();
+                    return;
+                }
+
+                stun.put(uuid, current - 1);
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 
     public void knockbackEntity(Player player, LivingEntity target, double force, double yForce) {
@@ -42,23 +111,19 @@ public class SkillEffectManager {
         direction.multiply(force).setY(yForce);
         target.setVelocity(direction);
     }
-    /**
-     * @param loc show Location
-     * @param particle particle
-     * @param radius 범위
-     * @param animated 애니메이션
-     * @param points 파티클 갯수
-     */
+
     public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points) {
-        int finalPoints = (points == null) ? 20 : points; // 기본값 20 설정
+        int finalPoints = (points == null) ? 20 : points;
         if (animated) {
+            // 💡 비동기 스레드 안전성을 위해 스캔할 위치를 클론하여 고정 상수로 보존
+            final Location fixedLoc = loc.clone();
             new BukkitRunnable() {
                 double angle = 0;
                 final double step = (2 * Math.PI) / finalPoints;
 
                 @Override
                 public void run() {
-                    spawnCircularParticle(loc, particle, radius, angle);
+                    spawnCircularParticle(fixedLoc, particle, radius, angle);
                     angle += step;
 
                     if (angle >= 2 * Math.PI) this.cancel();
@@ -71,29 +136,31 @@ public class SkillEffectManager {
             }
         }
     }
-	public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points, Particle.DustOptions dust) {
-		int finalPoints = (points == null) ? 20 : points; // 기본값 20 설정
 
-		if (animated) {
-			new BukkitRunnable() {
-				double angle = 0;
-				final double step = (2 * Math.PI) / finalPoints;
+    public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points, Particle.DustOptions dust) {
+        int finalPoints = (points == null) ? 20 : points;
 
-				@Override
-				public void run() {
-					spawnCircularParticle(loc, particle, radius, angle, dust);
-					angle += step;
+        if (animated) {
+            final Location fixedLoc = loc.clone();
+            new BukkitRunnable() {
+                double angle = 0;
+                final double step = (2 * Math.PI) / finalPoints;
 
-					if (angle >= 2 * Math.PI) this.cancel();
-				}
-			}.runTaskTimerAsynchronously(plugin, 0L, 1L);
-		} else {
-			for (int i = 0; i < finalPoints; i++) {
-				double angle = i * ((2 * Math.PI) / finalPoints);
-				spawnCircularParticle(loc, particle, radius, angle, dust);
-			}
-		}
-	}
+                @Override
+                public void run() {
+                    spawnCircularParticle(fixedLoc, particle, radius, angle, dust);
+                    angle += step;
+
+                    if (angle >= 2 * Math.PI) this.cancel();
+                }
+            }.runTaskTimerAsynchronously(plugin, 0L, 1L);
+        } else {
+            for (int i = 0; i < finalPoints; i++) {
+                double angle = i * ((2 * Math.PI) / finalPoints);
+                spawnCircularParticle(loc, particle, radius, angle, dust);
+            }
+        }
+    }
 
     private void spawnCircularParticle(Location center, Particle particle, double radius, double angle) {
         double x = Math.cos(angle) * radius;
@@ -101,30 +168,20 @@ public class SkillEffectManager {
         Location particleLoc = center.clone().add(x, 0.5, z);
         center.getWorld().spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0);
     }
-	private void spawnCircularParticle(Location center, Particle particle, double radius, double angle, Particle.DustOptions dust) {
-		double x = Math.cos(angle) * radius;
-		double z = Math.sin(angle) * radius;
-		Location particleLoc = center.clone().add(x, 0.5, z);
-		center.getWorld().spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0, dust);
-	}
 
-    /**
-     *
-     * @param start 시작지점
-     * @param end 끝지점
-     * @param particle 파티클
-     * @param space 파티클 사이 거리
-     * @param animated 애니메이션
-     * @param penetrate 관통여부
-     * @param damage 대미지
-     * @param shooter 공격자
-     */
+    private void spawnCircularParticle(Location center, Particle particle, double radius, double angle, Particle.DustOptions dust) {
+        double x = Math.cos(angle) * radius;
+        double z = Math.sin(angle) * radius;
+        Location particleLoc = center.clone().add(x, 0.5, z);
+        center.getWorld().spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0, dust);
+    }
+
     public void drawLine(Location start, Location end, Particle particle, double space, boolean animated, boolean penetrate, float damage, Player shooter) {
         Vector direction = end.toVector().subtract(start.toVector());
         double distance = direction.length();
         direction.normalize();
 
-        final Set<UUID> hitEntities = new HashSet<>(); // 애니메이션을 위해 final 선언
+        final Set<UUID> hitEntities = new HashSet<>();
 
         if (animated) {
             new BukkitRunnable() {
@@ -134,7 +191,6 @@ public class SkillEffectManager {
                 public void run() {
                     Location point = start.clone().add(direction.clone().multiply(currentDist));
 
-                    // 파티클 소환 및 로직 체크
                     if (processLineLogic(point, particle, hitEntities, damage, shooter, penetrate)) {
                         this.cancel();
                         return;
@@ -143,7 +199,7 @@ public class SkillEffectManager {
                     currentDist += space;
                     if (currentDist >= distance) this.cancel();
                 }
-            }.runTaskTimerAsynchronously(plugin, 0L, 1L);
+            }.runTaskTimer(plugin, 0L, 1L); // 💡 엔티티 피해 판단 및 블록 체크가 섞여 있으므로 동기(Sync) 타스크 처리 안전 보장
         } else {
             for (double d = 0; d < distance; d += space) {
                 Location point = start.clone().add(direction.clone().multiply(d));
@@ -152,26 +208,14 @@ public class SkillEffectManager {
         }
     }
 
-    /**
-     *
-     * @param point 위치
-     * @param particle 파티클
-     * @param hitEntities 격피 개체
-     * @param damage 대미지
-     * @param shooter 공격자
-     * @param penetrate 관토여부
-     * @return true/false
-     */
     private boolean processLineLogic(Location point, Particle particle, Set<UUID> hitEntities, float damage, Player shooter, boolean penetrate) {
-        // 1. 파티클 소환
         point.getWorld().spawnParticle(particle, point, 1, 0, 0, 0, 0);
 
-        // 2. 대미지 체크
         if (damage > 0) {
             if (checkDamage(point, hitEntities, damage, shooter, penetrate)) return true;
         }
 
-	    return point.getBlock().getType().isSolid() && !penetrate;
+        return point.getBlock().getType().isSolid() && !penetrate;
     }
 
     private boolean checkDamage(Location point, Set<UUID> hitEntities, float damage, Player shooter, boolean penetrate) {
@@ -187,82 +231,81 @@ public class SkillEffectManager {
         }
         return false;
     }
-	public void followParticle(Player p, Particle particle, double duration) {
-		new BukkitRunnable() {
-			double elapsed = 0;
-			final double maxTicks = duration * 20;
 
-			@Override
-			public void run() {
-				if (elapsed >= maxTicks || !p.isOnline()) {
-					this.cancel();
-					return;
-				}
+    public void followParticle(Player p, Particle particle, double duration) {
+        new BukkitRunnable() {
+            double elapsed = 0;
+            final double maxTicks = duration * 20;
 
-				// 2. 파티클 소환
-				p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01);
+            @Override
+            public void run() {
+                if (elapsed >= maxTicks || !p.isOnline()) {
+                    this.cancel();
+                    return;
+                }
 
-				// 3. 카운트 증가
-				elapsed++;
-			}
-		}.runTaskTimer(plugin, 0L, 1L);
-	}
-	public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
-		new BukkitRunnable() {
+                p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01);
+                elapsed++;
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
 
-			double elapsed = 0;
+    public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
+        new BukkitRunnable() {
+            double elapsed = 0;
+            final double maxTicks = duration * 20;
 
-			final double maxTicks = duration * 20;
+            @Override
+            public void run() {
+                if (elapsed >= maxTicks || !p.isOnline()) {
+                    this.cancel();
+                    return;
+                }
 
-			@Override
-			public void run() {
-				// 1. 시간이 다 됐거나 플레이어가 나갔으면 종료
-				if (elapsed >= maxTicks || !p.isOnline()) {
-					this.cancel();
-					return;
-				}
+                // 💡 비동기 스레드에서 다이렉트로 p.getWorld() 및 p.getLocation() 접근을 회피하기 위해 메인 스레드 스케줄 체인징 사용
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    if (p.isOnline()) {
+                        p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01, dust);
+                    }
+                });
 
-				// 2. 파티클 소환
-				p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01, dust);
+                elapsed++;
+            }
+        }.runTaskTimerAsynchronously(plugin, 0L, 1L);
+    }
 
-				// 3. 카운트 증가
-				elapsed++;
-			}
-		}.runTaskTimerAsynchronously(plugin, 0L, 1L);
-	}
+    public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc) {
+        var haki = OraxenItems.getItemById("haki_wave");
+        if (haki == null) {
+            plugin.getSLF4JLogger().error("Oraxen id is not Correct! : \"haki_wave\"");
+            return;
+        }
+        ItemStack hakiWave = haki.build();
 
-	public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc) {
-		var haki = OraxenItems.getItemById("haki_wave");
-		if (haki == null) {
-			plugin.getSLF4JLogger().error("Oraxen id is not Correct! : \"haki_wave\"");
-			return;
-		}
-		ItemStack hakiWave = haki.build();
+        Location spawnLoc = loc.clone().add(0, 1.5, 0);
+        spawnLoc.setPitch(0.0f);
 
-		Location spawnLoc = loc.clone().add(0, 1.5, 0);
-		spawnLoc.setPitch(0.0f);
+        ItemDisplay display = spawnLoc.getWorld().spawn(spawnLoc, ItemDisplay.class, w -> {
+            w.setItemStack(hakiWave);
+            w.setBrightness(new Display.Brightness(15, 15));
+            w.setBillboard(Display.Billboard.FIXED);
 
-		ItemDisplay display = spawnLoc.getWorld().spawn(spawnLoc, ItemDisplay.class, w -> {
-			w.setItemStack(hakiWave);
-			w.setBrightness(new Display.Brightness(15, 15));
-			w.setBillboard(Display.Billboard.FIXED);
+            w.setInterpolationDuration(6);
+            w.setInterpolationDelay(0);
 
-			Transformation init = w.getTransformation();
-			init.getScale().set(1.0f, 1.0f, 1.0f);
-			w.setTransformation(init);
-		});
+            Transformation init = w.getTransformation();
+            init.getScale().set(1.0f, 1.0f, 1.0f);
+            w.setTransformation(init);
+        });
 
-		Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			if (!display.isValid()) return;
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (!display.isValid()) return;
 
-			display.setInterpolationDuration(6);
-			display.setInterpolationDelay(0);
+            Transformation targetTrans = display.getTransformation();
+            targetTrans.getScale().set(15.0f, 1.0f, 15.0f);
+            display.setTransformation(targetTrans);
+        }, 1L);
 
-			Transformation targetTrans = display.getTransformation();
-			targetTrans.getScale().set(15.0f, 1.0f, 15.0f);
-			display.setTransformation(targetTrans);
-		}, 2L);
-
-		Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
-	}
+        Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
+    }
 }

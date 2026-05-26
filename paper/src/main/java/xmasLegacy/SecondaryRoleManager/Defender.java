@@ -15,24 +15,15 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.SecondarySkill;
-import xmasLegacy.Emblems.Emblem;
+import xmasLegacy.Emblems.EmblemType;
+import xmasLegacy.PlayerSkillUserEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @SuppressWarnings("DuplicatedCode, unused")
 public class Defender extends AbstractSecondRole {
 	private final SkillEffectManager SEM;
 	private final PartyManager PM;
-	private final Map<UUID, SecondarySkill> currentSkill = new HashMap<>();
-	public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.MAGNETIC_FIELD);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-	private final Emblem emblem;
 
 	private static Defender instance;
 
@@ -45,11 +36,12 @@ public class Defender extends AbstractSecondRole {
 		super(SecondaryRoles.DEFENDER);
 		this.SEM = SkillEffectManager.getInstance();
 		this.PM = PartyManager.getInstance();
-		this.emblem = new Emblem(getRole());
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Defender.getInstance(), emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
 		if (p.getCooldown(tool) > 0) {
@@ -117,6 +109,8 @@ public class Defender extends AbstractSecondRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Defender.getInstance(), emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
 		if (p.getCooldown(tool) > 0) {
@@ -132,8 +126,8 @@ public class Defender extends AbstractSecondRole {
 				.filter(e -> !PM.isParty(p.getUniqueId(), e.getUniqueId()))
 				.map(e -> (LivingEntity) e)
 				.forEach(le -> {
-					le.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 30));
 					le.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, 20, 30));
+					SkillEffectManager.getInstance().StunEntity(le.getUniqueId(), 20);
 					le.setPose(Pose.SLEEPING, true);
 					le.damage(6, p);
 					Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {

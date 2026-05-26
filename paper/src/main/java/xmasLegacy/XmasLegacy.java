@@ -46,6 +46,7 @@ import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondaryRoleListener;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
+import xmasLegacy.ServerPrefix.UserTagManager;
 
 @SuppressWarnings({"FieldCanBeLocal", "DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
@@ -109,6 +110,7 @@ public final class XmasLegacy extends JavaPlugin {
 			bg.saveAllBags();
 			getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
 		}
+		UserTagManager.stopTask();
 	}
 
 	private void serverType() {
@@ -161,8 +163,6 @@ public final class XmasLegacy extends JavaPlugin {
 			// Gacha 초기화
 			GachaManager.getInstance();
 
-			//this.TC.setPM(PM); TestCommands
-			//this.LCM.setRM(RGM); LogCommandManager
 			ConsumableManager.getInstance().runCookieTimer(this);
 			BagManager.getInstance().loadAllBags();
 
@@ -180,6 +180,7 @@ public final class XmasLegacy extends JavaPlugin {
 			pm.registerEvents(new SelectListener(), this);
 			pm.registerEvents(new GachaListener(), this);
 			pm.registerEvents(new SecondaryRoleListener(), this);
+			pm.registerEvents(new EffectListener(), this);
 
 			// [메인 서버 전용 명령어 등록]
 			var bag = new BagCommandManager();
@@ -217,6 +218,8 @@ public final class XmasLegacy extends JavaPlugin {
 			getCommand("prefix").setTabCompleter(prefix);
 			getCommand("0947345").setExecutor(new UserLoadCommand());
 			getCommand("second").setExecutor(new SecondTestCommand());
+
+			UserTagManager.runTask();
 		}
 	}
 

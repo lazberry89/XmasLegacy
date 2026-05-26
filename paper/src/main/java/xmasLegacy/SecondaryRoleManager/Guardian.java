@@ -18,9 +18,9 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.SecondarySkill;
-import xmasLegacy.Emblems.Emblem;
+import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
+import xmasLegacy.PlayerSkillUserEvent;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.*;
@@ -28,12 +28,8 @@ import java.util.*;
 @SuppressWarnings("DuplicatedCode, unused")
 public class Guardian extends AbstractSecondRole {
     private final PartyManager PM;
-    private final Map<UUID, SecondarySkill> currentSkill = new HashMap<>();
-    public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.TARGET_GUARD);}
-    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
     private final Map<Player, LivingEntity> targetMap = new HashMap<>();
     private final Set<UUID> activeSkill = new HashSet<>();
-	private final Emblem roleEmblem;
 	private static Guardian instance;
 
 	public static Guardian getInstance() {
@@ -43,7 +39,6 @@ public class Guardian extends AbstractSecondRole {
 
     private Guardian() {
         super(SecondaryRoles.GUARDIAN);
-		this.roleEmblem = new Emblem(getRole());
         this.PM = PartyManager.getInstance();
     }
 
@@ -118,6 +113,8 @@ public class Guardian extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(Player p) {
+        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Guardian.getInstance(), emblem, EmblemType.TARGET);
+        if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
         if (p.getCooldown(tool) > 0) {
@@ -192,6 +189,8 @@ public class Guardian extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(Player p) {
+        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Guardian.getInstance(), emblem, EmblemType.RANGE);
+        if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
         if (p.getCooldown(tool) > 0) {
@@ -285,11 +284,11 @@ public class Guardian extends AbstractSecondRole {
 
 	@Override
 	public @NotNull ItemStack TargetEmblem() {
-		return roleEmblem.getTargetEmblem();
+		return emblem.getTargetEmblem();
 	}
 
 	@Override
 	public @NotNull ItemStack RangeEmblem() {
-		return roleEmblem.getRangeEmblem();
+		return emblem.getRangeEmblem();
 	}
 }

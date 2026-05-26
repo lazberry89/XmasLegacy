@@ -18,21 +18,19 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.SecondarySkill;
-import xmasLegacy.Emblems.Emblem;
+import xmasLegacy.Emblems.EmblemType;
+import xmasLegacy.PlayerSkillUserEvent;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @SuppressWarnings("DuplicatedCode")
 public class Berserker extends AbstractSecondRole {
-    private final Map<UUID, SecondarySkill> currentSkill = new HashMap<>();
-    public SecondarySkill getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), SecondarySkill.MADNESS);}
-    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
     private final Set<UUID> usedPassive = new HashSet<>();
     private final PartyManager PM;
-	private final Emblem emblem;
 	private static Berserker instance;
 
 	public static Berserker getInstance() {
@@ -43,11 +41,12 @@ public class Berserker extends AbstractSecondRole {
     private Berserker() {
         super(SecondaryRoles.BERSERKER);
         this.PM = PartyManager.getInstance();
-		this.emblem = new Emblem(getRole());
     }
 
     @Override
     public void useFirstSkill(Player p) {
+        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Berserker.getInstance(), emblem, EmblemType.TARGET);
+        if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
         if (p.getCooldown(tool) > 0) {
@@ -153,6 +152,8 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(Player p) {
+        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Berserker.getInstance(), emblem, EmblemType.RANGE);
+        if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
         if (p.getCooldown(tool) > 0) {

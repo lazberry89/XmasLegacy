@@ -1,6 +1,6 @@
 package xmasLegacy.SecondaryRoleManager.SkillListeners;
 
-import org.bukkit.Bukkit;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
@@ -25,8 +25,9 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.RoleManager;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
-import xmasLegacy.SecondaryRoleManager.Fighter;
 import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
+import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.DEFENDER;
@@ -38,18 +39,23 @@ public class SecondaryRoleListener implements Listener {
     private final UserManager um;
     private final PartyManager pm;
 	private final RoleManager rlm;
+	private final SkillEffectManager sem;
+
     private final Defender defender;
     private final Guardian guardian;
     private final Berserker berserker;
+	private final Sniper sniper;
 
     public SecondaryRoleListener() {
         this.plugin = XmasLegacy.getInstance();
         this.um = UserManager.getInstance();
         this.pm = PartyManager.getInstance();
 		this.rlm = RoleManager.getInstance();
+		this.sem = SkillEffectManager.getInstance();
         this.defender = Defender.getInstance();
         this.guardian = Guardian.getInstance();
         this.berserker = Berserker.getInstance();
+		this.sniper = Sniper.getInstance();
     }
 
     @EventHandler
@@ -158,18 +164,39 @@ public class SecondaryRoleListener implements Listener {
 	}
 
 	@EventHandler
-	public void FighterCounter(EntityDamageByEntityEvent e) {
-		if (!(e.getEntity() instanceof Player victim)) return;
-		if (!(e.getDamager() instanceof LivingEntity attacker)) return;
-		var fighter = Fighter.getInstance();
-		User user = um.getUser(victim.getUniqueId());
+	public void FighterPassive(EntityDamageByEntityEvent e) {
+		if (!(e.getDamageSource().getCausingEntity() instanceof Player p)) return;
+		if (!(e.getEntity() instanceof LivingEntity le)) return;
+		User user = um.getUser(p.getUniqueId());
 		if (user == null) return;
-		// if (user.getRole() != SecondaryRoles.FIGHTER) return;
-		if  (fighter.isCounter(victim)) {
-			attacker.damage(e.getDamage() * 0.5);
-			e.setCancelled(true);
-			fighter.stopCounter(victim);
+		if (!SecondaryRoles.FIGHTER.equals(user.getRole())) return;
+
+		if (sem.stunMap().contains(e.getEntity().getUniqueId())) {
+			e.setDamage(e.getDamage() * 2.0);
+			Particle.DustOptions option = new Particle.DustOptions(Color.RED, 0.8f);
+			le.getWorld().spawnParticle(Particle.DUST, le.getLocation(), 8, 0.5f, 0.5f, 0.5f, 0.01, option);
+			le.getWorld().playSound(le.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1.0f, 1.0f);
 		}
+	}
+
+	@EventHandler
+	public void SniperShoot(PlayerInteractEvent e) {
+		if (!e.getAction().isLeftClick()) return;
+		Player p = e.getPlayer();
+		ItemStack item = e.getItem();
+		if (item == null) return;
+
+		if (!(item.getType() == Material.CROSSBOW)) return;
+
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return;
+
+		PersistentDataContainer container = meta.getPersistentDataContainer();
+		String key = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		if (key == null || !key.equals("sniper")) return;
+
+		sniper.shoot(p);
+		p.setCooldown(item, 20);
 	}
 
 	@EventHandler

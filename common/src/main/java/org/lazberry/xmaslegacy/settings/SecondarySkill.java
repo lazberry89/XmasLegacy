@@ -16,7 +16,11 @@ public enum SecondarySkill implements Skill {
 
 	//Fighter
 	COUNTER("반격"),
-	FINISHER("피니셔");
+	FINISHER("피니셔"),
+
+	//Sniper
+	SNIPE("저격"),
+	MAGIC_BULLET("특수 탄환");
 
 	private final String kor;
 
@@ -37,6 +41,9 @@ public enum SecondarySkill implements Skill {
 
 			case COUNTER -> FINISHER;
 			case FINISHER -> COUNTER;
+
+			case SNIPE -> MAGIC_BULLET;
+			case MAGIC_BULLET -> SNIPE;
 		};
 	}
 
