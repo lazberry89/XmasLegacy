@@ -15,6 +15,8 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmasLegacy.Emblems.EmblemType;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.*;
@@ -97,6 +99,8 @@ public class Crafter extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
@@ -149,17 +153,16 @@ public class Crafter extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null) return;
 
-		// 1. 쿨타임 체크
 		if (p.getCooldown(tool.getType()) > 0) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
 			return;
 		}
 
-		// 2. 타겟 아이템 엔티티 확인
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		Entity target = p.getTargetEntity(this.second_skill_raytrace_range, false);
 		if (!(target instanceof Item itemEntity)) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 아이템(드롭된 아이템)을 조준해주세요!"));
@@ -259,6 +262,16 @@ public class Crafter extends AbstractFirstRole {
 				.setTag("role_id", "crafter")
 				.build()
 				.clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

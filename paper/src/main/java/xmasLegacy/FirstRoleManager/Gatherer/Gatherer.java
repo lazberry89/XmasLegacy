@@ -18,7 +18,9 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -125,6 +127,8 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		Block pose = p.getTargetBlockExact(this.first_skill_target_range);
 		if (pose == null || pose.getType() != Material.SEA_LANTERN) {
@@ -155,6 +159,8 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getBoots();
 		Location loc = p.getLocation();
 		if (tool == null || tool.getType() == Material.AIR) return;
@@ -237,6 +243,16 @@ public class Gatherer extends AbstractFirstRole {
 				.setUnbreakable()
 				.addAttribute(Attribute.MOVEMENT_SPEED, this.armor_movement_speed, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
 				.build().clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

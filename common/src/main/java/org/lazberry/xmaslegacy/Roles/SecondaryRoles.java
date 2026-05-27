@@ -16,7 +16,7 @@ public enum SecondaryRoles implements Role {
 	BERSERKER("버서커" ,Roles.WARRIOR, SecondarySkill.MADNESS, new Skill[]{SecondarySkill.TRIPLE_TOMAHAWK}), //전사 2차전직 버서커(탱커)
 	FIGHTER("격투가" ,Roles.WARRIOR, SecondarySkill.COUNTER, new Skill[]{SecondarySkill.FINISHER}), //전사 2차전직 격투가
 
-	SNIPER("저격수" ,Roles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 저격수
+	SNIPER("저격수" ,Roles.ARCHER, SecondarySkill.SNIPE, new Skill[]{SecondarySkill.MAGIC_BULLET}, ThirdRoles.WIND_WALKER), //궁수 2차전직 저격수
 	RANGER("유격병" ,Roles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 유격병
 	TRAPPER("사냥꾼" ,Roles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 사냥꾼
 
@@ -69,7 +69,7 @@ public enum SecondaryRoles implements Role {
 	}
 
 	@Override
-	public List<Skill> rangeTarget() {
+	public List<Skill> bindRange() {
 		return this.skill2;
 	}
 

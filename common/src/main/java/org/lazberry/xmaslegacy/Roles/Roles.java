@@ -65,7 +65,7 @@ public enum Roles implements Role {
     }
 
     @Override
-    public List<Skill> rangeTarget() {
+    public List<Skill> bindRange() {
         return List.of(this.getSecondSkill());
     }
 

@@ -16,7 +16,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
-import xmasLegacy.PlayerSkillUserEvent;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -40,7 +40,7 @@ public class Defender extends AbstractSecondRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Defender.getInstance(), emblem, EmblemType.TARGET);
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Defender.getInstance(), emblem, EmblemType.TARGET);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
@@ -109,7 +109,7 @@ public class Defender extends AbstractSecondRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Defender.getInstance(), emblem, EmblemType.RANGE);
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Defender.getInstance(), emblem, EmblemType.RANGE);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;

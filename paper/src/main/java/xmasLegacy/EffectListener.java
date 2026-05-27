@@ -1,14 +1,19 @@
 package xmasLegacy;
 
 import io.papermc.paper.event.entity.EntityMoveEvent;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.SecondaryRoleManager.BerserkerSpeedManager;
 
 import java.util.UUID;
 
@@ -22,7 +27,7 @@ public class EffectListener implements Listener {
     }
 
     @EventHandler
-    public void StunListener(EntityMoveEvent e) {
+    public void EntityStunListener(EntityMoveEvent e) {
         LivingEntity le = e.getEntity();
         UUID uuid = le.getUniqueId();
         if (sem.stunMap().contains(uuid)) {
@@ -33,13 +38,42 @@ public class EffectListener implements Listener {
     }
 
     @EventHandler
+    public void PlayerStunListener(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        UUID uuid = p.getUniqueId();
+
+        if (sem.stunMap().contains(uuid)) {
+            Location from = e.getFrom();
+            Location to = e.getTo();
+
+            if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+                Location newTo = from.clone();
+                newTo.setYaw(to.getYaw());
+                newTo.setPitch(to.getPitch());
+                e.setTo(newTo);
+            }
+
+            p.sendActionBar(ColorUtils.chat(Alert.YELLOW + " 스턴상태"));
+            //TODO Roped effect
+        }
+    }
+
+    @EventHandler
     public void hideHiddenEntities(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        p.setPose(Pose.STANDING, true);
         sem.getHiddenEntity().forEach(h -> p.hideEntity(plugin, h));
+        BerserkerSpeedManager.removeFlatSpeed(p);
     }
 
     @EventHandler
     public void removeHidePlayer(PlayerQuitEvent e) {
         sem.showEntity(e.getPlayer());
+    }
+
+    @EventHandler
+    public void StandUp(PlayerRespawnEvent e) {
+        Player p = e.getPlayer();
+        p.setPose(Pose.STANDING, true);
     }
 }

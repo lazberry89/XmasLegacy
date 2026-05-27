@@ -13,7 +13,7 @@ public interface Role {
     int getTier();
     @NotNull List<Role> next();
     Skill bindTarget();
-    List<Skill> rangeTarget();
+    List<Skill> bindRange();
 
     static Role valueOf(String name) {
         try { return Roles.valueOf(name); } catch (IllegalArgumentException ignored) {}

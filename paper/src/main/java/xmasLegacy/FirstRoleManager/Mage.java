@@ -18,11 +18,14 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmasLegacy.Emblems.EmblemType;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.*;
 
+@SuppressWarnings("DuplicatedCode")
 public class Mage extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_INSANELY);}
@@ -125,6 +128,8 @@ public class Mage extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 
 		if (p.getCooldown(tool) > 0) {
@@ -184,6 +189,8 @@ public class Mage extends AbstractFirstRole {
 	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
 
@@ -298,6 +305,16 @@ public class Mage extends AbstractFirstRole {
 				.setArmorState(7, EquipmentSlotGroup.CHEST)
 				.setTag("role_id", "MageArmor")
 				.build().clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

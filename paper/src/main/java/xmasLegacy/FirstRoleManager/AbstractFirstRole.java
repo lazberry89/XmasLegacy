@@ -16,33 +16,41 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
 import java.io.File;
 import java.io.IOException;
 
-@SuppressWarnings("DuplicatedCode, unused")
+@SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal")
 public abstract class AbstractFirstRole implements UsingEnergy {
 	private final Roles role;
     private final XmasLegacy plugin;
 	protected int cooldown1;
 	protected int cooldown2;
+	protected final Emblem emblem;
 
 	public AbstractFirstRole(Roles role) {
 		this.plugin = XmasLegacy.getInstance();
 		this.role = role;
+		this.emblem = new Emblem(role);
 	}
 
     public XmasLegacy getPlugin() {
         return this.plugin;
     }
+	public @NotNull Emblem getEmblem() {
+		return this.emblem;
+	}
 
 	public abstract void useFirstSkill(Player p);
 	public abstract void useSecondSkill(Player p);
 	public abstract @NotNull Roles getRole();
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();
+	public abstract @NotNull ItemStack TargetEmblem();
+	public abstract @NotNull ItemStack RangeEmblem();
 	public abstract @NotNull ItemStack roleBook();
 
 	public int getCooldown1() {

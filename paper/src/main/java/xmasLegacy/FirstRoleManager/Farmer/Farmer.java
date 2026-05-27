@@ -15,7 +15,9 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Region.Region;
 import xmasLegacy.Region.RegionManager;
 import xmasLegacy.Utils.ItemBuilder;
@@ -97,6 +99,8 @@ public class Farmer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "초 기다리세요"));
@@ -148,6 +152,8 @@ public class Farmer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
 
@@ -225,6 +231,16 @@ public class Farmer extends AbstractFirstRole {
 				.setTag("role_id", "farmer")
 				.build()
 				.clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

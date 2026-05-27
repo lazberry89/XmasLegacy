@@ -20,9 +20,8 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
-import xmasLegacy.PlayerSkillUserEvent;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SecondaryRoleManager.AbstractSecondRole;
-import xmasLegacy.SecondaryRoleManager.Fighter;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -57,7 +56,7 @@ public class Sniper extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Sniper.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Sniper.getInstance(), emblem, EmblemType.TARGET);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -88,7 +87,7 @@ public class Sniper extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Sniper.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Sniper.getInstance(), emblem, EmblemType.RANGE);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;

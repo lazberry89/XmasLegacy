@@ -20,7 +20,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
-import xmasLegacy.PlayerSkillUserEvent;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.*;
@@ -113,7 +113,7 @@ public class Guardian extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Guardian.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Guardian.getInstance(), emblem, EmblemType.TARGET);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -189,7 +189,7 @@ public class Guardian extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Guardian.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Guardian.getInstance(), emblem, EmblemType.RANGE);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;

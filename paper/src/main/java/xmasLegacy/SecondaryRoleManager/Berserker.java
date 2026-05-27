@@ -19,7 +19,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
-import xmasLegacy.PlayerSkillUserEvent;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -45,7 +45,7 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Berserker.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.TARGET);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -58,10 +58,10 @@ public class Berserker extends AbstractSecondRole {
 
         vector.setY(0.3);
 
-        Vector velocity = vector.normalize().multiply(2);
+        Vector velocity = vector.normalize().multiply(1.6);
         p.setVelocity(velocity);
 
-        p.getWorld().playSound(p, Sound.ENTITY_GHAST_SCREAM, 0.8f, 1.5f);
+        p.getWorld().playSound(p, Sound.ENTITY_GHAST_DEATH, 0.8f, 1.1f);
         Particle.DustTransition option = new Particle.DustTransition(Color.RED, Color.BLACK, 1.5f);
         p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 20, 1.4, 1.4, 1.4, 0.01, option);
 
@@ -69,7 +69,9 @@ public class Berserker extends AbstractSecondRole {
         p.setInvulnerable(true);
         p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 100, 1, true, false, false));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2, true, false, false));
+        // BerserkerSpeedManager.applyFlatSpeed(p);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+            BerserkerSpeedManager.removeFlatSpeed(p);
             GlowUtils.clearGlow(p);
             p.setInvulnerable(false);
             p.setHealth(1.0);
@@ -144,7 +146,6 @@ public class Berserker extends AbstractSecondRole {
                     this.cancel();
                     return;
                 }
-                currentLoc.getWorld().playSound(currentLoc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5f, 1.0f);
                 ticks++;
             }
         }.runTaskTimer(getPlugin(), 0L, 1L);
@@ -152,7 +153,7 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Berserker.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.RANGE);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -161,7 +162,7 @@ public class Berserker extends AbstractSecondRole {
             return;
         }
         if (!consumeEnergy(p, 3)) return;
-
+        Location loc = p.getLocation().clone();
         new BukkitRunnable() {
             int shot = 0;
 
@@ -172,6 +173,7 @@ public class Berserker extends AbstractSecondRole {
                     return;
                 }
                 fireAxe(p);
+                loc.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.0f);
                 shot++;
             }
         }.runTaskTimer(getPlugin(), 0L, 6L);
@@ -193,15 +195,18 @@ public class Berserker extends AbstractSecondRole {
                     e.damage(2, p);
                     e.knockback(1.0, -dir.getX(), -dir.getZ());
                 });
-
+        p.sendEntityEffect(EntityEffect.SHAKE, p);
+        p.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
         p.getWorld().playSound(p, Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
-        p.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, p.getLocation(), 20, 0.7, 1.0, 0.7, 0.01);
+        p.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, p.getLocation(), 25, 0.7, 1.0, 0.7, 0.01);
         GlowUtils.setGlowColor(p, NamedTextColor.DARK_RED);
         p.setInvulnerable(true);
         p.setInvisible(true);
         p.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 100, 2, true, false, false));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1, true, false, false));
+        // BerserkerSpeedManager.applyFlatSpeed(p);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+            BerserkerSpeedManager.removeFlatSpeed(p);
             GlowUtils.clearGlow(p);
             p.setInvulnerable(false);
             p.setInvisible(false);

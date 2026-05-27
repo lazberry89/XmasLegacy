@@ -54,7 +54,7 @@ public class Emblem {
 		if (target == null) return new ItemStack(Material.BARRIER);
 		target.editMeta(meta -> {
 			meta.displayName(ColorUtils.chat("&#0E00FFR&#2417FFa&#392EFFn&#4F45FEg&#655CFEe &#908AFEE&#A6A1FEm&#BCB8FEb&#D2CFFDl&#E7E6FDe&#FDFDFDm"));
-			String skillListString = role.rangeTarget().stream()
+			String skillListString = role.bindRange().stream()
 					.map(Skill::getKor)
 					.collect(java.util.stream.Collectors.joining(", "));
 			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : &6" + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + skillListString)));

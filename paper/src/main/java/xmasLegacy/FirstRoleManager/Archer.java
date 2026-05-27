@@ -17,6 +17,8 @@ import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import xmasLegacy.Emblems.EmblemType;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.HashMap;
@@ -93,6 +95,8 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack bow = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(bow) > 0) return;
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
@@ -125,6 +129,8 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getHelmet();
 		if (tool == null || tool.getType() == Material.AIR) return;
 
@@ -172,6 +178,16 @@ public class Archer extends AbstractFirstRole {
 				.hideAllFlags()
 				.build()
 				.clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

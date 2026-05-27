@@ -9,18 +9,18 @@ import xmasLegacy.Emblems.Emblem;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.SecondaryRoleManager.AbstractSecondRole;
 
-public class PlayerSkillUserEvent extends Event implements Cancellable {
+public class PlayerSkillUseEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;
-    private final AbstractSecondRole roleClass;
+    private final UsingEnergy usingEnergy;
     private final Emblem emblem;
     private final EmblemType type;
     private boolean cancelled = false;
 
-    public PlayerSkillUserEvent(Player player, AbstractSecondRole roleClass, Emblem emblem, EmblemType type) {
+    public PlayerSkillUseEvent(Player player, UsingEnergy usingEnergy, Emblem emblem, EmblemType type) {
         this.player = player;
-        this.roleClass = roleClass;
+        this.usingEnergy = usingEnergy;
         this.emblem = emblem;
         this.type = type;
     }
@@ -28,13 +28,13 @@ public class PlayerSkillUserEvent extends Event implements Cancellable {
     public Player getPlayer() {
         return this.player;
     }
-    public AbstractSecondRole getRoleClass() {
-        return this.roleClass;
+    public UsingEnergy getRoleInstance() {
+        return this.usingEnergy;
     }
-    public Emblem getEmblem() {
+    public @NotNull Emblem getEmblem() {
         return this.emblem;
     }
-    public EmblemType getType() {
+    public @NotNull EmblemType getType() {
         return this.type;
     }
 

@@ -22,7 +22,10 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
+import xmasLegacy.PlayerSkillUseEvent;
+import xmasLegacy.SecondaryRoleManager.Fighter;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -103,6 +106,8 @@ public class Warrior extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
 		if (p.getCooldown(tool) > 0) {
@@ -145,6 +150,8 @@ public class Warrior extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat( Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
@@ -254,6 +261,16 @@ public class Warrior extends AbstractFirstRole {
 		        .setTag("role_id", "WarriorArmor")
 		        .build().clone();
     }
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
+	}
 
 
 	@Override

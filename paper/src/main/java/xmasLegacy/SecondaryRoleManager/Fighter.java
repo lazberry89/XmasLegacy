@@ -20,7 +20,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
-import xmasLegacy.PlayerSkillUserEvent;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -43,7 +43,7 @@ public class Fighter extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Fighter.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.TARGET);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -105,7 +105,7 @@ public class Fighter extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(Player p) {
-        PlayerSkillUserEvent skillUse = new PlayerSkillUserEvent(p, Fighter.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.RANGE);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -118,21 +118,21 @@ public class Fighter extends AbstractSecondRole {
             return;
         }
         if (!consumeEnergy(p, 3)) return;
-        Vector up = new Vector(0.0f, 0.6f, 0.0f);
-        p.setVelocity(up);
+        Vector meUp = new Vector(0.0f, 0.6f, 0.0f);
+        Vector targetUp = new Vector(0.0f, 2.5f, 0.0f);
+        p.setVelocity(meUp);
         p.swingMainHand();
         p.getWorld().playSound(p, Sound.ENTITY_WITHER_DEATH, 1.0f, 1.3f);
 
         Particle.DustTransition trans = new Particle.DustTransition(Color.RED, Color.BLACK, 1.0f);
-        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 1.2f, 1.2f, 1.2f, 0.01, trans);
+        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 1.2f, 1.2f, 1.2f, 0, trans);
 
         double damage = 12;
 
         UpperCutEffect(target.getLocation().clone().add(0, 1, 0));
-        target.setVelocity(up.multiply(2.2));
+        target.setVelocity(targetUp);
 
-        target.damage(damage, p);
-
+        Bukkit.getScheduler().runTaskLater(getPlugin(), () -> target.damage(damage, p), 5L);
         p.setCooldown(tool, 30);
     }
 
@@ -148,7 +148,7 @@ public class Fighter extends AbstractSecondRole {
             w.setInterpolationDuration(4);
             w.setBrightness(new Display.Brightness(15, 15));
             Transformation trans = w.getTransformation();
-            trans.getScale().set(0.5f, 1.0f, 1.0f);
+            trans.getScale().set(1.0f, 1.0f, 1.0f);
             w.setTransformation(trans);
         });
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {

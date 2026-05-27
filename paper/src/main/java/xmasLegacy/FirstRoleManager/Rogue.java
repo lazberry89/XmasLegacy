@@ -16,6 +16,8 @@ import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import xmasLegacy.Emblems.EmblemType;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
@@ -99,6 +101,8 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getBoots();
 		if (tool == null || tool.getType() == Material.AIR) return;
 		Entity target = p.getTargetEntity(this.first_skill_range, false);
@@ -172,6 +176,8 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();
 		if (p.getCooldown(tool) > 0) {
@@ -230,6 +236,16 @@ public class Rogue extends AbstractFirstRole {
 				.setArmorState(5.0, EquipmentSlotGroup.FEET)
 				.build()
 				.clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

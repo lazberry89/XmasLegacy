@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
+import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.HashMap;
@@ -64,6 +66,8 @@ public class Merchant extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getHelmet();
 		if (tool == null || tool.getType().isAir()) return;
 		MSI.setOwner(p);
@@ -73,6 +77,8 @@ public class Merchant extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
 		p.openInventory(PIF.MerchantShop());
@@ -103,6 +109,16 @@ public class Merchant extends AbstractFirstRole {
 				.hideAllFlags()
 				.setTag("role_id", "merchant")
 				.build().clone();
+	}
+
+	@Override
+	public @NotNull ItemStack TargetEmblem() {
+		return getEmblem().getTargetEmblem();
+	}
+
+	@Override
+	public @NotNull ItemStack RangeEmblem() {
+		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

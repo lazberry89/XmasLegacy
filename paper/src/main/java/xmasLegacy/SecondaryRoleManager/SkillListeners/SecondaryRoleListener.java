@@ -144,8 +144,6 @@ public class SecondaryRoleListener implements Listener {
 		if (user == null) return;
 
 		if (!e.getAction().isLeftClick()) return;
-
-
 		ItemStack item = p.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;
 
