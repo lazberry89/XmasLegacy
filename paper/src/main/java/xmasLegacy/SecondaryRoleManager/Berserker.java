@@ -231,7 +231,7 @@ public class Berserker extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.IRON_SWORD)
 		        .setName(ColorUtils.chat("&7&l단단한 철검"))
 		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-		        .setTag("role_id", "berserker")
+		        .setRoleDefault(this.getRole())
 		        .hideAllFlags()
 		        .build().clone();
     }
@@ -241,7 +241,7 @@ public class Berserker extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.IRON_BOOTS)
 		        .setName(ColorUtils.chat("&7&l재빠른 신발"))
 		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-		        .setTag("role_id", "berserker")
+		        .setRoleDefault(this.getRole())
 		        .hideAllFlags()
 		        .build().clone();
     }

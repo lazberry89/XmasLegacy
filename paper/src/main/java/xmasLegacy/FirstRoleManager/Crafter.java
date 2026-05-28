@@ -247,7 +247,7 @@ public class Crafter extends AbstractFirstRole {
 				.setName(ColorUtils.chat("&e&l장인의 손길"))
 				.setLore(ColorUtils.chat("&7장인의 땀과 기술이 담긴 장비입니다."))
 				.hideAllFlags()
-				.setTag("role_id", "crafter")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}
@@ -259,7 +259,7 @@ public class Crafter extends AbstractFirstRole {
 				.setName(ColorUtils.chat("&7&l위험한 작업으로부터 장인을 보호해줍니다."))
 				.setLore(ColorUtils.chat("&7장인의 경험과 기술이 담긴 갑옷입니다."))
 				.hideAllFlags()
-				.setTag("role_id", "crafter")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}

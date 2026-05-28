@@ -178,7 +178,7 @@ public class Fighter extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.IRON_HOE)
                 .setName(ColorUtils.chat("&c&l복서의 글러브"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-                .setTag("role_id", "fighter")
+                .setRoleDefault(this.getRole())
                 .setCustomModelData(1)//custom model data = 1
                 .build().clone();
     }
@@ -188,7 +188,7 @@ public class Fighter extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.IRON_HELMET)
                 .setName(ColorUtils.chat("&7&l복서의 투구"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-                .setTag("role_id", "fighter")
+                .setRoleDefault(this.getRole())
                 .addAttribute(Attribute.ATTACK_SPEED, 0.01, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND)
                 .build().clone();
     }

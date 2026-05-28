@@ -163,7 +163,7 @@ public class Archer extends AbstractFirstRole {
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
-				.setTag("role_id", "archer")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}
@@ -174,7 +174,7 @@ public class Archer extends AbstractFirstRole {
 				.setName(ColorUtils.chat("&8&l엘프의 모자"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
-				.setTag("role_id", "ArcherArmor")
+				.setRoleDefault(this.getRole())
 				.hideAllFlags()
 				.build()
 				.clone();

@@ -287,7 +287,7 @@ public class Mage extends AbstractFirstRole {
 				.setName(ColorUtils.chat("&7&l일반 지팡이"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setAttackDamage(4)
-				.setTag("role_id", "mage")
+				.setRoleDefault(this.getRole())
 				.hideAllFlags()
 				.addAttribute(Attribute.MOVEMENT_SPEED, -0.08, AttributeModifier.Operation.ADD_NUMBER)
 				.setGlint(true)
@@ -303,7 +303,7 @@ public class Mage extends AbstractFirstRole {
 				.hideAllFlags()
 				.addAttribute(Attribute.JUMP_STRENGTH, 0.04, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
 				.setArmorState(7, EquipmentSlotGroup.CHEST)
-				.setTag("role_id", "MageArmor")
+				.setRoleDefault(this.getRole())
 				.build().clone();
 	}
 

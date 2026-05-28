@@ -266,7 +266,8 @@ public class Guardian extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.IRON_SPEAR)
                 .setName(ColorUtils.chat("&8&l가디언의 창"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-                .setTag("role_id", "guardian")
+                .setRoleDefault(this.getRole()
+                )
                 .hideAllFlags()
                 .addEnchant(Enchantment.LUNGE, 2)
                 .build().clone();
@@ -277,7 +278,7 @@ public class Guardian extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.DIAMOND_HELMET)
                 .setName(ColorUtils.chat("&b&l마계의 오래된 갑옷"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-                .setTag("role_id", "guardian")
+                .setRoleDefault(this.getRole())
                 .hideAllFlags()
                 .build().clone();
     }

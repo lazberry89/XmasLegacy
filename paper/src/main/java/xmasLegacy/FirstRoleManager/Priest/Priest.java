@@ -208,7 +208,7 @@ public class Priest extends AbstractFirstRole {
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
-				.setTag("role_id", "priest")
+				.setRoleDefault(this.getRole())
 				// 💡 하드코딩 제거 및 설정 파일 변수 적용
 				.addAttribute(Attribute.ATTACK_DAMAGE, this.weapon_attack_damage, AttributeModifier.Operation.ADD_NUMBER)
 				.build()
@@ -226,7 +226,7 @@ public class Priest extends AbstractFirstRole {
 				// 💡 하드코딩 제거 및 설정 파일 변수 적용
 				.setArmorState(this.armor_state_value, EquipmentSlotGroup.CHEST)
 				.addAttribute(Attribute.ARMOR_TOUGHNESS, this.armor_toughness_value, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
-				.setTag("role_id", "priest")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}

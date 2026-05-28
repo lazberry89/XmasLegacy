@@ -244,7 +244,7 @@ public class Knight extends AbstractFirstRole {
 				.hideAllFlags()
 				.setItemModel("BasicSword")
 				.setAttackDamage(this.Damage)
-				.setTag("role_id", "knight")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}
@@ -257,7 +257,7 @@ public class Knight extends AbstractFirstRole {
 				.setUnbreakable()
 				.hideAllFlags()
 				.setItemModel("KnightArmor")
-				.setTag("role_id", "KnightArmor")
+				.setRoleDefault(this.getRole())
 				.addAttribute(Attribute.ARMOR, this.armor_state_value, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
 				.build()
 				.clone();

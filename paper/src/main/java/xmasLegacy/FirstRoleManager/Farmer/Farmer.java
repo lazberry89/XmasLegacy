@@ -215,7 +215,7 @@ public class Farmer extends AbstractFirstRole {
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
-				.setTag("role_id", "farmer")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}
@@ -228,7 +228,7 @@ public class Farmer extends AbstractFirstRole {
 				.setUnbreakable()
 				.hideAllFlags()
 				.setArmorState(this.armor_state_value, EquipmentSlotGroup.CHEST)
-				.setTag("role_id", "farmer")
+				.setRoleDefault(this.getRole())
 				.build()
 				.clone();
 	}

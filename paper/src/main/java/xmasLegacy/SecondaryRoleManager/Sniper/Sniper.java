@@ -198,7 +198,6 @@ public class Sniper extends AbstractSecondRole {
         Location startLoc = p.getEyeLocation();
         org.bukkit.util.Vector direction = startLoc.getDirection().normalize();
         UUID uuid = p.getUniqueId();
-        Particle.DustOptions trailColor = new Particle.DustOptions(Color.YELLOW, 0.8f);
 
         new BukkitRunnable() {
             private final Location currentLoc = startLoc.clone();
@@ -237,13 +236,12 @@ public class Sniper extends AbstractSecondRole {
                 org.bukkit.util.Vector stepVec = direction.clone().multiply(0.3);
                 for (double d = 0; d < stepDistance; d += 0.3) {
                     currentLoc.add(stepVec);
-                    p.getWorld().spawnParticle(Particle.DUST, currentLoc, 1, 0, 0, 0, 0, trailColor);
+                    p.getWorld().spawnParticle(Particle.DUST, currentLoc, 1, 0, 0, 0, 0, getTrailColor(BulletType.STUN));
                 }
 
                 // 4. 💥 무언가에 부딪혔을 때의 처리
                 if (hitSomething) {
                     if (hitTarget != null) {
-                        // 🎯 몹이나 플레이어에게 맞았을 때: 스턴 부여 및 데미지
                         sem.StunEntity(hitTarget.getUniqueId(), 40L);
                         lastHitRecord.put(hitTarget.getUniqueId(), BulletType.STUN);
 
@@ -326,6 +324,7 @@ public class Sniper extends AbstractSecondRole {
         switch (type) {
             case MAGICAL -> { return new Particle.DustOptions(org.bukkit.Color.PURPLE, 1.1f); }
             case SNEAKY -> { return new Particle.DustOptions(Color.GREEN, 0.6f); }
+            case STUN -> { return new Particle.DustOptions(Color.YELLOW, 0.6f); }
             default -> { return new Particle.DustOptions(org.bukkit.Color.GRAY, 0.5f); }
         }
     }
@@ -359,7 +358,7 @@ public class Sniper extends AbstractSecondRole {
         return ItemBuilder.of(getPlugin(), Material.IRON_HELMET)
                 .setName(ColorUtils.chat("&7&l3뚝"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-                .setTag("role_id", "sniper")
+                .setRoleDefault(this.getRole())
                 .hideAllFlags()
                 .build().clone();
     }

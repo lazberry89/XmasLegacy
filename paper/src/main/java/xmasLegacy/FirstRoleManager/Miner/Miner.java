@@ -201,7 +201,7 @@ public class Miner extends AbstractFirstRole {
 				.setName(ColorUtils.chat("&l광부의 곡괭이"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
-				.setTag("role_id", "miner")
+				.setRoleDefault(this.getRole())
 				.hideAllFlags()
 				.build()
 				.clone();
@@ -213,7 +213,7 @@ public class Miner extends AbstractFirstRole {
 				.setName(ColorUtils.chat("&7&l철제 보호구"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
-				.setTag("role_id", "miner")
+				.setRoleDefault(this.getRole())
 				.hideAllFlags()
 				.build()
 				.clone();

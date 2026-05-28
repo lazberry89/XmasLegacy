@@ -15,6 +15,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.lazberry.xmaslegacy.Roles.HiddenRoles;
+import org.lazberry.xmaslegacy.Roles.Role;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.Map;
 public class ItemBuilder {
 	private final ItemStack item;
 	private final ItemMeta meta;
-    private XmasLegacy plugin;
+    private final XmasLegacy plugin;
 
 	// 1. 생성자: 재료(Material)만 먼저 받습니다.
 	public ItemBuilder(XmasLegacy plugin, Material material) {
@@ -61,10 +63,8 @@ public class ItemBuilder {
 			SkullMeta sm = (SkullMeta) meta;
 			sm.setOwningPlayer(p);
 			item.setItemMeta(sm);
-			return this;
-		} else {
-			return null;
 		}
+		return this;
 	}
 
     public ItemBuilder hideAllFlags() {
@@ -139,6 +139,12 @@ public class ItemBuilder {
 		}
 		return this;
 	}
+
+	public ItemBuilder setRoleDefault(Role role) {
+		this.setTag("role_id", role.name().toLowerCase());
+		this.setTag("enchant", role instanceof HiddenRoles ? 10 : 1);
+		return this;
+	}
 	/**
 	 * 여러 마법을 한꺼번에 부여합니다.
 	 * @param enchantments 마법 Map
@@ -154,6 +160,7 @@ public class ItemBuilder {
         item.setAmount(i);
         return item;
     }
+
     /**
      * 1.21.4+ 버전의 새로운 Item Model 기능을 설정합니다.
      * 정수형 ID 대신 NamespacedKey(String)를 사용하여 모델을 지정할 수 있습니다.
@@ -170,6 +177,7 @@ public class ItemBuilder {
         return this;
     }
 
+	@Deprecated(since = "1.21.5")
     public ItemBuilder setCustomModelData(Integer data) {
         if (meta != null) {
             meta.setCustomModelData(data);

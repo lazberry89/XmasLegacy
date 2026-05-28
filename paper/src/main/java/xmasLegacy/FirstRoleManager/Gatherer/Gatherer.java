@@ -227,7 +227,7 @@ public class Gatherer extends AbstractFirstRole {
 		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&6&l최후의 길잡이"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-				.setTag("role_id", "gatherer")
+				.setRoleDefault(this.getRole())
 				.hideAllFlags()
 				.addAttribute(Attribute.MOVEMENT_SPEED, this.weapon_movement_speed, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND)
 				.build().clone();
@@ -238,7 +238,7 @@ public class Gatherer extends AbstractFirstRole {
 		return ItemBuilder.of(getPlugin(), this.armor_item)
 				.setName(ColorUtils.chat("&6&l길잡이의 유물"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
-				.setTag("role_id", "gatherer")
+				.setRoleDefault(this.getRole())
 				.hideAllFlags()
 				.setUnbreakable()
 				.addAttribute(Attribute.MOVEMENT_SPEED, this.armor_movement_speed, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
