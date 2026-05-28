@@ -16,6 +16,9 @@ import xmasLegacy.Cosmetics.CosmeticManager;
 import xmasLegacy.Cosmetics.CosmeticsCommand;
 import xmasLegacy.Cosmetics.TestHeadCommand;
 import xmasLegacy.Economy.Currency.OperatorCurrency;
+import xmasLegacy.Enchant.EnchantCommand;
+import xmasLegacy.Enchant.EnchantListener;
+import xmasLegacy.Enchant.EnchantManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
@@ -163,6 +166,8 @@ public final class XmasLegacy extends JavaPlugin {
 			// Gacha 초기화
 			GachaManager.getInstance();
 
+			EnchantManager.getInstance();
+
 			ConsumableManager.getInstance().runCookieTimer(this);
 			BagManager.getInstance().loadAllBags();
 
@@ -181,6 +186,7 @@ public final class XmasLegacy extends JavaPlugin {
 			pm.registerEvents(new GachaListener(), this);
 			pm.registerEvents(new SecondaryRoleListener(), this);
 			pm.registerEvents(new EffectListener(), this);
+			pm.registerEvents(new EnchantListener(), this);
 
 			// [메인 서버 전용 명령어 등록]
 			var bag = new BagCommandManager();
@@ -219,6 +225,7 @@ public final class XmasLegacy extends JavaPlugin {
 			getCommand("0947345").setExecutor(new UserLoadCommand());
 			getCommand("second").setExecutor(new SecondTestCommand());
 
+			getCommand("강화").setExecutor(new EnchantCommand());
 			UserTagManager.runTask();
 		}
 	}

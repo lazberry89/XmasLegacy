@@ -70,7 +70,7 @@ public class EnchantListener implements Listener {
                             p.getWorld().playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                             p.getWorld().playSound(p, Sound.ENTITY_WITHER_DEATH, 0.5f, 1.0f);
                         }
-                        p.sendMessage(ColorUtils.chat(String.format("%s &6%d강&f 강화에 &a성공&f하였습니다! &a&l[%d]", Alert.XmasLegacy, lvl, diff)));
+                        p.sendMessage(ColorUtils.chat(String.format("%s &6%d강&f 강화에 &a성공&f하였습니다! &a&l[+%d]", Alert.XmasLegacy, lvl, diff)));
                         p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                     }
                     case FAIL -> {

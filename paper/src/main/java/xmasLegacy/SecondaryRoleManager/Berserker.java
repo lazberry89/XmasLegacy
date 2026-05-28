@@ -2,6 +2,8 @@ package xmasLegacy.SecondaryRoleManager;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -195,8 +197,7 @@ public class Berserker extends AbstractSecondRole {
                     e.damage(2, p);
                     e.knockback(1.0, -dir.getX(), -dir.getZ());
                 });
-        p.sendEntityEffect(EntityEffect.SHAKE, p);
-        p.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
+        // p.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
         p.getWorld().playSound(p, Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
         p.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, p.getLocation(), 25, 0.7, 1.0, 0.7, 0.01);
         GlowUtils.setGlowColor(p, NamedTextColor.DARK_RED);
@@ -211,7 +212,7 @@ public class Berserker extends AbstractSecondRole {
             p.setInvulnerable(false);
             p.setInvisible(false);
             p.getWorld().playSound(p, Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
-            p.setHealth(0.0);
+            p.damage(Integer.MAX_VALUE, p);
         }, 100L);
     }
 

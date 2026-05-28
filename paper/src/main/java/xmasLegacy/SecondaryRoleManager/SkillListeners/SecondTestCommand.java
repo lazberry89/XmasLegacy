@@ -10,6 +10,7 @@ import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
 import xmasLegacy.SecondaryRoleManager.Fighter;
 import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
 
 @TestOnly
 public class SecondTestCommand implements CommandExecutor {
@@ -17,12 +18,14 @@ public class SecondTestCommand implements CommandExecutor {
 	private final Defender defender;
 	private final Guardian guardian;
 	private final Fighter fighter;
+	private final Sniper sniper;
 
     public SecondTestCommand() {
 		this.berserker = Berserker.getInstance();
 		this.defender = Defender.getInstance();
 		this.guardian = Guardian.getInstance();
 		this.fighter = Fighter.getInstance();
+		this.sniper = Sniper.getInstance();
 	}
 
 	@Override
@@ -53,6 +56,12 @@ public class SecondTestCommand implements CommandExecutor {
 					p.getInventory().addItem(fighter.roleArmor());
 					p.getInventory().addItem(fighter.TargetEmblem());
 					p.getInventory().addItem(fighter.RangeEmblem());
+				}
+				case "sniper" -> {
+					p.getInventory().addItem(sniper.roleWeapon());
+					p.getInventory().addItem(sniper.roleArmor());
+					p.getInventory().addItem(sniper.TargetEmblem());
+					p.getInventory().addItem(sniper.RangeEmblem());
 				}
 			}
 		}

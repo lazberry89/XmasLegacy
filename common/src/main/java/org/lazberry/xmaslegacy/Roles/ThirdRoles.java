@@ -40,9 +40,4 @@ public enum ThirdRoles implements Role {
 	public List<Skill> bindRange() {
 		return List.of();
 	}
-
-	@Override
-	public List<Skill> rangeTarget() {
-		return List.of();
-	}
 }
