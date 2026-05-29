@@ -16,6 +16,8 @@ public class EnchantCommand implements CommandExecutor {
 		if (args.length == 0) {
 			EnchantUserInterface eui = new EnchantUserInterface();
 			p.openInventory(eui.getInventory());
+		} else {
+			p.getInventory().addItem(EnchantMaterial.PrismFractal());
 		}
 		return true;
 	}
