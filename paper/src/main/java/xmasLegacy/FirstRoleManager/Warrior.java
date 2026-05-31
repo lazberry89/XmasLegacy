@@ -25,7 +25,6 @@ import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.PlayerSkillUseEvent;
-import xmasLegacy.SecondaryRoleManager.Fighter;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 

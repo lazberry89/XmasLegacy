@@ -4,6 +4,7 @@ import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -274,10 +275,82 @@ public class SkillEffectManager {
         }.runTaskTimerAsynchronously(plugin, 0L, 1L);
     }
 
+    public void castSkill(Player p) {
+        Location startLoc = p.getLocation();
+        Vector direction = startLoc.getDirection().setY(0).normalize();
+
+        new BukkitRunnable() {
+            private int count = 1;
+
+            @Override
+            public void run() {
+                if (!p.isOnline()) {
+                    this.cancel();
+                    return;
+                }
+
+                int maxStrikes = 7;
+                if (count > maxStrikes) {
+                    this.cancel();
+                    return;
+                }
+
+                double interval = 2.5;
+                double distance = count * interval;
+                Vector offset = direction.clone().multiply(distance);
+                Location targetLoc = startLoc.clone().add(offset);
+
+                World world = targetLoc.getWorld();
+                if (world != null) {
+                    Location groundLoc = world.getHighestBlockAt(targetLoc).getLocation();
+
+                    world.strikeLightning(groundLoc);
+                }
+
+                count++;
+            }
+        }.runTaskTimer(plugin, 0L, 2L);
+    }
+
     public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc) {
         var haki = OraxenItems.getItemById("haki_wave");
         if (haki == null) {
             plugin.getSLF4JLogger().error("Oraxen id is not Correct! : \"haki_wave\"");
+            return;
+        }
+        ItemStack hakiWave = haki.build();
+
+        Location spawnLoc = loc.clone().add(0, 1.5, 0);
+        spawnLoc.setPitch(0.0f);
+
+        ItemDisplay display = spawnLoc.getWorld().spawn(spawnLoc, ItemDisplay.class, w -> {
+            w.setItemStack(hakiWave);
+            w.setBrightness(new Display.Brightness(15, 15));
+            w.setBillboard(Display.Billboard.FIXED);
+
+            w.setInterpolationDuration(6);
+            w.setInterpolationDelay(0);
+
+            Transformation init = w.getTransformation();
+            init.getScale().set(1.0f, 1.0f, 1.0f);
+            w.setTransformation(init);
+        });
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (!display.isValid()) return;
+
+            Transformation targetTrans = display.getTransformation();
+            targetTrans.getScale().set(15.0f, 1.0f, 15.0f);
+            display.setTransformation(targetTrans);
+        }, 1L);
+
+        Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
+    }
+
+    public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc, String model) {
+        var haki = OraxenItems.getItemById(model);
+        if (haki == null) {
+            plugin.getSLF4JLogger().error("Oraxen id is not Correct! : \"{}\"", model);
             return;
         }
         ItemStack hakiWave = haki.build();

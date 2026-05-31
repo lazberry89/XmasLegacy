@@ -2,7 +2,10 @@ package xmasLegacy.Enchant;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,26 +18,32 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
+import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.PlayerUtils.BagManager;
+import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class EnchantListener implements Listener {
 	private final XmasLegacy plugin;
 	private final EnchantManager ecm;
+	private final SkillEffectManager sem;
+	private final UserManager um;
 	private final BagManager bm;
 
 	public EnchantListener() {
 		this.plugin = XmasLegacy.getInstance();
 		this.ecm = EnchantManager.getInstance();
+		this.sem = SkillEffectManager.getInstance();
+		this.um = UserManager.getInstance();
 		this.bm = BagManager.getInstance();
 	}
 
@@ -117,7 +126,7 @@ public class EnchantListener implements Listener {
 							p.getWorld().playSound(p, Sound.ENTITY_WITHER_DEATH, 0.5f, 1.0f);
 						}
 						p.sendMessage(ColorUtils.chat(String.format("%s &6%d강&f 강화에 &a성공&f하였습니다! &a&l[+%d]", Alert.XmasLegacy, lvl, diff)));
-						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 0.3f, 1.0f);
 					}
 					case FAIL -> {
 						p.sendMessage(ColorUtils.chat(String.format("%s 강화에 &c실패&f하였습니다. %s", Alert.XmasLegacy, diff == 0 ? "&7&l[-]" : "&c&l[" + diff + "]")));
@@ -174,7 +183,6 @@ public class EnchantListener implements Listener {
 		Integer value = container.get(plugin.getNamespacedKey("enchant"), PersistentDataType.INTEGER);
 		if (value == null) return;
 
-		// 🌟 [안전장치] 레벨 값이 비정상적이거나 0 이하일 때의 예외 방지
 		if (value < 1 || value - 1 >= Constants.ENCHANT_MULTIPLIERS.size()) return;
 
 		double damage = e.getFinalDamage();
@@ -184,13 +192,69 @@ public class EnchantListener implements Listener {
 		double finalDamage = damage * multiple;
 		e.setDamage(finalDamage);
 
-		if (value >= 8) victim.setFireTicks(60);
 		Random random = new Random();
+		if (value >= 8) if (random.nextInt(3) == 0) victim.setFireTicks(40);
 		if (value >= 10) {
 			if (random.nextInt(10) == 1) {
 				victim.damage(random.nextInt(10));
 				victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.5f);
 			}
+			var user = UserManager.getInstance().getUser(p.getUniqueId());
+			if (user == null) return;
+			Role role = user.getRole();
+
+			if (Roles.USER.equals(role)) return;
+			if (random.nextInt(20) == 1) {
+                if (role instanceof Roles roles) {
+					switch (roles) {
+						case WARRIOR -> {
+							Vector vector = p.getLocation().getDirection();
+							Vector velocity = vector.normalize().multiply(1.3);
+							velocity.setY(0.4f);
+
+							victim.setVelocity(velocity);
+							Bukkit.getScheduler().runTaskLater(plugin, () -> {
+								if (victim.isValid()) {
+									victim.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, victim.getLocation(), 1, 0, 0, 0, 0);
+									victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+									sem.StunEntity(victim.getUniqueId(), 15);
+								}
+							}, 15L);
+						}
+                        case ROGUE -> {
+                            for (int i = 0; i < 3; i++)
+								Bukkit.getScheduler().runTaskLater(plugin, () -> sem.knockbackEntity(p, victim, 1.3, 0.2), (i + 1) * 3L);
+                        }
+						case MAGE -> sem.castSkill(p);
+						case KNIGHT -> {
+							SkillEffectManager.startHakiWave(plugin, victim.getLocation().clone().add(0, 1, 0), "howling");
+							p.getWorld().playSound(victim, Sound.BLOCK_SAND_BREAK, 0.5f, 1.7f);
+							List<LivingEntity> leList = p.getWorld().getNearbyEntitiesByType(LivingEntity.class, victim.getLocation(), 5, 5, 5, le -> !le.equals(p))
+									.stream().toList();
+							leList.forEach(i -> sem.knockbackEntity(p, i, 2.0, 0.8));
+							long amount = leList.stream().filter(s -> {
+								var userT = um.getUser(s.getUniqueId());
+								if (userT == null) return false;
+								Role t = userT.getRole();
+								return Roles.KNIGHT.equals(t.parent()) || Roles.KNIGHT.equals(t);
+							}).count();
+							AttributeInstance amo = p.getAttribute(Attribute.MAX_HEALTH);
+							if (amo == null) return;
+							double healAmount = (amount * 2.0) + 2.0;
+
+							double maxHealth = amo.getValue();
+							double currentHealth = p.getHealth();
+							double safeHeal = Math.min(healAmount, maxHealth - currentHealth);
+
+							if (safeHeal > 0) p.heal(safeHeal);
+						}
+						case ARCHER -> sem.StunEntity(victim.getUniqueId(), 40L);
+						case PRIEST -> {
+
+						}
+                    }
+				}
+            }
 		}
 	}
 }

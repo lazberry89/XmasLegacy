@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Constants;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
@@ -42,6 +43,7 @@ public class EnchantUserInterface implements InventoryHolder {
                 .build().clone();
         else {
             int lvl = Objects.requireNonNullElse(ecm.getEnchantLevel(item), 1);
+            int needed = Constants.ENCHANT_NEEDED.get(lvl - 1);
             var chance = ecm.getChanceInfo(lvl);
             return ItemBuilder.of(plugin, Material.ENCHANTING_TABLE)
                     .setName(ColorUtils.chat("&6&l[ 강화하기 ]"))
@@ -49,9 +51,9 @@ public class EnchantUserInterface implements InventoryHolder {
                             ColorUtils.chat("&7현재등급 : "),
                             ecm.getLore(lvl),
                             Component.empty(),
-                            ColorUtils.chat(String.format("&a성공확률 : %.1f%%", chance.success())),
-                            ColorUtils.chat(String.format("&c실패확률 : %.1f%%", chance.fail())),
-                            ColorUtils.chat(String.format("&4파괴확률 : %.1f%%", chance.breakChance()))
+                            ColorUtils.chat(String.format("&a%.1f%% &f| &c%.1f%% &f| &4%.1f%%", chance.success(), chance.fail(), chance.breakChance())),
+                            Component.empty(),
+                            ColorUtils.chat(String.format("&7필요 개수 : %d", needed))
                     )
                     .hideAllFlags()
                     .setGlint(true)
