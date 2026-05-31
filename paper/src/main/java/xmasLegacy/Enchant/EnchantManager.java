@@ -146,7 +146,7 @@ public class EnchantManager {
             case 7 -> new EnchantChance(20.0, 78.0, 2.0);
             case 8 -> new EnchantChance(12.0, 85.0, 3.0);
             case 9 -> new EnchantChance(5.0, 90.0, 5.0);
-            default -> new EnchantChance(0.0, 0.0, 0.0); // 10강 이상이거나 예외 처리
+            default -> new EnchantChance(0.0, 0.0, 0.0);
         };
     }
 }

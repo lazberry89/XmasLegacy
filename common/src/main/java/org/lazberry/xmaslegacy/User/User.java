@@ -30,8 +30,9 @@ public class User {
     private boolean isMobile = false;
 	private boolean isNewUser = false;
     private boolean wantsCookie = true;
-	private List<ServerPrefix> availablePrefix = new ArrayList<>();
+	private final List<ServerPrefix> availablePrefix = new ArrayList<>();
 	private @Nullable ServerPrefix equipPrefix;
+	private boolean combatMode = false;
 
     public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {
         this.uuid = uuid;
@@ -95,6 +96,8 @@ public class User {
 		this.equipPrefix = null;
 		return true;
 	}
+	public void setCombatMode(boolean value) {this.combatMode = value;}
+	public boolean getCombatValue() {return this.combatMode;}
 
     @Override
     public boolean equals(Object o) {

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public class EconomyManager {
     private final UserManager um;
     private final Map<String, Integer> marketDemand = new HashMap<>();
@@ -19,12 +20,11 @@ public class EconomyManager {
         return instance;
     }
 
-    public EconomyManager() {
+    private EconomyManager() {
         this.um = UserManager.getInstance();
     }
 
     public boolean deposit(UUID uuid, int amount) {
-		User user = um.getUser(uuid);
         if (uuid != null) {
             um.deposit(uuid, amount);
             return true;
