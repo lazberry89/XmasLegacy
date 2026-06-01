@@ -29,14 +29,18 @@ public class ItemBuilder {
 	private final ItemMeta meta;
     private final XmasLegacy plugin;
 
-	// 1. 생성자: 재료(Material)만 먼저 받습니다.
 	public ItemBuilder(XmasLegacy plugin, Material material) {
 		this.item = new ItemStack(material);
 		this.meta = item.getItemMeta();
         this.plugin = plugin;
 	}
 
-	// 2. 이름 설정
+	public ItemBuilder(XmasLegacy plugin, ItemStack itemStack) {
+		this.item = itemStack.clone();
+		this.meta = item.getItemMeta();
+		this.plugin = plugin;
+	}
+
 	public ItemBuilder setName(Component name) {
 		if (meta != null) {
 			meta.displayName(name);
@@ -77,7 +81,6 @@ public class ItemBuilder {
     }
     public ItemBuilder addAttribute(Attribute attribute, double amount, AttributeModifier.Operation operation) {
         if (meta != null) {
-            // 1.21+ 에서는 유니크한 Key가 필요합니다.
             NamespacedKey key = new NamespacedKey(this.plugin, attribute.getKey().getKey());
             AttributeModifier modifier = new AttributeModifier(key, amount, operation, EquipmentSlotGroup.MAINHAND);
 
@@ -87,7 +90,6 @@ public class ItemBuilder {
     }
     public ItemBuilder addAttribute(Attribute attribute, double amount, AttributeModifier.Operation operation, EquipmentSlotGroup slot) {
         if (meta != null) {
-            // 1.21+ 에서는 유니크한 Key가 필요합니다.
             NamespacedKey key = new NamespacedKey(this.plugin, attribute.getKey().getKey());
             AttributeModifier modifier = new AttributeModifier(key, amount, operation, slot);
 
@@ -215,5 +217,8 @@ public class ItemBuilder {
 
 	public static ItemBuilder of(XmasLegacy plugin, Material material) {
 		return new ItemBuilder(plugin, material);
+	}
+	public static ItemBuilder of(XmasLegacy plugin, ItemStack itemStack) {
+		return new ItemBuilder(plugin, itemStack);
 	}
 }

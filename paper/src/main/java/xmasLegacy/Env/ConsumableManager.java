@@ -1,5 +1,6 @@
 package xmasLegacy.Env;
 
+import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -40,7 +41,12 @@ public class ConsumableManager implements Listener {
     }
 
     public static ItemStack basicFood(int amount) {
-        ItemStack a =  ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.POTATO)
+		ItemStack item;
+		var oraxen = OraxenItems.getItemById("cookie");
+		if (oraxen == null) {item = new ItemStack(Material.COOKIE);} else {
+		item = oraxen.build();}
+
+        ItemStack a = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), item)
                 .setName(ColorUtils.chat("&c&l라즈베리 쿠키"))
                 .setLore(ColorUtils.chat("&8맛은 있는데,배는 고플걸"))
                 .setGlint(true)

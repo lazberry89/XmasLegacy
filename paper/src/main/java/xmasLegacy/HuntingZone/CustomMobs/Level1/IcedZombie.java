@@ -1,6 +1,6 @@
 package xmasLegacy.HuntingZone.CustomMobs.Level1;
 
-import net.kyori.adventure.text.format.NamedTextColor;
+import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +16,7 @@ import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
+@SuppressWarnings("unused")
 public class IcedZombie implements CustomMob, UnratedMob {
     private final MobGrade grade;
     private final MobKey key;
@@ -38,7 +39,12 @@ public class IcedZombie implements CustomMob, UnratedMob {
     }
 
     private ItemStack makeTool(EquipmentSlot slot) {
-        if (slot.equals(EquipmentSlot.HAND)) return ItemBuilder.of(plugin, Material.STONE_SWORD)
+		ItemStack item;
+		var oraxen = OraxenItems.getItemById("ancient_sword");
+		if (oraxen == null) item = new ItemStack(Material.STONE_SWORD);
+		else item = oraxen.build();
+
+        if (slot.equals(EquipmentSlot.HAND)) return ItemBuilder.of(plugin, item)
                 .setName(ColorUtils.chat("&b얼어붙은 돌검"))
                 .setUnbreakable()
                 .build().clone();

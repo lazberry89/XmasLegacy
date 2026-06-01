@@ -40,4 +40,9 @@ public enum ThirdRoles implements Role {
 	public List<Skill> bindRange() {
 		return List.of();
 	}
+
+	@Override
+	public int getDashCount() {
+		return 0;
+	}
 }

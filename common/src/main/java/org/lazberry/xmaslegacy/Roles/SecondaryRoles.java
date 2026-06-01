@@ -74,6 +74,11 @@ public enum SecondaryRoles implements Role {
 	}
 
 	@Override
+	public int getDashCount() {
+		return 0;
+	}
+
+	@Override
 	public String getKor() {
 		return this.kor;
 	}
