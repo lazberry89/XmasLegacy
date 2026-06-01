@@ -23,9 +23,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.RoleManager;
-import xmasLegacy.SecondaryRoleManager.Berserker;
-import xmasLegacy.SecondaryRoleManager.Defender;
-import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.SecondaryRoleManager.*;
 import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
@@ -40,6 +38,7 @@ public class SecondaryRoleListener implements Listener {
     private final PartyManager pm;
 	private final RoleManager rlm;
 	private final SkillEffectManager sem;
+	private final SecondRoleManager srm;
 
     private final Defender defender;
     private final Guardian guardian;
@@ -52,6 +51,7 @@ public class SecondaryRoleListener implements Listener {
         this.pm = PartyManager.getInstance();
 		this.rlm = RoleManager.getInstance();
 		this.sem = SkillEffectManager.getInstance();
+		this.srm = SecondRoleManager.getInstance();
         this.defender = Defender.getInstance();
         this.guardian = Guardian.getInstance();
         this.berserker = Berserker.getInstance();
@@ -195,6 +195,36 @@ public class SecondaryRoleListener implements Listener {
 
 		sniper.shoot(p);
 		p.setCooldown(item, 20);
+	}
+
+	@EventHandler
+	public void useDash(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		ItemStack item = p.getInventory().getItemInMainHand();
+		if (item.getType().isAir()) return;
+
+		if (!e.getAction().isRightClick()) return;
+
+		User user = um.getUser(p.getUniqueId());
+		if (user == null) return;
+
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return;
+
+		PersistentDataContainer container = meta.getPersistentDataContainer();
+		String value = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		if (value == null) return;
+		Role role;
+		try {
+			role = Role.valueOf(value);
+		} catch(IllegalArgumentException ex) {
+			plugin.getSLF4JLogger().error("Could not find Role \"{}\"", value, ex);
+			role = Roles.USER;
+		}
+		if (role instanceof SecondaryRoles fr) {
+			AbstractSecondRole asr = srm.getRoleInstance(fr);
+			asr.useDash(p);
+		}
 	}
 
 	@EventHandler

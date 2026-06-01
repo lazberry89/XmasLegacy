@@ -21,22 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 @SuppressWarnings("DuplicatedCode")
 public class Warrior extends AbstractFirstRole {
-    private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-    public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.BLOOD_FRENZY);}
-    public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 	private Material weapon_item;
 	private Material armor_item;
 	private double first_skill_usable_rate;
@@ -301,7 +293,6 @@ public class Warrior extends AbstractFirstRole {
           &0적들을 &c&l공중&r&0으로 띄워버립니다.
           &7&m-----------------
           """, getCooldown1(), getCooldown2());
-		// 부모 클래스의 메서드 활용 (2페이지 구성)
 		return createGuideBook("전사", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
 	}
 

@@ -14,6 +14,7 @@ public interface Role {
     @NotNull List<Role> next();
     Skill bindTarget();
     List<Skill> bindRange();
+    int getDashCount();
 
     static Role valueOf(String name) {
         try { return Roles.valueOf(name); } catch (IllegalArgumentException ignored) {}

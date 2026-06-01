@@ -9,19 +9,60 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.User.UserManager;
+import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("unused, FieldCanBeLocal")
+@SuppressWarnings("unused, FieldCanBeLocal, DuplicatedCode")
 public class FirstRoleListener implements Listener {
 	private final XmasLegacy plugin;
 	private final FirstRoleManager frm;
+    private final UserManager um;
 
 	public FirstRoleListener() {
 		this.plugin = XmasLegacy.getInstance();
 		this.frm = FirstRoleManager.getInstance();
+        this.um = UserManager.getInstance();
 	}
+
+    @EventHandler
+    public void useDash(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        ItemStack item = p.getInventory().getItemInMainHand();
+        if (item.getType().isAir()) return;
+
+        if (!e.getAction().isRightClick()) return;
+
+        User user = um.getUser(p.getUniqueId());
+        if (user == null) return;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String value = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+        if (value == null) return;
+        Role role;
+        try {
+            role = Role.valueOf(value);
+        } catch(IllegalArgumentException ex) {
+            plugin.getSLF4JLogger().error("Could not find Role \"{}\"", value, ex);
+            role = Roles.USER;
+        }
+        if (role instanceof Roles fr) {
+            AbstractFirstRole afr = frm.getRoleInstance(fr);
+            afr.useDash(p);
+        }
+    }
 
     //Archer skill
     @EventHandler

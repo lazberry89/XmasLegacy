@@ -4,12 +4,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,14 +19,19 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.Emblem;
+import xmasLegacy.SkillEffectManager;
 import xmasLegacy.UsingEnergy;
 import xmasLegacy.XmasLegacy;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal")
 public abstract class AbstractFirstRole implements UsingEnergy {
+    private final Map<UUID, Integer> dashCount = new HashMap<>();
 	private final Roles role;
     private final XmasLegacy plugin;
 	protected int cooldown1;
@@ -88,6 +95,7 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 		this.cooldown2 = config.getInt("cooldown.skill2");
 	}
 
+    @Override
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean consumeEnergy(Player player, int hungerCost) {
         int currentFood = player.getFoodLevel();
@@ -101,6 +109,41 @@ public abstract class AbstractFirstRole implements UsingEnergy {
         player.setFoodLevel(Math.max(0, currentFood - hungerCost));
 
         return true;
+    }
+
+    public void useDash(Player p) {
+        UUID uuid = p.getUniqueId();
+        this.dashCount.putIfAbsent(uuid, role.getDashCount());
+        int count = this.dashCount.getOrDefault(uuid, role.getDashCount());
+        ItemStack item = p.getInventory().getItemInMainHand();
+        if (item.getType().isAir()) return;
+
+        if (count <= 0 || p.getCooldown(item) > 0) {
+            p.sendActionBar(ColorUtils.chat(Alert.RED + " 대시 사용 불가"));
+            p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
+            return;
+        }
+        Vector vector = p.getLocation().getDirection();
+        Vector velocity = vector.normalize().multiply(2.0);
+
+        double finalY = velocity.getY();
+        if (finalY > 1.2) {
+            finalY = 1.2;
+        } else if (finalY < -1.2) {
+            finalY = -1.2;
+        }
+        velocity.setY(finalY);
+
+        SkillEffectManager.getInstance().followParticle(p, Particle.END_ROD, 10);
+        p.setVelocity(velocity);
+
+        this.dashCount.put(uuid, count - 1);
+        if (this.dashCount.getOrDefault(uuid, role.getDashCount()) == 0) {
+            p.setCooldown(item, 20 * 60);
+            this.dashCount.put(uuid, role.getDashCount());
+        } else {
+            p.setCooldown(item, 10);
+        }
     }
 
 	@Contract(value = "null -> !null; !null -> !null", pure = true)
