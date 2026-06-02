@@ -2,5 +2,5 @@ package xmasLegacy.HuntingZone.CustomMobs.Named;
 
 import xmasLegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
 
-public class AbstractNamedMobs implements CustomMob, NamedMob {
+public abstract class AbstractNamedMobs implements CustomMob, NamedMob {
 }
