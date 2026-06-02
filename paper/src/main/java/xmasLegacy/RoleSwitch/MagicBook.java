@@ -60,6 +60,12 @@ public class MagicBook {
         p.openInventory(new RoleSelectInterface().getInventory());
     }
 
+    public void deleteStand() {
+        if (display == null) return;
+        display.remove();
+        display = null;
+    }
+
     @CanIgnoreReturnValue
     public ItemDisplay BookStand(@NotNull Location loc) {
         NamespacedKey key = plugin.getNamespacedKey("book");
@@ -70,7 +76,7 @@ public class MagicBook {
             tr.getScale().set(1.3f, 1.3f, 1.3f);
 
             i.getPersistentDataContainer().set(key, PersistentDataType.STRING, "rpgbook");
-            i.customName(ColorUtils.chat("&c&k### ##"));
+            i.customName(ColorUtils.chat("&c&k#####"));
             i.setCustomNameVisible(true);
         });
     }

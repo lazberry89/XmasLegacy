@@ -1,4 +1,4 @@
-package xmasLegacy.HuntingZone.CustomMobs.Level1;
+package xmasLegacy.HuntingZone.CustomMobs.Unrated;
 
 import org.bukkit.entity.LivingEntity;
 

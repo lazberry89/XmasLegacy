@@ -27,7 +27,7 @@ public class DeleteStandCommand implements CommandExecutor {
         if (MB.getStand() == null) {
             plugin.infoMsg(InfoLevel.ERROR, p, "현재 직업책이 없어요!");
         } else {
-            MB.getStand().remove();
+            MB.deleteStand();
             plugin.infoMsg(InfoLevel.INFO, p, "삭제되었습니다.");
         }
         return true;

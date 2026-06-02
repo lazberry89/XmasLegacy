@@ -1,4 +1,4 @@
-package xmasLegacy.HuntingZone.CustomMobs.Level1;
+package xmasLegacy.HuntingZone.CustomMobs.Unrated;
 
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.util.TriState;
@@ -8,43 +8,41 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import xmasLegacy.HuntingZone.CustomMobs.MobGrade;
 import xmasLegacy.HuntingZone.CustomMobs.MobKey;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
-import xmasLegacy.XmasLegacy;
 
 @SuppressWarnings("unused")
-public class IcedZombie implements CustomMob, UnratedMob {
-    private final MobGrade grade;
-    private final MobKey key;
-    private final ItemStack chestplate;
-    private final ItemStack weapon;
-    private final XmasLegacy plugin;
-    private static IcedZombie instance;
+public class IcedZombie extends AbstractUnratedMobs implements CustomMob, UnratedMob {
+    private final @NotNull MobKey key;
+    private final @NotNull ItemStack chestplate;
+    private final @NotNull ItemStack weapon;
+    private static @Nullable IcedZombie instance;
 
+    @Contract(pure = true)
     public static IcedZombie getInstance() {
         if (instance == null) instance = new IcedZombie();
         return instance;
     }
 
+    @ApiStatus.Internal
     private IcedZombie() {
-        this.grade = MobGrade.UNRATED;
+        super();
         this.key = MobKey.ICED_ZOMBIE;
         this.chestplate = makeTool(EquipmentSlot.CHEST);
         this.weapon = makeTool(EquipmentSlot.HAND);
-        this.plugin = XmasLegacy.getInstance();
     }
 
     private ItemStack makeTool(EquipmentSlot slot) {
-		ItemStack item;
 		var oraxen = OraxenItems.getItemById("ancient_sword");
-		if (oraxen == null) item = new ItemStack(Material.STONE_SWORD);
-		else item = oraxen.build();
 
-        if (slot.equals(EquipmentSlot.HAND)) return ItemBuilder.of(plugin, item)
+        if (slot.equals(EquipmentSlot.HAND)) return ItemBuilder.of(plugin, oraxen == null ? new ItemStack(Material.STONE_SWORD) : oraxen.build())
                 .setName(ColorUtils.chat("&b얼어붙은 돌검"))
                 .setUnbreakable()
                 .build().clone();
@@ -54,10 +52,6 @@ public class IcedZombie implements CustomMob, UnratedMob {
                 .build().clone();
     }
 
-    @Override
-    public @NotNull MobGrade getGrade() {
-        return this.grade;
-    }
     @Override
     public @NotNull MobKey getKey() {
         return this.key;
@@ -80,6 +74,9 @@ public class IcedZombie implements CustomMob, UnratedMob {
 
             z.getEquipment().setChestplate(chestplate);
             z.getEquipment().setItemInMainHand(weapon);
+            z.setAdult();
+
+            z.getPersistentDataContainer().set(plugin.getNamespacedKey("custom_mobs"), PersistentDataType.STRING, getKey().name());
         });
     }
 
