@@ -143,7 +143,7 @@ public class ItemBuilder {
 	}
 
 	public ItemBuilder setRoleDefault(Role role) {
-		this.setTag("role_id", role.name().toLowerCase());
+		this.setTag("role_id", role.name());
 		this.setTag("enchant", role instanceof HiddenRoles ? 10 : 1);
 		return this;
 	}

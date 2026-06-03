@@ -30,6 +30,7 @@ import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
 import xmasLegacy.Gacha.GachaCommand;
 import xmasLegacy.Gacha.GachaListener;
 import xmasLegacy.Gacha.GachaManager;
+import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.Lobby.LobbyCommand;
 import xmasLegacy.Lobby.LobbyListener;
 import xmasLegacy.Lobby.LobbyManager;
@@ -170,6 +171,9 @@ public final class XmasLegacy extends JavaPlugin {
 
 			ConsumableManager.getInstance().runCookieTimer(this);
 			BagManager.getInstance().loadAllBags();
+
+			// 사냥터 몹 초기화
+			MobRepository.getInstance().init();
 
 			// [메인 서버 전용 리스너 등록]
 			var pm = getServer().getPluginManager();

@@ -1,4 +1,4 @@
-package xmasLegacy.HuntingZone.CustomMobs.Unrated;
+package xmasLegacy.HuntingZone.CustomMobs;
 
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -8,15 +8,14 @@ import org.jetbrains.annotations.Nullable;
 import xmasLegacy.HuntingZone.CustomMobs.Boss.AbstractBossMobs;
 import xmasLegacy.HuntingZone.CustomMobs.Elite.AbstractEliteMobs;
 import xmasLegacy.HuntingZone.CustomMobs.Honored.AbstractHonoredMobs;
-import xmasLegacy.HuntingZone.CustomMobs.MobGrade;
-import xmasLegacy.HuntingZone.CustomMobs.MobKey;
 import xmasLegacy.HuntingZone.CustomMobs.Mythic.AbstractMythicMobs;
 import xmasLegacy.HuntingZone.CustomMobs.Named.AbstractNamedMobs;
+import xmasLegacy.HuntingZone.CustomMobs.Unrated.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class MobRepository {
     private final @NotNull Map<MobKey, CustomMob> mobInstances = new HashMap<>();
     private final @NotNull IcedZombie icedZombie;
@@ -42,9 +41,10 @@ public class MobRepository {
         this.mobInstances.put(MobKey.HUNTER_ZOMBIE, hunterZombie);
         this.mobInstances.put(MobKey.ICE_CUBE, iceCube);
     }
+
     @CheckReturnValue
-    public @NotNull List<CustomMob> getMobInstance() {
-        return this.mobInstances.values().stream().toList();
+    public @NotNull CustomMob[] getMobInstance() {
+        return this.mobInstances.values().toArray(CustomMob[]::new);
     }
 
     @CheckReturnValue
@@ -58,6 +58,7 @@ public class MobRepository {
             case BOSS -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractBossMobs).toArray(CustomMob[]::new);
         };
     }
+
     @CheckReturnValue
     public @Nullable CustomMob getMobInstance(@NotNull LivingEntity le) {
         return this.mobInstances.values().stream()

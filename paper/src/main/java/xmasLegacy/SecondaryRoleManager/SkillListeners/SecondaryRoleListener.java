@@ -126,7 +126,7 @@ public class SecondaryRoleListener implements Listener {
 		PersistentDataContainer pdc = meta.getPersistentDataContainer();
 		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
 		if (type == null) return;
-		if (!type.equalsIgnoreCase("berserker")) return;
+		if (!type.equalsIgnoreCase(SecondaryRoles.BERSERKER.name())) return;
 		if (berserker.used(p)) {
 			berserker.setAvailable(p);
 			return;
@@ -153,7 +153,7 @@ public class SecondaryRoleListener implements Listener {
 		PersistentDataContainer pdc = meta.getPersistentDataContainer();
 		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
 		if (type == null) return;
-		if (!type.equalsIgnoreCase("guardian")) return;
+		if (!type.equalsIgnoreCase(GUARDIAN.name())) return;
 
 		Entity targetEntity = p.getTargetEntity(10, false);
 		if (!(targetEntity instanceof LivingEntity le)) return;
@@ -191,7 +191,7 @@ public class SecondaryRoleListener implements Listener {
 
 		PersistentDataContainer container = meta.getPersistentDataContainer();
 		String key = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
-		if (key == null || !key.equals("sniper")) return;
+		if (key == null || !key.equalsIgnoreCase(SecondaryRoles.SNIPER.name())) return;
 
 		sniper.shoot(p);
 		p.setCooldown(item, 20);
@@ -218,7 +218,7 @@ public class SecondaryRoleListener implements Listener {
 		try {
 			role = Role.valueOf(value);
 		} catch(IllegalArgumentException ex) {
-			plugin.getSLF4JLogger().error("Could not find Role \"{}\"", value, ex);
+			plugin.getSLF4JLogger().error("Could not find Role \"{}\"", value);
 			role = Roles.USER;
 		}
 		if (role instanceof SecondaryRoles fr) {
@@ -240,7 +240,7 @@ public class SecondaryRoleListener implements Listener {
 		try {
 			role = Role.valueOf(roleS);
 		} catch (IllegalArgumentException ex) {
-			plugin.getSLF4JLogger().error("Role method 'valueOf(String name)' invoked error. -> \"{}\"", roleS, ex);
+			plugin.getSLF4JLogger().error("Role method 'valueOf(String name)' invoked error. -> \"{}\"", roleS);
 			role = null;
 		}
 		if (role == null) return;
