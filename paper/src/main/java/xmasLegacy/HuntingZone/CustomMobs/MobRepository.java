@@ -11,6 +11,7 @@ import xmasLegacy.HuntingZone.CustomMobs.Honored.AbstractHonoredMobs;
 import xmasLegacy.HuntingZone.CustomMobs.Mythic.AbstractMythicMobs;
 import xmasLegacy.HuntingZone.CustomMobs.Named.AbstractNamedMobs;
 import xmasLegacy.HuntingZone.CustomMobs.Unrated.*;
+import xmasLegacy.HuntingZone.ZoneType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,4 +67,22 @@ public class MobRepository {
                 .findFirst()
                 .orElse(null);
     }
+
+	@CheckReturnValue
+	public @Nullable CustomMob getMobInstance(MobKey key) {
+		return this.mobInstances.get(key);
+	}
+
+	public CustomMob[] getMobInstance(ZoneType type) {
+		return switch (type) {
+			case ICE_STAGE ->
+				new CustomMob[] {
+						this.icedZombie,
+						this.hunterZombie,
+						this.iceCube
+				};
+			case SKY_GARDEN -> new CustomMob[] {};
+			case SOUL_GRAVEYARD -> new CustomMob[] {};
+		};
+	}
 }

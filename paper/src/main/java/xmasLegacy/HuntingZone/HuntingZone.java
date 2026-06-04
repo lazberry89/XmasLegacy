@@ -4,9 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xmasLegacy.HuntingZone.CustomMobs.MobKey;
+import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
+import xmasLegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,8 +21,9 @@ import java.util.Set;
 public class HuntingZone implements HZone {
 	private final @NotNull ZoneType type;
 	private final @NotNull String worldName;
-	private final List<MobKey> mobs;
+	private final @NotNull List<MobKey> mobs;
 	private final @NotNull Set<Long> zones;
+	private final @NotNull Set<MobKey> mobKeySet;
 	private final int maxSpawn = 100;
 	private boolean isEnabled = false;
 
@@ -27,6 +32,7 @@ public class HuntingZone implements HZone {
 		this.type = type;
 		this.worldName = worldName;
 		this.mobs = Arrays.stream(type.getMobs()).toList();
+		this.mobKeySet = new HashSet<>(this.mobs);
 	}
 
 	public void enLarge(@NotNull Player p) {
@@ -78,20 +84,48 @@ public class HuntingZone implements HZone {
 	public MobKey[] getMobs() {
 		return this.mobs.toArray(MobKey[]::new);
 	}
-
 	public @NotNull ZoneType getType() {
 		return this.type;
 	}
-
 	public void enable() {
 		this.isEnabled = true;
 	}
-
 	public void disable() {
 		this.isEnabled = false;
 	}
-
 	public boolean getEnabled() {
 		return this.isEnabled;
+	}
+	public int getMaxSpawn() {
+		return this.maxSpawn;
+	}
+
+	public int getAliveMobCount() {
+		World world = Bukkit.getWorld(this.worldName);
+		if (world == null) return 0;
+
+		int totalCount = 0;
+
+		for (long k : this.zones) {
+			int x = (int) k;
+			int z = (int) (k >> 32);
+
+			if (world.isChunkLoaded(x, z)) {
+				Chunk chunk = world.getChunkAt(x, z);
+
+				for (Entity entity : chunk.getEntities()) {
+					if (entity instanceof LivingEntity le && isCustomMobOfThisZone(le)) totalCount++;
+				}
+			}
+		}
+		return totalCount;
+	}
+
+	private boolean isCustomMobOfThisZone(LivingEntity entity) {
+		for (MobKey mobKey : this.mobKeySet) {
+			CustomMob mob = MobRepository.getInstance().getMobInstance(mobKey);
+			if (mob != null && mob.isEntity(entity)) return true;
+		}
+		return false;
 	}
 }

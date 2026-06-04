@@ -31,6 +31,8 @@ import xmasLegacy.Gacha.GachaCommand;
 import xmasLegacy.Gacha.GachaListener;
 import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
+import xmasLegacy.HuntingZone.HuntingZoneManager;
+import xmasLegacy.HuntingZone.MobSpawnManager;
 import xmasLegacy.Lobby.LobbyCommand;
 import xmasLegacy.Lobby.LobbyListener;
 import xmasLegacy.Lobby.LobbyManager;
@@ -99,6 +101,7 @@ public final class XmasLegacy extends JavaPlugin {
 		var rm = RegionManager.getInstance();
 		var cm = ConsumableManager.getInstance();
 		var bg = BagManager.getInstance();
+		var msm = MobSpawnManager.getInstance();
 		if (rm != null) {
 			rm.saveAll();
 		}
@@ -113,6 +116,10 @@ public final class XmasLegacy extends JavaPlugin {
 		if (bg != null) {
 			bg.saveAllBags();
 			getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+		}
+		if (msm != null) {
+			getSLF4JLogger().info("사냥터 몹 스폰을 종료합니다.");
+			msm.stopTask();
 		}
 		UserTagManager.stopTask();
 	}
@@ -174,6 +181,9 @@ public final class XmasLegacy extends JavaPlugin {
 
 			// 사냥터 몹 초기화
 			MobRepository.getInstance().init();
+
+			HuntingZoneManager.getInstance().init();
+			MobSpawnManager.getInstance().startTask();
 
 			// [메인 서버 전용 리스너 등록]
 			var pm = getServer().getPluginManager();

@@ -1,23 +1,19 @@
 package xmasLegacy.HuntingZone.CustomMobs;
 
-import java.util.Random;
+import xmasLegacy.HuntingZone.ZoneType;
 
 public enum MobKey {
-    ICED_ZOMBIE(200, 400),
-    HUNTER_ZOMBIE(300, 350),
-    ICE_CUBE(150, 250);
+    ICED_ZOMBIE(ZoneType.ICE_STAGE),
+    HUNTER_ZOMBIE(ZoneType.ICE_STAGE),
+    ICE_CUBE(ZoneType.ICE_STAGE);
 
-    private final int from;
-    private final int to;
-    private final Random random;
+	private final ZoneType type;
 
-    MobKey(int from, int to) {
-        this.from = from;
-        this.to = to;
-        this.random = new Random();
+    MobKey(ZoneType type) {
+        this.type = type;
     }
 
-    public int amount() {
-        return random.nextInt(from, to);
-    }
+	public  ZoneType getType() {
+		return this.type;
+	}
 }
