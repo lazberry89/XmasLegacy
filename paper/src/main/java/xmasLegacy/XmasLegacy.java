@@ -33,6 +33,7 @@ import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.HuntingZone.HuntingZoneManager;
 import xmasLegacy.HuntingZone.MobSpawnManager;
+import xmasLegacy.HuntingZone.ZoneCommandManager;
 import xmasLegacy.Lobby.LobbyCommand;
 import xmasLegacy.Lobby.LobbyListener;
 import xmasLegacy.Lobby.LobbyManager;
@@ -238,8 +239,10 @@ public final class XmasLegacy extends JavaPlugin {
 			getCommand("prefix").setTabCompleter(prefix);
 			getCommand("0947345").setExecutor(new UserLoadCommand());
 			getCommand("second").setExecutor(new SecondTestCommand());
-
 			getCommand("강화").setExecutor(new EnchantCommand());
+            var zcm = new ZoneCommandManager();
+            getCommand("zone").setExecutor(zcm);
+            getCommand("zone").setTabCompleter(zcm);
 			UserTagManager.runTask();
 		}
 	}
@@ -259,6 +262,6 @@ public final class XmasLegacy extends JavaPlugin {
 
 	public String getServerType() {
 		saveDefaultConfig();
-		return getConfig().getString("server-type", "lobby");
+		return getConfig().getString("server-type", "main");
 	}
 }

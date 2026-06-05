@@ -1,6 +1,8 @@
 package xmasLegacy.Region;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -14,17 +16,18 @@ import java.io.IOException;
 import java.util.*;
 
 public class RegionManager {
-    private final XmasLegacy plugin;
-    private final UserManager UM;
-    private final Map<UUID, List<Region>> regions = new HashMap<>();
-    private File file;
-    private FileConfiguration config;
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull UserManager um;
+    private final @NotNull Map<Long, Region> regions = new HashMap<>();
+    private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
+    private @NotNull File file;
+    private @NotNull FileConfiguration config;
 
     private static RegionManager instance;
 
     private RegionManager() {
         this.plugin = XmasLegacy.getInstance();
-        this.UM = UserManager.getInstance();
+        this.um = UserManager.getInstance();
         setupFile();
         loadAll();
     }
@@ -52,17 +55,16 @@ public class RegionManager {
     }
 
     public void saveAll() {
-        config.set("regions", null); // 초기화
+        config.set("regions", null);
 
-        for (List<Region> list : regions.values()) {
-            for (Region region : list) {
-                String path = "regions." + region.getId(); // ID 기반 저장
-                config.set(path + ".owner", region.getOwner().toString()); // 주인 정보 저장
-                config.set(path + ".id", region.getId());
-                config.set(path + ".center", region.getCenter());
-                config.set(path + ".allowEntry", region.isAllowPublicEntry());
-                config.set(path + ".allowInteract", region.isAllowPublicInteraction());
-            }
+        for (Region region : regions.values()) {
+            String path = "regions." + region.Id();
+            config.set(path + ".owner", region.getOwner().toString());
+            config.set(path + ".id", region.Id());
+            config.set(path + ".world", region.getWorld());
+            config.set(path + ".key", region.key());
+            config.set(path + ".allowEntry", region.isEntryAllowed());
+            config.set(path + ".allowInteract", region.isInteractionAllowed());
         }
 
         try {
@@ -87,11 +89,13 @@ public class RegionManager {
 
             UUID owner = UUID.fromString(ownerStr);
             String id = config.getString(path + ".id");
-            Location center = config.getLocation(path + ".center");
+            long keys = config.getLong(path + ".key");
+            String wk = config.getString(path + ".world");
+            World world = Bukkit.getWorld(wk != null ? wk : "world");
             boolean entry = config.getBoolean(path + ".allowEntry");
             boolean interact = config.getBoolean(path + ".allowInteract");
 
-            Region region = new Region(owner, id, center, entry, interact, UM);
+            Region region = new Region(owner, id != null ? id : "null", Objects.requireNonNull(world), keys);
 
             regions.computeIfAbsent(owner, k -> new ArrayList<>()).add(region);
         }

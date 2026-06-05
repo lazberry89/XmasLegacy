@@ -3,6 +3,7 @@ package xmasLegacy.HuntingZone.CustomMobs.Unrated;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,7 @@ public class IceCube extends AbstractUnratedMobs implements CustomMob, UnratedMo
             GlowUtils.setGlowColor(m, getGrade().color());
             m.setWander(false);
             m.setSize(2);
+            m.getPersistentDataContainer().set(plugin.getNamespacedKey("custom_mobs"), PersistentDataType.STRING, this.key.name());
         });
     }
 

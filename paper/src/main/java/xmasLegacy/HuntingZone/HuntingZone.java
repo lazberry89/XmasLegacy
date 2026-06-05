@@ -93,7 +93,7 @@ public class HuntingZone implements HZone {
 	public void disable() {
 		this.isEnabled = false;
 	}
-	public boolean getEnabled() {
+	public boolean isEnabled() {
 		return this.isEnabled;
 	}
 	public int getMaxSpawn() {
