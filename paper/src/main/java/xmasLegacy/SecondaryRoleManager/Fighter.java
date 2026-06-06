@@ -44,6 +44,7 @@ public class Fighter extends AbstractSecondRole {
     @Override
     public void useFirstSkill(Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.TARGET);
+        Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
@@ -106,6 +107,7 @@ public class Fighter extends AbstractSecondRole {
     @Override
     public void useSecondSkill(Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.RANGE);
+        Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;

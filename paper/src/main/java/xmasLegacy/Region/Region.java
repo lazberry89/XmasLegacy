@@ -1,5 +1,6 @@
 package xmasLegacy.Region;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -92,6 +93,26 @@ public class Region {
     }
     public void blockEntry() {
         this.allowPublicEntry = false;
+    }
+    public Location getTrueCenter(@NotNull Chunk chunk) {
+        int minX = chunk.getX() << 4;
+        int minZ = chunk.getZ() << 4;
+
+        double centerX = minX + 7.5;
+        double centerZ = minZ + 7.5;
+        double centerY = chunk.getWorld().getHighestBlockYAt(minX + 8, minZ + 8) + 1.0;
+
+        return new Location(chunk.getWorld(), centerX, centerY, centerZ);
+    }
+    public Location getBlockCenter(@NotNull Chunk chunk) {
+        int minX = chunk.getX() << 4;
+        int minZ = chunk.getZ() << 4;
+
+        int centerX = minX + 8;
+        int centerZ = minZ + 8;
+        int centerY = chunk.getWorld().getHighestBlockYAt(centerX, centerZ);
+
+        return new Location(chunk.getWorld(), centerX, centerY, centerZ);
     }
 
     @Override

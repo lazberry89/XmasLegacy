@@ -96,6 +96,7 @@ public class Archer extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack bow = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(bow) > 0) return;
@@ -130,6 +131,7 @@ public class Archer extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getHelmet();
 		if (tool == null || tool.getType() == Material.AIR) return;

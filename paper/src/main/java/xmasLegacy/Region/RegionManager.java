@@ -1,13 +1,14 @@
 package xmasLegacy.Region;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.ColorUtils;
+import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 import java.io.File;
@@ -28,6 +29,18 @@ public class RegionManager {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		loadAll();
+	}
+
+	public static @NotNull ItemStack RegionTicket() {
+		var plugin = XmasLegacy.getInstance();
+		return ItemBuilder.of(plugin, Material.FIELD_MASONED_BANNER_PATTERN)
+				.hideAllFlags()
+				.setName(ColorUtils.chat("&6&l구역 티켓"))
+				.setLore(ColorUtils.chat("&7아이템을 던져 해당 청크를 구매하세요!"))
+				.setGlint(true)
+				.setTag("region", "beacon")
+				.setMaxStackSize(16)
+				.build().clone();
 	}
 
 	public static RegionManager getInstance() {
@@ -90,7 +103,7 @@ public class RegionManager {
 			String path = "regions." + configKey;
 
 			String ownerStr = config.getString(path + ".owner");
-			if (ownerStr == null) continue; // 데이터 오염 방지
+			if (ownerStr == null) continue;
 
 			UUID owner = UUID.fromString(ownerStr);
 			String id = config.getString(path + ".id");
@@ -114,16 +127,22 @@ public class RegionManager {
 		if (region == null || !region.isValid()) return;
 
 		regions.put(region.key(), region);
+		var event = new RegionGenerateEvent(region, region.getOwner(), region.Id());
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) return;
 		userRegionsMap.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);
 		saveAll();
 	}
 
 	public void removeRegion(Region region) {
 		if (region == null) return;
+		UUID ownerUUID = region.getOwner();
 
+		var event = new RegionDeleteEvent(ownerUUID, region, region.Id());
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) return;
 		regions.remove(region.key());
 
-		UUID ownerUUID = region.getOwner();
 		List<Region> userRegions = userRegionsMap.get(ownerUUID);
 		if (userRegions != null) {
 			if (userRegions.remove(region)) {
@@ -165,9 +184,18 @@ public class RegionManager {
 				.orElse(null);
 	}
 
-	public boolean isOverlaps(Region r1, Region r2) {
-		if (r1 == null || r2 == null) return false;
-		return r1.getWorld().equals(r2.getWorld()) && r1.key() == r2.key();
+	public boolean hasRegion(long chunkKey) {
+		return regions.containsKey(chunkKey);
+	}
+
+	public boolean hasRegion(@Nullable Chunk chunk) {
+		if (chunk == null) return false;
+		return regions.containsKey(chunk.getChunkKey());
+	}
+
+	public boolean hasRegion(@Nullable Location loc) {
+		if (loc == null) return false;
+		return regions.containsKey(loc.getChunk().getChunkKey());
 	}
 
 	@NotNull

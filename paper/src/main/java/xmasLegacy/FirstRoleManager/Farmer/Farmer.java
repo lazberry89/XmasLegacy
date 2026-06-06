@@ -1,9 +1,6 @@
 package xmasLegacy.FirstRoleManager.Farmer;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -100,6 +97,7 @@ public class Farmer extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
@@ -108,9 +106,7 @@ public class Farmer extends AbstractFirstRole {
 		}
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		List<Region> playerRegions = rm.getRegion(p);
-		if (playerRegions == null || playerRegions.isEmpty()) {
-			return;
-		}
+		if (playerRegions.isEmpty()) return;
 
 		List<Block> crops = getFullyGrownCrops(p, this.first_skill_radius);
 		for (Block block : crops) {
@@ -153,6 +149,7 @@ public class Farmer extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null || tool.getType() == Material.AIR) return;
@@ -162,7 +159,7 @@ public class Farmer extends AbstractFirstRole {
 			return;
 		}
 		List<Region> playerRegions = rm.getRegion(p);
-		if (playerRegions == null || playerRegions.isEmpty()) return;
+		if (playerRegions.isEmpty()) return;
 
 		Location center = p.getLocation();
 		boolean success = false;

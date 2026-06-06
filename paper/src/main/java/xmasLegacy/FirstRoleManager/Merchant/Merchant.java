@@ -1,5 +1,6 @@
 package xmasLegacy.FirstRoleManager.Merchant;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -67,6 +68,7 @@ public class Merchant extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getHelmet();
 		if (tool == null || tool.getType().isAir()) return;
@@ -78,6 +80,7 @@ public class Merchant extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;

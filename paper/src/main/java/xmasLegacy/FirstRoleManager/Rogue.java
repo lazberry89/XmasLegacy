@@ -102,6 +102,7 @@ public class Rogue extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getBoots();
 		if (tool == null || tool.getType() == Material.AIR) return;
@@ -177,6 +178,7 @@ public class Rogue extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();

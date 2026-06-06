@@ -1,6 +1,7 @@
 package xmasLegacy.FirstRoleManager;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -100,6 +101,7 @@ public class Crafter extends AbstractFirstRole {
 	@Override
 	public void useFirstSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (p.getCooldown(tool) > 0) {
@@ -154,6 +156,7 @@ public class Crafter extends AbstractFirstRole {
 	@Override
 	public void useSecondSkill(Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
+		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getChestplate();
 		if (tool == null) return;
