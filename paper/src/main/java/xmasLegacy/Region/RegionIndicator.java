@@ -65,16 +65,16 @@ public class RegionIndicator implements Listener {
 				return;
 			}
 
-			Region newRegion = new Region(p, loc, UM);
+			Region newRegion = new Region(p, loc);
 
-			boolean isOverlapping = RM.getRegions().stream().anyMatch(r -> r.overlaps(newRegion));
+			boolean isOverlapping = RM.getRegions().stream().anyMatch(r -> r.isInside(newRegion));
 			if (isOverlapping) {
 				p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 다른 구역에 겹치는 구역이 있습니다!"));
 				e.setCancelled(true);
 				return;
 			}
 			RM.addRegion(p, newRegion);
-			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 생성했습니다. &6ID: " + newRegion.getId()));
+			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 생성했습니다. &6ID: " + newRegion.Id()));
 		}
 	}
 

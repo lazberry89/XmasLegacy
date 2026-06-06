@@ -12,12 +12,11 @@ import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.*;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class RegionCommandManager implements CommandExecutor, TabCompleter {
-	private final RegionManager RM;
+	private final RegionManager rm;
 
 	public RegionCommandManager() {
-		this.RM = RegionManager.getInstance();
+		this.rm = RegionManager.getInstance();
 	}
 
 	@SuppressWarnings("DuplicatedCode")
@@ -32,7 +31,7 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 				return true;
 			}
 		} else if (args.length == 3) {
-			Region region = RM.getRegion(args[0]);
+			Region region = rm.getRegion(args[0]);
 			if (region == null) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 				return true;
@@ -44,25 +43,25 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 			switch (args[1]) {
 				case "입장" -> {
 					if (args[2].equals("허용")) {
-						region.setAllowPublicEntry(true);
+						region.allowEntry();
 						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 입장을 허용했습니다."));
 					} else {
-						region.setAllowPublicEntry(false);
+						region.blockEntry();
 						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 입장을 차단했습니다."));
 					}
 				}
 				case "상호작용" -> {
 					if (args[2].equals("허용")) {
-						region.setAllowPublicInteraction(true);
+						region.allowInteraction();
 						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 상호작용을 허용했습니다."));
 					} else {
-						region.setAllowPublicInteraction(false);
+						region.blockInteraction();
 						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 상호작용을 차단했습니다."));
 					}
 				}
 			}
 		} else if (args.length == 2) {
-			Region region = RM.getRegion(args[0]);
+			Region region = rm.getRegion(args[0]);
 			if (region == null) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 				return true;
@@ -72,8 +71,8 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 				return true;
 			}
 			if (args[1].equals("삭제")) {
-				RM.removeRegion(region);
-				p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.getId()));
+				rm.removeRegion(region);
+				p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.Id()));
 				return true;
 			}
 		}
@@ -86,9 +85,9 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 
 		if (args.length == 1) {
 			// 본인 구역 ID들 추천 (OP는 전체)
-			List<Region> targetList = p.isOp() ? RM.getRegions() : RM.getRegion(p);
+			List<Region> targetList = p.isOp() ? rm.getRegions() : rm.getRegion(p);
 			if (targetList == null) return List.of();
-			return targetList.stream().map(Region::getId).toList();
+			return targetList.stream().map(Region::Id).toList();
 		}
 
 		if (args.length == 2) {

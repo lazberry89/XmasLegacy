@@ -31,11 +31,13 @@ public class Region {
         this.key = chunk.isLoaded() && chunk.isGenerated() ? chunk.getChunkKey() : -1;
     }
 
-    public Region(@NonNull UUID uuid, @NonNull String id, @NonNull World world, long key) {
+    public Region(@NonNull UUID uuid, @NonNull String id, @NonNull World world, long key, boolean allowPublicEntry, boolean allowPublicInteraction) {
         this.owner = uuid;
         this.id = id;
         this.world = world;
         this.key = key;
+		this.allowPublicEntry = allowPublicEntry;
+		this.allowPublicInteraction = allowPublicInteraction;
     }
 
     @CheckReturnValue
@@ -43,7 +45,7 @@ public class Region {
         return key != -1;
     }
 
-    public World getWorld() {
+    public @NotNull World getWorld() {
         return this.world;
     }
 
