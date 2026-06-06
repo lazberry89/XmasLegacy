@@ -41,7 +41,6 @@ public class Region {
 		this.allowPublicInteraction = allowPublicInteraction;
     }
 
-    @CheckReturnValue
     public boolean isValid() {
         return key != -1;
     }

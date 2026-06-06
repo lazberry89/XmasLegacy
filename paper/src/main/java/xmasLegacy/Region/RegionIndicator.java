@@ -4,30 +4,27 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
+import org.bukkit.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDropItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.util.Transformation;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.ServerPrefix.UserTagManager;
-import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
+import java.util.Arrays;
+
+@SuppressWarnings("DuplicatedCode")
 public class RegionIndicator implements Listener {
 	private final RegionManager rm;
 	private final UserManager um;
@@ -44,7 +41,6 @@ public class RegionIndicator implements Listener {
 		if (!(e.getEntity() instanceof Player p)) return;
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
-		var chunk = loc.getChunk();
 		if (user == null) {
 			var options = ClickCallback.Options.builder()
 					.uses(1)
@@ -75,8 +71,39 @@ public class RegionIndicator implements Listener {
 			plugin.infoMsg(InfoLevel.ERROR, p, "이미 누군가의 구역입니다!");
 			return;
 		}
-		Region region = new Region(p, loc);
-		rm.addRegion(p, region);
-		plugin.infoMsg(InfoLevel.INFO, p, "구역을 생성하였습니다! (ID : &6" + region.Id() + "&f)");
+		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+		p.openInventory(new RegionCreateInterface().getInventory());
+	}
+
+	@EventHandler
+	public void MakeRegionIndicator(RegionGenerateEvent e) {
+		var region = e.getRegion();
+
+		Chunk chunk = region.getChunk();
+		if (!region.isValid()) return;
+		if (chunk == null) return;
+
+		Location center = region.getTrueCenter(chunk);
+		BlockDisplay indic = region.getWorld().spawn(center.clone().add(0, 0.5, 0), BlockDisplay.class, b -> {
+			b.setBlock(Material.BEACON.createBlockData());
+			b.setGravity(false);
+			b.setGlowColorOverride(Color.AQUA);
+			b.customName(ColorUtils.chat("&b&l구역 : " + region.Id()));
+			b.setCustomNameVisible(true);
+			Transformation trans = b.getTransformation();
+			trans.getScale().set(0.5f);
+			b.getPersistentDataContainer().set(plugin.getNamespacedKey(Constants.regionKey), PersistentDataType.STRING, "indicator");
+		});
+	}
+
+	@EventHandler
+	public void removeWhenDeleted(RegionDeleteEvent e) {
+		var chunk = e.getRegion().getChunk();
+		if (chunk == null) return;
+
+		Arrays.stream(chunk.getEntities())
+				.filter(entity -> entity instanceof BlockDisplay)
+				.filter(entity -> entity.getPersistentDataContainer().has(plugin.getNamespacedKey(Constants.regionKey), PersistentDataType.STRING))
+				.forEach(Entity::remove);
 	}
 }

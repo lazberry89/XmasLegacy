@@ -127,7 +127,7 @@ public class RegionManager {
 		if (region == null || !region.isValid()) return;
 
 		regions.put(region.key(), region);
-		var event = new RegionGenerateEvent(region, region.getOwner(), region.Id());
+		var event = new RegionGenerateEvent(p, region, region.getOwner(), region.Id());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return;
 		userRegionsMap.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);

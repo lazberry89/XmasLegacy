@@ -93,4 +93,5 @@ public class Constants {
 			LEVEL1_NEEDED, LEVEL2_NEEDED, LEVEL3_NEEDED, LEVEL4_NEEDED, LEVEL5_NEEDED,
 			LEVEL6_NEEDED, LEVEL7_NEEDED, LEVEL8_NEEDED, LEVEL9_NEEDED
 	);
+	public static final String regionKey = "region";
 }

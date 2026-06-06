@@ -55,7 +55,7 @@ import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
 import xmasLegacy.ServerPrefix.UserTagManager;
 
-@SuppressWarnings({"FieldCanBeLocal", "DataFlowIssue"})
+@SuppressWarnings({"FieldCanBeLocal, DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
 	private static XmasLegacy instance;
 
@@ -202,6 +202,7 @@ public final class XmasLegacy extends JavaPlugin {
 			pm.registerEvents(new SecondaryRoleListener(), this);
 			pm.registerEvents(new EffectListener(), this);
 			pm.registerEvents(new EnchantListener(), this);
+			pm.registerEvents(new RegionCreateListener(), this);
 
 			// [메인 서버 전용 명령어 등록]
 			var bag = new BagCommandManager();
