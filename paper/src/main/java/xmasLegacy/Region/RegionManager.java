@@ -3,10 +3,19 @@ package xmasLegacy.Region;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.AxisAngle4f;
+import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
@@ -20,6 +29,7 @@ public class RegionManager {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
+	private float globalAngle = 0.0f;
 	private @NotNull File file;
 	private @NotNull FileConfiguration config;
 
@@ -29,6 +39,75 @@ public class RegionManager {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		loadAll();
+	}
+
+	public void startGlobalIndicatorTask() {
+		new BukkitRunnable() {
+			int checkDelay = 0;
+
+			@Override
+			public void run() {
+				if (regions.isEmpty()) return;
+
+				checkDelay++;
+
+				globalAngle += (float) Math.toRadians(3);
+				if (globalAngle >= Math.PI * 2) globalAngle = 0.0f;
+				Quaternionf leftRotation = new Quaternionf(new AxisAngle4f(globalAngle, 0.0f, 1.0f, 0.0f));
+
+				for (Region region : regions.values()) {
+					if (region.getIndicator() == null || !region.getIndicator().isValid()) {
+						if (region.getIndicatorUid() != null && checkDelay >= 20) {
+							Entity entity = Bukkit.getEntity(region.getIndicatorUid());
+
+							if (entity instanceof BlockDisplay bd) {
+								region.setIndicator(bd);
+							} else {
+								var chunk = region.getChunk();
+								if (chunk != null && chunk.isLoaded()) {
+									Bukkit.getScheduler().runTask(plugin, () -> {
+										Location center = region.getTrueCenter(chunk);
+										Location spawnLoc = center.clone().add(-0.25, 0.5, -0.25);
+
+										BlockDisplay newIndic = region.getWorld().spawn(spawnLoc, BlockDisplay.class, b -> {
+											b.setBlock(Material.BEACON.createBlockData());
+											b.setGravity(false);
+											b.setGlowing(true);
+											b.setGlowColorOverride(Color.AQUA);
+											b.customName(ColorUtils.chat("&b&l구역 : " + region.Id()));
+											b.setCustomNameVisible(true);
+
+											Transformation trans = b.getTransformation();
+											trans.getScale().set(0.5f);
+											b.setTransformation(trans);
+
+											b.getPersistentDataContainer().set(plugin.getNamespacedKey(org.lazberry.xmaslegacy.Constants.regionKey), org.bukkit.persistence.PersistentDataType.STRING, "indicator");
+										});
+
+										region.setIndicator(newIndic);
+
+										saveAll();
+										plugin.getSLF4JLogger().warn("[Region] 구역 {}의 인디케이터가 유실되어 자동 재생성되었습니다.", region.Id());
+									});
+								}
+							}
+						}
+					}
+
+					if (region.getIndicator() != null && region.getIndicator().isValid()) {
+						Transformation transformation = region.getIndicator().getTransformation();
+						Transformation newTrans = new Transformation(
+								transformation.getTranslation(),
+								leftRotation,
+								transformation.getScale(),
+								transformation.getRightRotation()
+						);
+						region.getIndicator().setTransformation(newTrans);
+					}
+				}
+				if (checkDelay >= 20) checkDelay = 0;
+			}
+		}.runTaskTimer(plugin, 0L, 1L);
 	}
 
 	public static @NotNull ItemStack RegionTicket() {
@@ -42,6 +121,15 @@ public class RegionManager {
 				.setMaxStackSize(16)
 				.build().clone();
 	}
+
+	public boolean isTicket(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) return false;
+		PersistentDataContainer container = meta.getPersistentDataContainer();
+		String value = container.get(plugin.getNamespacedKey("region"), PersistentDataType.STRING);
+		return value != null && value.equals("beacon");
+	}
+
 
 	public static RegionManager getInstance() {
 		if (instance == null) {
@@ -84,6 +172,9 @@ public class RegionManager {
 			config.set(path + ".key", region.key());
 			config.set(path + ".allowEntry", region.isEntryAllowed());
 			config.set(path + ".allowInteract", region.isInteractionAllowed());
+			if (region.getIndicatorUid() != null) {
+				config.set(path + ".indicatorUuid", region.getIndicatorUid().toString());
+			}
 		}
 
 		try {
@@ -116,7 +207,10 @@ public class RegionManager {
 			boolean interact = config.getBoolean(path + ".allowInteract");
 
 			Region region = new Region(owner, id != null ? id : "null", world, chunkKey, entry, interact);
-
+			String uuidStr = config.getString(path + ".indicatorUuid");
+			if (uuidStr != null) {
+				region.setIndicator(UUID.fromString(uuidStr));
+			}
 			regions.put(chunkKey, region);
 			userRegionsMap.computeIfAbsent(owner, k -> new ArrayList<>()).add(region);
 		}
@@ -141,7 +235,13 @@ public class RegionManager {
 		var event = new RegionDeleteEvent(ownerUUID, region, region.Id());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return;
+
+		if (region.getIndicator() != null && region.getIndicator().isValid()) {
+			region.getIndicator().remove();
+		}
+
 		regions.remove(region.key());
+
 
 		List<Region> userRegions = userRegionsMap.get(ownerUUID);
 		if (userRegions != null) {
@@ -158,7 +258,12 @@ public class RegionManager {
 	public void removeAllRegion(Player p) {
 		List<Region> userRegions = userRegionsMap.remove(p.getUniqueId());
 		if (userRegions != null) {
-			userRegions.forEach(region -> regions.remove(region.key()));
+			userRegions.forEach(region -> {
+				if (region.getIndicator() != null && region.getIndicator().isValid()) {
+					region.getIndicator().remove();
+				}
+				regions.remove(region.key());
+			});
 			saveAll();
 		}
 	}

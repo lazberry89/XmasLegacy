@@ -1,11 +1,10 @@
 package xmasLegacy.Region;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -19,6 +18,8 @@ public class Region {
     private final @NotNull UUID owner;
     private final @NotNull String id;
     private final @NotNull World world;
+    private @Nullable BlockDisplay indicator;
+    private @Nullable UUID indicatorId;
     private final long key;
 
     private boolean allowPublicEntry = true;
@@ -39,6 +40,23 @@ public class Region {
         this.key = key;
 		this.allowPublicEntry = allowPublicEntry;
 		this.allowPublicInteraction = allowPublicInteraction;
+    }
+
+    public void setIndicator(BlockDisplay display) {
+        this.indicator = display;
+        this.indicatorId = display != null ? display.getUniqueId() : null;
+    }
+
+    public void setIndicator(UUID uuid) {
+        this.indicatorId = uuid;
+    }
+
+    public @Nullable BlockDisplay getIndicator() {
+        return this.indicator;
+    }
+
+    public @Nullable UUID getIndicatorUid() {
+        return this.indicatorId;
     }
 
     public boolean isValid() {

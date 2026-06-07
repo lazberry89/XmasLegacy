@@ -5,13 +5,14 @@ import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -21,8 +22,6 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.ServerPrefix.UserTagManager;
 import xmasLegacy.XmasLegacy;
-
-import java.util.Arrays;
 
 @SuppressWarnings("DuplicatedCode")
 public class RegionIndicator implements Listener {
@@ -39,6 +38,10 @@ public class RegionIndicator implements Listener {
 	@EventHandler
 	public void UserRegionCreate(EntityDropItemEvent e) {
 		if (!(e.getEntity() instanceof Player p)) return;
+
+		ItemStack item = e.getItemDrop().getItemStack();
+		if (!rm.isTicket(item)) return;
+
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
 		if (user == null) {
@@ -73,6 +76,7 @@ public class RegionIndicator implements Listener {
 		}
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 		p.openInventory(new RegionCreateInterface().getInventory());
+		e.getItemDrop().remove();
 	}
 
 	@EventHandler
@@ -84,7 +88,10 @@ public class RegionIndicator implements Listener {
 		if (chunk == null) return;
 
 		Location center = region.getTrueCenter(chunk);
-		BlockDisplay indic = region.getWorld().spawn(center.clone().add(0, 0.5, 0), BlockDisplay.class, b -> {
+		Location spawnLoc = center.clone().add(-0.25, 0.5, -0.25);
+
+
+		BlockDisplay indic = region.getWorld().spawn(spawnLoc, BlockDisplay.class, b -> {
 			b.setBlock(Material.BEACON.createBlockData());
 			b.setGravity(false);
 			b.setGlowColorOverride(Color.AQUA);
@@ -92,8 +99,10 @@ public class RegionIndicator implements Listener {
 			b.setCustomNameVisible(true);
 			Transformation trans = b.getTransformation();
 			trans.getScale().set(0.5f);
+			b.setTransformation(trans);
 			b.getPersistentDataContainer().set(plugin.getNamespacedKey(Constants.regionKey), PersistentDataType.STRING, "indicator");
 		});
+		if (indic.isValid()) region.setIndicator(indic);
 	}
 
 	@EventHandler
@@ -101,9 +110,18 @@ public class RegionIndicator implements Listener {
 		var chunk = e.getRegion().getChunk();
 		if (chunk == null) return;
 
-		Arrays.stream(chunk.getEntities())
-				.filter(entity -> entity instanceof BlockDisplay)
-				.filter(entity -> entity.getPersistentDataContainer().has(plugin.getNamespacedKey(Constants.regionKey), PersistentDataType.STRING))
-				.forEach(Entity::remove);
+		var region = e.getRegion();
+		var indic = region.getIndicator();
+		if (indic != null && indic.isValid()) indic.remove();
+	}
+
+	@EventHandler
+	public void RegionIndicatorClick(PlayerInteractAtEntityEvent e) {
+		Player p = e.getPlayer();
+		Entity target = e.getRightClicked();
+
+		if (!target.getPersistentDataContainer().has(plugin.getNamespacedKey(Constants.regionKey))) return;
+		p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 0.5f, 1.0f);
+		p.openInventory();
 	}
 }
