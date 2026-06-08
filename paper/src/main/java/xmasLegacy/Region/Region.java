@@ -132,6 +132,16 @@ public class Region {
         return new Location(chunk.getWorld(), centerX, centerY, centerZ);
     }
 
+    public void toggleEntry() {
+        if (isEntryAllowed()) blockEntry();
+        else allowEntry();
+    }
+
+    public void toggleInteraction() {
+        if (isInteractionAllowed()) blockInteraction();
+        else allowInteraction();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Region r)) return false;

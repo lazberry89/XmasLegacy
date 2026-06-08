@@ -17,6 +17,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.Roles.Unpromotable;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.InfoLevel;
@@ -25,7 +26,7 @@ import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
 @SuppressWarnings("DuplicatedCode, unused")
-public class Fighter extends AbstractSecondRole {
+public class Fighter extends AbstractSecondRole implements Unpromotable {
     private final PartyManager pm;
     private final SkillEffectManager sem;
 	private static Fighter instance;
@@ -120,14 +121,17 @@ public class Fighter extends AbstractSecondRole {
             return;
         }
         if (!consumeEnergy(p, 3)) return;
+
+        Location centerLoc = p.getLocation().clone();
+
         Vector meUp = new Vector(0.0f, 0.6f, 0.0f);
         Vector targetUp = new Vector(0.0f, 2.5f, 0.0f);
         p.setVelocity(meUp);
         p.swingMainHand();
-        p.getWorld().playSound(p, Sound.ENTITY_WITHER_DEATH, 1.0f, 1.3f);
 
-        Particle.DustTransition trans = new Particle.DustTransition(Color.RED, Color.BLACK, 1.0f);
-        p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 1.2f, 1.2f, 1.2f, 0, trans);
+        spawnExpandingShockwave(p, centerLoc);
+
+        p.getWorld().playSound(centerLoc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.5f, 0.5f);
 
         double damage = 12;
 
@@ -136,6 +140,45 @@ public class Fighter extends AbstractSecondRole {
 
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> target.damage(damage, p), 5L);
         p.setCooldown(tool, 30);
+    }
+
+    @Override
+    public void useAdditional() {
+
+    }
+
+    private void spawnExpandingShockwave(Player p, Location center) {
+        new org.bukkit.scheduler.BukkitRunnable() {
+            double radius = 0.5;
+            final double maxRadius = 4.5;
+            final double expansionSpeed = 0.8;
+            final Particle.DustTransition dustOptions = new Particle.DustTransition(Color.RED, Color.BLACK, 1.2f);
+
+            @Override
+            public void run() {
+                if (radius > maxRadius) {
+                    this.cancel();
+                    return;
+                }
+
+                int particleCount = (int) (radius * 12);
+
+                for (int i = 0; i < particleCount; i++) {
+                    double angle = 2 * Math.PI * i / particleCount;
+                    double x = Math.cos(angle) * radius;
+                    double z = Math.sin(angle) * radius;
+
+                    Location particleLoc = center.clone().add(x, 0.1, z);
+
+                    p.getWorld().spawnParticle(Particle.DUST, particleLoc, 1, 0, 0, 0, 0, dustOptions);
+
+                    if (i % 3 == 0) {
+                        p.getWorld().spawnParticle(Particle.END_ROD, particleLoc, 1, 0, 0.1, 0, 0.05);
+                    }
+                }
+                radius += expansionSpeed;
+            }
+        }.runTaskTimer(getPlugin(), 0L, 1L);
     }
 
     private void UpperCutEffect(Location loc) {
@@ -166,9 +209,7 @@ public class Fighter extends AbstractSecondRole {
     }
 
     @Override
-    public void usePassive(Player p) {
-
-    }
+    public void usePassive(Player p) {}
 
     @Override
     public @NotNull Role getRole() {
@@ -204,4 +245,5 @@ public class Fighter extends AbstractSecondRole {
 	public @NotNull ItemStack RangeEmblem() {
 		return emblem.getRangeEmblem();
 	}
+
 }

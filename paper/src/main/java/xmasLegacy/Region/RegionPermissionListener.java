@@ -26,11 +26,11 @@ public class RegionPermissionListener implements Listener {
 		Region region = RM.getRegionAt(e.getTo());
 		if (region == null) return;
 
-		if (region.isInsideSafeZone(e.getTo())) {
+		if (region.isInside(e.getTo())) {
 			Player p = e.getPlayer();
 			if (hasPermission(p, region)) return;
 
-			if (!region.isAllowPublicEntry()) {
+			if (!region.isEntryAllowed()) {
 				e.setCancelled(true);
 			}
 		}
@@ -42,7 +42,7 @@ public class RegionPermissionListener implements Listener {
 		Region region = RM.getRegionAt(e.getClickedBlock().getLocation());
 		if (region == null || hasPermission(e.getPlayer(), region)) return;
 
-		if (!region.isAllowPublicInteraction()) {
+		if (!region.isInteractionAllowed()) {
 			e.setCancelled(true);
 		}
 	}
@@ -63,7 +63,7 @@ public class RegionPermissionListener implements Listener {
 		Region region = RM.getRegionAt(target.getLocation());
 		if (region == null || hasPermission(p, region)) return;
 
-		if (!region.isAllowPublicInteraction()) {
+		if (!region.isInteractionAllowed()) {
 			event.setCancelled(true);
 		}
 	}

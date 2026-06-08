@@ -22,7 +22,10 @@ public class RegionCreateListener implements Listener {
 	@EventHandler
 	public void regionInterface(InventoryClickEvent e) {
 		if (!(e.getWhoClicked() instanceof Player p)) return;
+
 		Inventory inv = e.getClickedInventory();
+		if (inv == null) return;
+
 		if (!(inv instanceof RegionCreateInterface)) return;
 
 		e.setCancelled(true);

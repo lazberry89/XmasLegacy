@@ -42,6 +42,7 @@ import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.Region.*;
 import xmasLegacy.RoleSelection.RoleCommand;
 import xmasLegacy.RoleSelection.RoleSelectCommand;
+import xmasLegacy.RoleSelection.RoleViewDesign;
 import xmasLegacy.RoleSelection.SelectListener;
 import xmasLegacy.RoleSwitch.BookCommand;
 import xmasLegacy.RoleSwitch.DeleteStandCommand;
@@ -149,6 +150,8 @@ public final class XmasLegacy extends JavaPlugin {
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 
 			// [메인 서버 전용 인스턴스 초기화]
+			RoleViewDesign.getInstance().init();
+
 			BagManager.getInstance();
 			SkillEffectManager.getInstance();
 			RegionManager.getInstance();
@@ -203,6 +206,8 @@ public final class XmasLegacy extends JavaPlugin {
 			pm.registerEvents(new EffectListener(), this);
 			pm.registerEvents(new EnchantListener(), this);
 			pm.registerEvents(new RegionCreateListener(), this);
+			pm.registerEvents(new RegionSettingListener(), this);
+			pm.registerEvents(new RegionDeleteConfirmListener(), this);
 
 			// [메인 서버 전용 명령어 등록]
 			var bag = new BagCommandManager();

@@ -15,10 +15,12 @@ import xmasLegacy.XmasLegacy;
 
 public class RegionSettingInterface implements InventoryHolder {
     private final @NotNull XmasLegacy plugin;
+    private final @NotNull Region region;
     private final @NotNull RegionManager rm;
     private final @NotNull Inventory inv;
 
-    public RegionSettingInterface(Region region) {
+    public RegionSettingInterface(@NotNull Region region) {
+        this.region = region;
         this.plugin = XmasLegacy.getInstance();
         this.rm = RegionManager.getInstance();
         OfflinePlayer owner = Bukkit.getOfflinePlayer(region.getOwner());
@@ -26,7 +28,6 @@ public class RegionSettingInterface implements InventoryHolder {
         for (int i = 0; i < this.inv.getSize(); i++) this.inv.setItem(i, maker(region, i));
     }
     // a a a a a a a a a
-    @Range(from = 0, to = 8)
     @CheckReturnValue
     private @NotNull ItemStack maker(Region region, int slot) {
         return switch (slot) {
@@ -53,6 +54,10 @@ public class RegionSettingInterface implements InventoryHolder {
                     .hideAllFlags().build().clone();
             default -> new ItemStack(Material.AIR);
         };
+    }
+
+    public @NotNull Region getRegion() {
+        return this.region;
     }
 
     @Override

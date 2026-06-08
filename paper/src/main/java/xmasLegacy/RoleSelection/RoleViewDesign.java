@@ -7,6 +7,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
@@ -20,13 +22,24 @@ public class RoleViewDesign {
     private int currentFrameIndex = 0;
     private BukkitTask task;
 
-    public RoleViewDesign(XmasLegacy plugin) {
-        this.plugin = plugin;
+    private static @Nullable RoleViewDesign instance;
+    public static @NotNull RoleViewDesign getInstance() {
+        if (instance == null) instance = new RoleViewDesign();
+        return instance;
+    }
+
+    private RoleViewDesign() {
+        this.plugin = XmasLegacy.getInstance();
 
         this.RED = createGuiItem(Material.RED_STAINED_GLASS_PANE);
         this.WHITE = createGuiItem(Material.WHITE_STAINED_GLASS_PANE);
 
-        // 프레임 3종 미리 생성
+    }
+
+    public void init() {
+        for (int f = 0; f < 3; f++) {
+            allFrames[f] = setupFrame(f);
+        }
         for (int f = 0; f < 3; f++) {
             allFrames[f] = setupFrame(f);
         }
