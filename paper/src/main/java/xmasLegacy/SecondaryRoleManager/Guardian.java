@@ -163,16 +163,23 @@ public class Guardian extends AbstractSecondRole {
 
 
                 if (ticks % 20 == 0) {
-                    if (!consumeEnergy(p, 1) || ticks >= 80) {
+                    if (ticks >= 80) {
                         activeSkill.remove(p.getUniqueId());
                         this.cancel();
-                        getPlugin().infoMsg(InfoLevel.ERROR, p, "에너지가 모두 소모되었습니다.");
                         p.sendActionBar(ColorUtils.chat("&c스킬 비활성화"));
                         p.setCooldown(tool, 60);
                         return;
                     }
                     if (!isAlly) {
                         target.damage(3, p);
+                    }
+                    if (!consumeEnergy(p, 2)) {
+                        activeSkill.remove(p.getUniqueId());
+                        this.cancel();
+                        getPlugin().infoMsg(InfoLevel.ERROR, p, "에너지가 모두 소모되었습니다.");
+                        p.sendActionBar(ColorUtils.chat("&c스킬 비활성화"));
+                        p.setCooldown(tool, 60);
+                        return;
                     }
                 }
 
@@ -220,7 +227,7 @@ public class Guardian extends AbstractSecondRole {
 
         new BukkitRunnable() {
             double distance = 0;
-            final double maxDistance = 6.0;
+            final double maxDistance = 12.0;
 
             @Override
             public void run() {
@@ -236,19 +243,19 @@ public class Guardian extends AbstractSecondRole {
                     point.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, point, 2, 0.1, 0.1, 0.1, 0);
 
                     point.getWorld().playSound(point, Sound.ENTITY_GENERIC_EXPLODE, 0.4f, 1.5f); // 볼륨 낮게
-                    point.getWorld().spawnParticle(Particle.EXPLOSION, point, 1, 0, 0, 0, 0);
+                    point.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, point, 1, 0, 0, 0, 0);
 
                     for (Entity e : point.getWorld().getNearbyEntities(point, 1.0, 1.0, 1.0)) {
                         if (e instanceof LivingEntity le
                                 && !e.equals(p)
                                 && !PM.isParty(p.getUniqueId(), e.getUniqueId())
                                 && !hitEntities.contains(e.getUniqueId())) {
-                            le.damage(4.0, p);
+                            le.damage(8.0, p);
                             hitEntities.add(e.getUniqueId());
                         }
                     }
                 }
-                distance += 0.5;
+                distance += 1.5;
             }
         }.runTaskTimer(getPlugin(), 0L, 1L);
 

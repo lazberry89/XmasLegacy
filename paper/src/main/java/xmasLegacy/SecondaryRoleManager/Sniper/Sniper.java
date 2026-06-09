@@ -2,6 +2,7 @@ package xmasLegacy.SecondaryRoleManager.Sniper;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.*;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,21 +32,21 @@ import java.util.*;
 
 @SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal")
 public class Sniper extends AbstractSecondRole {
-    private final PartyManager pm;
-    private final SkillEffectManager sem;
-    private final Map<UUID, BulletType> reloaded = new HashMap<>();
-    private final Map<UUID, Integer> dashCount = new HashMap<>();
-    private final Set<UUID> isReloading = new HashSet<>();
-    private final Set<UUID> magicalBullet = new HashSet<>();
-    private final Map<UUID, BulletType> lastHitRecord = new HashMap<>();
+    private final @NotNull PartyManager pm;
+    private final @NotNull SkillEffectManager sem;
+    private final @NotNull Map<UUID, BulletType> reloaded = new HashMap<>();
+    private final @NotNull Map<UUID, Integer> dashCount = new HashMap<>();
+    private final @NotNull Set<UUID> isReloading = new HashSet<>();
+    private final @NotNull Set<UUID> magicalBullet = new HashSet<>();
+    private final @NotNull Map<UUID, BulletType> lastHitRecord = new HashMap<>();
 
-    private static Sniper instance;
+    private static @Nullable Sniper instance;
 
     public BulletType getLastHitType(Entity entity) {
         return lastHitRecord.get(entity.getUniqueId());
     }
 
-    public static Sniper getInstance() {
+    public static @NotNull Sniper getInstance() {
         if (instance == null) instance = new Sniper();
         return instance;
     }
@@ -52,6 +55,10 @@ public class Sniper extends AbstractSecondRole {
         super(SecondaryRoles.SNIPER);
         this.pm = PartyManager.getInstance();
         this.sem = SkillEffectManager.getInstance();
+    }
+
+    public @Nullable BulletType getReloaded(UUID uuid) {
+        return this.reloaded.get(uuid);
     }
 
     @Override
@@ -153,6 +160,70 @@ public class Sniper extends AbstractSecondRole {
         return BulletType.getType(num);
     }
 
+    public void activateSeal(LivingEntity target) {
+        Location loc = target.getLocation().clone(); // 타겟의 중심 위치
+        World world = loc.getWorld();
+        if (world == null) return;
+
+        BlockDisplay display = world.spawn(loc, BlockDisplay.class, ent -> {
+            ent.setBlock(Material.PURPLE_STAINED_GLASS.createBlockData());
+            ent.setBrightness(new org.bukkit.entity.Display.Brightness(15, 15));
+
+            ent.setTransformation(new org.bukkit.util.Transformation(
+                    new org.joml.Vector3f(-1.5f, 0f, -1.5f),
+                    new org.joml.AxisAngle4f(0, 0, 0, 1),
+                    new org.joml.Vector3f(3f, 3f, 3f),
+                    new org.joml.AxisAngle4f(0, 0, 0, 1)
+            ));
+        });
+        Particle.DustOptions option = new Particle.DustOptions(Color.PURPLE, 1.0f);
+
+        sem.StunEntity(target.getUniqueId(), 80L);
+        sem.drawCircularLine(loc, Particle.DUST, 3, true, 70, option);
+        target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20, 1));
+        world.playSound(loc, Sound.BLOCK_END_PORTAL_SPAWN, 1.0f, 0.5f);
+
+        new BukkitRunnable() {
+            int ticks = 0;
+            final int duration = 80;
+            float yaw = loc.getYaw();
+
+            @Override
+            public void run() {
+                if (ticks >= duration) {
+                    display.setInterpolationDuration(20);
+                    display.setInterpolationDelay(0);
+
+                    display.setTransformation(new org.bukkit.util.Transformation(
+                            new org.joml.Vector3f(0f, 1.5f, 0f),
+                            new org.joml.AxisAngle4f(0, 0, 0, 1),
+                            new org.joml.Vector3f(0.01f, 0.01f, 0.01f),
+                            new org.joml.AxisAngle4f(0, 0, 0, 1)
+                    ));
+
+                    world.playSound(display.getLocation(), Sound.BLOCK_GLASS_BREAK, 1.0f, 0.5f);
+                    Bukkit.getScheduler().runTaskLater(getPlugin(), display::remove, 20L);
+
+                    this.cancel();
+                    return;
+                }
+
+                yaw += 8;
+                Location rotateLoc = display.getLocation();
+                rotateLoc.setYaw(yaw);
+
+                display.setTeleportDuration(1);
+                display.teleport(rotateLoc);
+
+                if (target.getLocation().distanceSquared(loc) > 1.0) {
+                    target.teleport(loc);
+                }
+
+                ticks++;
+            }
+        }.runTaskTimer(getPlugin(), 0L, 1L);
+    }
+
     @CanIgnoreReturnValue
     public @Nullable Entity shoot(Player p) {
         UUID uuid = p.getUniqueId();
@@ -168,12 +239,14 @@ public class Sniper extends AbstractSecondRole {
         if (magical) {
             this.magicalBullet.remove(uuid);
             type = BulletType.MAGICAL;
-            // TODO: magical effect 로직 (범위기, 폭발, 혹은 다른 투사체 등)
             target = fireSniperBullet(p, type.getDistance(), type.getDamage());
+            if (!(target instanceof LivingEntity le)) return target;
+
+            activateSeal(le);
             p.playSound(p, Sound.ENTITY_ILLUSIONER_CAST_SPELL, 1.0f, 1.2f);
 
             replaceSnipe(p);
-            return target;
+            return le;
         }
 
         if (BulletType.STUN.equals(type)) {
@@ -321,20 +394,17 @@ public class Sniper extends AbstractSecondRole {
         return null;
     }
 
-    // 🎨 탄환 타입별 트레일 색상 분기 메서드
-    private Particle.DustOptions getTrailColor(BulletType type) {
-        switch (type) {
-            case MAGICAL -> { return new Particle.DustOptions(org.bukkit.Color.PURPLE, 1.1f); }
-            case SNEAKY -> { return new Particle.DustOptions(Color.GREEN, 0.6f); }
-            case STUN -> { return new Particle.DustOptions(Color.YELLOW, 0.6f); }
-            default -> { return new Particle.DustOptions(org.bukkit.Color.GRAY, 0.5f); }
-        }
+    private @NotNull Particle.DustOptions getTrailColor(BulletType type) {
+        return switch (type) {
+            case MAGICAL -> new Particle.DustOptions(org.bukkit.Color.PURPLE, 2.0f);
+            case SNEAKY -> new Particle.DustOptions(Color.GREEN, 1.2f);
+            case STUN -> new Particle.DustOptions(Color.YELLOW, 1.2f);
+            default -> new Particle.DustOptions(org.bukkit.Color.GRAY, 1.3f);
+        };
     }
 
     @Override
-    public void usePassive(Player p) {
-
-    }
+    public void usePassive(Player p) {}
 
     @Override
     public @NotNull Role getRole() {

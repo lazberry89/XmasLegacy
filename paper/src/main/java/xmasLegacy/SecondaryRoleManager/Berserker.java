@@ -123,7 +123,7 @@ public class Berserker extends AbstractSecondRole {
 
                 Location currentLoc = axeStand.getLocation().add(direction);
                 axeStand.teleport(currentLoc);
-                axeStand.getWorld().spawnParticle(Particle.SWEEP_ATTACK, currentLoc, 2, 0.05, 0.05, 0.05, 0.01);
+                axeStand.getWorld().spawnParticle(Particle.FLAME, currentLoc, 5, 0.01, 0.01, 0.01, 0);
 
                 double rotation = ticks * 0.6;
                 axeStand.setRightArmPose(new EulerAngle(rotation, 0, 0));
@@ -159,6 +159,7 @@ public class Berserker extends AbstractSecondRole {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
+
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
         if (p.getCooldown(tool) > 0) {

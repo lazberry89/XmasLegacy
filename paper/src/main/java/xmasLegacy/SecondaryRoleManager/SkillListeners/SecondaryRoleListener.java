@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
@@ -24,6 +26,7 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.RoleManager;
 import xmasLegacy.SecondaryRoleManager.*;
+import xmasLegacy.SecondaryRoleManager.Sniper.BulletType;
 import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
@@ -192,8 +195,14 @@ public class SecondaryRoleListener implements Listener {
 		PersistentDataContainer container = meta.getPersistentDataContainer();
 		String key = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
 		if (key == null || !key.equalsIgnoreCase(SecondaryRoles.SNIPER.name())) return;
+		var bullet = sniper.getReloaded(p.getUniqueId());
 
-		sniper.shoot(p);
+		Entity target = sniper.shoot(p);
+		if (BulletType.SNEAKY.equals(bullet))
+			if (target instanceof LivingEntity le)
+				le.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 1));
+
+
 		p.setCooldown(item, 20);
 	}
 

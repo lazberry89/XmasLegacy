@@ -3,6 +3,7 @@ package xmasLegacy;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
@@ -66,6 +67,7 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:main");
 		instance = this;
 
 		UserManager.getInstance();
@@ -128,10 +130,10 @@ public final class XmasLegacy extends JavaPlugin {
 
 	private void serverType() {
 		saveDefaultConfig();
-		String serverType = getConfig().getString("server-type", "main");
+		String serverType = getConfig().getString("server-type", ServerType.MAIN.str());
 
 		// ------------------ [LOBBY MODE] ------------------
-		if (serverType.equals("lobby")) {
+		if (serverType.equals(ServerType.LOBBY.str())) {
 			getLogger().warning("Lobby 모드로 시작합니다.");
 			LobbyManager.getInstance();
 
@@ -145,7 +147,7 @@ public final class XmasLegacy extends JavaPlugin {
 			getSLF4JLogger().warn("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 
 			// ------------------ [MAIN GAME MODE] ------------------
-		} else if (serverType.equals("main")) {
+		} else if (serverType.equals(ServerType.MAIN.str())) {
 			getLogger().warning("Main 모드로 시작합니다.");
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 
@@ -266,7 +268,7 @@ public final class XmasLegacy extends JavaPlugin {
 		p.playSound(p, level.Sound(), 1.0f, 1.0f);
 	}
 
-	public String getServerType() {
+	public @NotNull String getServerType() {
 		saveDefaultConfig();
 		return getConfig().getString("server-type", "main");
 	}

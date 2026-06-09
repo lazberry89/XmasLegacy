@@ -110,6 +110,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
+
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
         if (p.getCooldown(tool) > 0) {
@@ -123,6 +124,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
         if (!consumeEnergy(p, 3)) return;
 
         Location centerLoc = p.getLocation().clone();
+        p.getWorld().spawnParticle(Particle.EXPLOSION, centerLoc, 1, 0, 0, 0, 0);
 
         Vector meUp = new Vector(0.0f, 0.6f, 0.0f);
         Vector targetUp = new Vector(0.0f, 2.5f, 0.0f);
@@ -131,7 +133,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
 
         spawnExpandingShockwave(p, centerLoc);
 
-        p.getWorld().playSound(centerLoc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.5f, 0.5f);
+        p.getWorld().playSound(centerLoc, Sound.ENTITY_BREEZE_JUMP, 1.5f, 0.5f);
 
         double damage = 12;
 
