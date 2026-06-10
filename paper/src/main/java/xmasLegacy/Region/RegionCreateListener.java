@@ -26,7 +26,7 @@ public class RegionCreateListener implements Listener {
 		Inventory inv = e.getClickedInventory();
 		if (inv == null) return;
 
-		if (!(inv instanceof RegionCreateInterface)) return;
+		if (!(inv.getHolder() instanceof RegionCreateInterface)) return;
 
 		e.setCancelled(true);
 

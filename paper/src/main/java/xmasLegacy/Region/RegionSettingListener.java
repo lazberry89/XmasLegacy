@@ -9,10 +9,8 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class RegionSettingListener implements Listener {
-    private final @NotNull RegionManager rm;
 
     public RegionSettingListener() {
-        this.rm = RegionManager.getInstance();
     }
 
     @EventHandler

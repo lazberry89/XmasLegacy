@@ -1,9 +1,5 @@
 package xmasLegacy.Region;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickCallback;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.*;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
@@ -11,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -18,9 +15,7 @@ import org.bukkit.util.Transformation;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
-import xmasLegacy.ServerPrefix.UserTagManager;
 import xmasLegacy.ServerTransfer;
 import xmasLegacy.XmasLegacy;
 
@@ -37,15 +32,17 @@ public class RegionIndicator implements Listener {
 	}
 
 	@EventHandler
-	public void UserRegionCreate(EntityDropItemEvent e) {
-		if (!(e.getEntity() instanceof Player p)) return;
-
+	public void UserRegionCreate(PlayerDropItemEvent e) {
+		Player p = e.getPlayer();
 		ItemStack item = e.getItemDrop().getItemStack();
 		if (!rm.isTicket(item)) return;
 
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
-		if (user == null) ServerTransfer.loadUser(p);
+		if (user == null) {
+			ServerTransfer.loadUser(p);
+			return;
+		}
 		if (rm.hasRegion(loc)) {
 			e.setCancelled(true);
 			plugin.infoMsg(InfoLevel.ERROR, p, "이미 누군가의 구역입니다!");

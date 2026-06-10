@@ -156,7 +156,9 @@ public final class XmasLegacy extends JavaPlugin {
 
 			BagManager.getInstance();
 			SkillEffectManager.getInstance();
+
 			RegionManager.getInstance().startGlobalIndicatorTask();
+
 			ConsumableManager.getInstance();
 			GhostModeManager.getInstance();
 
@@ -194,8 +196,6 @@ public final class XmasLegacy extends JavaPlugin {
 			var pm = getServer().getPluginManager();
 			pm.registerEvents(new FirstRoleListener(), this);
 			pm.registerEvents(ConsumableManager.getInstance(), this);
-			pm.registerEvents(new RegionPermissionListener(), this);
-			pm.registerEvents(new RegionIndicator(), this);
 			pm.registerEvents(new GhostListener(), this);
 			pm.registerEvents(new PotionListener(), this);
 			pm.registerEvents(new ShopListener(), this);
@@ -206,6 +206,9 @@ public final class XmasLegacy extends JavaPlugin {
 			pm.registerEvents(new SecondaryRoleListener(), this);
 			pm.registerEvents(new EffectListener(), this);
 			pm.registerEvents(new EnchantListener(), this);
+
+			pm.registerEvents(new RegionPermissionListener(), this);
+			pm.registerEvents(new RegionIndicator(), this);
 			pm.registerEvents(new RegionCreateListener(), this);
 			pm.registerEvents(new RegionSettingListener(), this);
 			pm.registerEvents(new RegionDeleteConfirmListener(), this);

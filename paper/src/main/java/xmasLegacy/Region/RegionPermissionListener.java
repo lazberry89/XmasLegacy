@@ -16,7 +16,6 @@ public class RegionPermissionListener implements Listener {
 		this.RM = RegionManager.getInstance();
 	}
 
-	// 권한이 있는지 확인하는 공통 메서드
 	private boolean hasPermission(Player p, Region region) {
 		return p.isOp() || region.getOwner().equals(p.getUniqueId());
 	}

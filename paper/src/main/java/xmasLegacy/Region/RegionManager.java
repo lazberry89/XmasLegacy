@@ -130,15 +130,13 @@ public class RegionManager {
 				.build().clone();
 	}
 
-	public boolean isTicket(ItemStack item) {
+	public boolean isTicket(@NotNull ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return false;
 		PersistentDataContainer container = meta.getPersistentDataContainer();
 		String value = container.get(plugin.getNamespacedKey("region"), PersistentDataType.STRING);
 		return value != null && value.equals("beacon");
 	}
-
-
 
 	private void setupFile() {
 		if (!plugin.getDataFolder().exists()) {
