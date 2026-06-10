@@ -21,6 +21,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.ServerPrefix.UserTagManager;
+import xmasLegacy.ServerTransfer;
 import xmasLegacy.XmasLegacy;
 
 @SuppressWarnings("DuplicatedCode")
@@ -44,31 +45,7 @@ public class RegionIndicator implements Listener {
 
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
-		if (user == null) {
-			var options = ClickCallback.Options.builder()
-					.uses(1)
-					.lifetime(java.time.Duration.ofMinutes(3))
-					.build();
-
-			Component reload = ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
-					.hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
-					.clickEvent(ClickEvent.callback(audience -> {
-						if (audience instanceof Player t) {
-							um.onJoinAsync(t.getUniqueId(), t.getName(), true).whenComplete((reloadedUser, ex) -> Bukkit.getScheduler().runTask(plugin, () -> {
-								if (ex != null || reloadedUser == null) {
-									t.sendMessage(ColorUtils.chat(Alert.RED + " 다시 로드하는 데 실패했습니다. 관리자에게 문의하세요."));
-								} else {
-									plugin.infoMsg(InfoLevel.INFO, t, "유저정보가 성공적으로 로드되었습니다!");
-									UserTagManager.createHoverTag(t, reloadedUser);
-									UserTagManager.runTask();
-								}
-							}));
-						}
-					}, options));
-
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보를 불러오는데 실패하였습니다!").append(reload));
-			return;
-		}
+		if (user == null) ServerTransfer.loadUser(p);
 		if (rm.hasRegion(loc)) {
 			e.setCancelled(true);
 			plugin.infoMsg(InfoLevel.ERROR, p, "이미 누군가의 구역입니다!");
