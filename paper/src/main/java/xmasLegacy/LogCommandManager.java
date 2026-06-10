@@ -125,18 +125,17 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 	private void SendRegions(Player p, List<Region> regions) {
 		for (Region region : regions) {
 			p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
-			p.sendMessage(ColorUtils.chat("&6&lRegion ID : &f" + region.getId()));
-			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.getName()));
+			p.sendMessage(ColorUtils.chat("&6&lRegion ID : &f" + region.Id()));
+			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.Id()));
 
-			int x = region.getCenter().getBlockX();
-			int y = region.getCenter().getBlockY();
-			int z = region.getCenter().getBlockZ();
-			String world = region.getCenter().getWorld().getName();
+			int x = region.getChunkX();
+			int z = region.getChunkZ();
+			String world = region.getWorld().getName();
 
-			p.sendMessage(ColorUtils.chat(String.format("&eLocation : &7%s (%d, %d, %d)", world, x, y, z)));
+			p.sendMessage(ColorUtils.chat(String.format("&eLocation : &7%s (%d, %d)", world, x, z)));
 
-			String entry = region.isAllowPublicEntry() ? "&a허용" : "&c차단";
-			String interact = region.isAllowPublicInteraction() ? "&a허용" : "&c차단";
+			String entry = region.isEntryAllowed() ? "&a허용" : "&c차단";
+			String interact = region.isInteractionAllowed() ? "&a허용" : "&c차단";
 			p.sendMessage(ColorUtils.chat(String.format("&eSettings : &f출입[%s&f] 상호작용[%s&f]", entry, interact)));
 		}
 		p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));

@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
@@ -48,10 +49,14 @@ public class Gatherer extends AbstractFirstRole {
 	private int second_skill_entity_range;
 	private int second_skill_container_range;
 	private long second_skill_glow_duration;
-	private static Gatherer instance;
+	private static volatile Gatherer instance;
 
 	public static Gatherer getInstance() {
-		if (instance == null) instance = new Gatherer();
+		if (instance == null) {
+			synchronized (Gatherer.class) {
+				if (instance == null) instance = new Gatherer();
+			}
+		}
 		return instance;
 	}
 

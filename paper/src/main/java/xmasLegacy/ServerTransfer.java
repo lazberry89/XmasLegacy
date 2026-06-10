@@ -23,7 +23,6 @@ import xmasLegacy.ServerPrefix.UserTagManager;
 import java.util.Arrays;
 import java.util.UUID;
 
-@SuppressWarnings("unused")
 public class ServerTransfer {
     private static final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
 
@@ -34,6 +33,12 @@ public class ServerTransfer {
         return Bukkit.getPluginManager().isPluginEnabled("floodgate")
                 && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
     }
+
+	@CheckReturnValue
+	public static boolean isFloodgate(@NotNull UUID uuid) {
+		return Bukkit.getPluginManager().isPluginEnabled("floodgate")
+				&& FloodgateApi.getInstance().isFloodgatePlayer(uuid);
+	}
 
     public static void loadUser(@NotNull Player player) {
         @NotNull var um = UserManager.getInstance();
@@ -154,7 +159,14 @@ public class ServerTransfer {
                 .build();
         Component btn = ColorUtils.chat("&a&l[수락]").hoverEvent(HoverEvent.showText(ColorUtils.chat("클릭하여 이동하세요. -> &6" + (hide ? "&k???" : type.name()))))
                 .clickEvent(ClickEvent.callback(audience -> {
-                    if (audience instanceof Player p && p.isOnline()) transfer(type, p);
+                    if (audience instanceof Player p && p.isOnline()) {
+						if (transfer(type, p)) {
+							p.sendMessage(ColorUtils.chat(Alert.GREEN + " 서버 이동을 시작합니다..."));
+						} else {
+							p.sendMessage(ColorUtils.chat(Alert.RED + " 서버 이동 중 오류가 발생했습니다. 관리자에게 문의하세요."));
+							plugin.getSLF4JLogger().error("Failed to transfer player {} to server {} via BungeeCord", p, type);
+						}
+                    }
                 }, options));
         Component msg = ColorUtils.chat(Alert.XmasLegacy + " &6서버이동&f 제안이 왔습니다. 이동하시겠습니까? ");
         return msg.append(btn);

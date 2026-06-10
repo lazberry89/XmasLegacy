@@ -19,17 +19,17 @@ public class User {
     private final UUID uuid;
 	private @NotNull String name;
     private @NotNull Role role;
-    private int dollars = 0;
-    private int inquireCount = 0;
-    private int playTime = 0;
-    private double exp = 0.0f;
-    private double roleExp = 0.0f;
-    private int level = 0;
-    private Tier Tier = org.lazberry.xmaslegacy.settings.Tier.VISITOR;
+	private int dollars = 0;
+	private int inquireCount = 0;
+	private int playTime = 0;
+	private double exp = 0.0f;
+	private double roleExp = 0.0f;
+	private int level = 0;
+    private Tier tier = Tier.VISITOR;
     private RoleMastery mastery = RoleMastery.BEGINNER;
     private boolean isMobile = false;
 	private boolean isNewUser = false;
-    private boolean wantsCookie = true;
+	private boolean wantsCookie = true;
 	private final List<ServerPrefix> availablePrefix = new ArrayList<>();
 	private @Nullable ServerPrefix equipPrefix;
 	private boolean combatMode = false;
@@ -74,8 +74,8 @@ public class User {
     public void addLevel(int amount) {this.level += amount;}
     public void setLevel(int amount) {this.level = amount;}
     public int getLevel() {return this.level;}
-    public @NotNull Tier getTier() {return this.Tier;}
-    public void setTier(@NotNull Tier tier) {this.Tier = tier;}
+    public @NotNull Tier getTier() {return this.tier;}
+    public void setTier(@NotNull Tier tier) {this.tier = tier;}
     public @NotNull RoleMastery getMastery() {return mastery;}
     public void setMastery(@NotNull RoleMastery mastery) {this.mastery = mastery;}
 	public boolean addPrefix(@NotNull ServerPrefix prefix) {

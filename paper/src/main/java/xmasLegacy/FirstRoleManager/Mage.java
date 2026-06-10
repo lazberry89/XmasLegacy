@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
@@ -50,10 +51,14 @@ public class Mage extends AbstractFirstRole {
 	private double second_skill_pull_strength;
 	private double second_skill_pull_threshold;
 
-	private static Mage instance;
+	private static volatile Mage instance;
 
 	public static Mage getInstance() {
-		if (instance == null) instance = new Mage();
+		if (instance == null) {
+			synchronized (Mage.class) {
+				if (instance == null) instance = new Mage();
+			}
+		}
 		return instance;
 	}
 

@@ -27,7 +27,7 @@ public class Region {
 
     public Region(Player p, Location loc) {
         this.owner = p.getUniqueId();
-        this.id = IDGenerator.generateRandomId(Constants.ID_LENGTH);
+        this.id = IDGenerator.generateRandomId();
         this.world = loc.getWorld();
         var chunk = loc.getChunk();
         this.key = chunk.isLoaded() && chunk.isGenerated() ? chunk.getChunkKey() : -1;
@@ -82,6 +82,14 @@ public class Region {
 
         return this.world.getChunkAt(x, z);
     }
+
+	public int getChunkX() {
+		return (int) (this.key >> 32);
+	}
+
+	public int getChunkZ() {
+		return (int) this.key;
+	}
 
     public @NotNull UUID getOwner() {
         return this.owner;

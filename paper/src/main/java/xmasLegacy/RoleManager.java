@@ -1,6 +1,7 @@
 package xmasLegacy;
 
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
@@ -11,12 +12,16 @@ import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 public class RoleManager {
 	private final FirstRoleManager frm;
 	private final SecondRoleManager srm;
-    private static RoleManager instance;
+    private static volatile RoleManager instance;
 
-    public static RoleManager getInstance() {
-        if (instance == null) instance = new RoleManager();
-        return instance;
-    }
+	public static RoleManager getInstance() {
+		if (instance == null) {
+			synchronized (RoleManager.class) {
+				if (instance == null) instance = new RoleManager();
+			}
+		}
+		return instance;
+	}
 
     private RoleManager() {
 		this.frm = FirstRoleManager.getInstance();

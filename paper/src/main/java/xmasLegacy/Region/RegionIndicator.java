@@ -97,8 +97,12 @@ public class RegionIndicator implements Listener {
 		Player p = e.getPlayer();
 		Entity target = e.getRightClicked();
 
+		var region = rm.getRegionAt(p.getLocation());
+		if (region == null) return;
+		if (!p.getUniqueId().equals(region.getOwner())) return;
+
 		if (!target.getPersistentDataContainer().has(plugin.getNamespacedKey(Constants.regionKey))) return;
 		p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 0.5f, 1.0f);
-		p.openInventory();
+		p.openInventory(new RegionSettingInterface(region).getInventory());
 	}
 }

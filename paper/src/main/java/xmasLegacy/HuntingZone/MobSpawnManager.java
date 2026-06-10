@@ -66,7 +66,7 @@ public class MobSpawnManager {
 
 	public void spawn(ZoneType type) {
 		HuntingZone zone = this.hzm.getZones(type);
-		if (zone == null || !zone.getEnabled()) return;
+		if (zone == null || !zone.isEnabled()) return;
 
 		int currentMobCount = zone.getAliveMobCount();
 		int maxSpawnLimit = zone.getMaxSpawn();
@@ -98,7 +98,7 @@ public class MobSpawnManager {
 		if (this.task != null) return;
 		this.task = Bukkit.getScheduler().runTaskTimer(this.plugin, () ->
 			hzm.getZones().stream()
-					.filter(HuntingZone::getEnabled)
+					.filter(HuntingZone::isEnabled)
 					.forEach(z -> spawn(z.getType()))
 		, 0L, 20 * 60L);
 	}

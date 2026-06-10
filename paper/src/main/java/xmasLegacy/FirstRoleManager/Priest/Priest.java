@@ -48,10 +48,14 @@ public class Priest extends AbstractFirstRole {
 	private int second_skill_strength_duration;
 	private int second_skill_strength_amplifier;
 	private double second_skill_radius;
-	private static Priest instance;
+	private static volatile Priest instance;
 
 	public static Priest getInstance() {
-		if (instance == null) instance = new Priest();
+		if (instance == null) {
+			synchronized (Priest.class) {
+				if (instance == null) instance = new Priest();
+			}
+		}
 		return instance;
 	}
 

@@ -22,10 +22,14 @@ public class Defender extends AbstractSecondRole {
 	private final SkillEffectManager SEM;
 	private final PartyManager PM;
 
-	private static Defender instance;
+	private static volatile Defender instance;
 
 	public static Defender getInstance() {
-		if (instance == null) instance = new Defender();
+		if (instance == null) {
+			synchronized (Defender.class) {
+				if (instance == null) instance = new Defender();
+			}
+		}
 		return instance;
 	}
 

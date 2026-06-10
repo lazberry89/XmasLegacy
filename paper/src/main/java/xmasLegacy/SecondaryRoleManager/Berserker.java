@@ -33,10 +33,14 @@ import java.util.UUID;
 public class Berserker extends AbstractSecondRole {
     private final Set<UUID> usedPassive = new HashSet<>();
     private final PartyManager PM;
-	private static Berserker instance;
+	private static volatile Berserker instance;
 
 	public static Berserker getInstance() {
-		if (instance == null) instance = new Berserker();
+		if (instance == null) {
+			synchronized (Berserker.class) {
+				if (instance == null) instance = new Berserker();
+			}
+		}
 		return instance;
 	}
 

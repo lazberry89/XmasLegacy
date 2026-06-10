@@ -13,6 +13,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -41,10 +42,14 @@ public class Archer extends AbstractFirstRole {
 	private double second_skill_backdash_multiplier;
 	private double second_skill_backdash_y;
 	private long second_skill_invulnerable_duration;
-	private static Archer instance;
+	private static volatile Archer instance;
 
 	public static Archer getInstance() {
-		if (instance == null) instance = new Archer();
+		if (instance == null) {
+			synchronized (Archer.class) {
+				if (instance == null) instance = new Archer();
+			}
+		}
 		return instance;
 	}
 

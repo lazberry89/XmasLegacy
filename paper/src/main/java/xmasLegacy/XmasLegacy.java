@@ -156,9 +156,8 @@ public final class XmasLegacy extends JavaPlugin {
 
 			BagManager.getInstance();
 			SkillEffectManager.getInstance();
-			RegionManager.getInstance();
+			RegionManager.getInstance().startGlobalIndicatorTask();
 			ConsumableManager.getInstance();
-			RegionPreviewer.getInstance();
 			GhostModeManager.getInstance();
 
 			EconomyManager.getInstance();

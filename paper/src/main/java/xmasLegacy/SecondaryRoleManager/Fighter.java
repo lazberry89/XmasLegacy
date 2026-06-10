@@ -29,10 +29,14 @@ import xmasLegacy.Utils.ItemBuilder;
 public class Fighter extends AbstractSecondRole implements Unpromotable {
     private final PartyManager pm;
     private final SkillEffectManager sem;
-	private static Fighter instance;
+	private static volatile Fighter instance;
 
 	public static Fighter getInstance() {
-		if (instance == null) instance = new Fighter();
+		if (instance == null) {
+			synchronized (Fighter.class) {
+				if (instance == null) instance = new Fighter();
+			}
+		}
 		return instance;
 	}
 

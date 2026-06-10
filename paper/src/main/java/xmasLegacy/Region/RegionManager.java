@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-@SuppressWarnings("unused")
 public class RegionManager {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
@@ -33,12 +32,21 @@ public class RegionManager {
 	private @NotNull File file;
 	private @NotNull FileConfiguration config;
 
-	private static RegionManager instance;
+	private static volatile RegionManager instance;
 
 	private RegionManager() {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		loadAll();
+	}
+
+	public static RegionManager getInstance() {
+		if (instance == null) {
+			synchronized (RegionManager.class) {
+				if (instance == null) instance = new RegionManager();
+			}
+		}
+		return instance;
 	}
 
 	public void startGlobalIndicatorTask() {
@@ -131,12 +139,6 @@ public class RegionManager {
 	}
 
 
-	public static RegionManager getInstance() {
-		if (instance == null) {
-			instance = new RegionManager();
-		}
-		return instance;
-	}
 
 	private void setupFile() {
 		if (!plugin.getDataFolder().exists()) {

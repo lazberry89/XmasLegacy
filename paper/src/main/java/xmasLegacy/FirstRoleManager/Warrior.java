@@ -19,6 +19,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.Emblems.EmblemType;
@@ -41,10 +42,14 @@ public class Warrior extends AbstractFirstRole {
 	private int second_skill_hunger_cost;
 	private double second_skill_damage;
 
-	private static Warrior instance;
+	private static volatile Warrior instance;
 
 	public static Warrior getInstance() {
-		if (instance == null) instance = new Warrior();
+		if (instance == null) {
+			synchronized (Warrior.class) {
+				if (instance == null) instance = new Warrior();
+			}
+		}
 		return instance;
 	}
 

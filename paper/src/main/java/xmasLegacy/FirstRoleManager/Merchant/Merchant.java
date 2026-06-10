@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.Emblems.EmblemType;
@@ -29,10 +30,14 @@ public class Merchant extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
 
-	private static Merchant instance;
+	private static volatile Merchant instance;
 
 	public static Merchant getInstance() {
-		if (instance == null) instance = new Merchant();
+		if (instance == null) {
+			synchronized (Merchant.class) {
+				if (instance == null) instance = new Merchant();
+			}
+		}
 		return instance;
 	}
 

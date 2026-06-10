@@ -51,13 +51,10 @@ public class SqlUserRepository implements UserRepository {
 		}
 	}
 
-	private Role parseRole(String roleName) {
-		if (roleName == null || roleName.isEmpty()) {
-			return Roles.USER; // 기본값 방어선
-		}
+	private @NotNull Role parseRole(String roleName) {
+		if (roleName == null || roleName.isEmpty()) return Roles.USER;
 
 		try {
-			// 1. 메인 직업(Roles)에서 먼저 찾아봅니다.
 			return Roles.valueOf(roleName);
 		} catch (IllegalArgumentException e) {
 			try {

@@ -12,13 +12,15 @@ public class UserManager {
     private final Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final UserRepository repository = new SqlUserRepository();
 
-	private static UserManager instance;
+	private static volatile UserManager instance;
 
 	private UserManager() {}
 
 	public static UserManager getInstance() {
 		if (instance == null) {
-			instance = new UserManager();
+			synchronized (UserManager.class) {
+				if (instance == null) instance = new UserManager();
+			}
 		}
 		return instance;
 	}
@@ -50,7 +52,7 @@ public class UserManager {
             user.setDollars(user.getDollars() + amount);
         }
     }
-	public Role getRoleByUUID(UUID uuid) {
+	public Role getRole(UUID uuid) {
 		if (users.containsKey(uuid)) {
 			return users.get(uuid).getRole();
 		}
@@ -59,9 +61,10 @@ public class UserManager {
 	}
 
 	/**
-	 * !!비동기 권장!!
 	 * @param uuid uuid
 	 * @param name name
+	 * @return User 불러온 유저, 없으면 새로 생성하여 반환
+	 * !!비동기 권장!!
 	 */
 	@Blocking
 	public User load(UUID uuid, String name) {
@@ -118,6 +121,7 @@ public class UserManager {
 	public boolean startRole(UUID uuid, Roles role) {
 		User user = getUser(uuid);
 		if (user == null) return false;
+
 		Role getRole = user.getRole();
 		if (Roles.USER.equals(getRole)) {
 			user.setRole(role);

@@ -40,16 +40,20 @@ public class Sniper extends AbstractSecondRole {
     private final @NotNull Set<UUID> magicalBullet = new HashSet<>();
     private final @NotNull Map<UUID, BulletType> lastHitRecord = new HashMap<>();
 
-    private static @Nullable Sniper instance;
+    private static volatile Sniper instance;
 
     public BulletType getLastHitType(Entity entity) {
         return lastHitRecord.get(entity.getUniqueId());
     }
 
-    public static @NotNull Sniper getInstance() {
-        if (instance == null) instance = new Sniper();
-        return instance;
-    }
+	public static Sniper getInstance() {
+		if (instance == null) {
+			synchronized (Sniper.class) {
+				if (instance == null) instance = new Sniper();
+			}
+		}
+		return instance;
+	}
 
     private Sniper() {
         super(SecondaryRoles.SNIPER);

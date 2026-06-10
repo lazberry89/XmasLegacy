@@ -30,10 +30,14 @@ public class Guardian extends AbstractSecondRole {
     private final PartyManager PM;
     private final Map<Player, LivingEntity> targetMap = new HashMap<>();
     private final Set<UUID> activeSkill = new HashSet<>();
-	private static Guardian instance;
+	private static volatile Guardian instance;
 
 	public static Guardian getInstance() {
-		if (instance == null) instance = new Guardian();
+		if (instance == null) {
+			synchronized (Guardian.class) {
+				if (instance == null) instance = new Guardian();
+			}
+		}
 		return instance;
 	}
 

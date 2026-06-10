@@ -27,12 +27,12 @@ import java.util.Map;
 public class ItemBuilder {
 	private final ItemStack item;
 	private final ItemMeta meta;
-    private final XmasLegacy plugin;
+	private final XmasLegacy plugin;
 
 	public ItemBuilder(XmasLegacy plugin, Material material) {
 		this.item = new ItemStack(material);
 		this.meta = item.getItemMeta();
-        this.plugin = plugin;
+		this.plugin = plugin;
 	}
 
 	public ItemBuilder(XmasLegacy plugin, ItemStack itemStack) {

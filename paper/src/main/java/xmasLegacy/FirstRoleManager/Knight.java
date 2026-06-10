@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -54,10 +55,14 @@ public class Knight extends AbstractFirstRole {
 	private double second_skill_knockback;
 	private double second_skill_knockback_y;
 	private long second_skill_ai_restore_delay;
-	private static Knight instance;
+	private static volatile Knight instance;
 
 	public static Knight getInstance() {
-		if (instance == null) instance = new Knight();
+		if (instance == null) {
+			synchronized (Knight.class) {
+				if (instance == null) instance = new Knight();
+			}
+		}
 		return instance;
 	}
 

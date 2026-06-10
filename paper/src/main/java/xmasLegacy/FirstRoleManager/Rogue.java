@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -42,10 +43,14 @@ public class Rogue extends AbstractFirstRole {
 	private double dagger_rush_damage;
 	private int second_skill_hunger_cost;
 	private long second_skill_duration;
-	private static Rogue instance;
+	private static volatile Rogue instance;
 
 	public static Rogue getInstance() {
-		if (instance == null) instance = new Rogue();
+		if (instance == null) {
+			synchronized (Rogue.class) {
+				if (instance == null) instance = new Rogue();
+			}
+		}
 		return instance;
 	}
 

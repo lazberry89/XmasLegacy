@@ -6,6 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
@@ -24,7 +25,7 @@ public class InquiryManager {
 	private final RuleManager rm;
 	private final InquiryRepository repository;
 
-	private static InquiryManager instance;
+	private static volatile InquiryManager instance;
 
 	private InquiryManager() {
 		this.um = UserManager.getInstance();
@@ -34,7 +35,9 @@ public class InquiryManager {
 
 	public static InquiryManager getInstance() {
 		if (instance == null) {
-			instance = new InquiryManager();
+			synchronized (InquiryManager.class) {
+				if (instance == null) instance = new InquiryManager();
+			}
 		}
 		return instance;
 	}

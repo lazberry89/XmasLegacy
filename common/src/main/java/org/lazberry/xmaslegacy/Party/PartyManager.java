@@ -8,11 +8,13 @@ import java.util.*;
 public class PartyManager {
     private final UserManager UM;
 	private final Map<User, Party> partyMap = new HashMap<>();
-	private static PartyManager instance;
+	private static volatile PartyManager instance;
 
 	public static PartyManager getInstance() {
 		if (instance == null) {
-			instance = new PartyManager();
+			synchronized (PartyManager.class) {
+				if (instance == null) instance = new PartyManager();
+			}
 		}
 		return instance;
 	}

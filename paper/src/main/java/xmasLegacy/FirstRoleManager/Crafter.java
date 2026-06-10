@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
@@ -39,10 +40,14 @@ public class Crafter extends AbstractFirstRole {
 	private double second_skill_attack_damage_buff;
 	private int second_skill_hunger_cost;
 	private int second_skill_cooldown_ticks;
-	private static Crafter instance;
+	private static volatile Crafter instance;
 
 	public static Crafter getInstance() {
-		if (instance == null) instance = new Crafter();
+		if (instance == null) {
+			synchronized (Crafter.class) {
+				if (instance == null) instance = new Crafter();
+			}
+		}
 		return instance;
 	}
 

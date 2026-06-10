@@ -12,6 +12,7 @@ import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
@@ -36,10 +37,14 @@ public class Miner extends AbstractFirstRole {
 	private int second_skill_hunger_cost;
 	private int second_skill_scan_range;
 	private long second_skill_glow_duration;
-	private static Miner instance;
+	private static volatile Miner instance;
 
 	public static Miner getInstance() {
-		if (instance == null) instance = new Miner();
+		if (instance == null) {
+			synchronized (Miner.class) {
+				if (instance == null) instance = new Miner();
+			}
+		}
 		return instance;
 	}
 
