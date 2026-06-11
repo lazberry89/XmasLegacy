@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Listeners;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.XmasLegacy;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Listeners
 public class ShopListener implements Listener {
 	private final PriestShopManager PSM;
 	private final EconomyManager ECM;

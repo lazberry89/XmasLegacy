@@ -5,7 +5,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import xmasLegacy.Commands;
 
+@Commands(command = "shop")
 public class TempCommand implements CommandExecutor {
 	private final PriceInterface PCI;
 

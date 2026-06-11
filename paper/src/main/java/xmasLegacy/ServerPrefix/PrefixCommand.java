@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.settings.MissionPrefix;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
+import xmasLegacy.Commands;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
+@Commands(command = "prefix")
 public class PrefixCommand implements CommandExecutor, TabCompleter {
     private final XmasLegacy plugin;
     private final PrefixManager PFM;

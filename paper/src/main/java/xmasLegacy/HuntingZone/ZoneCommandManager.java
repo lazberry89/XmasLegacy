@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import xmasLegacy.Commands;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused, FieldCanBeLocal")
+@Commands(command = "zone")
 public class ZoneCommandManager implements CommandExecutor, TabCompleter {
 	private final @NotNull MobRepository mr;
 	private final @NotNull HuntingZoneManager hzm;

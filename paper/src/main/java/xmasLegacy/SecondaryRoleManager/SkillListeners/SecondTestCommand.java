@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import xmasLegacy.Commands;
 import xmasLegacy.SecondaryRoleManager.Berserker;
 import xmasLegacy.SecondaryRoleManager.Defender;
 import xmasLegacy.SecondaryRoleManager.Fighter;
@@ -13,6 +14,7 @@ import xmasLegacy.SecondaryRoleManager.Guardian;
 import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
 
 @TestOnly
+@Commands(command = "second")
 public class SecondTestCommand implements CommandExecutor {
 	private final Berserker berserker;
 	private final Defender defender;

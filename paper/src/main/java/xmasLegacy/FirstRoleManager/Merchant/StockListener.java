@@ -9,9 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmasLegacy.XmasLegacy;
+import xmasLegacy.Listeners;
 
 @SuppressWarnings("FieldCanBeLocal")
+@Listeners
 public class StockListener implements Listener {
 	private final MerchantStockInterface msi;
 

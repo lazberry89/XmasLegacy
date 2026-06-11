@@ -7,9 +7,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xmasLegacy.Commands;
 
 import java.util.List;
 
+@Commands(command = "potion")
 public class PriestCommand implements CommandExecutor, TabCompleter {
 	private final ConductableItems CDI;
 

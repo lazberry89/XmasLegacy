@@ -12,11 +12,15 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Constants;
+import xmasLegacy.Region.Events.RegionDeleteEvent;
+import xmasLegacy.Region.Events.RegionGenerateEvent;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
@@ -74,26 +78,7 @@ public class RegionManager {
 								var chunk = region.getChunk();
 								if (chunk != null && chunk.isLoaded()) {
 									Bukkit.getScheduler().runTask(plugin, () -> {
-										Location center = region.getTrueCenter(chunk);
-										Location spawnLoc = center.clone().add(-0.25, 0.5, -0.25);
-
-										BlockDisplay newIndic = region.getWorld().spawn(spawnLoc, BlockDisplay.class, b -> {
-											b.setBlock(Material.BEACON.createBlockData());
-											b.setGravity(false);
-											b.setGlowing(true);
-											b.setGlowColorOverride(Color.AQUA);
-											b.customName(ColorUtils.chat("&b&l구역 : " + region.Id()));
-											b.setCustomNameVisible(true);
-
-											Transformation trans = b.getTransformation();
-											trans.getScale().set(0.5f);
-											b.setTransformation(trans);
-
-											b.getPersistentDataContainer().set(plugin.getNamespacedKey(org.lazberry.xmaslegacy.Constants.regionKey), org.bukkit.persistence.PersistentDataType.STRING, "indicator");
-										});
-
-										region.setIndicator(newIndic);
-
+										region.setIndicator(indicatorDisplay(region));
 										saveAll();
 										plugin.getSLF4JLogger().warn("[Region] 구역 {}의 인디케이터가 유실되어 자동 재생성되었습니다.", region.Id());
 									});
@@ -101,21 +86,46 @@ public class RegionManager {
 							}
 						}
 					}
-
-					if (region.getIndicator() != null && region.getIndicator().isValid()) {
-						Transformation transformation = region.getIndicator().getTransformation();
-						Transformation newTrans = new Transformation(
-								transformation.getTranslation(),
-								leftRotation,
-								transformation.getScale(),
-								transformation.getRightRotation()
-						);
-						region.getIndicator().setTransformation(newTrans);
-					}
+					setTrans(region, leftRotation);
 				}
 				if (checkDelay >= 20) checkDelay = 0;
 			}
 		}.runTaskTimer(plugin, 0L, 1L);
+	}
+
+	private void setTrans(@NotNull Region region, @NotNull Quaternionf leftRotation) {
+		if (region.getIndicator() != null && region.getIndicator().isValid()) {
+			Transformation transformation = region.getIndicator().getTransformation();
+			Transformation newTrans = new Transformation(
+					transformation.getTranslation(),
+					leftRotation,
+					transformation.getScale(),
+					transformation.getRightRotation()
+			);
+			region.getIndicator().setTransformation(newTrans);
+		}
+	}
+
+	/**
+	 * Region Indicator must be Registered.
+	 * @param region region
+	 * @return BlockDisplay
+	 */
+	@CheckReturnValue
+	public @Nullable BlockDisplay indicatorDisplay(@NotNull Region region) {
+		var chunk = region.getChunk();
+		return chunk == null ? null : region.getWorld().spawn(region.getTrueCenter(chunk).clone().add(-0.25, 0.5, -0.25), BlockDisplay.class, b -> {
+			b.setBlock(Material.BEACON.createBlockData());
+			b.setGravity(false);
+			b.setGlowColorOverride(Color.AQUA);
+			b.customName(ColorUtils.chat("&b구역 : " + region.Id()));
+			b.setCustomNameVisible(true);
+			Transformation trans = b.getTransformation();
+			trans.getScale().set(0.5f);
+			trans.getTranslation().set(-0.25f, 0.0f, -0.25f);
+			b.setTransformation(trans);
+			b.getPersistentDataContainer().set(plugin.getNamespacedKey(Constants.regionKey), PersistentDataType.STRING, "indicator");
+		});
 	}
 
 	public static @NotNull ItemStack RegionTicket() {
@@ -219,11 +229,11 @@ public class RegionManager {
 
 	public void addRegion(Player p, Region region) {
 		if (region == null || !region.isValid()) return;
-
-		regions.put(region.key(), region);
 		var event = new RegionGenerateEvent(p, region, region.getOwner(), region.Id());
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return;
+
+		regions.put(region.key(), region);
 		userRegionsMap.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);
 		saveAll();
 	}
@@ -268,12 +278,12 @@ public class RegionManager {
 		}
 	}
 
-	public @NotNull List<Region> getRegion(Player p) {
+	public @NotNull List<Region> getRegion(@NotNull Player p) {
 		return userRegionsMap.getOrDefault(p.getUniqueId(), new ArrayList<>());
 	}
 
-	public @Nullable List<Region> getRegion(UUID uuid) {
-		return userRegionsMap.getOrDefault(uuid, null);
+	public @NotNull List<Region> getRegion(@NotNull UUID uuid) {
+		return userRegionsMap.getOrDefault(uuid, new ArrayList<>());
 	}
 
 	public @Nullable Region getRegionAt(Location loc) {

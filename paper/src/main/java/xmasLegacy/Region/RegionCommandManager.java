@@ -10,10 +10,12 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 
 import java.util.*;
 import java.util.stream.Stream;
 
+@Commands(command = "구역")
 public class RegionCommandManager implements CommandExecutor, TabCompleter {
 	private final RegionManager rm;
 

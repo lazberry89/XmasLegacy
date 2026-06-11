@@ -1,7 +1,6 @@
 package xmasLegacy;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;

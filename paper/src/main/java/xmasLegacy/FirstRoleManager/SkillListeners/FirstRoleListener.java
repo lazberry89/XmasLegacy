@@ -20,9 +20,11 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmasLegacy.FirstRoleManager.AbstractFirstRole;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
+import xmasLegacy.Listeners;
 import xmasLegacy.XmasLegacy;
 
 @SuppressWarnings("unused, FieldCanBeLocal, DuplicatedCode")
+@Listeners
 public class FirstRoleListener implements Listener {
 	private final XmasLegacy plugin;
 	private final FirstRoleManager frm;

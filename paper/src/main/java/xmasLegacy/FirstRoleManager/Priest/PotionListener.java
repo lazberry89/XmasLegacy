@@ -17,11 +17,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Listeners;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
 @SuppressWarnings("DuplicatedCode")
+@Listeners
 public class PotionListener implements Listener {
 	private final XmasLegacy plugin;
 	private final ConductableItems CDI;

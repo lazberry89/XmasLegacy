@@ -1,4 +1,4 @@
-package xmasLegacy.Region;
+package xmasLegacy.Region.Listeners;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -6,12 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
+import xmasLegacy.Listeners;
+import xmasLegacy.Region.Gui.RegionDeleteInterface;
+import xmasLegacy.Region.Gui.RegionSettingInterface;
 
+@Listeners
 public class RegionSettingListener implements Listener {
 
-    public RegionSettingListener() {
-    }
+    public RegionSettingListener() {}
 
     @EventHandler
     public void SettingClick(InventoryClickEvent e) {

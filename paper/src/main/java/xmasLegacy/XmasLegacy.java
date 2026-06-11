@@ -1,9 +1,13 @@
 package xmasLegacy;
 
+import com.google.common.reflect.ClassPath;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
@@ -14,46 +18,28 @@ import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserRepository;
 import xmasLegacy.Cosmetics.CosmeticManager;
-import xmasLegacy.Cosmetics.CosmeticsCommand;
-import xmasLegacy.Cosmetics.TestHeadCommand;
-import xmasLegacy.Economy.Currency.OperatorCurrency;
-import xmasLegacy.Enchant.EnchantCommand;
-import xmasLegacy.Enchant.EnchantListener;
 import xmasLegacy.Enchant.EnchantManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
-import xmasLegacy.FirstRoleManager.Merchant.*;
-import xmasLegacy.FirstRoleManager.Priest.*;
-import xmasLegacy.FirstRoleManager.Priest.ShopListener;
-import xmasLegacy.FirstRoleManager.SkillListeners.FirstRoleListener;
-import xmasLegacy.FirstRoleManager.SkillListeners.TestCommands;
-import xmasLegacy.Gacha.GachaCommand;
-import xmasLegacy.Gacha.GachaListener;
+import xmasLegacy.FirstRoleManager.Merchant.MerchantStockInterface;
+import xmasLegacy.FirstRoleManager.Merchant.PriceInterface;
+import xmasLegacy.FirstRoleManager.Priest.ConductableItems;
+import xmasLegacy.FirstRoleManager.Priest.PriestShopManager;
 import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.HuntingZone.HuntingZoneManager;
 import xmasLegacy.HuntingZone.MobSpawnManager;
-import xmasLegacy.HuntingZone.ZoneCommandManager;
 import xmasLegacy.Lobby.LobbyCommand;
 import xmasLegacy.Lobby.LobbyListener;
 import xmasLegacy.Lobby.LobbyManager;
-import xmasLegacy.PlayerUtils.BagCommandManager;
 import xmasLegacy.PlayerUtils.BagManager;
-import xmasLegacy.Region.*;
-import xmasLegacy.RoleSelection.RoleCommand;
-import xmasLegacy.RoleSelection.RoleSelectCommand;
+import xmasLegacy.Region.RegionManager;
 import xmasLegacy.RoleSelection.RoleViewDesign;
-import xmasLegacy.RoleSelection.SelectListener;
-import xmasLegacy.RoleSwitch.BookCommand;
-import xmasLegacy.RoleSwitch.DeleteStandCommand;
 import xmasLegacy.RoleSwitch.ExpManager;
 import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
-import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondTestCommand;
-import xmasLegacy.SecondaryRoleManager.SkillListeners.SecondaryRoleListener;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
-import xmasLegacy.ServerPrefix.PrefixCommand;
 import xmasLegacy.ServerPrefix.PrefixManager;
 import xmasLegacy.ServerPrefix.UserTagManager;
 
@@ -191,69 +177,13 @@ public final class XmasLegacy extends JavaPlugin {
 
 			HuntingZoneManager.getInstance().init();
 			MobSpawnManager.getInstance().startTask();
+			UserTagManager.runTask();
 
 			// [메인 서버 전용 리스너 등록]
-			var pm = getServer().getPluginManager();
-			pm.registerEvents(new FirstRoleListener(), this);
-			pm.registerEvents(ConsumableManager.getInstance(), this);
-			pm.registerEvents(new GhostListener(), this);
-			pm.registerEvents(new PotionListener(), this);
-			pm.registerEvents(new ShopListener(), this);
-			pm.registerEvents(new xmasLegacy.FirstRoleManager.Merchant.ShopListener(), this);
-			pm.registerEvents(new StockListener(), this);
-			pm.registerEvents(new SelectListener(), this);
-			pm.registerEvents(new GachaListener(), this);
-			pm.registerEvents(new SecondaryRoleListener(), this);
-			pm.registerEvents(new EffectListener(), this);
-			pm.registerEvents(new EnchantListener(), this);
-
-			pm.registerEvents(new RegionPermissionListener(), this);
-			pm.registerEvents(new RegionIndicator(), this);
-			pm.registerEvents(new RegionCreateListener(), this);
-			pm.registerEvents(new RegionSettingListener(), this);
-			pm.registerEvents(new RegionDeleteConfirmListener(), this);
+			registerListeners();
 
 			// [메인 서버 전용 명령어 등록]
-			var bag = new BagCommandManager();
-			getCommand("가방").setExecutor(bag);
-			getCommand("가방").setTabCompleter(bag);
-			getCommand("test").setExecutor(new TestCommands());
-			var region = new RegionCommandManager();
-			getCommand("구역").setExecutor(region);
-			getCommand("구역").setTabCompleter(region);
-			getCommand("vanish").setExecutor(new GhostCommand());
-			var priest = new PriestCommand();
-			getCommand("potion").setExecutor(priest);
-			getCommand("potion").setTabCompleter(priest);
-			getCommand("system").setExecutor(new PriestSystemShopCommand());
-			getCommand("shop").setExecutor(new TempCommand());
-			var oc = new OperatorCurrency();
-			getCommand("currency").setExecutor(oc);
-			getCommand("currency").setTabCompleter(oc);
-			var cos = new CosmeticsCommand();
-			getCommand("cos").setExecutor(cos);
-			getCommand("cos").setTabCompleter(cos);
-			getCommand("상점").setExecutor(new ShopCommand());
-			getCommand("직업선택").setExecutor(new RoleSelectCommand());
-			var role = new RoleCommand();
-			getCommand("role").setExecutor(role);
-			getCommand("role").setTabCompleter(role);
-			var gacha = new GachaCommand();
-			getCommand("gacha").setExecutor(gacha);
-			getCommand("gacha").setTabCompleter(gacha);
-			getCommand("head").setExecutor(new TestHeadCommand());
-			getCommand("book").setExecutor(new BookCommand());
-			getCommand("delstand").setExecutor(new DeleteStandCommand());
-			var prefix = new PrefixCommand();
-			getCommand("prefix").setExecutor(prefix);
-			getCommand("prefix").setTabCompleter(prefix);
-			getCommand("0947345").setExecutor(new UserLoadCommand());
-			getCommand("second").setExecutor(new SecondTestCommand());
-			getCommand("강화").setExecutor(new EnchantCommand());
-            var zcm = new ZoneCommandManager();
-            getCommand("zone").setExecutor(zcm);
-            getCommand("zone").setTabCompleter(zcm);
-			UserTagManager.runTask();
+			registerCommands();
 		}
 	}
 
@@ -273,5 +203,58 @@ public final class XmasLegacy extends JavaPlugin {
 	public @NotNull String getServerType() {
 		saveDefaultConfig();
 		return getConfig().getString("server-type", "main");
+	}
+
+	@Reflection(comment = "Listeners Registration")
+	private void registerListeners() {
+		try {
+			var classPath = ClassPath.from(this.getClassLoader());
+
+			for (var classInfo : classPath.getTopLevelClassesRecursive("xmasLegacy")) {
+				Class<?> clazz = classInfo.load();
+
+				if (!Listener.class.isAssignableFrom(clazz)) continue;
+				if (!clazz.isAnnotationPresent(Listeners.class)) continue;
+				if (clazz.isInterface() || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) continue;
+
+				var listenerInstance = clazz.getDeclaredConstructor().newInstance();
+				Bukkit.getPluginManager().registerEvents((Listener) listenerInstance, this);
+
+				this.getSLF4JLogger().info("리스너 {} 가 자동 등록되었습니다.", clazz.getSimpleName());
+			}
+		} catch (Exception e) {
+			this.getSLF4JLogger().error("Error occurred while registering all listeners", e);
+		}
+	}
+
+	@Reflection(comment = "Commands Registration")
+	private void registerCommands() {
+		try {
+			var classPath = com.google.common.reflect.ClassPath.from(this.getClassLoader());
+
+			for (var classInfo : classPath.getTopLevelClassesRecursive("xmasLegacy")) {
+				Class<?> clazz = classInfo.load();
+
+				if (!CommandExecutor.class.isAssignableFrom(clazz)) continue;
+				if (!clazz.isAnnotationPresent(Commands.class)) continue;
+				if (clazz.isInterface() || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) continue;
+
+				Commands autoCommand = clazz.getAnnotation(Commands.class);
+				String cmdName = autoCommand.command();
+
+				var pluginCommand = this.getCommand(cmdName);
+				if (pluginCommand == null) continue;
+
+				var commandInstance = clazz.getDeclaredConstructor().newInstance();
+				pluginCommand.setExecutor((CommandExecutor) commandInstance);
+
+				if (TabCompleter.class.isAssignableFrom(clazz)) {
+					pluginCommand.setTabCompleter((TabCompleter) commandInstance);
+					this.getSLF4JLogger().info("커맨드 {} 가 자동 등록되었습니다.", cmdName);
+				}
+			}
+		} catch (Exception e) {
+			this.getSLF4JLogger().error("Error occurred while registering all Commands/TabCompletors", e);
+		}
 	}
 }

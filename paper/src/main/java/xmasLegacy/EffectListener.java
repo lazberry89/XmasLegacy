@@ -17,6 +17,7 @@ import xmasLegacy.SecondaryRoleManager.BerserkerSpeedManager;
 
 import java.util.UUID;
 
+@Listeners
 public class EffectListener implements Listener {
     private final SkillEffectManager sem;
     private final XmasLegacy plugin;

@@ -12,9 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 
 import java.util.List;
 
+@Commands(command = "가방")
 public class BagCommandManager implements CommandExecutor, TabCompleter {
 	private final BagManager BM;
 
@@ -23,7 +25,7 @@ public class BagCommandManager implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
+	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
 		if (!(commandSender instanceof Player p)) return false;
 		if (args.length == 0) {
 			p.openInventory(BM.getUserBags(p).getInventory());

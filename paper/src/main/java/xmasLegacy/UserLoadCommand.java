@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.UserManager;
 
+@Commands(command = "0947345")
 public class UserLoadCommand implements CommandExecutor {
 	private final UserManager um;
 

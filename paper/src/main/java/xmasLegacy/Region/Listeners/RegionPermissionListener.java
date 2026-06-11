@@ -1,4 +1,4 @@
-package xmasLegacy.Region;
+package xmasLegacy.Region.Listeners;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -8,7 +8,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import xmasLegacy.Listeners;
+import xmasLegacy.Region.Region;
+import xmasLegacy.Region.RegionManager;
 
+@Listeners
 public class RegionPermissionListener implements Listener {
 	private final RegionManager RM;
 

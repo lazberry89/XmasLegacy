@@ -5,9 +5,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import xmasLegacy.Commands;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
+@Commands(command = "delstand")
 public class DeleteStandCommand implements CommandExecutor {
     private final XmasLegacy plugin;
     private final MagicBook MB;

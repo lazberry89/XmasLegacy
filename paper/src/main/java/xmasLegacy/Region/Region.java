@@ -86,11 +86,9 @@ public class Region {
 	public int getChunkX() {
 		return (int) (this.key >> 32);
 	}
-
 	public int getChunkZ() {
 		return (int) this.key;
 	}
-
     public @NotNull UUID getOwner() {
         return this.owner;
     }

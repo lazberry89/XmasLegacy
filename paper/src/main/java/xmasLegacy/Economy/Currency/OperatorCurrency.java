@@ -11,10 +11,12 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Commands(command = "currency")
 public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	private final EconomyManager ecm;
 

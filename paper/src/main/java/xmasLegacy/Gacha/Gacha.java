@@ -8,6 +8,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import xmasLegacy.Commands;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+@Commands(command = "gacha")
 public class Gacha {
 	private final ItemStack item;
 	private final String key;

@@ -24,6 +24,7 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import xmasLegacy.Listeners;
 import xmasLegacy.RoleManager;
 import xmasLegacy.SecondaryRoleManager.*;
 import xmasLegacy.SecondaryRoleManager.Sniper.BulletType;
@@ -35,6 +36,7 @@ import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.DEFENDER;
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.GUARDIAN;
 
 @SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal, LoggingSimilarMessage")
+@Listeners
 public class SecondaryRoleListener implements Listener {
     private final XmasLegacy plugin;
     private final UserManager um;

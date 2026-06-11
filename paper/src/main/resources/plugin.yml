@@ -7,73 +7,73 @@ load: POSTWORLD
 depend: [floodgate]
 softdepend: [oraxen]
 commands:
-  문의:
+  문의: #0
     usage: /문의 <내용>
     description: 문의를 하여 관리자를 호출합니다.
 
-  이동문의:
+  이동문의: #0
     usage: /이동문의 <유저>
     description: 문의를 받고 해당 유저로 이동합니다.
 
-  가방:
+  가방: #0
     usage: /가방
     description: 유저별 개인 저장공간을 제공합니다.
 
-  filter:
+  filter: #0
     usage: /filter <append | remove | list> <word>
     description: 욕설 필터 목록 설정
 
-  log:
+  log: #0
     usage: /log <inquiry | inquiries> <이름>
     description: 로그 검색
 
-  구역:
+  구역: #0
     usage: /구역 <ID> <설정> <값>
     description: 구역 설정
 
-  vanish:
+  vanish: #0
     usage: /vanish
     description: 리스트, 인게임에서 소멸 후 유저관찰
 
-  lobby:
+  lobby: #0
     usage: /lobby <set | location | reset>
     description: 로비설정
 
-  currency:
+  currency: #0
     usage: /currency <add | remove | set | check | transfer> <Player(Player, Player)> <amount>
     description: 금전 이동,확인,설정
 
-  cos:
+  cos: #0
     usage: /cos <add | remove | equip | unequip> <Name>
     description: 치장을 관리합니다.
 
-  상점:
+  상점: #0
     usage: /상점
     description: 공용 상점을 여는 명령어에요.
   
-  직업선택:
+  직업선택: #0
     usage: /직업선택
 
-  prefix:
+  prefix: #0
     usage: /prefix inv
     description: 칭호를 설정합니다.
 
-  role:
+  role: #0
 
-  gacha:
+  gacha: #0
 
-  head:
+  head: #0
 
-  test:
-  potion:
-  system:
-  shop:
-  book:
-  delstand:
+  test: #0
+  potion: #0
+  system: #0
+  shop: #0
+  book: #0
+  delstand: #0
 
-  0947345:
-  second:
-  강화:
-  zone:
+  0947345: #0
+  second: #0
+  강화: #0
+  zone: #0
 
 

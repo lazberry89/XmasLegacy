@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.RuleManager;
 import java.util.ArrayList;
 import java.util.List;
 
+@Commands(command = "filter")
 public class RuleCommandManager implements CommandExecutor, TabCompleter {
     private final RuleManager RM;
 
@@ -23,7 +24,7 @@ public class RuleCommandManager implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
         if (!(commandSender instanceof Player p)) return false;
         if (!p.isOp()) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 관리자 전용입니다. 관리자에게 문의하세요!"));
@@ -64,7 +65,7 @@ public class RuleCommandManager implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String... args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull ...args) {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {

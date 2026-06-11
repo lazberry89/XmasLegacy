@@ -1,4 +1,4 @@
-package xmasLegacy.Region;
+package xmasLegacy.Region.Gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,8 +8,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.ColorUtils;
+import xmasLegacy.Region.Region;
+import xmasLegacy.Region.RegionManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 

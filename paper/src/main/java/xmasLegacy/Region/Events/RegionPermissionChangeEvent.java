@@ -1,4 +1,4 @@
-package xmasLegacy.Region;
+package xmasLegacy.Region.Events;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

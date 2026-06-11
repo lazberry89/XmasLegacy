@@ -1,5 +1,6 @@
 package xmasLegacy.Lobby;
 
+import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -12,11 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@UsedByReflection
 public class LobbyCommand implements CommandExecutor, TabCompleter {
     private final LobbyManager LBM;
     private final XmasLegacy plugin;

@@ -26,12 +26,14 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
+import xmasLegacy.Listeners;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
+@Listeners
 public class EnchantListener implements Listener {
 	private final XmasLegacy plugin;
 	private final EnchantManager ecm;

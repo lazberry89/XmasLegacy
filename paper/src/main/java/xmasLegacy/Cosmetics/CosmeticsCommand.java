@@ -10,11 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Commands(command = "cos")
 public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 	private final CosmeticManager CSM;
 

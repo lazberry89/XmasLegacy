@@ -1,4 +1,4 @@
-package xmasLegacy.Region;
+package xmasLegacy.Region.Gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -13,9 +13,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
+@Commands(command = "book")
 public class BookCommand implements CommandExecutor {
     private final @NotNull XmasLegacy plugin;
     private final @NotNull MagicBook MB;

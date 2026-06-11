@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import xmasLegacy.Commands;
 import xmasLegacy.FirstRoleManager.*;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
@@ -19,6 +20,7 @@ import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
 
 @TestOnly
+@Commands(command = "test")
 public class TestCommands implements CommandExecutor {
 	private final SkillEffectManager SEM;
 	private PartyManager PM;

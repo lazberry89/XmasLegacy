@@ -18,10 +18,12 @@ import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Listeners;
 import xmasLegacy.XmasLegacy;
 
 import java.util.Map;
 
+@Listeners
 public class ShopListener implements Listener {
 	private final PriceInterface PIF;
 	private final UserManager um;

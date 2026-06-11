@@ -6,9 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import xmasLegacy.Commands;
 import xmasLegacy.XmasLegacy;
 
 @TestOnly
+@Commands(command = "직업선택")
 public class RoleSelectCommand implements CommandExecutor {
 
 	@Override

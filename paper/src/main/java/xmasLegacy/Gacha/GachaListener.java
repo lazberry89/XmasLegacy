@@ -16,8 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.InfoLevel;
+import xmasLegacy.Listeners;
 import xmasLegacy.XmasLegacy;
 
+@Listeners
 public class GachaListener implements Listener {
     private final XmasLegacy plugin;
     private final GachaManager GM;

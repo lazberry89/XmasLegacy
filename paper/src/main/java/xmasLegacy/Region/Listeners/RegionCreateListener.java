@@ -1,4 +1,4 @@
-package xmasLegacy.Region;
+package xmasLegacy.Region.Listeners;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -8,8 +8,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import xmasLegacy.InfoLevel;
+import xmasLegacy.Listeners;
+import xmasLegacy.Region.Gui.RegionCreateInterface;
+import xmasLegacy.Region.Region;
+import xmasLegacy.Region.RegionManager;
 import xmasLegacy.XmasLegacy;
 
+@Listeners
 public class RegionCreateListener implements Listener {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull RegionManager rm;

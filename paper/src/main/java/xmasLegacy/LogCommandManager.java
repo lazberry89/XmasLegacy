@@ -23,19 +23,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Commands(command = "log")
 public class LogCommandManager implements CommandExecutor, TabCompleter {
-    private final InquiryManager IM;
-    private final XmasLegacy plugin;
-	private final RegionManager RM;
+    private final @NotNull InquiryManager im;
+	private final @NotNull RegionManager rm;
+    private final @NotNull XmasLegacy plugin;
 
     public LogCommandManager() {
-        this.IM = InquiryManager.getInstance();
+        this.im = InquiryManager.getInstance();
+		this.rm = RegionManager.getInstance();
         this.plugin = XmasLegacy.getInstance();
-		this.RM = RegionManager.getInstance();
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
         if (!(commandSender instanceof Player p)) return false;
         if (!p.isOp()) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 로그를 볼 수 있는 권한이 없습니다."));
@@ -52,21 +53,18 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 		                OfflinePlayer op = Bukkit.getOfflinePlayer(targetName);
 		                UUID uuid = op.getUniqueId();
 
-		                List<String> logs = IM.getInquiryLogs(uuid);
+		                List<String> logs = im.getInquiryLogs(uuid);
 
-		                if (logs.isEmpty() || (logs.size() == 1 && logs.getFirst().contains("없습니다"))) {
+		                if (logs.isEmpty() || (logs.size() == 1 && logs.getFirst().contains("없습니다")))
 			                p.sendMessage(ColorUtils.chat(Alert.RED + "'" + targetName + "' 유저의 기록이 없습니다."));
-
-		                } else {
-							logs.forEach(p::sendMessage);
-		                }
+		                else logs.forEach(p::sendMessage);
 	                });
 	            }
 	            case "regions" -> {
 		            OfflinePlayer of = Bukkit.getOfflinePlayer(args[1]);
 					if (of.hasPlayedBefore()) {
-						List<Region> regions = RM.getRegion(of.getUniqueId());
-						if (regions == null || regions.isEmpty()) {
+						List<Region> regions = rm.getRegion(of.getUniqueId());
+						if (regions.isEmpty()) {
 							p.sendMessage(ColorUtils.chat(Alert.RED + " 구역이 없습니다."));
 							return true;
 						}
@@ -88,16 +86,15 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 				case "inquiries" -> {
 					p.sendMessage(ColorUtils.chat("&b&l[현재 대기 중인 문의 목록]"));
 
-					if (IM.getInquiryMap().isEmpty()) {
+					if (im.getInquiryMap().isEmpty()) {
 						p.sendMessage(ColorUtils.chat("&7대기 중인 문의가 없습니다. 평화롭네요!"));
 						return true;
 					}
 
-					for (Map.Entry<UUID, String> entry : IM.getInquiryMap().entrySet()) {
+					for (Map.Entry<UUID, String> entry : im.getInquiryMap().entrySet()) {
 						String userName = Bukkit.getOfflinePlayer(entry.getKey()).getName();
 						String msg = entry.getValue();
 
-						// 채팅창에 클릭 가능한 메시지로 띄워줌
 						Component comp = ColorUtils.chat(String.format("&e- &f%s &7: %s ", userName, msg))
 								.append(ColorUtils.chat("&a&l[이동]"))
 								.clickEvent(ClickEvent.runCommand("/이동문의 " + userName));
@@ -106,7 +103,7 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 					}
 				}
 				case "regions" -> {
-					List<Region> regions = RM.getRegions();
+					List<Region> regions = rm.getRegions();
 					if (regions.isEmpty()) {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 구역이 없습니다."));
 						return true;
@@ -142,7 +139,7 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
 		List<String> completions = new ArrayList<>();
 
 		if (args.length == 1) {

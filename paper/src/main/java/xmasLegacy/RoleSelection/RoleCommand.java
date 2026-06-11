@@ -14,12 +14,14 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
+@Commands(command = "role")
 public class RoleCommand implements CommandExecutor, TabCompleter {
 	private final XmasLegacy plugin;
 	private final UserManager um;
