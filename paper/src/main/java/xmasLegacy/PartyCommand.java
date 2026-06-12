@@ -59,7 +59,9 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     List<User> members = party.getMembers();
-                    List<String> notLeader = new ArrayList<>(members.stream().filter(u -> !u.equals(party.getLeader())).map(User::getName).toList());
+                    List<String> notLeader = new ArrayList<>(members.stream()
+                            .filter(u -> !u.equals(party.getLeader()))
+                            .map(User::getName).toList());
                     if (members.isEmpty()) {
                         plugin.infoMsg(InfoLevel.ERROR, p, "파티원이 없네요..? 뭔가 이상해보입니다.");
                         return true;
