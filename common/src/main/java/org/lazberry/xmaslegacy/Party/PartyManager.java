@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Party;
 
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 
@@ -23,6 +24,14 @@ public class PartyManager {
         this.UM = UserManager.getInstance();
     }
 
+	public boolean createParty(@NotNull User leader) {
+		if (partyMap.containsKey(leader)) return false;
+		Party newParty = new Party(leader);
+
+		partyMap.put(leader, newParty);
+		return true;
+	}
+
 	public boolean joinParty(User leader, User join) {
 		if (partyMap.containsKey(leader)) {
 			Party party = partyMap.get(leader);
@@ -37,35 +46,35 @@ public class PartyManager {
 		}
 	}
 
-	public boolean leaveParty(User user) {
+	@SuppressWarnings("UnusedReturnValue")
+    public boolean leaveParty(@NotNull User user) {
 		if (partyMap.containsKey(user)) {
 			Party party = partyMap.get(user);
 			if (party != null) {
-				party.leaveParty(user);
 				partyMap.remove(user);
+				party.leaveParty(user);
+
+				if (party.getMembers().isEmpty()) party.clearMembers();
 				return true;
-			} else {
-				return false;
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 
-    public boolean removeParty(UUID uuid) {
+	public boolean removeParty(@NotNull UUID uuid) {
 		User user = UM.getUser(uuid);
-        if (user == null) return false;
-        Party currentParty = partyMap.get(user);
-        if (currentParty == null) return false;
+		if (user == null) return false;
+		Party currentParty = partyMap.get(user);
+		if (currentParty == null) return false;
 
-        User leader = currentParty.getLeader();
-        if (!leader.equals(user)) return false;
+		User leader = currentParty.getLeader();
+		if (!leader.equals(user)) return false;
 
-        for (User member : currentParty.getMembers()) {
-            partyMap.remove(member);
-        }
+		currentParty.getMembers().forEach(partyMap::remove);
+
+		currentParty.clearMembers();
 		return true;
-    }
+	}
 
     public Party getParty(UUID p) {
 		User u = UM.getUser(p);

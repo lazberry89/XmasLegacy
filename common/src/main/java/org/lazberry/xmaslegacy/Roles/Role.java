@@ -16,7 +16,7 @@ public interface Role {
     List<Skill> bindRange();
     int getDashCount();
 
-    static Role valueOf(String name) {
+    static Role valueOf(@NotNull String name) throws IllegalArgumentException {
         try { return Roles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         try { return SecondaryRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         try { return ThirdRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}

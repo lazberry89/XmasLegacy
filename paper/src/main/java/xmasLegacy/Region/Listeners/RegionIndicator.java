@@ -43,7 +43,7 @@ public class RegionIndicator implements Listener {
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
 		if (user == null) {
-			ServerTransfer.loadUser(p);
+			ServerTransfer.loadUser(p, false);
 			return;
 		}
 		if (rm.hasRegion(loc)) {

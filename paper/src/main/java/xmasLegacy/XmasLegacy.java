@@ -42,6 +42,7 @@ import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.PrefixManager;
 import xmasLegacy.ServerPrefix.UserTagManager;
+import xmasLegacy.TransferPortal.PortalManager;
 
 @SuppressWarnings({"FieldCanBeLocal, DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
@@ -56,7 +57,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:main");
 		instance = this;
 
-		UserManager.getInstance();
+		UserManager.getInstance().initDataFolder(this.getDataFolder());
 		RuleManager.getInstance();
 		InquiryManager.getInstance();
 		PrefixManager.getInstance();
@@ -177,6 +178,8 @@ public final class XmasLegacy extends JavaPlugin {
 
 			HuntingZoneManager.getInstance().init();
 			MobSpawnManager.getInstance().startTask();
+			PortalManager.getInstance().startPortalScheduler();
+
 			UserTagManager.runTask();
 
 			// [메인 서버 전용 리스너 등록]

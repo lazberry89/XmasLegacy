@@ -48,7 +48,7 @@ public class ServerTransfer {
                 .build();
     }
 
-    private static @NotNull Component reloadComponent(UserManager um) {
+    private static @NotNull Component reloadComponent(@NotNull UserManager um) {
         return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
                 .hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
                 .clickEvent(ClickEvent.callback(audience -> {
@@ -66,7 +66,7 @@ public class ServerTransfer {
                 }, option()));
     }
 
-    private static void task(@NotNull Player player, @NotNull User user) {
+    private static void sendMsg(@NotNull Player player, @NotNull User user) {
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (!player.isOnline()) return;
 
@@ -85,27 +85,27 @@ public class ServerTransfer {
                 Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님이 접속했어요!", player.getName())));
             }
             UserTagManager.createHoverTag(player, user);
-
+            UserTagManager.updateHoverTag(player, user);
             user.setNewUser(false);
         });
     }
 
-    private static void sendMsg(@NotNull Player player, Throwable throwable, @NotNull UserManager um) {
+    private static void sendError(@NotNull Player player, Throwable throwable, @NotNull UserManager um) {
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (!player.isOnline()) return;
-            player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다!").append(reloadComponent(um)));
+            player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다.").append(reloadComponent(um)));
             plugin.getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
         });
     }
 
-    public static void loadUser(@NotNull Player player) {
+    public static void loadUser(@NotNull Player player, boolean msg) {
         @NotNull var um = UserManager.getInstance();
         um.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
             if (throwable != null || user == null) {
-                sendMsg(player, throwable, um);
+                if (msg) sendError(player, throwable, um);
                 return;
             }
-            task(player, user);
+            if (msg) sendMsg(player, user);
         });
     }
 

@@ -6,13 +6,14 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xmasLegacy.ServerType;
 
 public class Portal {
     private final @NotNull String key;
     private final @NotNull Location center;
     private final @NotNull ServerType destination;
-    private final @NotNull ItemDisplay flame;
+    private final @Nullable ItemDisplay flame;
 
     public Portal(@NotNull String key, @NotNull Location center, @NotNull ServerType type) {
         this.key = key;
@@ -42,7 +43,9 @@ public class Portal {
 
         return dx <= 2.5 && dz <= 2.5 && dy <= 3.0;
     }
-
+    public @Nullable ItemDisplay getFlame() {
+        return this.flame;
+    }
     public @NotNull String key() {
         return this.key;
     }

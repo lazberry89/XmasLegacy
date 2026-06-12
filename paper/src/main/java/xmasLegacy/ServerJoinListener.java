@@ -23,21 +23,21 @@ public class ServerJoinListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void JoinMsg(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-
 		e.joinMessage(null);
 
 		switch (plugin.getServerType().toLowerCase()) {
-			case "main" -> ServerTransfer.loadUser(p);
+			case "main" -> ServerTransfer.loadUser(p, true);
 			case "lobby" -> e.joinMessage(ColorUtils.chat(Alert.XmasLegacy + " 입장을 환영합니다! 전방의 포탈로 게임을 시작하세요."));
 			default -> plugin.getSLF4JLogger().warn("알 수 없는 서버 타입입니다: {}", plugin.getServerType());
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void LeaveMsg(PlayerQuitEvent e) {
-		e.quitMessage(null);
 		Player p = e.getPlayer();
 		UserTagManager.removeHoverTag(p);
+
+		e.quitMessage(null);
 		UM.onQuitAsync(p.getUniqueId());
 	}
 }

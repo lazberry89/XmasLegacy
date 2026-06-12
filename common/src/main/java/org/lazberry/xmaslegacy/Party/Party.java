@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Party;
 
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 
@@ -9,17 +10,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Party {
-    private User leader;
-	private final UUID PartyID;
-    private final List<User> members = new ArrayList<>();
+    private @NotNull User leader;
+	private final @NotNull UUID PartyID;
+    private final @NotNull List<User> members = new ArrayList<>();
 
-    public Party(User leader) {
+    public Party(@NotNull User leader) {
 		this.PartyID = UUID.randomUUID();
         this.leader = leader;
         this.members.add(leader);
     }
 
-    public boolean joinParty(User join) {
+    public boolean joinParty(@NotNull User join) {
         if (members.contains(join) || members.size() >= 4) {
             return false;
         }
@@ -27,7 +28,12 @@ public class Party {
         return true;
     }
 
-    public boolean leaveParty(User leave) {
+	public void clearMembers() {
+		this.members.clear();
+	}
+
+	@SuppressWarnings("UnusedReturnValue")
+    public boolean leaveParty(@NotNull User leave) {
         if (members.contains(leave)) {
             if (leave.equals(leader)) {
                 members.remove(leader);
@@ -45,20 +51,21 @@ public class Party {
         return false;
     }
 
-	public User getLeader() {
+	public @NotNull User getLeader() {
 		return leader;
 	}
-	public List<User> getMembers() {
+	public @NotNull List<User> getMembers() {
 		return members;
 	}
 	public boolean isFull() {
 		return members.size() >= 4;
 	}
-	public boolean isInParty(User user) {
+	public boolean isInParty(@NotNull User user) {
 		return members.contains(user);
 	}
 
-	public boolean isInParty(UserManager um, UUID uuid) {
+	public boolean isInParty(@NotNull UUID uuid) {
+		@NotNull var um = UserManager.getInstance();
 		User u = um.getUser(uuid);
 		if (u == null) return false;
 		return isInParty(u);
