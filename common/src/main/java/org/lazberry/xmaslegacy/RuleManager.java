@@ -3,24 +3,19 @@ package org.lazberry.xmaslegacy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RuleManager {
+import static java.util.List.of;
+
+public enum RuleManager {
+	INSTANCE(List.of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
+
 	private final List<String> badWords;
 
-	private static RuleManager instance;
-
-    private RuleManager(List<String> initialWords) {
+    RuleManager(List<String> initialWords) {
         this.badWords = new ArrayList<>(initialWords);
 	    if (this.badWords.isEmpty()) {
-		    this.badWords.addAll(List.of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
+		    this.badWords.addAll(of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
 	    }
     }
-
-	public static RuleManager getInstance() {
-		if (instance == null) {
-			instance = new RuleManager(new ArrayList<>());
-		}
-		return instance;
-	}
 
 	public boolean checkBadWords(String s) {
 		return badWords.stream().anyMatch(s::contains);

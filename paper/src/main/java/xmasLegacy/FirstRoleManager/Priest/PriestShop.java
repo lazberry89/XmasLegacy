@@ -4,16 +4,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.EconomyManager;
 
 import java.util.*;
 
 public class PriestShop {
-    private final ConductableItems CDI;
-    private final EconomyManager EM;
-	private final Player owner;
-	private final Map<InventoryHolder, Player> shopOwners = new HashMap<>();
+	private final @NotNull Player owner;
+	private final @NotNull Map<InventoryHolder, Player> shopOwners = new HashMap<>();
 
     private boolean isShopEnabled = false;
     private int DragonStock = 0;
@@ -22,9 +21,7 @@ public class PriestShop {
     private int SpearStock = 0;
     private int SaveStock = 0;
 
-    public PriestShop(ConductableItems CDI,  EconomyManager EM, Player owner) {
-        this.CDI = CDI;
-        this.EM = EM;
+    public PriestShop(@NotNull Player owner) {
 		this.owner = owner;
     }
 
@@ -53,7 +50,7 @@ public class PriestShop {
 
 	public void openShop(Player viewer) {
 		if (!isShopEnabled()) return;
-		ShopInterface shopInterface = new ShopInterface(this, CDI);
+		ShopInterface shopInterface = new ShopInterface(this);
 		viewer.openInventory(shopInterface.getInventory());
 	}
 

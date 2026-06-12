@@ -4,27 +4,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xmasLegacy.XmasLegacy;
 
 import java.util.concurrent.CompletableFuture;
 
 public class LobbyManager {
-    private Location spawn;
-    private final XmasLegacy plugin;
+    private @Nullable Location spawn;
+    private @NotNull final XmasLegacy plugin;
 
-    private static LobbyManager instance;
-
-    private LobbyManager() {
+    public LobbyManager() {
         this.plugin = XmasLegacy.getInstance();
         load();
-    }
-
-    public static LobbyManager getInstance() {
-        if (instance == null) {
-            instance = new LobbyManager();
-        }
-        return instance;
     }
 
     public void setSpawn(Location loc) {

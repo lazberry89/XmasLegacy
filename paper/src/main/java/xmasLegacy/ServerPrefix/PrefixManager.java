@@ -8,22 +8,13 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import xmasLegacy.XmasLegacy;
 
-public class PrefixManager {
-	private final XmasLegacy plugin;
-	private final UserManager um;
+public enum PrefixManager {
+	INSTANCE;
 
-	private static PrefixManager instance;
+	private final @NotNull UserManager um;
 
-	private PrefixManager() {
-		this.plugin = XmasLegacy.getInstance();
-		this.um = UserManager.getInstance();
-	}
-
-	public static PrefixManager getInstance() {
-		if (instance == null) {
-			instance = new PrefixManager();
-		}
-		return instance;
+	PrefixManager() {
+		this.um = UserManager.INSTANCE;
 	}
 
 	public boolean addPrefix(@NotNull Player p, @NotNull ServerPrefix prefix) {

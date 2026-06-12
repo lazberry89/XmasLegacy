@@ -8,14 +8,8 @@ import java.util.Set;
 
 public class HuntingZoneManager {
 	private final Set<HuntingZone> zones = new HashSet<>(3);
-	private static HuntingZoneManager instance;
 
-	public static HuntingZoneManager getInstance() {
-		if (instance == null) instance = new HuntingZoneManager();
-		return instance;
-	}
-
-	private HuntingZoneManager() {}
+	public HuntingZoneManager() {}
 
 	public void init() {
 		this.zones.add(new HuntingZone(ZoneType.ICE_STAGE, "world"));

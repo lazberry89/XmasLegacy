@@ -8,16 +8,16 @@ import org.jetbrains.annotations.NotNull;
 
 @Commands(command = "vanish")
 public class GhostCommand implements CommandExecutor {
-    private final GhostModeManager GMM;
+    private final @NotNull GhostModeManager gmm;
 
-    public  GhostCommand() {
-        this.GMM = GhostModeManager.getInstance();
+    public GhostCommand() {
+        this.gmm = GhostModeManager.INSTANCE;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(commandSender instanceof Player p)) return true;
-        GMM.toggle(p);
+        gmm.toggle(p);
         return true;
     }
 }

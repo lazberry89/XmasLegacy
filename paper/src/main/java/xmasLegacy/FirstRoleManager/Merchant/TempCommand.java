@@ -9,10 +9,10 @@ import xmasLegacy.Commands;
 
 @Commands(command = "shop")
 public class TempCommand implements CommandExecutor {
-	private final PriceInterface PCI;
+	private final PriceManager PCI;
 
 	public TempCommand() {
-		this.PCI = PriceInterface.getInstance();
+		this.PCI = PriceManager.getInstance();
 	}
 
 	@Override

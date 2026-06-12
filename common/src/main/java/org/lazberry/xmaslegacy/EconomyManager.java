@@ -7,21 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("unused")
-public class EconomyManager {
+public enum EconomyManager {
+	INSTANCE;
+
     private final UserManager um;
     private final Map<String, Integer> marketDemand = new HashMap<>();
-    private static EconomyManager instance;
 
-    public static EconomyManager getInstance() {
-        if (instance == null) {
-            instance = new EconomyManager();
-        }
-        return instance;
-    }
-
-    private EconomyManager() {
-        this.um = UserManager.getInstance();
+    EconomyManager() {
+        this.um = UserManager.INSTANCE;
     }
 
     public boolean deposit(UUID uuid, int amount) {

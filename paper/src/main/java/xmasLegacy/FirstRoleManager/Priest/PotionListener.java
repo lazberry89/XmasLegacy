@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -22,16 +23,13 @@ import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
-@SuppressWarnings("DuplicatedCode")
 @Listeners
 public class PotionListener implements Listener {
-	private final XmasLegacy plugin;
-	private final ConductableItems CDI;
-	private final Set<UUID> deathSaver = new HashSet<>();
+	private final @NotNull XmasLegacy plugin;
+	private final @NotNull Set<UUID> deathSaver = new HashSet<>();
 
 	public PotionListener() {
 		this.plugin = XmasLegacy.getInstance();
-		this.CDI = ConductableItems.getInstance();
 	}
 
 	@EventHandler
@@ -40,7 +38,7 @@ public class PotionListener implements Listener {
 		if (!e.getAction().name().contains("RIGHT_CLICK")) return;
 		if (e.getItem() == null) return;
 
-		if (e.getItem().isSimilar(CDI.DragonPotion())) {
+		if (e.getItem().isSimilar(ConductableItems.DragonPotion())) {
 			cancelAndConsume(e);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Constants.DRAGON_POTION_DURATION * 20, Constants.DRAGON_HEAL_AMPLIFIER, true, false));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, Constants.DRAGON_POTION_DURATION * 20, Constants.DRAGON_SATURATION_AMPLIFIER, true, false));
@@ -50,7 +48,7 @@ public class PotionListener implements Listener {
 			Particle.DustTransition transition = new Particle.DustTransition(Color.FUCHSIA, Color.WHITE, 1.0f);
 			p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 0.3, 0.3, 0.3, 0, transition);
 
-		} else if (e.getItem().isSimilar(CDI.HealerPotion())) {
+		} else if (e.getItem().isSimilar(ConductableItems.HealerPotion())) {
 			cancelAndConsume(e);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Constants.HEALER_POTION_DURATION * 20, Constants.HEALER_POTION_AMPLIFIER, true, false));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.HEALER_POTION_DURATION * 10, 0, true, false, false));
@@ -59,7 +57,7 @@ public class PotionListener implements Listener {
 			Particle.DustTransition transition = new Particle.DustTransition(Color.ORANGE, Color.YELLOW, 1.5f);
 			p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 0.3, 0.3, 0.3, 0, transition);
 
-		} else if (e.getItem().isSimilar(CDI.ProtectionPotion())) {
+		} else if (e.getItem().isSimilar(ConductableItems.ProtectionPotion())) {
 			cancelAndConsume(e);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Constants.PROTECTION_POTION_DURATION * 20, Constants.DRAGON_PROTECTION_AMPLIFIER, true, false));
 			// 보호막 - 단단하고 방어적인 느낌
@@ -67,10 +65,9 @@ public class PotionListener implements Listener {
 			Particle.DustTransition transition = new Particle.DustTransition(Color.NAVY, Color.BLUE, 1.0f);
 			p.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, p.getLocation(), 15, 0.3, 0.3, 0.3, 0, transition);
 
-		} else if (e.getItem().isSimilar(CDI.DeathSave())) {
+		} else if (e.getItem().isSimilar(ConductableItems.DeathSave())) {
 			cancelAndConsume(e);
 			deathSaver.add(p.getUniqueId());
-			// 죽음 회피 - 불길하고 긴장감 있는 느낌
 			p.playSound(p, Sound.ENTITY_WITHER_SPAWN, 0.4f, 1.5f);
 			Particle.DustTransition deathDust = new Particle.DustTransition(Color.BLACK, Color.RED, 1.2f);
 
@@ -101,7 +98,7 @@ public class PotionListener implements Listener {
 	public void onPiercePotionUse(PotionSplashEvent e) {
 		ThrownPotion potion = e.getPotion();
 		if (!(e.getEntity().getShooter() instanceof Player)) return;
-		if (!potion.getItem().isSimilar(CDI.SpearPotion())) return;
+		if (!potion.getItem().isSimilar(ConductableItems.SpearPotion())) return;
 
 		for (LivingEntity entity : e.getAffectedEntities()) {
 			playSpearEffect(entity);

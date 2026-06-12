@@ -8,25 +8,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.XmasLegacy;
 
 public class LobbyListener implements Listener {
-    private final XmasLegacy plugin;
-    private final LobbyManager LBM;
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull LobbyManager lbm;
 
-    public LobbyListener() {
+    public LobbyListener(@NotNull LobbyManager lbm) {
         this.plugin = XmasLegacy.getInstance();
-        this.LBM = LobbyManager.getInstance();
+        this.lbm = lbm;
     }
 
     @EventHandler
     public void onLobbyJoin(PlayerJoinEvent e) {
         if (!plugin.getServerType().equals("lobby")) return;
         Player p = e.getPlayer();
-        if (LBM.getSpawn() != null) {
-            p.teleport(LBM.getSpawn());
+        if (lbm.getSpawn() != null) {
+            p.teleport(lbm.getSpawn());
             p.playSound(p, Sound.ITEM_GOAT_HORN_SOUND_0, 1.0f, 1.0f);
         } else {
             Component msg = ColorUtils.chat(Alert.RED + " 당신 위치에 문제가 있어보이네요. 서버측 오류니까 문의해주세요! ")

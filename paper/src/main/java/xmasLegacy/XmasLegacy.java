@@ -10,10 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.EconomyManager;
-import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
-import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserRepository;
@@ -23,8 +19,7 @@ import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.FirstRoleManager.Merchant.MerchantStockInterface;
-import xmasLegacy.FirstRoleManager.Merchant.PriceInterface;
-import xmasLegacy.FirstRoleManager.Priest.ConductableItems;
+import xmasLegacy.FirstRoleManager.Merchant.PriceManager;
 import xmasLegacy.FirstRoleManager.Priest.PriestShopManager;
 import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
@@ -40,13 +35,16 @@ import xmasLegacy.RoleSwitch.ExpManager;
 import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
-import xmasLegacy.ServerPrefix.PrefixManager;
 import xmasLegacy.ServerPrefix.UserTagManager;
 import xmasLegacy.TransferPortal.PortalManager;
 
 @SuppressWarnings({"FieldCanBeLocal, DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
 	private static XmasLegacy instance;
+	private RegionManager regionManager;
+	private ConsumableManager consumableManager;
+	private BagManager bagManager;
+	private MobSpawnManager mobSpawnManager;
 
 	public static XmasLegacy getInstance() {
 		return instance;
@@ -57,10 +55,7 @@ public final class XmasLegacy extends JavaPlugin {
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:main");
 		instance = this;
 
-		UserManager.getInstance().initDataFolder(this.getDataFolder());
-		RuleManager.getInstance();
-		InquiryManager.getInstance();
-		PrefixManager.getInstance();
+		UserManager.INSTANCE.initDataFolder(this.getDataFolder());
 
 		if (AgeableCrops.RegisterRecipe()) {
 			getSLF4JLogger().info("Recipe Registered!");
@@ -68,11 +63,9 @@ public final class XmasLegacy extends JavaPlugin {
 			getSLF4JLogger().error("Recipe Not Registered!");
 		}
 
-		// 2. 공통 이벤트 리스너 등록
 		getServer().getPluginManager().registerEvents(new ServerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new ChatPrefixListener(), this);
 
-		// 3. 공통 명령어 등록
 		getCommand("문의").setExecutor(new InquiryCommandManager());
 		getCommand("이동문의").setExecutor(new InquireTeleportCommand());
 		var rule = new RuleCommandManager();
@@ -89,28 +82,24 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		var rm = RegionManager.getInstance();
-		var cm = ConsumableManager.getInstance();
-		var bg = BagManager.getInstance();
-		var msm = MobSpawnManager.getInstance();
-		if (rm != null) {
-			rm.saveAll();
+		if (this.regionManager != null) {
+			this.regionManager.saveAll();
 		}
-		if (UserManager.getInstance() != null) {
-			UserRepository repository = new SqlUserRepository();
-			UserManager.getInstance().getAllUsers().forEach(repository::saveUser);
-			getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
+
+		UserRepository repository = new SqlUserRepository();
+		UserManager.INSTANCE.getAllUsers().forEach(repository::saveUser);
+		getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
+
+		if (this.consumableManager != null) {
+			this.consumableManager.stopCookieTimer();
 		}
-		if (cm != null) {
-			cm.stopCookieTimer();
-		}
-		if (bg != null) {
-			bg.saveAllBags();
+		if (this.bagManager != null) {
+			this.bagManager.saveAllBags();
 			getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
 		}
-		if (msm != null) {
+		if (this.mobSpawnManager != null) {
 			getSLF4JLogger().info("사냥터 몹 스폰을 종료합니다.");
-			msm.stopTask();
+			this.mobSpawnManager.stopTask();
 		}
 		UserTagManager.stopTask();
 	}
@@ -122,14 +111,13 @@ public final class XmasLegacy extends JavaPlugin {
 		// ------------------ [LOBBY MODE] ------------------
 		if (serverType.equals(ServerType.LOBBY.str())) {
 			getLogger().warning("Lobby 모드로 시작합니다.");
-			LobbyManager.getInstance();
+			var lobbyManager = new LobbyManager();
 
-			// 로비 전용 리스너 등록
-			getServer().getPluginManager().registerEvents(new LobbyListener(), this);
+			getServer().getPluginManager().registerEvents(new LobbyListener(lobbyManager), this);
 
-			// 로비 전용 명령어 등록
-			getCommand("lobby").setExecutor(new LobbyCommand());
-			getCommand("lobby").setTabCompleter(new LobbyCommand());
+			var lobbyCommand = new LobbyCommand(lobbyManager);
+			getCommand("lobby").setExecutor(lobbyCommand);
+			getCommand("lobby").setTabCompleter(lobbyCommand);
 
 			getSLF4JLogger().warn("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 
@@ -137,23 +125,21 @@ public final class XmasLegacy extends JavaPlugin {
 		} else if (serverType.equals(ServerType.MAIN.str())) {
 			getLogger().warning("Main 모드로 시작합니다.");
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
-
-			// [메인 서버 전용 인스턴스 초기화]
+			var mobRepository = new MobRepository();
+			var huntingZoneManager = new HuntingZoneManager();
 			RoleViewDesign.getInstance().init();
 
 			BagManager.getInstance();
 			SkillEffectManager.getInstance();
 
-			RegionManager.getInstance().startGlobalIndicatorTask();
+			this.regionManager = new RegionManager();
+			this.regionManager.startGlobalIndicatorTask();
+			this.bagManager = new BagManager();
+			this.consumableManager = new ConsumableManager(bagManager);
+			this.mobSpawnManager = new MobSpawnManager(huntingZoneManager, mobRepository);
 
-			ConsumableManager.getInstance();
-			GhostModeManager.getInstance();
-
-			EconomyManager.getInstance();
-			PartyManager.getInstance();
-			ConductableItems.getInstance();
-			PriestShopManager.getInstance();
-			PriceInterface.getInstance();
+			var priestShopManager = new PriestShopManager();
+			var priceManager = new PriceManager();
 			CosmeticManager.getInstance();
 			MerchantStockInterface.getInstance();
 			ExpManager.getInstance();
@@ -170,14 +156,14 @@ public final class XmasLegacy extends JavaPlugin {
 
 			EnchantManager.getInstance();
 
-			ConsumableManager.getInstance().runCookieTimer(this);
+			consumableManager.runCookieTimer(this);
 			BagManager.getInstance().loadAllBags();
 
 			// 사냥터 몹 초기화
-			MobRepository.getInstance().init();
+			mobRepository.init();
 
-			HuntingZoneManager.getInstance().init();
-			MobSpawnManager.getInstance().startTask();
+			huntingZoneManager.init();
+			mobSpawnManager.startTask();
 			PortalManager.getInstance().startPortalScheduler();
 
 			UserTagManager.runTask();
@@ -257,7 +243,7 @@ public final class XmasLegacy extends JavaPlugin {
 				}
 			}
 		} catch (Exception e) {
-			this.getSLF4JLogger().error("Error occurred while registering all Commands/TabCompletors", e);
+			this.getSLF4JLogger().error("Error occurred while registering all Commands/TabCompleter", e);
 		}
 	}
 }

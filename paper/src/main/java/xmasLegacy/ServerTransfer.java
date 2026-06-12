@@ -26,6 +26,7 @@ import java.util.UUID;
 
 public class ServerTransfer {
     private static final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
+	private static final @NotNull FloodgateApi instance = FloodgateApi.getInstance();
 
     public ServerTransfer() {}
 
@@ -115,7 +116,8 @@ public class ServerTransfer {
 
     public static boolean transfer(@NotNull ServerType toServer, @NotNull Player player, boolean force, boolean hide) {
         if (!force) {
-            player.sendMessage(askComponent(toServer, hide));
+			boolean isFloodgate = instance.isFloodgatePlayer(player.getUniqueId());
+            player.sendMessage(askComponent(toServer, hide, player, isFloodgate));
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             return true;
         }
@@ -164,23 +166,58 @@ public class ServerTransfer {
         }
     }
 
-    private static @NotNull Component askComponent(@NotNull ServerType type, boolean hide) {
-        var options = ClickCallback.Options.builder()
-                .uses(1)
-                .lifetime(java.time.Duration.ofMinutes(3))
-                .build();
-        Component btn = ColorUtils.chat("&a&l[수락]").hoverEvent(HoverEvent.showText(ColorUtils.chat("클릭하여 이동하세요. -> &6" + (hide ? "&k???" : type.name()))))
-                .clickEvent(ClickEvent.callback(audience -> {
-                    if (audience instanceof Player p && p.isOnline()) {
-						if (transfer(type, p)) {
-							p.sendMessage(ColorUtils.chat(Alert.GREEN + " 서버 이동을 시작합니다..."));
+	private static @NotNull Component askComponent(@NotNull ServerType type, boolean hide, @NotNull Player p, boolean isFloodgate) {
+		if (isFloodgate) {
+			var floodgatePlayer = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(p.getUniqueId());
+
+			if (floodgatePlayer != null) {
+				var form = org.geysermc.cumulus.form.SimpleForm.builder()
+						.title("§6§l서버 이동 제안")
+						.content("파티장으로부터 서버 이동 제안이 왔습니다.\n" +
+								"§e" + (hide ? "???" : type.name()) + "§r 서버로 이동하시겠습니까?")
+						.button("§a§l[ 수락 ]")
+						.button("§c§l[ 거절 ]")
+						.validResultHandler(response -> {
+							if (response.clickedButtonId() == 0) {
+								p.sendMessage(ColorUtils.chat("&a서버 이동을 시작합니다..."));
+								transfer(type, p);
+							} else {
+								p.sendMessage(ColorUtils.chat("&c서버 이동 제안을 거절했습니다."));
+							}
+						})
+						.closedResultHandler(() -> {
+							p.sendMessage(ColorUtils.chat("&c서버 이동 제안이 취소되었습니다."));
+						})
+						.build();
+
+				// 베드락 유저 화면에 팝업 딲!
+				floodgatePlayer.sendForm(form);
+			}
+
+			// 폼을 띄웠으니 채팅창에는 가벼운 안내 멘트만 컴포넌트로 리턴
+			return ColorUtils.chat(Alert.XmasLegacy + " &6서버이동&f 제안이 왔습니다. 화면의 팝업창을 확인해주세요!");
+		}
+
+		// 💻 2. 자바 에디션 유저용 기존 클릭 콜백 로직
+		var options = ClickCallback.Options.builder()
+				.uses(1)
+				.lifetime(java.time.Duration.ofMinutes(3))
+				.build();
+
+		Component btn = ColorUtils.chat("&a&l[수락]")
+				.hoverEvent(HoverEvent.showText(ColorUtils.chat("클릭하여 이동하세요. -> &6" + (hide ? "&k???" : type.name()))))
+				.clickEvent(ClickEvent.callback(audience -> {
+					if (audience instanceof Player target && target.isOnline()) {
+						if (transfer(type, target)) {
+							target.sendMessage(ColorUtils.chat(Alert.GREEN + " 서버 이동을 시작합니다..."));
 						} else {
-							p.sendMessage(ColorUtils.chat(Alert.RED + " 서버 이동 중 오류가 발생했습니다. 관리자에게 문의하세요."));
-							plugin.getSLF4JLogger().error("Failed to transfer player {} to server {} via BungeeCord", p, type);
+							target.sendMessage(ColorUtils.chat(Alert.RED + " 서버 이동 중 오류가 발생했습니다. 관리자에게 문의하세요."));
+							plugin.getSLF4JLogger().error("Failed to transfer player {} to server {} via BungeeCord", target, type);
 						}
-                    }
-                }, options));
-        Component msg = ColorUtils.chat(Alert.XmasLegacy + " &6서버이동&f 제안이 왔습니다. 이동하시겠습니까? ");
-        return msg.append(btn);
-    }
+					}
+				}, options));
+
+		Component msg = ColorUtils.chat(Alert.XmasLegacy + " &6서버이동&f 제안이 왔습니다. 이동하시겠습니까? ");
+		return msg.append(btn);
+	}
 }

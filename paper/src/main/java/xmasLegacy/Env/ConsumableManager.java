@@ -10,6 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.User.UserManager;
@@ -20,24 +23,14 @@ import xmasLegacy.XmasLegacy;
 import java.util.Map;
 
 public class ConsumableManager implements Listener {
-    private final XmasLegacy plugin;
-    private BukkitTask task;
+    private @Nullable BukkitTask task;
     private boolean isRunning = false;
-    private final UserManager UM;
-	private final BagManager BM;
-    private static ConsumableManager instance;
+    private final @NotNull UserManager um;
+	private final @NotNull BagManager bm;
 
-    public static ConsumableManager getInstance() {
-        if (instance == null) {
-            instance = new ConsumableManager();
-        }
-        return instance;
-    }
-
-    private ConsumableManager() {
-        this.plugin = XmasLegacy.getInstance();
-        this.UM = UserManager.getInstance();
-		this.BM = BagManager.getInstance();
+    public ConsumableManager(@NotNull BagManager bm) {
+        this.um = UserManager.INSTANCE;
+		this.bm = bm;
     }
 
     public static ItemStack basicFood(int amount) {
@@ -62,11 +55,11 @@ public class ConsumableManager implements Listener {
         this.isRunning = true;
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!UM.getUser(p.getUniqueId()).ifWantsCookie()) continue;
+                if (!um.getUser(p.getUniqueId()).ifWantsCookie()) continue;
                 Map<Integer, ItemStack> leftOver = p.getInventory().addItem(basicFood(Constants.COOKIE_COUNT));
 
 				if (!leftOver.isEmpty()) {
-					leftOver.values().forEach(item -> BM.addItem(p, item, item.getAmount()));
+					leftOver.values().forEach(item -> bm.addItem(p, item, item.getAmount()));
 				}
             }
         }, 20 * 60 * Constants.COOKIE_TIMER_MINUTE, 20 * 60 * Constants.COOKIE_TIMER_MINUTE);

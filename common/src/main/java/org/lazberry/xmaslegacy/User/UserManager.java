@@ -16,23 +16,15 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class UserManager {
+public enum UserManager {
+	INSTANCE;
+
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final @NotNull UserRepository repository = new SqlUserRepository();
 	private @NotNull File rootDataFolder = new File("plugins/XmasLegacy");
 	private static final @NotNull Logger logger = LoggerFactory.getLogger(UserManager.class);
-	private static volatile UserManager instance;
 
-	private UserManager() {}
-
-	public static UserManager getInstance() {
-		if (instance == null) {
-			synchronized (UserManager.class) {
-				if (instance == null) instance = new UserManager();
-			}
-		}
-		return instance;
-	}
+	UserManager() {}
 
 	public void initDataFolder(File dataFolder) {
 		if (dataFolder != null) {

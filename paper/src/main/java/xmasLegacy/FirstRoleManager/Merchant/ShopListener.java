@@ -25,13 +25,13 @@ import java.util.Map;
 
 @Listeners
 public class ShopListener implements Listener {
-	private final PriceInterface PIF;
+	private final PriceManager PIF;
 	private final UserManager um;
 	private final EconomyManager em;
 	private boolean ignoreReset = false;
 
 	public ShopListener() {
-		this.PIF = PriceInterface.getInstance();
+		this.PIF = PriceManager.getInstance();
 		this.um = UserManager.getInstance();
 		this.em = EconomyManager.getInstance();
 	}

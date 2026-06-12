@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmasLegacy.Commands;
 import xmasLegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -21,11 +20,11 @@ import java.util.List;
 
 @UsedByReflection
 public class LobbyCommand implements CommandExecutor, TabCompleter {
-    private final LobbyManager LBM;
-    private final XmasLegacy plugin;
+    private final @NotNull LobbyManager lbm;
+    private final @NotNull XmasLegacy plugin;
 
-    public LobbyCommand() {
-        this.LBM = LobbyManager.getInstance();
+    public LobbyCommand(@NotNull LobbyManager lbm) {
+		this.lbm = lbm;
         this.plugin = XmasLegacy.getInstance();
     }
 
@@ -46,9 +45,9 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
             switch (args[0].toLowerCase()) {
                 case "set" -> {
                     Location loc = p.getLocation();
-                    LBM.setSpawn(loc);
+                    lbm.setSpawn(loc);
 
-                    LBM.save().thenRun(() ->
+                    lbm.save().thenRun(() ->
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             p.sendMessage(ColorUtils.chat(String.format("%s 스폰 위치가 파일에 저장되었습니다!", Alert.GREEN)));
                             p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
@@ -57,7 +56,7 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 위치 저장 중..."));
                 }
                 case "location" -> {
-                    Location loc = LBM.getSpawn();
+                    Location loc = lbm.getSpawn();
                     if (loc == null) {
                         p.sendMessage(ColorUtils.chat(Alert.RED + " 스폰위치가 설정되지 않았습니다."));
                         p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
@@ -66,13 +65,13 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(ColorUtils.chat(String.format("%s 현재 로비 스폰위치 :&6 %.1f %.1f %.1f", Alert.YELLOW, loc.getX(), loc.getY(), loc.getZ())));
                 }
                 case "reset" -> {
-                    LBM.resetSpawn();
+                    lbm.resetSpawn();
                     p.sendMessage(Alert.GREEN + " 성공적으로 위치가 초기화되었습니다.");
                 }
                 case "reload" -> {
                     p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 위치 정보를 새로 불러오는 중..."));
 
-                    LBM.reload().thenAccept(success -> {
+                    lbm.reload().thenAccept(success ->
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             if (success) {
                                 p.sendMessage(ColorUtils.chat(Alert.GREEN + " 위치 정보를 성공적으로 새로 로드했습니다!"));
@@ -82,8 +81,7 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                                 p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
                             }
                             plugin.playConsoleSound();
-                        });
-                    });
+                    }));
                 }
                 default -> {
                     p.sendMessage(ColorUtils.chat(Alert.RED + " 올바른 명령어 사용법이 아닙니다."));

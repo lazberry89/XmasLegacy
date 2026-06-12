@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.Emblems.EmblemType;
@@ -25,7 +24,7 @@ public class Merchant extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.OPEN_STOCKS);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-	private final PriceInterface PIF;
+	private final PriceManager PIF;
 	private final MerchantStockInterface MSI;
 	private Material weapon_item;
 	private Material armor_item;
@@ -43,7 +42,7 @@ public class Merchant extends AbstractFirstRole {
 
 	private Merchant() {
 		super(Roles.MERCHANT);
-		this.PIF = PriceInterface.getInstance();
+		this.PIF = PriceManager.getInstance();
 		this.MSI = MerchantStockInterface.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

@@ -22,18 +22,11 @@ public class MobSpawnManager {
 	private final @NotNull HuntingZoneManager hzm;
 	private final @NotNull MobRepository mr;
 	private @Nullable BukkitTask task;
-	private static @Nullable MobSpawnManager instance;
 
-	public static MobSpawnManager getInstance() {
-		if (instance == null) instance = new MobSpawnManager();
-		return instance;
-	}
-
-	@ApiStatus.Internal
-	private MobSpawnManager() {
+	public MobSpawnManager(@NotNull HuntingZoneManager hzm, @NotNull MobRepository mr) {
 		this.plugin = XmasLegacy.getInstance();
-		this.hzm = HuntingZoneManager.getInstance();
-		this.mr = MobRepository.getInstance();
+		this.hzm = hzm;
+		this.mr = mr;
 	}
 
 	public @NotNull Location getRandomLocationInChunk(Chunk chunk) {

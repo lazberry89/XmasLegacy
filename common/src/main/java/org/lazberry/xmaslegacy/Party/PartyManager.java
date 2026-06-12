@@ -6,22 +6,14 @@ import org.lazberry.xmaslegacy.User.UserManager;
 
 import java.util.*;
 
-public class PartyManager {
-    private final UserManager UM;
-	private final Map<User, Party> partyMap = new HashMap<>();
-	private static volatile PartyManager instance;
+public enum PartyManager {
+	INSTANCE;
 
-	public static PartyManager getInstance() {
-		if (instance == null) {
-			synchronized (PartyManager.class) {
-				if (instance == null) instance = new PartyManager();
-			}
-		}
-		return instance;
-	}
+    private final @NotNull UserManager um;
+	private final @NotNull Map<User, Party> partyMap = new HashMap<>();
 
-    private PartyManager() {
-        this.UM = UserManager.getInstance();
+    PartyManager() {
+        this.um = UserManager.INSTANCE;
     }
 
 	public boolean createParty(@NotNull User leader) {
@@ -62,7 +54,7 @@ public class PartyManager {
 	}
 
 	public boolean removeParty(@NotNull UUID uuid) {
-		User user = UM.getUser(uuid);
+		User user = um.getUser(uuid);
 		if (user == null) return false;
 		Party currentParty = partyMap.get(user);
 		if (currentParty == null) return false;
@@ -77,12 +69,12 @@ public class PartyManager {
 	}
 
     public Party getParty(UUID p) {
-		User u = UM.getUser(p);
+		User u = um.getUser(p);
         return partyMap.get(u);
     }
 
     public boolean isInParty(UUID p) {
-		User u = UM.getUser(p);
+		User u = um.getUser(p);
         return partyMap.containsKey(u);
     }
 

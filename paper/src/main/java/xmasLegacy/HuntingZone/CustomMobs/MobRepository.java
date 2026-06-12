@@ -23,15 +23,7 @@ public class MobRepository {
     private final @NotNull HunterZombie hunterZombie;
     private final @NotNull IceCube iceCube;
 
-    private static @Nullable MobRepository instance;
-
-    @Contract(pure = true)
-    public static MobRepository getInstance() {
-        if (instance == null) instance = new MobRepository();
-        return instance;
-    }
-
-    private MobRepository() {
+    public MobRepository() {
         this.icedZombie = IcedZombie.getInstance();
         this.hunterZombie = HunterZombie.getInstance();
         this.iceCube = IceCube.getInstance();

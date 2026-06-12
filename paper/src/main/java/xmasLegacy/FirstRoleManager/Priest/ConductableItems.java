@@ -9,22 +9,12 @@ import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 public class ConductableItems {
-    private final XmasLegacy plugin;
-    private static ConductableItems instance;
+    private static final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
 
-    public static ConductableItems getInstance() {
-        if (instance == null) {
-            instance = new ConductableItems();
-        }
-        return instance;
-    }
-
-    private ConductableItems() {
-        this.plugin = XmasLegacy.getInstance();
-    }
+    public ConductableItems() {}
 
     //값싼 기초물약
-    public ItemStack DragonPotion() {
+    public static @NotNull ItemStack DragonPotion() {
         return ItemBuilder.of(plugin, Material.DRAGON_BREATH)
                 .setName(ColorUtils.chat("&d&l용의 숨결"))
                 .setLore(ColorUtils.chat("&7가장 기초적인 물약. 약간의 버프를 잠시 받는다."), ColorUtils.chat("&8ELPMETRORRIM"))
@@ -36,7 +26,7 @@ public class ConductableItems {
     }
 
     //힐러물약
-    public ItemStack HealerPotion() {
+    public static @NotNull ItemStack HealerPotion() {
         return ItemBuilder.of(plugin, Material.POTION)
                 .setName(ColorUtils.chat("&e&l회복 포션"))
                 .setLore(ColorUtils.chat("&7일정 시간동안 회복을 받습니다."))
@@ -49,7 +39,7 @@ public class ConductableItems {
     }
 
     //보호물약
-    public ItemStack ProtectionPotion() {
+    public static @NotNull ItemStack ProtectionPotion() {
         return ItemBuilder.of(plugin, Material.POTION)
                 .setName(ColorUtils.chat("&b&l보호의 물약"))
                 .setLore(ColorUtils.chat("&7&l잠깐동안 보호막이 생겨 피해를 감소받는다."))
@@ -62,7 +52,7 @@ public class ConductableItems {
     }
 
     //스피어탄
-    public ItemStack SpearPotion() {
+    public static @NotNull ItemStack SpearPotion() {
         return ItemBuilder.of(plugin, Material.SPLASH_POTION)
                 .setName(ColorUtils.chat("&e&l스피어탄"))
                 .setLore(ColorUtils.chat("&7투척 위치에 창을 소환한다."))
@@ -75,7 +65,7 @@ public class ConductableItems {
     }
 
     //???
-    public ItemStack DeathSave() {
+    public static @NotNull ItemStack DeathSave() {
         return ItemBuilder.of(plugin, Material.POTION)
                 .setName(ColorUtils.chat("&4&l???"))
                 .setLore(ColorUtils.chat("&7죽기 직전에 작용시 그 죽음을 취소한다."))

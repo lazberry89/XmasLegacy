@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.Inquiry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
@@ -17,29 +18,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InquiryManager {
-	private final Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
-	private final Map<UUID, String> activeInquiries = new ConcurrentHashMap<>();
+public enum InquiryManager {
+	INSTANCE;
+
+	private final @NotNull Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
+	private final @NotNull Map<UUID, String> activeInquiries = new ConcurrentHashMap<>();
 	private final int cooldownTime = Constants.INQUIRY_COOLDOWN;
-	private final UserManager um;
-	private final RuleManager rm;
-	private final InquiryRepository repository;
+	private final @NotNull UserManager um;
+	private final @NotNull RuleManager rm;
+	private final @NotNull InquiryRepository repository;
 
-	private static volatile InquiryManager instance;
-
-	private InquiryManager() {
-		this.um = UserManager.getInstance();
-		this.rm = RuleManager.getInstance();
+	InquiryManager() {
+		this.um = UserManager.INSTANCE;
+		this.rm = RuleManager.INSTANCE;
 		this.repository = new InquiryRepository();
-	}
-
-	public static InquiryManager getInstance() {
-		if (instance == null) {
-			synchronized (InquiryManager.class) {
-				if (instance == null) instance = new InquiryManager();
-			}
-		}
-		return instance;
 	}
 
 	public Component Inquiry(UUID uuid, @Nullable String message) {

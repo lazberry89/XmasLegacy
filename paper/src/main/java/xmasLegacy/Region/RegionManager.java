@@ -36,21 +36,10 @@ public class RegionManager {
 	private @NotNull File file;
 	private @NotNull FileConfiguration config;
 
-	private static volatile RegionManager instance;
-
-	private RegionManager() {
+	public RegionManager() {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		loadAll();
-	}
-
-	public static RegionManager getInstance() {
-		if (instance == null) {
-			synchronized (RegionManager.class) {
-				if (instance == null) instance = new RegionManager();
-			}
-		}
-		return instance;
 	}
 
 	public void startGlobalIndicatorTask() {

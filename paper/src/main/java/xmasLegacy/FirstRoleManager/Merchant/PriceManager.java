@@ -9,34 +9,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.User.User;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 import java.util.*;
 
 @SuppressWarnings("DuplicatedCode")
-public class PriceInterface {
-	private final Inventory priceInv;
-	private final Inventory purchaseInv;
-	private Inventory shopInv;
-	private final Map<Integer, Product> shopItem = new HashMap<>();
+public class PriceManager {
+	private final @NotNull Inventory priceInv;
+	private final @NotNull Inventory purchaseInv;
+	private @Nullable Inventory shopInv;
+	private final @NotNull Map<Integer, Product> shopItem = new HashMap<>();
 	private Integer selectedSlot;
-	private Product purchaseItem;
-	private UUID owner;
+	private @Nullable Product purchaseItem;
+	private @Nullable UUID owner;
 	ItemStack bg = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.GRAY_STAINED_GLASS_PANE)
 			.setName(ColorUtils.chat(""))
 			.setLore(ColorUtils.chat(""))
 			.hideAllFlags()
 			.build();
-	private static PriceInterface instance;
 
-	public static PriceInterface getInstance() {
-		if (instance == null) instance = new PriceInterface();
-		return instance;
-	}
-
-	private PriceInterface() {
+	public PriceManager() {
 		this.priceInv = Bukkit.createInventory(null, 9, Constants.PRICE_TITLE);
 		this.purchaseInv = Bukkit.createInventory(null, 27, Constants.PURCHASE_TITLE);
 	}
@@ -66,11 +59,11 @@ public class PriceInterface {
 		this.selectedSlot = selectedSlot;
 	}
 
-	public void setOwner(UUID owner) {
+	public void setOwner(@Nullable UUID owner) {
 		this.owner = owner;
 	}
 
-	public UUID getOwner() {
+	public @Nullable UUID getOwner() {
 		return this.owner;
 	}
 
@@ -188,15 +181,15 @@ public class PriceInterface {
 		this.purchaseInv.setItem(14, cancel);
 	}
 
-	public Inventory getPurchaseInv() {
+	public @NotNull Inventory getPurchaseInv() {
 		return this.purchaseInv;
 	}
 
-	public void setPurchaseItem(Product purchaseItem) {
+	public void setPurchaseItem(@Nullable Product purchaseItem) {
 		this.purchaseItem = purchaseItem;
 	}
 
-	public Product getPurchaseItem() {
+	public @Nullable Product getPurchaseItem() {
 		return this.purchaseItem;
 	}
 
