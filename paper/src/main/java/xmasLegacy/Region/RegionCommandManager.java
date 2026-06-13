@@ -1,5 +1,6 @@
 package xmasLegacy.Region;
 
+import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,26 +17,29 @@ import java.util.*;
 import java.util.stream.Stream;
 
 @Commands(command = "구역")
+@UsedByReflection
+@SuppressWarnings("unused")
 public class RegionCommandManager implements CommandExecutor, TabCompleter {
-	private final RegionManager rm;
+		private final RegionManager rm;
 
 	public RegionCommandManager() {
-		this.rm = RegionManager.getInstance();
+		this.rm = RegionManager.INSTANCE;
 	}
 
-	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 0) {
 			if (p.isOp()) p.getInventory().addItem(RegionManager.RegionTicket());
 			else p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
-		} else if (args.length == 3) {
-			Region region = rm.getRegion(args[0]);
-			if (region == null) {
-				p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
-				return true;
-			}
+			return true;
+		}
+		Region region = rm.getRegion(args[0]);
+		if (region == null) {
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
+			return true;
+		}
+		if (args.length == 3) {
 			if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 				return true;
@@ -57,11 +61,6 @@ public class RegionCommandManager implements CommandExecutor, TabCompleter {
 				}
 			}
 		} else if (args.length == 2) {
-			Region region = rm.getRegion(args[0]);
-			if (region == null) {
-				p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
-				return true;
-			}
 			if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 				return true;

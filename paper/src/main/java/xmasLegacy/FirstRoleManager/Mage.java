@@ -31,7 +31,7 @@ public class Mage extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_INSANELY);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-	private final SkillEffectManager SEM;
+	private final @NotNull SkillEffectManager SEM;
 
 	private Material weapon_item;
 	private Material armor_item;
@@ -51,18 +51,7 @@ public class Mage extends AbstractFirstRole {
 	private double second_skill_pull_strength;
 	private double second_skill_pull_threshold;
 
-	private static volatile Mage instance;
-
-	public static Mage getInstance() {
-		if (instance == null) {
-			synchronized (Mage.class) {
-				if (instance == null) instance = new Mage();
-			}
-		}
-		return instance;
-	}
-
-	private Mage() {
+	public Mage() {
 		super(Roles.MAGE);
 		this.SEM = SkillEffectManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

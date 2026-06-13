@@ -29,20 +29,9 @@ public class Merchant extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
 
-	private static volatile Merchant instance;
-
-	public static Merchant getInstance() {
-		if (instance == null) {
-			synchronized (Merchant.class) {
-				if (instance == null) instance = new Merchant();
-			}
-		}
-		return instance;
-	}
-
-	private Merchant() {
+	public Merchant() {
 		super(Roles.MERCHANT);
-		this.PIF = PriceManager.getInstance();
+		this.PIF = PriceManager.INSTANCE;
 		this.MSI = MerchantStockInterface.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

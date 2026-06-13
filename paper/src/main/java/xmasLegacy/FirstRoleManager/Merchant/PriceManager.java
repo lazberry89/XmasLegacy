@@ -15,7 +15,9 @@ import xmasLegacy.XmasLegacy;
 import java.util.*;
 
 @SuppressWarnings("DuplicatedCode")
-public class PriceManager {
+public enum PriceManager {
+	INSTANCE;
+
 	private final @NotNull Inventory priceInv;
 	private final @NotNull Inventory purchaseInv;
 	private @Nullable Inventory shopInv;
@@ -29,7 +31,7 @@ public class PriceManager {
 			.hideAllFlags()
 			.build();
 
-	public PriceManager() {
+	PriceManager() {
 		this.priceInv = Bukkit.createInventory(null, 9, Constants.PRICE_TITLE);
 		this.purchaseInv = Bukkit.createInventory(null, 27, Constants.PURCHASE_TITLE);
 	}

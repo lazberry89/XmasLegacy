@@ -2,7 +2,6 @@ package xmasLegacy.HuntingZone.CustomMobs;
 
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.CheckReturnValue;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xmasLegacy.HuntingZone.CustomMobs.Boss.AbstractBossMobs;
@@ -16,14 +15,15 @@ import xmasLegacy.HuntingZone.ZoneType;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unused")
-public class MobRepository {
+public enum MobRepository {
+	INSTANCE;
+
     private final @NotNull Map<MobKey, CustomMob> mobInstances = new HashMap<>();
     private final @NotNull IcedZombie icedZombie;
     private final @NotNull HunterZombie hunterZombie;
     private final @NotNull IceCube iceCube;
 
-    public MobRepository() {
+    MobRepository() {
         this.icedZombie = IcedZombie.getInstance();
         this.hunterZombie = HunterZombie.getInstance();
         this.iceCube = IceCube.getInstance();

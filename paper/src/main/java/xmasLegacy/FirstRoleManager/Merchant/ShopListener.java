@@ -31,9 +31,9 @@ public class ShopListener implements Listener {
 	private boolean ignoreReset = false;
 
 	public ShopListener() {
-		this.PIF = PriceManager.getInstance();
-		this.um = UserManager.getInstance();
-		this.em = EconomyManager.getInstance();
+		this.PIF = PriceManager.INSTANCE;
+		this.um = UserManager.INSTANCE;
+		this.em = EconomyManager.INSTANCE;
 	}
 
 	@SuppressWarnings("DuplicatedCode")

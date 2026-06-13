@@ -27,9 +27,9 @@ public class ZoneCommandManager implements CommandExecutor, TabCompleter {
 	private final @NotNull XmasLegacy plugin;
 
 	public ZoneCommandManager() {
-		this.mr = MobRepository.getInstance();
-		this.hzm = HuntingZoneManager.getInstance();
-		this.msm = MobSpawnManager.getInstance();
+		this.mr = MobRepository.INSTANCE;
+		this.hzm = HuntingZoneManager.INSTANCE;
+		this.msm = MobSpawnManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 

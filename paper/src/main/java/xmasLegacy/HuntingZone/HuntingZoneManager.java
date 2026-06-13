@@ -6,10 +6,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HuntingZoneManager {
+public enum HuntingZoneManager {
+	INSTANCE;
+
 	private final Set<HuntingZone> zones = new HashSet<>(3);
 
-	public HuntingZoneManager() {}
+	HuntingZoneManager() {}
 
 	public void init() {
 		this.zones.add(new HuntingZone(ZoneType.ICE_STAGE, "world"));

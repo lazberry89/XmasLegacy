@@ -23,7 +23,7 @@ public class RoleManager {
 	}
 
     private RoleManager() {
-		this.frm = FirstRoleManager.getInstance();
+		this.frm = FirstRoleManager.INSTANCE;
 		this.srm = SecondRoleManager.getInstance();
     }
 

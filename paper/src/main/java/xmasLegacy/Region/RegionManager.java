@@ -28,7 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class RegionManager {
+public enum RegionManager {
+	INSTANCE;
+
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
@@ -36,7 +38,7 @@ public class RegionManager {
 	private @NotNull File file;
 	private @NotNull FileConfiguration config;
 
-	public RegionManager() {
+	RegionManager() {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		loadAll();

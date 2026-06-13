@@ -32,8 +32,8 @@ public class FirstRoleListener implements Listener {
 
 	public FirstRoleListener() {
 		this.plugin = XmasLegacy.getInstance();
-		this.frm = FirstRoleManager.getInstance();
-        this.um = UserManager.getInstance();
+		this.frm = FirstRoleManager.INSTANCE;
+        this.um = UserManager.INSTANCE;
 	}
 
     @EventHandler

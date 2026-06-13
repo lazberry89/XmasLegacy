@@ -19,37 +19,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("DuplicatedCode, FieldCanBeLocal, unused, BooleanMethodIsAlwaysConverted")
 public abstract class AbstractSecondRole implements UsingEnergy {
-	private final Map<UUID, Integer> dashCount = new HashMap<>();
-	private final XmasLegacy plugin;
-	private final SecondaryRoles role;
-	protected final Emblem emblem;
+	private final @NotNull Map<UUID, Integer> dashCount = new HashMap<>();
+	private final @NotNull XmasLegacy plugin;
+	private final @NotNull SecondaryRoles role;
+	protected final @NotNull Emblem emblem;
 
-	public AbstractSecondRole(SecondaryRoles role) {
+	public AbstractSecondRole(@NotNull SecondaryRoles role) {
 		this.plugin = XmasLegacy.getInstance();
 		this.role = role;
 		this.emblem = new Emblem(role);
 	}
 
-	public abstract void useFirstSkill(Player p);
-	public abstract void useSecondSkill(Player p);
-	public abstract void usePassive(Player p);
-
-	@Override
-	public boolean consumeEnergy(Player player, int hungerCost) {
-		int currentFood = player.getFoodLevel();
-
-		if (currentFood < hungerCost) {
-			player.sendMessage(ColorUtils.chat(Alert.RED + " 에너지가 부족하여 스킬을 사용할 수 없습니다! (필요: &6" + hungerCost + "&f)"));
-			player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
-			return false;
-		}
-
-		player.setFoodLevel(Math.max(0, currentFood - hungerCost));
-
-		return true;
-	}
+	public abstract void useFirstSkill(@NotNull Player p);
+	public abstract void useSecondSkill(@NotNull Player p);
+	public abstract void usePassive(@NotNull Player p);
 
 	@Override
 	public void useDash(Player p) {
@@ -87,7 +71,7 @@ public abstract class AbstractSecondRole implements UsingEnergy {
 		}
 	}
 
-	public XmasLegacy getPlugin() {
+	public @NotNull XmasLegacy getPlugin() {
 		return this.plugin;
 	}
 

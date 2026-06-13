@@ -1,5 +1,6 @@
 package xmasLegacy.Region.Listeners;
 
+import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,11 +15,12 @@ import xmasLegacy.Region.Gui.RegionSettingInterface;
 import xmasLegacy.Region.RegionManager;
 
 @Listeners
+@UsedByReflection
 public class RegionDeleteConfirmListener implements Listener {
     private final @NotNull RegionManager rm;
 
     public RegionDeleteConfirmListener() {
-        this.rm = RegionManager.getInstance();
+        this.rm = RegionManager.INSTANCE;
     }
 
     @EventHandler

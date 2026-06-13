@@ -1,5 +1,6 @@
 package xmasLegacy.Region.Listeners;
 
+import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.Chunk;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -21,16 +22,16 @@ import xmasLegacy.Region.RegionManager;
 import xmasLegacy.ServerTransfer;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("DuplicatedCode")
 @Listeners
+@UsedByReflection
 public class RegionIndicator implements Listener {
 	private final RegionManager rm;
 	private final UserManager um;
 	private final XmasLegacy plugin;
 
 	public RegionIndicator() {
-		this.rm = RegionManager.getInstance();
-		this.um = UserManager.getInstance();
+		this.rm = RegionManager.INSTANCE;
+		this.um = UserManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 

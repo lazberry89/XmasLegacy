@@ -18,10 +18,10 @@ import java.util.List;
 
 @Commands(command = "cos")
 public class CosmeticsCommand implements CommandExecutor, TabCompleter {
-	private final CosmeticManager CSM;
+	private final @NotNull CosmeticManager CSM;
 
 	public CosmeticsCommand() {
-		this.CSM = CosmeticManager.getInstance();
+		this.CSM = CosmeticManager.INSTANCE;
 	}
 
 	@Override

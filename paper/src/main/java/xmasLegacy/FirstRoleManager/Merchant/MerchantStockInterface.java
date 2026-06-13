@@ -48,7 +48,7 @@ public class MerchantStockInterface {
 
 	private MerchantStockInterface() {
 		this.plugin = XmasLegacy.getInstance();
-		this.em = EconomyManager.getInstance();
+		this.em = EconomyManager.INSTANCE;
 		//Main
 		this.inv = Bukkit.createInventory(null, 9, title);
 		ItemStack bg = ItemBuilder.of(plugin, Material.BLACK_STAINED_GLASS_PANE)

@@ -48,22 +48,11 @@ public class Priest extends AbstractFirstRole {
 	private int second_skill_strength_duration;
 	private int second_skill_strength_amplifier;
 	private double second_skill_radius;
-	private static volatile Priest instance;
 
-	public static Priest getInstance() {
-		if (instance == null) {
-			synchronized (Priest.class) {
-				if (instance == null) instance = new Priest();
-			}
-		}
-		return instance;
-	}
-
-	private Priest() {
+	public Priest() {
 		super(Roles.PRIEST);
-		this.PM = PartyManager.getInstance();
+		this.PM = PartyManager.INSTANCE;
 		this.SEM = SkillEffectManager.getInstance();
-		// 💡 [추가] 부모 데이터 바인딩 파이프라인 가동
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

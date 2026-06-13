@@ -1,17 +1,17 @@
 package xmasLegacy.FirstRoleManager.Priest;
 
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.EconomyManager;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PriestShopManager {
+public enum PriestShopManager {
+	INSTANCE;
+
 	private final Map<UUID, PriestShop> shops = new ConcurrentHashMap<>();
 
-	public PriestShopManager() {
+	PriestShopManager() {
 	}
 
 	public PriestShop getOrCreate(Player owner) {

@@ -6,38 +6,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
-import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.Commands;
-import xmasLegacy.FirstRoleManager.*;
-import xmasLegacy.FirstRoleManager.Farmer.Farmer;
-import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
-import xmasLegacy.FirstRoleManager.Merchant.Merchant;
-import xmasLegacy.FirstRoleManager.Miner.Miner;
-import xmasLegacy.FirstRoleManager.Priest.Priest;
-import xmasLegacy.Region.RegionManager;
-import xmasLegacy.SkillEffectManager;
-import xmasLegacy.XmasLegacy;
+import xmasLegacy.FirstRoleManager.AbstractFirstRole;
+import xmasLegacy.FirstRoleManager.FirstRoleManager;
 
 @TestOnly
 @Commands(command = "test")
 public class TestCommands implements CommandExecutor {
-	private final SkillEffectManager SEM;
-	private PartyManager PM;
-	private final RegionManager RM;
-	private final XmasLegacy plugin;
 	private final FirstRoleManager frm;
 
 	public TestCommands() {
-		this.SEM = SkillEffectManager.getInstance();
-		this.RM = RegionManager.getInstance();
-		this.plugin = XmasLegacy.getInstance();
-		this.frm = FirstRoleManager.getInstance();
+		this.frm = FirstRoleManager.INSTANCE;
 	}
 
-	public void setPM(PartyManager PM) {
-		this.PM = PM;
-	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {

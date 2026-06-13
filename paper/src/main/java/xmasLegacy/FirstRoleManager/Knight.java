@@ -16,20 +16,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmasLegacy.Emblems.EmblemType;
 import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.*;
+
 @SuppressWarnings("DuplicatedCode")
 public class Knight extends AbstractFirstRole {
-	private float Damage = 5;
 	private final SkillEffectManager SEM;
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHARP_SWEEPING);}
@@ -37,6 +36,7 @@ public class Knight extends AbstractFirstRole {
 
 	private Material weapon_item;
 	private Material armor_item;
+	private float Damage = 5;
 	private double armor_state_value;
 	private int first_skill_hunger_cost;
 	private double first_skill_speed;
@@ -55,18 +55,8 @@ public class Knight extends AbstractFirstRole {
 	private double second_skill_knockback;
 	private double second_skill_knockback_y;
 	private long second_skill_ai_restore_delay;
-	private static volatile Knight instance;
 
-	public static Knight getInstance() {
-		if (instance == null) {
-			synchronized (Knight.class) {
-				if (instance == null) instance = new Knight();
-			}
-		}
-		return instance;
-	}
-
-	private Knight() {
+	public Knight() {
 		super(Roles.KNIGHT);
 		this.SEM = SkillEffectManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

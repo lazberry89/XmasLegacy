@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Rogue extends AbstractFirstRole {
-	private final SkillEffectManager SEM;
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
+	private final @NotNull SkillEffectManager SEM;
+	private final @NotNull Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.DAGGER_RUSH);}
 	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
 	private Material weapon_item;
@@ -43,18 +43,8 @@ public class Rogue extends AbstractFirstRole {
 	private double dagger_rush_damage;
 	private int second_skill_hunger_cost;
 	private long second_skill_duration;
-	private static volatile Rogue instance;
 
-	public static Rogue getInstance() {
-		if (instance == null) {
-			synchronized (Rogue.class) {
-				if (instance == null) instance = new Rogue();
-			}
-		}
-		return instance;
-	}
-
-	private Rogue() {
+	public Rogue() {
 		super(Roles.ROGUE);
 		this.SEM = SkillEffectManager.getInstance();
 		this.loadRoleData(getRole().name().toLowerCase());

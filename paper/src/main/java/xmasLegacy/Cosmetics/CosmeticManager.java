@@ -7,18 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CosmeticManager {
+public enum CosmeticManager {
+	INSTANCE;
+
 	private final Map<String, Cosmetics> equippedCosmetics = new HashMap<>();
-	private static CosmeticManager instance;
 
-	public static CosmeticManager getInstance() {
-		if (instance == null) {
-			instance = new CosmeticManager();
-		}
-		return instance;
-	}
-
-	private CosmeticManager() {}
+	CosmeticManager() {}
 
 	public void addCosmetics(ItemStack model, String name) {
 		CosmeticType type = name.contains("head") ? CosmeticType.HEAD : CosmeticType.BODY;

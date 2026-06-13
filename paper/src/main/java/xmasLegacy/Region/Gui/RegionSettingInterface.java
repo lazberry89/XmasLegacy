@@ -10,25 +10,22 @@ import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.Region.Region;
-import xmasLegacy.Region.RegionManager;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
 public class RegionSettingInterface implements InventoryHolder {
     private final @NotNull XmasLegacy plugin;
     private final @NotNull Region region;
-    private final @NotNull RegionManager rm;
     private final @NotNull Inventory inv;
 
     public RegionSettingInterface(@NotNull Region region) {
         this.region = region;
         this.plugin = XmasLegacy.getInstance();
-        this.rm = RegionManager.getInstance();
         OfflinePlayer owner = Bukkit.getOfflinePlayer(region.getOwner());
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&6&l" + owner.getName()));
         for (int i = 0; i < this.inv.getSize(); i++) this.inv.setItem(i, maker(region, i));
     }
-    // a a a a a a a a a
+
     @CheckReturnValue
     private @NotNull ItemStack maker(Region region, int slot) {
         return switch (slot) {

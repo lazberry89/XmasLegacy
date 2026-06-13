@@ -43,7 +43,7 @@ public class Guardian extends AbstractSecondRole {
 
     private Guardian() {
         super(SecondaryRoles.GUARDIAN);
-        this.PM = PartyManager.getInstance();
+        this.PM = PartyManager.INSTANCE;
     }
 
     public @Nullable LivingEntity link(Player p) {
@@ -116,7 +116,7 @@ public class Guardian extends AbstractSecondRole {
     }
 
     @Override
-    public void useFirstSkill(Player p) {
+    public void useFirstSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Guardian.getInstance(), emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -200,7 +200,7 @@ public class Guardian extends AbstractSecondRole {
     }
 
     @Override
-    public void useSecondSkill(Player p) {
+    public void useSecondSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Guardian.getInstance(), emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -267,7 +267,7 @@ public class Guardian extends AbstractSecondRole {
     }
 
     @Override
-    public void usePassive(Player p) {}
+    public void usePassive(@NotNull Player p) {}
 
     @Override
     public @NotNull Role getRole() {

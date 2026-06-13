@@ -97,7 +97,7 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 
     @Override
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean consumeEnergy(Player player, int hungerCost) {
+    public boolean consumeEnergy(@NotNull Player player, int hungerCost) {
         int currentFood = player.getFoodLevel();
 
         if (currentFood < hungerCost) {

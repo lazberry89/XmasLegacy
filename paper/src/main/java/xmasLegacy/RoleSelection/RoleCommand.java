@@ -28,7 +28,7 @@ public class RoleCommand implements CommandExecutor, TabCompleter {
 
 	public RoleCommand() {
 		this.plugin = XmasLegacy.getInstance();
-		this.um = UserManager.getInstance();
+		this.um = UserManager.INSTANCE;
 	}
 
 	@Override // /role Player USER

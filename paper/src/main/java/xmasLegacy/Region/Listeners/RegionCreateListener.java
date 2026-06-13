@@ -1,5 +1,6 @@
 package xmasLegacy.Region.Listeners;
 
+import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,13 +16,14 @@ import xmasLegacy.Region.RegionManager;
 import xmasLegacy.XmasLegacy;
 
 @Listeners
+@UsedByReflection
 public class RegionCreateListener implements Listener {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull RegionManager rm;
 
 	public RegionCreateListener() {
 		this.plugin = XmasLegacy.getInstance();
-		this.rm = RegionManager.getInstance();
+		this.rm = RegionManager.INSTANCE;
 	}
 
 	@EventHandler

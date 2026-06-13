@@ -32,7 +32,7 @@ public class SelectListener implements Listener {
 
     public SelectListener() {
         this.plugin = XmasLegacy.getInstance();
-        this.UM = UserManager.getInstance();
+        this.UM = UserManager.INSTANCE;
     }
 
     @EventHandler

@@ -13,22 +13,19 @@ import java.util.List;
 
 @Commands(command = "potion")
 public class PriestCommand implements CommandExecutor, TabCompleter {
-	private final ConductableItems CDI;
 
-	public PriestCommand() {
-		this.CDI = ConductableItems.getInstance();
-	}
+	public PriestCommand() {}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 1) {
 			switch (args[0]) {
-				case "heal" -> p.getInventory().addItem(CDI.HealerPotion());
-				case "dragon" -> p.getInventory().addItem(CDI.DragonPotion());
-				case "protection" -> p.getInventory().addItem(CDI.ProtectionPotion());
-				case "spear" -> p.getInventory().addItem(CDI.SpearPotion());
-				case "saver" -> p.getInventory().addItem(CDI.DeathSave());
+				case "heal" -> p.getInventory().addItem(ConductableItems.HealerPotion());
+				case "dragon" -> p.getInventory().addItem(ConductableItems.DragonPotion());
+				case "protection" -> p.getInventory().addItem(ConductableItems.ProtectionPotion());
+				case "spear" -> p.getInventory().addItem(ConductableItems.SpearPotion());
+				case "saver" -> p.getInventory().addItem(ConductableItems.DeathSave());
 			}
 		}
 		return false;

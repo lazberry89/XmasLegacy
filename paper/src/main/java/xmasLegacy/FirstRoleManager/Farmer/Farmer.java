@@ -9,7 +9,6 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
@@ -38,20 +37,10 @@ public class Farmer extends AbstractFirstRole {
 	private int second_skill_y_range;
 	private int second_skill_particle_count;
 	private double second_skill_particle_offset;
-	private static volatile Farmer instance;
 
-	public static Farmer getInstance() {
-		if (instance == null) {
-			synchronized (Farmer.class) {
-				if (instance == null) instance = new Farmer();
-			}
-		}
-		return instance;
-	}
-
-	private Farmer() {
+	public Farmer() {
 		super(Roles.FARMER);
-		this.rm = RegionManager.getInstance();
+		this.rm = RegionManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

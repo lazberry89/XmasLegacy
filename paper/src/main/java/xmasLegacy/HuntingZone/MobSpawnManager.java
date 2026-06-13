@@ -17,16 +17,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MobSpawnManager {
+public enum MobSpawnManager {
+	INSTANCE;
+
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull HuntingZoneManager hzm;
 	private final @NotNull MobRepository mr;
 	private @Nullable BukkitTask task;
 
-	public MobSpawnManager(@NotNull HuntingZoneManager hzm, @NotNull MobRepository mr) {
+	MobSpawnManager() {
 		this.plugin = XmasLegacy.getInstance();
-		this.hzm = hzm;
-		this.mr = mr;
+		this.hzm = HuntingZoneManager.INSTANCE;
+		this.mr = MobRepository.INSTANCE;
 	}
 
 	public @NotNull Location getRandomLocationInChunk(Chunk chunk) {

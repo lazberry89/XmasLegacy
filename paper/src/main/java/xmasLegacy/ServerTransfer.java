@@ -100,7 +100,7 @@ public class ServerTransfer {
     }
 
     public static void loadUser(@NotNull Player player, boolean msg) {
-        @NotNull var um = UserManager.getInstance();
+        @NotNull var um = UserManager.INSTANCE;
         um.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
             if (throwable != null || user == null) {
                 if (msg) sendError(player, throwable, um);
@@ -126,8 +126,8 @@ public class ServerTransfer {
 
     @CheckReturnValue
     public static boolean transfer(@NotNull ServerType toServer, @NotNull Player player) {
-        @NotNull var pm = PartyManager.getInstance();
-        @NotNull var um = UserManager.getInstance();
+        @NotNull var pm = PartyManager.INSTANCE;
+        @NotNull var um = UserManager.INSTANCE;
         UUID uuid = player.getUniqueId();
 
         if (!pm.isInParty(uuid)) return sendBungeePacket(toServer, player);

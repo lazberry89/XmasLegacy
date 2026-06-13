@@ -19,21 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class BagManager {
-	private final Map<UUID, TempBag> bags = new HashMap<>();
-	private final XmasLegacy plugin;
+public enum BagManager {
+	INSTANCE;
 
-	private static BagManager instance;
+	private final @NotNull Map<UUID, TempBag> bags = new HashMap<>();
+	private final @NotNull XmasLegacy plugin;
 
-	public BagManager() {
+	BagManager() {
 		this.plugin = XmasLegacy.getInstance();
-	}
-
-	public static BagManager getInstance() {
-		if (instance == null) {
-			instance = new BagManager();
-		}
-		return instance;
 	}
 
 	public @NotNull TempBag getUserBags(Player p) {
@@ -83,7 +76,7 @@ public class BagManager {
 			plugin.getSLF4JLogger().error("가방 정보를 저장하던 중 오류: {}", e.getMessage(), e);
 		}
 	}
-
+	@SuppressWarnings("SuspiciousToArrayCall")
 	public void loadAllBags() {
 		File file = new File(plugin.getDataFolder(), "bags.yml");
 		if (!file.exists()) return;
@@ -97,9 +90,7 @@ public class BagManager {
 
 			ItemStack[] contents = list.toArray(new ItemStack[0]);
 
-			// 새로운 가방 객체를 만들고 내용물을 채움
 			TempBag bag = new TempBag(plugin, uuid);
-			// 주의: 생성자에서 기본으로 넣어주는 쿠키를 지우고 싶다면 clear() 호출 필요
 			bag.getInventory().clear();
 			bag.getInventory().setContents(contents);
 

@@ -6,17 +6,18 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmasLegacy.ServerPrefix.UserTagManager;
 
 public class ServerJoinListener implements Listener {
-	private final UserManager UM;
-	private final XmasLegacy plugin;
+	private final @NotNull UserManager um;
+	private final @NotNull XmasLegacy plugin;
 
 	public ServerJoinListener() {
-		this.UM = UserManager.getInstance();
+		this.um = UserManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 
@@ -38,6 +39,9 @@ public class ServerJoinListener implements Listener {
 		UserTagManager.removeHoverTag(p);
 
 		e.quitMessage(null);
-		UM.onQuitAsync(p.getUniqueId());
+		um.onQuitAsync(p.getUniqueId()).whenComplete((u, e1) -> {
+			if (e1 == null) plugin.getSLF4JLogger().info("User data saved for player: {}", p.getName());
+			else plugin.getSLF4JLogger().error("Failed to save user data for player: {}", p.getName(), e1);
+		});
 	}
 }

@@ -15,7 +15,7 @@ public class InquiryCommandManager implements CommandExecutor {
 	private final InquiryManager im;
 
 	public InquiryCommandManager() {
-		this.im = InquiryManager.getInstance();
+		this.im = InquiryManager.INSTANCE;
 	}
 
 	@Override

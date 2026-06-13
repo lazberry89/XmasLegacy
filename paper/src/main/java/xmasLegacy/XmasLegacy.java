@@ -13,14 +13,11 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserRepository;
-import xmasLegacy.Cosmetics.CosmeticManager;
 import xmasLegacy.Enchant.EnchantManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.FirstRoleManager.Merchant.MerchantStockInterface;
-import xmasLegacy.FirstRoleManager.Merchant.PriceManager;
-import xmasLegacy.FirstRoleManager.Priest.PriestShopManager;
 import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.HuntingZone.HuntingZoneManager;
@@ -31,7 +28,6 @@ import xmasLegacy.Lobby.LobbyManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.Region.RegionManager;
 import xmasLegacy.RoleSelection.RoleViewDesign;
-import xmasLegacy.RoleSwitch.ExpManager;
 import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
@@ -41,10 +37,6 @@ import xmasLegacy.TransferPortal.PortalManager;
 @SuppressWarnings({"FieldCanBeLocal, DataFlowIssue"})
 public final class XmasLegacy extends JavaPlugin {
 	private static XmasLegacy instance;
-	private RegionManager regionManager;
-	private ConsumableManager consumableManager;
-	private BagManager bagManager;
-	private MobSpawnManager mobSpawnManager;
 
 	public static XmasLegacy getInstance() {
 		return instance;
@@ -82,25 +74,22 @@ public final class XmasLegacy extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (this.regionManager != null) {
-			this.regionManager.saveAll();
-		}
+		RegionManager.INSTANCE.saveAll();
+
 
 		UserRepository repository = new SqlUserRepository();
 		UserManager.INSTANCE.getAllUsers().forEach(repository::saveUser);
 		getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
 
-		if (this.consumableManager != null) {
-			this.consumableManager.stopCookieTimer();
-		}
-		if (this.bagManager != null) {
-			this.bagManager.saveAllBags();
-			getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
-		}
-		if (this.mobSpawnManager != null) {
-			getSLF4JLogger().info("사냥터 몹 스폰을 종료합니다.");
-			this.mobSpawnManager.stopTask();
-		}
+
+		ConsumableManager.INSTANCE.stopCookieTimer();
+
+		BagManager.INSTANCE.saveAllBags();
+		getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+
+		getSLF4JLogger().info("사냥터 몹 스폰을 종료합니다.");
+		MobSpawnManager.INSTANCE.stopTask();
+
 		UserTagManager.stopTask();
 	}
 
@@ -125,28 +114,17 @@ public final class XmasLegacy extends JavaPlugin {
 		} else if (serverType.equals(ServerType.MAIN.str())) {
 			getLogger().warning("Main 모드로 시작합니다.");
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
-			var mobRepository = new MobRepository();
-			var huntingZoneManager = new HuntingZoneManager();
 			RoleViewDesign.getInstance().init();
 
-			BagManager.getInstance();
 			SkillEffectManager.getInstance();
 
-			this.regionManager = new RegionManager();
-			this.regionManager.startGlobalIndicatorTask();
-			this.bagManager = new BagManager();
-			this.consumableManager = new ConsumableManager(bagManager);
-			this.mobSpawnManager = new MobSpawnManager(huntingZoneManager, mobRepository);
+			RegionManager.INSTANCE.startGlobalIndicatorTask();
 
-			var priestShopManager = new PriestShopManager();
-			var priceManager = new PriceManager();
-			CosmeticManager.getInstance();
 			MerchantStockInterface.getInstance();
-			ExpManager.getInstance();
 			MagicBook.getInstance();
 
 			// FirstRole 초기화
-			FirstRoleManager.getInstance().init();
+			FirstRoleManager.INSTANCE.init();
 
 			// SecondaryRole 초기화
 			SecondRoleManager.getInstance().init();
@@ -156,14 +134,13 @@ public final class XmasLegacy extends JavaPlugin {
 
 			EnchantManager.getInstance();
 
-			consumableManager.runCookieTimer(this);
-			BagManager.getInstance().loadAllBags();
+			ConsumableManager.INSTANCE.runCookieTimer(this);
+			BagManager.INSTANCE.loadAllBags();
 
-			// 사냥터 몹 초기화
-			mobRepository.init();
+			MobRepository.INSTANCE.init();
 
-			huntingZoneManager.init();
-			mobSpawnManager.startTask();
+			HuntingZoneManager.INSTANCE.init();
+			MobSpawnManager.INSTANCE.startTask();
 			PortalManager.getInstance().startPortalScheduler();
 
 			UserTagManager.runTask();

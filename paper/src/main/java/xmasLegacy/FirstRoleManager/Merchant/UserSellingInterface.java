@@ -34,7 +34,7 @@ public class UserSellingInterface {
 	private final NamespacedKey key;
 
     public UserSellingInterface(Player viewer) {
-        this.um = UserManager.getInstance();
+        this.um = UserManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
         this.inv = Bukkit.createMerchant(title);
 		this.key = plugin.getNamespacedKey("merchant_money");

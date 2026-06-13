@@ -30,7 +30,7 @@ public class UserTagManager {
     private static final Map<UUID, TextDisplay> tagMap = new HashMap<>();
     private static final Map<UUID, Interaction> baseMap = new HashMap<>();
     private static final XmasLegacy plugin = XmasLegacy.getInstance();
-    private static final UserManager um = UserManager.getInstance();
+    private static final UserManager um = UserManager.INSTANCE;
     private static BukkitTask task;
 
     public static void runTask() {

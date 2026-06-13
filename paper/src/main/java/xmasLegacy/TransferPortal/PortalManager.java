@@ -82,7 +82,7 @@ public class PortalManager {
     public void startPortalScheduler() {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             @NotNull Set<UUID> processedPlayers = new HashSet<>();
-            var pm = PartyManager.getInstance();
+            var pm = PartyManager.INSTANCE;
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 UUID pUUID = player.getUniqueId();
@@ -90,7 +90,7 @@ public class PortalManager {
 
                 if (pm.isInParty(pUUID)) {
                     Party party = pm.getParty(pUUID);
-                    if (party == null || party.getLeader() == null || party.getMembers().size() <= 1) {
+                    if (party == null || party.getMembers().size() <= 1) {
                         handleSoloLogic(player, pUUID, processedPlayers);
                         continue;
                     }

@@ -6,11 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -22,15 +20,17 @@ import xmasLegacy.XmasLegacy;
 
 import java.util.Map;
 
-public class ConsumableManager implements Listener {
+public enum ConsumableManager {
+	INSTANCE;
+
     private @Nullable BukkitTask task;
     private boolean isRunning = false;
     private final @NotNull UserManager um;
 	private final @NotNull BagManager bm;
 
-    public ConsumableManager(@NotNull BagManager bm) {
+    ConsumableManager() {
         this.um = UserManager.INSTANCE;
-		this.bm = bm;
+		this.bm = BagManager.INSTANCE;
     }
 
     public static ItemStack basicFood(int amount) {

@@ -39,7 +39,7 @@ public class MagicBook {
     private MagicBook() {
         this.plugin = XmasLegacy.getInstance();
         this.magicBook = magicBook();
-        this.um = UserManager.getInstance();
+        this.um = UserManager.INSTANCE;
     }
 
     @Contract(pure = true)

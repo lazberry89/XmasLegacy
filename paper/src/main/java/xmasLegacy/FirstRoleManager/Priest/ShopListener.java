@@ -26,38 +26,36 @@ import java.util.Map;
 public class ShopListener implements Listener {
 	private final PriestShopManager PSM;
 	private final EconomyManager ECM;
-    private final ConductableItems CDI;
 	private final XmasLegacy plugin;
     private final BagManager BAG;
 
 	public ShopListener() {
-		this.PSM = PriestShopManager.getInstance();
-		this.ECM = EconomyManager.getInstance();
-        this.CDI = ConductableItems.getInstance();
-        this.BAG = BagManager.getInstance();
+		this.PSM = PriestShopManager.INSTANCE;
+		this.ECM = EconomyManager.INSTANCE;
+        this.BAG = BagManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 
     private boolean isConductableItem(ItemStack item) {
-        return item.isSimilar(CDI.DragonPotion()) ||
-                item.isSimilar(CDI.HealerPotion()) ||
-                item.isSimilar(CDI.ProtectionPotion()) ||
-                item.isSimilar(CDI.SpearPotion()) ||
-                item.isSimilar(CDI.DeathSave());
+        return item.isSimilar(ConductableItems.DragonPotion()) ||
+                item.isSimilar(ConductableItems.HealerPotion()) ||
+                item.isSimilar(ConductableItems.ProtectionPotion()) ||
+                item.isSimilar(ConductableItems.SpearPotion()) ||
+                item.isSimilar(ConductableItems.DeathSave());
     }
 
     private @Nullable ItemStack checkType(@Nullable ItemStack item) {
         if (item == null) return null;
-        if (item.isSimilar(CDI.DragonPotion())) {
-            return CDI.DragonPotion();
-        } else if (item.isSimilar(CDI.HealerPotion())) {
-            return CDI.HealerPotion();
-        } else if (item.isSimilar(CDI.ProtectionPotion())) {
-            return CDI.ProtectionPotion();
-        } else if (item.isSimilar(CDI.SpearPotion())) {
-            return CDI.SpearPotion();
-        } else if (item.isSimilar(CDI.DeathSave())) {
-            return CDI.DeathSave();
+        if (item.isSimilar(ConductableItems.DragonPotion())) {
+            return ConductableItems.DragonPotion();
+        } else if (item.isSimilar(ConductableItems.HealerPotion())) {
+            return ConductableItems.HealerPotion();
+        } else if (item.isSimilar(ConductableItems.ProtectionPotion())) {
+            return ConductableItems.ProtectionPotion();
+        } else if (item.isSimilar(ConductableItems.SpearPotion())) {
+            return ConductableItems.SpearPotion();
+        } else if (item.isSimilar(ConductableItems.DeathSave())) {
+            return ConductableItems.DeathSave();
         } else {
             return null;
         }
@@ -111,11 +109,11 @@ public class ShopListener implements Listener {
                 }
 
                 List<ItemStack> itemsToReturn = new ArrayList<>();
-                if (shop.getDragonStock() > 0) itemsToReturn.add(createReturnItem(CDI.DragonPotion(), shop.getDragonStock()));
-                if (shop.getHealerStock() > 0) itemsToReturn.add(createReturnItem(CDI.HealerPotion(), shop.getHealerStock()));
-                if (shop.getProtectionStock() > 0) itemsToReturn.add(createReturnItem(CDI.ProtectionPotion(), shop.getProtectionStock()));
-                if (shop.getSpearStock() > 0) itemsToReturn.add(createReturnItem(CDI.SpearPotion(), shop.getSpearStock()));
-                if (shop.getSaveStock() > 0) itemsToReturn.add(createReturnItem(CDI.DeathSave(), shop.getSaveStock()));
+                if (shop.getDragonStock() > 0) itemsToReturn.add(createReturnItem(ConductableItems.DragonPotion(), shop.getDragonStock()));
+                if (shop.getHealerStock() > 0) itemsToReturn.add(createReturnItem(ConductableItems.HealerPotion(), shop.getHealerStock()));
+                if (shop.getProtectionStock() > 0) itemsToReturn.add(createReturnItem(ConductableItems.ProtectionPotion(), shop.getProtectionStock()));
+                if (shop.getSpearStock() > 0) itemsToReturn.add(createReturnItem(ConductableItems.SpearPotion(), shop.getSpearStock()));
+                if (shop.getSaveStock() > 0) itemsToReturn.add(createReturnItem(ConductableItems.DeathSave(), shop.getSaveStock()));
 
 	            shop.setDragonStock(0);
 	            shop.setHealerStock(0);
@@ -182,11 +180,11 @@ public class ShopListener implements Listener {
 		int slot = e.getRawSlot();
 
 		switch (slot) {
-			case 2 -> processPurchase(viewer, owner, "dragon", Constants.DRAGON_BREATH_PRICE, CDI.DragonPotion());
-			case 3 -> processPurchase(viewer, owner, "healer", Constants.HEALER_POTION_PRICE, CDI.HealerPotion());
-			case 4 -> processPurchase(viewer, owner, "protection", Constants.PROTECTION_POTION_PRICE, CDI.ProtectionPotion());
-			case 5 -> processPurchase(viewer, owner, "spear", Constants.SPEAR_POTION_PRICE, CDI.SpearPotion());
-			case 6 -> processPurchase(viewer, owner, "save", Constants.DEATH_SAVER_PRICE, CDI.DeathSave());
+			case 2 -> processPurchase(viewer, owner, "dragon", Constants.DRAGON_BREATH_PRICE, ConductableItems.DragonPotion());
+			case 3 -> processPurchase(viewer, owner, "healer", Constants.HEALER_POTION_PRICE, ConductableItems.HealerPotion());
+			case 4 -> processPurchase(viewer, owner, "protection", Constants.PROTECTION_POTION_PRICE, ConductableItems.ProtectionPotion());
+			case 5 -> processPurchase(viewer, owner, "spear", Constants.SPEAR_POTION_PRICE, ConductableItems.SpearPotion());
+			case 6 -> processPurchase(viewer, owner, "save", Constants.DEATH_SAVER_PRICE, ConductableItems.DeathSave());
 		}
 	}
 
@@ -230,7 +228,7 @@ public class ShopListener implements Listener {
 		viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 
 		if (PSM.getOrCreate(owner).getStockCount() > 0) {
-			viewer.openInventory(new ShopInterface(PSM.getOrCreate(owner), CDI).getInventory());
+			viewer.openInventory(new ShopInterface(PSM.getOrCreate(owner)).getInventory());
 		} else {
 			viewer.closeInventory();
 			viewer.sendMessage(ColorUtils.chat(Alert.RED + " 모든 재고가 소진되어 상점이 종료되었습니다."));

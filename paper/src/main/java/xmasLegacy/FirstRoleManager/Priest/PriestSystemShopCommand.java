@@ -13,7 +13,7 @@ public class PriestSystemShopCommand implements CommandExecutor {
 	private final PriestShopManager PSM;
 
 	public PriestSystemShopCommand() {
-		this.PSM = PriestShopManager.getInstance();
+		this.PSM = PriestShopManager.INSTANCE;
 	}
 
 	@Override

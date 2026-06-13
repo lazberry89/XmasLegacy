@@ -1,5 +1,6 @@
 package xmasLegacy.Region.Listeners;
 
+import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,11 +14,12 @@ import xmasLegacy.Region.Region;
 import xmasLegacy.Region.RegionManager;
 
 @Listeners
+@UsedByReflection
 public class RegionPermissionListener implements Listener {
 	private final RegionManager RM;
 
 	public RegionPermissionListener() {
-		this.RM = RegionManager.getInstance();
+		this.RM = RegionManager.INSTANCE;
 	}
 
 	private boolean hasPermission(Player p, Region region) {

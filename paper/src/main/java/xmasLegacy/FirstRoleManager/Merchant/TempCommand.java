@@ -12,7 +12,7 @@ public class TempCommand implements CommandExecutor {
 	private final PriceManager PCI;
 
 	public TempCommand() {
-		this.PCI = PriceManager.getInstance();
+		this.PCI = PriceManager.INSTANCE;
 	}
 
 	@Override

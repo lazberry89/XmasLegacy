@@ -5,21 +5,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import xmasLegacy.XmasLegacy;
 
-public class ExpManager {
-    private final XmasLegacy plugin;
+public enum ExpManager {
+	INSTANCE;
+
     private final UserManager um;
-    private static ExpManager instance;
 
-    public static ExpManager getInstance() {
-        if (instance == null) instance = new ExpManager();
-        return instance;
-    }
-
-    public ExpManager() {
-        this.plugin = XmasLegacy.getInstance();
-        this.um = UserManager.getInstance();
+	ExpManager() {
+        this.um = UserManager.INSTANCE;
     }
     /*
     @Contract(pure = true)

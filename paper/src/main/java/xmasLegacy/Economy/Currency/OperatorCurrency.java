@@ -21,7 +21,7 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	private final EconomyManager ecm;
 
 	public OperatorCurrency() {
-		this.ecm = EconomyManager.getInstance();
+		this.ecm = EconomyManager.INSTANCE;
 	}
 
 	@Override

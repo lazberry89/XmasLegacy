@@ -30,8 +30,8 @@ public class LogCommandManager implements CommandExecutor, TabCompleter {
     private final @NotNull XmasLegacy plugin;
 
     public LogCommandManager() {
-        this.im = InquiryManager.getInstance();
-		this.rm = RegionManager.getInstance();
+        this.im = InquiryManager.INSTANCE;
+		this.rm = RegionManager.INSTANCE;
         this.plugin = XmasLegacy.getInstance();
     }
 

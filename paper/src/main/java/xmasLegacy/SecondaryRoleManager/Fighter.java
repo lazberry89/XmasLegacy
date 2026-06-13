@@ -25,7 +25,6 @@ import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
-@SuppressWarnings("DuplicatedCode, unused")
 public class Fighter extends AbstractSecondRole implements Unpromotable {
     private final PartyManager pm;
     private final SkillEffectManager sem;
@@ -42,12 +41,12 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
 
     private Fighter() {
         super(SecondaryRoles.FIGHTER);
-        this.pm = PartyManager.getInstance();
+        this.pm = PartyManager.INSTANCE;
         this.sem = SkillEffectManager.getInstance();
     }
 
     @Override
-    public void useFirstSkill(Player p) {
+    public void useFirstSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -110,7 +109,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
     }
 
     @Override
-    public void useSecondSkill(Player p) {
+    public void useSecondSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -215,7 +214,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
     }
 
     @Override
-    public void usePassive(Player p) {}
+    public void usePassive(@NotNull Player p) {}
 
     @Override
     public @NotNull Role getRole() {
@@ -228,7 +227,6 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
                 .setName(ColorUtils.chat("&c&l복서의 글러브"))
                 .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
                 .setRoleDefault(this.getRole())
-                .setCustomModelData(1)//custom model data = 1
                 .build().clone();
     }
 

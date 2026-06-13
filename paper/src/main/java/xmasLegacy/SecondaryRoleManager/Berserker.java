@@ -46,11 +46,11 @@ public class Berserker extends AbstractSecondRole {
 
     private Berserker() {
         super(SecondaryRoles.BERSERKER);
-        this.PM = PartyManager.getInstance();
+        this.PM = PartyManager.INSTANCE;
     }
 
     @Override
-    public void useFirstSkill(Player p) {
+    public void useFirstSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -159,7 +159,7 @@ public class Berserker extends AbstractSecondRole {
     }
 
     @Override
-    public void useSecondSkill(Player p) {
+    public void useSecondSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -191,7 +191,7 @@ public class Berserker extends AbstractSecondRole {
     }
 
     @Override
-    public void usePassive(Player p) {
+    public void usePassive(@NotNull Player p) {
         if (this.usedPassive.contains(p.getUniqueId())) return;
         this.usedPassive.add(p.getUniqueId());
         p.getNearbyEntities(2.5 ,2.5, 2.5).stream()

@@ -57,7 +57,7 @@ public class Sniper extends AbstractSecondRole {
 
     private Sniper() {
         super(SecondaryRoles.SNIPER);
-        this.pm = PartyManager.getInstance();
+        this.pm = PartyManager.INSTANCE;
         this.sem = SkillEffectManager.getInstance();
     }
 
@@ -66,7 +66,7 @@ public class Sniper extends AbstractSecondRole {
     }
 
     @Override
-    public void useFirstSkill(Player p) {
+    public void useFirstSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Sniper.getInstance(), emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -98,7 +98,7 @@ public class Sniper extends AbstractSecondRole {
     }
 
     @Override
-    public void useSecondSkill(Player p) {
+    public void useSecondSkill(@NotNull Player p) {
         PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Sniper.getInstance(), emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
@@ -408,7 +408,7 @@ public class Sniper extends AbstractSecondRole {
     }
 
     @Override
-    public void usePassive(Player p) {}
+    public void usePassive(@NotNull Player p) {}
 
     @Override
     public @NotNull Role getRole() {

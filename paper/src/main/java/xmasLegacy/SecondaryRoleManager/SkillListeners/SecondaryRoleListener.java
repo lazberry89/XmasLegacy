@@ -52,8 +52,8 @@ public class SecondaryRoleListener implements Listener {
 
     public SecondaryRoleListener() {
         this.plugin = XmasLegacy.getInstance();
-        this.um = UserManager.getInstance();
-        this.pm = PartyManager.getInstance();
+        this.um = UserManager.INSTANCE;
+        this.pm = PartyManager.INSTANCE;
 		this.rlm = RoleManager.getInstance();
 		this.sem = SkillEffectManager.getInstance();
 		this.srm = SecondRoleManager.getInstance();

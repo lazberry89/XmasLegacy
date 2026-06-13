@@ -40,18 +40,8 @@ public class Crafter extends AbstractFirstRole {
 	private double second_skill_attack_damage_buff;
 	private int second_skill_hunger_cost;
 	private int second_skill_cooldown_ticks;
-	private static volatile Crafter instance;
 
-	public static Crafter getInstance() {
-		if (instance == null) {
-			synchronized (Crafter.class) {
-				if (instance == null) instance = new Crafter();
-			}
-		}
-		return instance;
-	}
-
-	private Crafter() {
+	public Crafter() {
 		super(Roles.CRAFTER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

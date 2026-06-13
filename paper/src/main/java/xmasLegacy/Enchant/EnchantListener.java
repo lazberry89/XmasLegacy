@@ -45,8 +45,8 @@ public class EnchantListener implements Listener {
 		this.plugin = XmasLegacy.getInstance();
 		this.ecm = EnchantManager.getInstance();
 		this.sem = SkillEffectManager.getInstance();
-		this.um = UserManager.getInstance();
-		this.bm = BagManager.getInstance();
+		this.um = UserManager.INSTANCE;
+		this.bm = BagManager.INSTANCE;
 	}
 
 	@EventHandler
@@ -201,7 +201,7 @@ public class EnchantListener implements Listener {
 				victim.damage(random.nextInt(10));
 				victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.5f);
 			}
-			var user = UserManager.getInstance().getUser(p.getUniqueId());
+			var user = um.getUser(p.getUniqueId());
 			if (user == null) return;
 			Role role = user.getRole();
 

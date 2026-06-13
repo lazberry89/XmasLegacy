@@ -17,6 +17,10 @@ import xmasLegacy.PlayerSkillUseEvent;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 @SuppressWarnings("DuplicatedCode, unused")
 public class Defender extends AbstractSecondRole {
 	private final SkillEffectManager SEM;
@@ -36,16 +40,18 @@ public class Defender extends AbstractSecondRole {
 	private Defender() {
 		super(SecondaryRoles.DEFENDER);
 		this.SEM = SkillEffectManager.getInstance();
-		this.PM = PartyManager.getInstance();
+		this.PM = PartyManager.INSTANCE;
 	}
 
 	@Override
-	public void useFirstSkill(Player p) {
+	public void useFirstSkill(@NotNull Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Defender.getInstance(), emblem, EmblemType.TARGET);
 		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
+
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
+
 		if (p.getCooldown(tool) > 0) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return;
@@ -53,7 +59,7 @@ public class Defender extends AbstractSecondRole {
 		if (!consumeEnergy(p, 3)) return;
 		Location loc = p.getLocation();
 
-		Location startLoc = loc.add(0, 1.2, 0); // 가슴 높이에서 발사
+		Location startLoc = loc.add(0, 1.2, 0);
 		Vector dir = startLoc.getDirection().normalize();
 
 		Vector axis;
@@ -63,12 +69,13 @@ public class Defender extends AbstractSecondRole {
 			axis = new Vector(-dir.getZ(), 0, dir.getX()).normalize();
 		}
 
-		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 0.8f, 1.5f); // 날카로운 발사음
+		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 0.8f, 1.5f);
 
 		new BukkitRunnable() {
 			double distance = 0;
 			final double maxDistance = 10.0;
 			final double radius = 0.8;
+			final Set<UUID> hitList = new HashSet<>();
 
 			@Override
 			public void run() {
@@ -92,12 +99,14 @@ public class Defender extends AbstractSecondRole {
 					center.getNearbyEntities(0.8, 0.8, 0.8).forEach(e -> {
 						if (e instanceof LivingEntity target && !target.equals(p)) {
 							if (!PM.isParty(p.getUniqueId(), target.getUniqueId())) {
+								if (hitList.add(target.getUniqueId())) {
+									target.damage(5.0, p);
+									SEM.StunEntity(target.getUniqueId(), 30L);
 
-								target.damage(5.0, p);
-								SEM.StunEntity(target.getUniqueId(), 30L);
+									target.getWorld().spawnParticle(Particle.SOUL, target.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.05);
+									target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 1.0f, 1.3f);
+								}
 
-								target.getWorld().spawnParticle(Particle.SOUL, target.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.05);
-								target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 1.0f, 1.3f);
 							}
 						}
 					});
@@ -143,7 +152,7 @@ public class Defender extends AbstractSecondRole {
 	}
 
 	@Override
-	public void useSecondSkill(Player p) {
+	public void useSecondSkill(@NotNull Player p) {
 		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Defender.getInstance(), emblem, EmblemType.RANGE);
 		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
@@ -157,7 +166,7 @@ public class Defender extends AbstractSecondRole {
 
 		Location loc = p.getLocation();
 		SkillEffectManager.startHakiWave(getPlugin(), p.getLocation());
-		spawnShockWave(loc);
+		spawnShockWave(loc.clone().add(0, 0.5, 0));
 
 		p.getNearbyEntities(5, 5, 5).stream()
 				.filter(e -> e != p && e instanceof LivingEntity)
@@ -175,7 +184,7 @@ public class Defender extends AbstractSecondRole {
 	}
 
 	@Override
-	public void usePassive(Player p) {}
+	public void usePassive(@NotNull Player p) {}
 
 	@Override
 	public @NotNull Role getRole() {

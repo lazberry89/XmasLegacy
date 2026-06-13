@@ -20,7 +20,7 @@ public class RuleCommandManager implements CommandExecutor, TabCompleter {
     private final RuleManager RM;
 
     public RuleCommandManager() {
-        this.RM = RuleManager.getInstance();
+        this.RM = RuleManager.INSTANCE;
     }
 
     @Override

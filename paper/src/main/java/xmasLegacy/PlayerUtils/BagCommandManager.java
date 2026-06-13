@@ -21,7 +21,7 @@ public class BagCommandManager implements CommandExecutor, TabCompleter {
 	private final BagManager BM;
 
 	public BagCommandManager() {
-		this.BM = BagManager.getInstance();
+		this.BM = BagManager.INSTANCE;
 	}
 
 	@Override

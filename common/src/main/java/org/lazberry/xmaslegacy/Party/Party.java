@@ -65,7 +65,7 @@ public class Party {
 	}
 
 	public boolean isInParty(@NotNull UUID uuid) {
-		@NotNull var um = UserManager.getInstance();
+		@NotNull var um = UserManager.INSTANCE;
 		User u = um.getUser(uuid);
 		if (u == null) return false;
 		return isInParty(u);

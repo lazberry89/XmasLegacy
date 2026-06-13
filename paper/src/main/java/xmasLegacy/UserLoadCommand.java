@@ -12,7 +12,7 @@ public class UserLoadCommand implements CommandExecutor {
 	private final UserManager um;
 
 	public UserLoadCommand() {
-		this.um = UserManager.getInstance();
+		this.um = UserManager.INSTANCE;
 	}
 
 	@Override

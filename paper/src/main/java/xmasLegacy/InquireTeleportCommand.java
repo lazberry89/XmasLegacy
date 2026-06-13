@@ -17,7 +17,7 @@ public class InquireTeleportCommand implements CommandExecutor {
 	private final @NotNull XmasLegacy plugin;
 
 	public InquireTeleportCommand() {
-		this.im = InquiryManager.getInstance();
+		this.im = InquiryManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 

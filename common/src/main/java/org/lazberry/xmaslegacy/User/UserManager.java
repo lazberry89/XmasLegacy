@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.User;
 
 import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
@@ -71,7 +72,6 @@ public enum UserManager {
 	 * @param uuid uuid
 	 * @param name name
 	 * @return User 불러온 유저, 없으면 새로 생성하여 반환
-	 * !!비동기 권장!!
 	 */
 	@Blocking
 	public User load(UUID uuid, String name) {
@@ -85,10 +85,6 @@ public enum UserManager {
 		return loaded;
 	}
 
-	/**
-	 * !!비동기 권장!!
-	 * @param uuid uuid
-	 */
 	@Blocking
 	public void onQuit(UUID uuid) {
 		User u = users.remove(uuid);
@@ -97,6 +93,7 @@ public enum UserManager {
 		}
 	}
 
+	@NonBlocking
 	public CompletableFuture<User> onJoinAsync(UUID uuid, String name, boolean isFloodgate) {
 		return CompletableFuture.supplyAsync(() -> {
 			User loaded = checkLocalEmergencyFile(uuid);
@@ -104,7 +101,7 @@ public enum UserManager {
 
 			if (loaded != null) {
 				restoredFromDump = true;
-				logger.info("CRITICAL SUCCESS | User {} recovered from emergency dump!", uuid);
+				logger.info("User {} recovered from emergency dump!", uuid);
 			} else {
 				loaded = repository.loadUser(uuid);
 			}
@@ -131,6 +128,7 @@ public enum UserManager {
 		});
 	}
 
+	@NonBlocking
 	public CompletableFuture<Void> onQuitAsync(UUID uuid) {
 		User u = users.remove(uuid);
 		if (u == null) return CompletableFuture.completedFuture(null);
@@ -148,8 +146,11 @@ public enum UserManager {
 
 	private void threadDump(@NotNull User user) {
 		File dumpDir = new File(rootDataFolder, "emergency_dumps");
-		if (!dumpDir.exists()) dumpDir.mkdirs();
-
+		if (!dumpDir.exists())
+			if (!dumpDir.mkdirs()) {
+				logger.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUUID());
+				return;
+			}
 		File dumpFile = new File(dumpDir, user.getUUID().toString() + ".properties");
 
 		Properties props = new Properties();

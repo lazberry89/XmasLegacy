@@ -21,6 +21,7 @@ import java.util.Set;
 public class HuntingZone implements HZone {
 	private final @NotNull ZoneType type;
 	private final @NotNull String worldName;
+	private final @NotNull MobRepository mobRepository;
 	private final @NotNull List<MobKey> mobs;
 	private final @NotNull Set<Long> zones;
 	private final @NotNull Set<MobKey> mobKeySet;
@@ -31,6 +32,7 @@ public class HuntingZone implements HZone {
 		this.zones = new HashSet<>();
 		this.type = type;
 		this.worldName = worldName;
+		this.mobRepository = MobRepository.INSTANCE;
 		this.mobs = Arrays.stream(type.getMobs()).toList();
 		this.mobKeySet = new HashSet<>(this.mobs);
 	}
@@ -123,7 +125,7 @@ public class HuntingZone implements HZone {
 
 	private boolean isCustomMobOfThisZone(LivingEntity entity) {
 		for (MobKey mobKey : this.mobKeySet) {
-			CustomMob mob = MobRepository.getInstance().getMobInstance(mobKey);
+			CustomMob mob = mobRepository.getMobInstance(mobKey);
 			if (mob != null && mob.isEntity(entity)) return true;
 		}
 		return false;
