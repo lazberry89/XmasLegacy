@@ -52,7 +52,7 @@ public class Priest extends AbstractFirstRole {
 	public Priest() {
 		super(Roles.PRIEST);
 		this.PM = PartyManager.INSTANCE;
-		this.SEM = SkillEffectManager.getInstance();
+		this.SEM = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

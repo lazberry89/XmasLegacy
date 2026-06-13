@@ -32,10 +32,8 @@ import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
 import xmasLegacy.SkillEffectManager;
 import xmasLegacy.XmasLegacy;
 
-import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.DEFENDER;
-import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.GUARDIAN;
+import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
-@SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal, LoggingSimilarMessage")
 @Listeners
 public class SecondaryRoleListener implements Listener {
     private final XmasLegacy plugin;
@@ -55,12 +53,12 @@ public class SecondaryRoleListener implements Listener {
         this.um = UserManager.INSTANCE;
         this.pm = PartyManager.INSTANCE;
 		this.rlm = RoleManager.getInstance();
-		this.sem = SkillEffectManager.getInstance();
-		this.srm = SecondRoleManager.getInstance();
-        this.defender = Defender.getInstance();
-        this.guardian = Guardian.getInstance();
-        this.berserker = Berserker.getInstance();
-		this.sniper = Sniper.getInstance();
+		this.sem = SkillEffectManager.INSTANCE;
+		this.srm = SecondRoleManager.INSTANCE;
+        this.defender = srm.getRoleInstance(DEFENDER);
+	    this.guardian = srm.getRoleInstance(GUARDIAN);
+        this.berserker = srm.getRoleInstance(BERSERKER);
+		this.sniper = srm.getRoleInstance(SNIPER);
     }
 
     @EventHandler
@@ -234,6 +232,7 @@ public class SecondaryRoleListener implements Listener {
 		}
 		if (role instanceof SecondaryRoles fr) {
 			AbstractSecondRole asr = srm.getRoleInstance(fr);
+			if (asr == null) return;
 			asr.useDash(p);
 		}
 	}

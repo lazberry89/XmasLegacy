@@ -53,7 +53,7 @@ public enum BagManager {
         return result;
 	}
     @Contract(pure = true)
-	public ItemStack[] getPlayerBag(Player p) {
+	public ItemStack[] getPlayerBag(@NotNull Player p) {
 		return getUserBags(p).getInventory().getContents();
 	}
 

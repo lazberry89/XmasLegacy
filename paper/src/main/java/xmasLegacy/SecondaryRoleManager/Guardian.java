@@ -27,23 +27,13 @@ import java.util.*;
 
 @SuppressWarnings("DuplicatedCode, unused")
 public class Guardian extends AbstractSecondRole {
-    private final PartyManager PM;
-    private final Map<Player, LivingEntity> targetMap = new HashMap<>();
-    private final Set<UUID> activeSkill = new HashSet<>();
-	private static volatile Guardian instance;
+    private final @NotNull PartyManager pm;
+    private final @NotNull Map<Player, LivingEntity> targetMap = new HashMap<>();
+    private final @NotNull Set<UUID> activeSkill = new HashSet<>();
 
-	public static Guardian getInstance() {
-		if (instance == null) {
-			synchronized (Guardian.class) {
-				if (instance == null) instance = new Guardian();
-			}
-		}
-		return instance;
-	}
-
-    private Guardian() {
+    public Guardian() {
         super(SecondaryRoles.GUARDIAN);
-        this.PM = PartyManager.INSTANCE;
+        this.pm = PartyManager.INSTANCE;
     }
 
     public @Nullable LivingEntity link(Player p) {
@@ -58,7 +48,7 @@ public class Guardian extends AbstractSecondRole {
         }
 
         targetMap.put(p, target);
-        String div = target instanceof Player targetP && PM.isParty(p.getUniqueId(), targetP.getUniqueId()) ? "&a아군&f" : "&c적군&f";
+        String div = target instanceof Player targetP && pm.isParty(p.getUniqueId(), targetP.getUniqueId()) ? "&a아군&f" : "&c적군&f";
         getPlugin().infoMsg(InfoLevel.INFO, p, div + " 타겟과 연결됨");
         p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
 
@@ -87,7 +77,7 @@ public class Guardian extends AbstractSecondRole {
                     this.cancel();
                     return;
                 }
-                boolean isAlly = PM.isParty(p.getUniqueId(), target.getUniqueId());
+                boolean isAlly = pm.isParty(p.getUniqueId(), target.getUniqueId());
 
                 drawBeam(from, to, isAlly);
             }
@@ -117,7 +107,7 @@ public class Guardian extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Guardian.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -140,7 +130,7 @@ public class Guardian extends AbstractSecondRole {
 
         activeSkill.add(p.getUniqueId());
         p.sendActionBar(ColorUtils.chat("&a스킬 활성화"));
-        boolean isAlly = target instanceof Player t && PM.isParty(p.getUniqueId(), t.getUniqueId());
+        boolean isAlly = target instanceof Player t && pm.isParty(p.getUniqueId(), t.getUniqueId());
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -201,7 +191,7 @@ public class Guardian extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Guardian.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -252,7 +242,7 @@ public class Guardian extends AbstractSecondRole {
                     for (Entity e : point.getWorld().getNearbyEntities(point, 1.0, 1.0, 1.0)) {
                         if (e instanceof LivingEntity le
                                 && !e.equals(p)
-                                && !PM.isParty(p.getUniqueId(), e.getUniqueId())
+                                && !pm.isParty(p.getUniqueId(), e.getUniqueId())
                                 && !hitEntities.contains(e.getUniqueId())) {
                             le.damage(8.0, p);
                             hitEntities.add(e.getUniqueId());

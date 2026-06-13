@@ -2,8 +2,6 @@ package xmasLegacy.SecondaryRoleManager;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -31,27 +29,17 @@ import java.util.UUID;
 
 @SuppressWarnings("DuplicatedCode")
 public class Berserker extends AbstractSecondRole {
-    private final Set<UUID> usedPassive = new HashSet<>();
-    private final PartyManager PM;
-	private static volatile Berserker instance;
+    private final @NotNull Set<UUID> usedPassive = new HashSet<>();
+    private final @NotNull PartyManager pm;
 
-	public static Berserker getInstance() {
-		if (instance == null) {
-			synchronized (Berserker.class) {
-				if (instance == null) instance = new Berserker();
-			}
-		}
-		return instance;
-	}
-
-    private Berserker() {
+    public Berserker() {
         super(SecondaryRoles.BERSERKER);
-        this.PM = PartyManager.INSTANCE;
+        this.pm = PartyManager.INSTANCE;
     }
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -160,7 +148,7 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Berserker.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
 
@@ -196,7 +184,7 @@ public class Berserker extends AbstractSecondRole {
         this.usedPassive.add(p.getUniqueId());
         p.getNearbyEntities(2.5 ,2.5, 2.5).stream()
                 .filter(e -> e instanceof LivingEntity).map(le -> (LivingEntity) le)
-                .filter(e -> !PM.isParty(p.getUniqueId(), e.getUniqueId()))
+                .filter(e -> !pm.isParty(p.getUniqueId(), e.getUniqueId()))
                 .forEach(e -> {
                     Vector dir = e.getLocation().toVector()
                             .subtract(p.getLocation().toVector())

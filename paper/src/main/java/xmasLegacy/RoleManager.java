@@ -24,7 +24,7 @@ public class RoleManager {
 
     private RoleManager() {
 		this.frm = FirstRoleManager.INSTANCE;
-		this.srm = SecondRoleManager.getInstance();
+		this.srm = SecondRoleManager.INSTANCE;
     }
 
 	public @NotNull AbstractFirstRole getRoleInstance(@NotNull Roles role) {

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmasLegacy.Commands;
 import xmasLegacy.InfoLevel;
 import xmasLegacy.XmasLegacy;
 
@@ -19,13 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Commands(command = "gacha")
 public class GachaCommand implements CommandExecutor, TabCompleter {
     private final XmasLegacy plugin;
     private final GachaManager gm;
 
     public GachaCommand() {
         this.plugin = XmasLegacy.getInstance();
-        this.gm = GachaManager.getInstance();
+        this.gm = GachaManager.INSTANCE;
     }
 
 	@Override

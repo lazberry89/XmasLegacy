@@ -23,10 +23,12 @@ import java.util.List;
 public class GlobalListeners implements Listener {
     private final @NotNull XmasLegacy plugin;
     private final @NotNull NamespacedKey key;
+	private final @NotNull NamespacedKey key2;
 
     public GlobalListeners() {
         this.plugin = XmasLegacy.getInstance();
         this.key = plugin.getNamespacedKey("role_id");
+		this.key2 = plugin.getNamespacedKey("emblem_type");
     }
 
     private boolean isCombatItem(@Nullable ItemStack item) {
@@ -45,6 +47,9 @@ public class GlobalListeners implements Listener {
         remain.removeIf(item -> item != null
                 && item.hasItemMeta()
                 && item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.STRING));
+	    remain.removeIf(item -> item != null
+			    && item.hasItemMeta()
+			    && item.getItemMeta().getPersistentDataContainer().has(this.key2, PersistentDataType.STRING));
         plugin.infoMsg(InfoLevel.WARN, victim, "직업관련 아이템은 소멸합니다.");
     }
 

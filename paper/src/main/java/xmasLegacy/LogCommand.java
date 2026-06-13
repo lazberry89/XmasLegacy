@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.UUID;
 
 @Commands(command = "log")
-public class LogCommandManager implements CommandExecutor, TabCompleter {
+public class LogCommand implements CommandExecutor, TabCompleter {
     private final @NotNull InquiryManager im;
 	private final @NotNull RegionManager rm;
     private final @NotNull XmasLegacy plugin;
 
-    public LogCommandManager() {
+    public LogCommand() {
         this.im = InquiryManager.INSTANCE;
 		this.rm = RegionManager.INSTANCE;
         this.plugin = XmasLegacy.getInstance();

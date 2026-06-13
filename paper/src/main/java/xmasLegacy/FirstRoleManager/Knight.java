@@ -58,7 +58,7 @@ public class Knight extends AbstractFirstRole {
 
 	public Knight() {
 		super(Roles.KNIGHT);
-		this.SEM = SkillEffectManager.getInstance();
+		this.SEM = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

@@ -13,12 +13,10 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserRepository;
-import xmasLegacy.Enchant.EnchantManager;
 import xmasLegacy.Env.ConsumableManager;
 import xmasLegacy.FirstRoleManager.Farmer.AgeableCrops;
 import xmasLegacy.FirstRoleManager.FirstRoleManager;
 import xmasLegacy.FirstRoleManager.Merchant.MerchantStockInterface;
-import xmasLegacy.Gacha.GachaManager;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.HuntingZone.HuntingZoneManager;
 import xmasLegacy.HuntingZone.MobSpawnManager;
@@ -28,13 +26,12 @@ import xmasLegacy.Lobby.LobbyManager;
 import xmasLegacy.PlayerUtils.BagManager;
 import xmasLegacy.Region.RegionManager;
 import xmasLegacy.RoleSelection.RoleViewDesign;
-import xmasLegacy.RoleSwitch.MagicBook;
 import xmasLegacy.SecondaryRoleManager.SecondRoleManager;
 import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.UserTagManager;
 import xmasLegacy.TransferPortal.PortalManager;
 
-@SuppressWarnings({"FieldCanBeLocal, DataFlowIssue"})
+@SuppressWarnings("FieldCanBeLocal, DataFlowIssue")
 public final class XmasLegacy extends JavaPlugin {
 	private static XmasLegacy instance;
 
@@ -60,10 +57,10 @@ public final class XmasLegacy extends JavaPlugin {
 
 		getCommand("문의").setExecutor(new InquiryCommandManager());
 		getCommand("이동문의").setExecutor(new InquireTeleportCommand());
-		var rule = new RuleCommandManager();
+		var rule = new RuleCommand();
 		getCommand("filter").setExecutor(rule);
 		getCommand("filter").setTabCompleter(rule);
-		var log = new LogCommandManager();
+		var log = new LogCommand();
 		getCommand("log").setExecutor(log);
 		getCommand("log").setTabCompleter(log);
 		serverType();
@@ -75,7 +72,6 @@ public final class XmasLegacy extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		RegionManager.INSTANCE.saveAll();
-
 
 		UserRepository repository = new SqlUserRepository();
 		UserManager.INSTANCE.getAllUsers().forEach(repository::saveUser);
@@ -116,23 +112,13 @@ public final class XmasLegacy extends JavaPlugin {
 			getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요. 현재값: \"{}\"", serverType);
 			RoleViewDesign.getInstance().init();
 
-			SkillEffectManager.getInstance();
-
 			RegionManager.INSTANCE.startGlobalIndicatorTask();
 
 			MerchantStockInterface.getInstance();
-			MagicBook.getInstance();
-
-			// FirstRole 초기화
 			FirstRoleManager.INSTANCE.init();
 
 			// SecondaryRole 초기화
-			SecondRoleManager.getInstance().init();
-
-			// Gacha 초기화
-			GachaManager.getInstance();
-
-			EnchantManager.getInstance();
+			SecondRoleManager.INSTANCE.init();
 
 			ConsumableManager.INSTANCE.runCookieTimer(this);
 			BagManager.INSTANCE.loadAllBags();
@@ -141,7 +127,7 @@ public final class XmasLegacy extends JavaPlugin {
 
 			HuntingZoneManager.INSTANCE.init();
 			MobSpawnManager.INSTANCE.startTask();
-			PortalManager.getInstance().startPortalScheduler();
+			PortalManager.INSTANCE.startPortalScheduler();
 
 			UserTagManager.runTask();
 
@@ -186,7 +172,7 @@ public final class XmasLegacy extends JavaPlugin {
 				var listenerInstance = clazz.getDeclaredConstructor().newInstance();
 				Bukkit.getPluginManager().registerEvents((Listener) listenerInstance, this);
 
-				this.getSLF4JLogger().info("리스너 {} 가 자동 등록되었습니다.", clazz.getSimpleName());
+				this.getSLF4JLogger().info("Listener {} Automatically registered", clazz.getSimpleName());
 			}
 		} catch (Exception e) {
 			this.getSLF4JLogger().error("Error occurred while registering all listeners", e);
@@ -196,7 +182,7 @@ public final class XmasLegacy extends JavaPlugin {
 	@Reflection(comment = "Commands Registration")
 	private void registerCommands() {
 		try {
-			var classPath = com.google.common.reflect.ClassPath.from(this.getClassLoader());
+			var classPath = ClassPath.from(this.getClassLoader());
 
 			for (var classInfo : classPath.getTopLevelClassesRecursive("xmasLegacy")) {
 				Class<?> clazz = classInfo.load();
@@ -216,7 +202,7 @@ public final class XmasLegacy extends JavaPlugin {
 
 				if (TabCompleter.class.isAssignableFrom(clazz)) {
 					pluginCommand.setTabCompleter((TabCompleter) commandInstance);
-					this.getSLF4JLogger().info("커맨드 {} 가 자동 등록되었습니다.", cmdName);
+					this.getSLF4JLogger().info("Command {} Automatically registered", cmdName);
 				}
 			}
 		} catch (Exception e) {

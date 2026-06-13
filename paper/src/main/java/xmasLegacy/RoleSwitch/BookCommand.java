@@ -24,7 +24,7 @@ public class BookCommand implements CommandExecutor {
 
     public BookCommand() {
         this.plugin = XmasLegacy.getInstance();
-        this.MB = MagicBook.getInstance();
+        this.MB = MagicBook.INSTANCE;
     }
 
     @Override

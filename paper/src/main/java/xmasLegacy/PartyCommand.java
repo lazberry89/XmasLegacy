@@ -22,13 +22,11 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Commands(command = "파티")
+@SuppressWarnings("unused")
 @UsedByReflection
 public class PartyCommand implements CommandExecutor, TabCompleter {
     private final @NotNull XmasLegacy plugin;
@@ -53,7 +51,7 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
         if (!(sender instanceof Player p)) return true;
         var user = um.getUser(p.getUniqueId());
         if (user == null) {
-            ServerTransfer.loadUser(p, false);
+			ServerTransfer.sendReloadNotice(p);
             return true;
         }
         if (args.length == 1) {
@@ -72,7 +70,15 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(memberShowcase(party));
                 }
                 case "나가기", "leave" -> {
-					if (pm.leaveParty(user)) plugin.infoMsg(InfoLevel.INFO, p, "파티에서 나갔습니다.");
+	                var party = pm.getParty(p.getUniqueId());
+					if (pm.leaveParty(user)) {
+						party.getMembers().stream().map(m -> Bukkit.getPlayer(m.getUUID()))
+								.filter(Objects::nonNull)
+								.filter(Player::isOnline)
+								.filter(Player::isValid)
+								.forEach(t -> plugin.infoMsg(InfoLevel.INFO, t, "&6" + p.getName() + "&f님이 파티를 나갔습니다."));
+						plugin.infoMsg(InfoLevel.INFO, p, "파티에서 나갔습니다.");
+					}
 					else plugin.infoMsg(InfoLevel.ERROR, p, "파티에서 나가지 못했습니다. 파티에 소속되어있는지 확인해주세요.");
                 }
                 default -> plugin.infoMsg(InfoLevel.ERROR, p, "유효한 명령어가 아닙니다.");
@@ -105,8 +111,14 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 						plugin.infoMsg(InfoLevel.ERROR, p, "파티가 가득 찼습니다.");
 						return true;
 					}
-					if (targetUser.isMobile()) FloodgateApi.getInstance().getPlayer(target.getUniqueId()).sendForm(inviteComp(current, target));
-					else target.sendMessage(inviteComp(current));
+					if (targetUser.isMobile())
+						Bukkit.getScheduler().runTaskLater(plugin, () -> {
+							var floodgatePlayer = FloodgateApi.getInstance().getPlayer(target.getUniqueId());
+							if (floodgatePlayer != null) {
+								floodgatePlayer.sendForm(inviteComp(current, target));
+							}
+						}, 5L);
+					else Bukkit.getScheduler().runTaskLater(plugin, () -> target.sendMessage(inviteComp(current)), 2L);
 					plugin.infoMsg(InfoLevel.INFO, p, "파티 초대 요청을 보냈습니다.");
 				}
 				case "참가", "join" -> {
@@ -122,7 +134,7 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 						plugin.infoMsg(InfoLevel.ERROR, p, "파티가 가득 찼습니다.");
 						return true;
 					}
-					if (pm.joinParty(user, party.getLeader())) plugin.infoMsg(InfoLevel.INFO, p, "파티에 참가했습니다.");
+					if (pm.joinParty(party.getLeader(), user)) plugin.infoMsg(InfoLevel.INFO, p, "파티에 참가했습니다.");
 					else plugin.infoMsg(InfoLevel.ERROR, p, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
 				}
 				case "추방", "expel" -> {
@@ -200,7 +212,7 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 							ServerTransfer.loadUser(player, false);
 							return;
 						}
-						if (pm.joinParty(user, party.getLeader())) plugin.infoMsg(InfoLevel.INFO, player, "파티에 참가했습니다.");
+						if (pm.joinParty(party.getLeader(), user)) plugin.infoMsg(InfoLevel.INFO, player, "파티에 참가했습니다.");
 						else plugin.infoMsg(InfoLevel.ERROR, player, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
 					} else plugin.infoMsg(InfoLevel.WARN, player, "파티 참가 제안이 거절되었습니다.");
 				})
@@ -221,7 +233,14 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 							ServerTransfer.loadUser(p, false);
 							return;
 						}
-						if (pm.joinParty(user, party.getLeader())) plugin.infoMsg(InfoLevel.INFO, p, "파티에 참가했습니다.");
+						if (pm.joinParty(party.getLeader(), user)) {
+							plugin.infoMsg(InfoLevel.INFO, p, "파티에 참가했습니다.");
+							party.getMembers().stream().map(m -> Bukkit.getPlayer(m.getUUID()))
+									.filter(Objects::nonNull)
+									.filter(Player::isOnline)
+									.filter(Player::isValid)
+									.forEach(t -> plugin.infoMsg(InfoLevel.INFO, t, "&6" + p.getName() + "&f님이 파티에 참가했습니다."));
+						}
 						else plugin.infoMsg(InfoLevel.ERROR, p, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
 					}
 				}, options));
@@ -242,13 +261,13 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 			if (subCommand.equals("초대") || subCommand.equals("invite") ||
 					subCommand.equals("참가") || subCommand.equals("join") ||
 					subCommand.equals("추방") || subCommand.equals("expel") ||
-					subCommand.equals("멤버") || subCommand.equals("member")) {
+					subCommand.equals("멤버") || subCommand.equals("member"))
 
 				return Bukkit.getOnlinePlayers().stream()
 						.map(Player::getName)
 						.filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))
 						.collect(Collectors.toList());
-			}
+
 		}
 		return Collections.emptyList();
 	}

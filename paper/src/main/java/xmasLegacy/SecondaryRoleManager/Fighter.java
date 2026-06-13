@@ -26,28 +26,18 @@ import xmasLegacy.SkillEffectManager;
 import xmasLegacy.Utils.ItemBuilder;
 
 public class Fighter extends AbstractSecondRole implements Unpromotable {
-    private final PartyManager pm;
-    private final SkillEffectManager sem;
-	private static volatile Fighter instance;
+    private final @NotNull PartyManager pm;
+    private final @NotNull SkillEffectManager sem;
 
-	public static Fighter getInstance() {
-		if (instance == null) {
-			synchronized (Fighter.class) {
-				if (instance == null) instance = new Fighter();
-			}
-		}
-		return instance;
-	}
-
-    private Fighter() {
+    public Fighter() {
         super(SecondaryRoles.FIGHTER);
         this.pm = PartyManager.INSTANCE;
-        this.sem = SkillEffectManager.getInstance();
+        this.sem = SkillEffectManager.INSTANCE;
     }
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -110,7 +100,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Fighter.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
 

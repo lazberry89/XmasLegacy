@@ -3,7 +3,6 @@ package xmasLegacy.TransferPortal;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -20,27 +19,16 @@ import xmasLegacy.XmasLegacy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PortalManager {
+public enum PortalManager {
+	INSTANCE;
+
     private final @NotNull Map<String, Portal> portalMap = new HashMap<>();
     private final @NotNull Set<Portal> portalSet = new HashSet<>();
     private final @NotNull XmasLegacy plugin;
-    private final @NotNull NamespacedKey key;
     private final @NotNull Map<UUID, Integer> activeCountdowns = new ConcurrentHashMap<>();
 
-    private static volatile PortalManager instance;
-
-    public static PortalManager getInstance() {
-        if (instance == null) {
-            synchronized (PortalManager.class) {
-                if (instance == null) instance = new PortalManager();
-            }
-        }
-        return instance;
-    }
-
-    private PortalManager() {
+    PortalManager() {
         this.plugin = XmasLegacy.getInstance();
-        this.key = plugin.getNamespacedKey("portal");
     }
 
     public void addPortal(@NotNull String key, @NotNull Location loc, @NotNull ServerType destination) {

@@ -24,7 +24,7 @@ public class EffectListener implements Listener {
 
     public EffectListener() {
         this.plugin = XmasLegacy.getInstance();
-        this.sem = SkillEffectManager.getInstance();
+        this.sem = SkillEffectManager.INSTANCE;
     }
 
     @EventHandler

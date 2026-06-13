@@ -1,11 +1,11 @@
 package xmasLegacy.RoleSwitch;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.papermc.paper.math.Rotation;
 import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -24,21 +24,15 @@ import xmasLegacy.InfoLevel;
 import xmasLegacy.RoleSelection.RoleSelectInterface;
 import xmasLegacy.XmasLegacy;
 
-public class MagicBook {
-    private final ItemStack magicBook;
+public enum MagicBook {
+	INSTANCE;
+
     private final XmasLegacy plugin;
     private final UserManager um;
     private ItemDisplay display;
-    private static MagicBook instance;
 
-    public static MagicBook getInstance() {
-        if (instance == null) instance = new MagicBook();
-        return instance;
-    }
-
-    private MagicBook() {
+    MagicBook() {
         this.plugin = XmasLegacy.getInstance();
-        this.magicBook = magicBook();
         this.um = UserManager.INSTANCE;
     }
 
@@ -69,7 +63,7 @@ public class MagicBook {
     @CanIgnoreReturnValue
     public ItemDisplay BookStand(@NotNull Location loc) {
         NamespacedKey key = plugin.getNamespacedKey("book");
-        return loc.getWorld().spawn(loc.clone().add(0, 1, 0), ItemDisplay.class, i -> {
+        return loc.getWorld().spawn(loc.clone().add(0, 1.5, 0).setRotation(Rotation.rotation(90, 10)), ItemDisplay.class, i -> {
             i.setItemStack(magicBook());
             i.setBrightness(new Display.Brightness(8, 8));
             Transformation tr = i.getTransformation();

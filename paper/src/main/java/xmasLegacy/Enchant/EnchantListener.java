@@ -43,8 +43,8 @@ public class EnchantListener implements Listener {
 
 	public EnchantListener() {
 		this.plugin = XmasLegacy.getInstance();
-		this.ecm = EnchantManager.getInstance();
-		this.sem = SkillEffectManager.getInstance();
+		this.ecm = EnchantManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
 		this.um = UserManager.INSTANCE;
 		this.bm = BagManager.INSTANCE;
 	}

@@ -2,6 +2,7 @@ package xmasLegacy.FirstRoleManager;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmasLegacy.FirstRoleManager.Farmer.Farmer;
 import xmasLegacy.FirstRoleManager.Gatherer.Gatherer;
@@ -34,7 +35,9 @@ public enum FirstRoleManager {
 	}
 
     @Contract(value = "null -> null", pure = true)
-    public @NotNull AbstractFirstRole getRoleInstance(Roles role) {
-        return this.roleInstance.get(role);
+    @SuppressWarnings("unchecked")
+    public <R extends AbstractFirstRole> @Nullable R getRoleInstance(@Nullable Roles role) {
+	    if (role == null) return null;
+        return (R) this.roleInstance.get(role);
     }
 }

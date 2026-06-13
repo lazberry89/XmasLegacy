@@ -16,8 +16,9 @@ import xmasLegacy.XmasLegacy;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused, FieldCanBeLocal")
-public class EnchantManager {
+public enum EnchantManager {
+	INSTANCE;
+
     private final NamespacedKey key;
 
     private static final Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");
@@ -36,17 +37,8 @@ public class EnchantManager {
             LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10
     );
 
-    private final XmasLegacy plugin;
-    private static EnchantManager instance;
-
-    public static EnchantManager getInstance() {
-        if (instance == null) instance = new EnchantManager();
-        return instance;
-    }
-
-    private EnchantManager() {
-        this.plugin = XmasLegacy.getInstance();
-        this.key = plugin.getNamespacedKey("enchant");
+    EnchantManager() {
+        this.key = XmasLegacy.getInstance().getNamespacedKey("enchant");
     }
 
     @Range(from = 1, to = 10)
@@ -99,7 +91,7 @@ public class EnchantManager {
     /**
      * 대망의 확률 연산 강화 메서드
      */
-    public ResultType enchant(ItemStack item) {
+    public ResultType enchant(@Nullable ItemStack item) {
         if (item == null) return ResultType.FAIL;
         if (!isEnchantable(item)) return ResultType.FAIL;
 

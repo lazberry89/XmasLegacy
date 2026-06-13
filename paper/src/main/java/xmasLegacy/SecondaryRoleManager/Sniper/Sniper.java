@@ -14,6 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -30,7 +31,7 @@ import xmasLegacy.Utils.ItemBuilder;
 
 import java.util.*;
 
-@SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal")
+
 public class Sniper extends AbstractSecondRole {
     private final @NotNull PartyManager pm;
     private final @NotNull SkillEffectManager sem;
@@ -39,26 +40,14 @@ public class Sniper extends AbstractSecondRole {
     private final @NotNull Set<UUID> isReloading = new HashSet<>();
     private final @NotNull Set<UUID> magicalBullet = new HashSet<>();
     private final @NotNull Map<UUID, BulletType> lastHitRecord = new HashMap<>();
-
-    private static volatile Sniper instance;
-
-    public BulletType getLastHitType(Entity entity) {
+    public @Nullable BulletType getLastHitType(Entity entity) {
         return lastHitRecord.get(entity.getUniqueId());
     }
 
-	public static Sniper getInstance() {
-		if (instance == null) {
-			synchronized (Sniper.class) {
-				if (instance == null) instance = new Sniper();
-			}
-		}
-		return instance;
-	}
-
-    private Sniper() {
+    public Sniper() {
         super(SecondaryRoles.SNIPER);
         this.pm = PartyManager.INSTANCE;
-        this.sem = SkillEffectManager.getInstance();
+        this.sem = SkillEffectManager.INSTANCE;
     }
 
     public @Nullable BulletType getReloaded(UUID uuid) {
@@ -67,7 +56,7 @@ public class Sniper extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Sniper.getInstance(), emblem, EmblemType.TARGET);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -99,7 +88,7 @@ public class Sniper extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Sniper.getInstance(), emblem, EmblemType.RANGE);
+        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
         Bukkit.getPluginManager().callEvent(skillUse);
         if (skillUse.isCancelled()) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
@@ -165,7 +154,7 @@ public class Sniper extends AbstractSecondRole {
     }
 
     public void activateSeal(LivingEntity target) {
-        Location loc = target.getLocation().clone(); // 타겟의 중심 위치
+        Location loc = target.getLocation().clone();
         World world = loc.getWorld();
         if (world == null) return;
 
@@ -289,8 +278,8 @@ public class Sniper extends AbstractSecondRole {
                     return;
                 }
 
-                org.bukkit.util.RayTraceResult blockTrace = p.getWorld().rayTraceBlocks(currentLoc, direction, speedPerTick, FluidCollisionMode.NEVER, true);
-                org.bukkit.util.RayTraceResult entityTrace = p.getWorld().rayTraceEntities(currentLoc, direction, speedPerTick, 0.2, (entity) ->
+                RayTraceResult blockTrace = p.getWorld().rayTraceBlocks(currentLoc, direction, speedPerTick, FluidCollisionMode.NEVER, true);
+                RayTraceResult entityTrace = p.getWorld().rayTraceEntities(currentLoc, direction, speedPerTick, 0.2, (entity) ->
                         entity instanceof LivingEntity && !entity.equals(p) && !pm.isParty(uuid, entity.getUniqueId())
                 );
 
@@ -318,7 +307,6 @@ public class Sniper extends AbstractSecondRole {
                     p.getWorld().spawnParticle(Particle.DUST, currentLoc, 1, 0, 0, 0, 0, getTrailColor(BulletType.STUN));
                 }
 
-                // 4. 💥 무언가에 부딪혔을 때의 처리
                 if (hitSomething) {
                     if (hitTarget != null) {
                         sem.StunEntity(hitTarget.getUniqueId(), 40L);
@@ -326,12 +314,10 @@ public class Sniper extends AbstractSecondRole {
 
                         hitTarget.damage(damage, p);
 
-                        // 적중 피드백 연출
                         p.sendActionBar(ColorUtils.chat("&e&lSTUN HIT! &f- " + hitTarget.getName()));
                         p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 0.5f);
                         hitTarget.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, hitTarget.getLocation().add(0, 1, 0), 1);
                     } else {
-                        // 블록(벽)에 맞았을 때 연출
                         p.getWorld().spawnParticle(Particle.BLOCK, currentLoc, 10, 0.1, 0.1, 0.1, 0.1, Material.STONE.createBlockData());
                         p.getWorld().playSound(currentLoc, Sound.BLOCK_ANVIL_LAND, 0.5f, 1.5f);
                     }

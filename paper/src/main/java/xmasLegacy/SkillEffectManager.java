@@ -16,21 +16,16 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
-@SuppressWarnings("unused")
-public class SkillEffectManager {
+public enum SkillEffectManager {
+	INSTANCE;
+
     private final XmasLegacy plugin;
     private final Map<UUID, Long> stun = new HashMap<>();
     private final Set<UUID> activeStunTimers = new HashSet<>();
     private final Set<LivingEntity> hideMap = new HashSet<>();
-    private static SkillEffectManager instance;
 
-    public SkillEffectManager() {
+    SkillEffectManager() {
         this.plugin = XmasLegacy.getInstance();
-    }
-
-    public static SkillEffectManager getInstance() {
-        if (instance == null) instance = new SkillEffectManager();
-        return instance;
     }
 
     public void hideEntity(LivingEntity le) {
@@ -313,38 +308,7 @@ public class SkillEffectManager {
     }
 
     public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc) {
-        var haki = OraxenItems.getItemById("haki_wave");
-        if (haki == null) {
-            plugin.getSLF4JLogger().error("Oraxen id is not Correct! : \"haki_wave\"");
-            return;
-        }
-        ItemStack hakiWave = haki.build();
-
-        Location spawnLoc = loc.clone().add(0, 1.5, 0);
-        spawnLoc.setPitch(0.0f);
-
-        ItemDisplay display = spawnLoc.getWorld().spawn(spawnLoc, ItemDisplay.class, w -> {
-            w.setItemStack(hakiWave);
-            w.setBrightness(new Display.Brightness(15, 15));
-            w.setBillboard(Display.Billboard.FIXED);
-
-            w.setInterpolationDuration(6);
-            w.setInterpolationDelay(0);
-
-            Transformation init = w.getTransformation();
-            init.getScale().set(1.0f, 1.0f, 1.0f);
-            w.setTransformation(init);
-        });
-
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (!display.isValid()) return;
-
-            Transformation targetTrans = display.getTransformation();
-            targetTrans.getScale().set(15.0f, 1.0f, 15.0f);
-            display.setTransformation(targetTrans);
-        }, 1L);
-
-        Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
+        startHakiWave(plugin, loc, "haki_wave");
     }
 
     public static void startHakiWave(XmasLegacy plugin, @NotNull Location loc, String model) {

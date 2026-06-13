@@ -6,12 +6,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import xmasLegacy.Commands;
-import xmasLegacy.SecondaryRoleManager.Berserker;
-import xmasLegacy.SecondaryRoleManager.Defender;
-import xmasLegacy.SecondaryRoleManager.Fighter;
-import xmasLegacy.SecondaryRoleManager.Guardian;
+import xmasLegacy.FirstRoleManager.FirstRoleManager;
+import xmasLegacy.SecondaryRoleManager.*;
 import xmasLegacy.SecondaryRoleManager.Sniper.Sniper;
+
+import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
 @TestOnly
 @Commands(command = "second")
@@ -23,11 +24,12 @@ public class SecondTestCommand implements CommandExecutor {
 	private final Sniper sniper;
 
     public SecondTestCommand() {
-		this.berserker = Berserker.getInstance();
-		this.defender = Defender.getInstance();
-		this.guardian = Guardian.getInstance();
-		this.fighter = Fighter.getInstance();
-		this.sniper = Sniper.getInstance();
+	    @NotNull SecondRoleManager srm = SecondRoleManager.INSTANCE;
+		this.berserker = srm.getRoleInstance(BERSERKER);
+		this.defender = srm.getRoleInstance(DEFENDER);
+		this.guardian = srm.getRoleInstance(GUARDIAN);
+		this.fighter = srm.getRoleInstance(FIGHTER);
+		this.sniper = srm.getRoleInstance(SNIPER);;
 	}
 
 	@Override

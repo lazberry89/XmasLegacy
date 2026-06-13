@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Commands(command = "filter")
-public class RuleCommandManager implements CommandExecutor, TabCompleter {
+public class RuleCommand implements CommandExecutor, TabCompleter {
     private final RuleManager RM;
 
-    public RuleCommandManager() {
+    public RuleCommand() {
         this.RM = RuleManager.INSTANCE;
     }
 

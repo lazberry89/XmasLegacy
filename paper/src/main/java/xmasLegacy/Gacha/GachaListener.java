@@ -26,7 +26,7 @@ public class GachaListener implements Listener {
 
     public GachaListener() {
         this.plugin = XmasLegacy.getInstance();
-        this.GM = GachaManager.getInstance();
+        this.GM = GachaManager.INSTANCE;
     }
 
     @EventHandler

@@ -134,7 +134,7 @@ public abstract class AbstractFirstRole implements UsingEnergy {
         }
         velocity.setY(finalY);
 
-        SkillEffectManager.getInstance().followParticle(p, Particle.END_ROD, 10);
+        SkillEffectManager.INSTANCE.followParticle(p, Particle.END_ROD, 10);
         p.setVelocity(velocity);
 
         this.dashCount.put(uuid, count - 1);

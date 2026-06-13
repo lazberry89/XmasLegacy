@@ -13,25 +13,18 @@ import xmasLegacy.XmasLegacy;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@SuppressWarnings("unused, FieldCanBeLocal")
-public class GachaManager {
-	private final XmasLegacy plugin;
-	private final Map<String, Gacha> normalGachas = new HashMap<>();
-	private final Map<String, Gacha> highEndGachas = new HashMap<>();
-	private final Map<String, Gacha> chromaticBundle = new HashMap<>();
-	private final Map<String, Gacha> chromaticBox = new HashMap<>();
-	private static GachaManager instance;
+public enum GachaManager {
+	INSTANCE;
 
-	public static GachaManager getInstance() {
-		if (instance == null) {
-			instance = new GachaManager();
-		}
-		return instance;
-	}
+	private final @NotNull XmasLegacy plugin;
+	private final @NotNull Map<String, Gacha> normalGachas = new HashMap<>();
+	private final @NotNull Map<String, Gacha> highEndGachas = new HashMap<>();
+	private final @NotNull Map<String, Gacha> chromaticBundle = new HashMap<>();
+	private final @NotNull Map<String, Gacha> chromaticBox = new HashMap<>();
 
-	private final List<ItemStack> bundles = new ArrayList<>();
+	private final @NotNull List<ItemStack> bundles = new ArrayList<>();
 
-	private GachaManager() {
+	GachaManager() {
 		this.plugin = XmasLegacy.getInstance();
 		appendBundles();
 	}
@@ -125,12 +118,6 @@ public class GachaManager {
 						.toList();
 			}
 		}
-	}
-	@Contract(pure = true)
-	public @NotNull List<Gacha> getAllSortedByChance() {
-		return getAll().stream()
-				.sorted((g1, g2) -> Double.compare(g2.getChance(), g1.getChance()))
-				.toList();
 	}
 
 	public ItemStack Bundle() {

@@ -10,23 +10,19 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.Utils.ItemBuilder;
 import xmasLegacy.XmasLegacy;
 
-@SuppressWarnings("FieldCanBeLocal, unused")
 public class GachaStockInterface implements InventoryHolder {
-    private final XmasLegacy plugin;
-    private final GachaManager GM;
-    private final Inventory inv;
-    private final BundleType type;
+	private final @NotNull Inventory inv;
+    private final @NotNull BundleType type;
 
     public GachaStockInterface(XmasLegacy plugin, @NotNull BundleType type) {
-        this.plugin = plugin;
         this.type = type;
-        this.GM = GachaManager.getInstance();
-        this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat(String.format("&c&l%s : %d(개) / %d(전체)" ,type.getKor() ,GM.getAllSortedByChance(type).size(), GM.getAll().size())));
+	    var gm = GachaManager.INSTANCE;
+        this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat(String.format("&c&l%s : %d(개) / %d(전체)" ,type.getKor() , gm.getAllSortedByChance(type).size(), gm.getAll().size())));
         ItemStack none = ItemBuilder.of(plugin, Material.BARRIER).setName(ColorUtils.chat("")).setLore(ColorUtils.chat("")).hideAllFlags().build();
-        if (GM.getAllSortedByChance(type).isEmpty()) {
+        if (gm.getAllSortedByChance(type).isEmpty()) {
             this.inv.setItem(0, none);
         } else {
-            for (Gacha gacha : GM.getAllSortedByChance(type)) {
+            for (Gacha gacha : gm.getAllSortedByChance(type)) {
                 this.inv.addItem(gacha.getShowItem());
             }
         }

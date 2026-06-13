@@ -23,29 +23,18 @@ import java.util.UUID;
 
 @SuppressWarnings("DuplicatedCode, unused")
 public class Defender extends AbstractSecondRole {
-	private final SkillEffectManager SEM;
-	private final PartyManager PM;
+	private final @NotNull SkillEffectManager sem;
+	private final @NotNull PartyManager pm;
 
-	private static volatile Defender instance;
-
-	public static Defender getInstance() {
-		if (instance == null) {
-			synchronized (Defender.class) {
-				if (instance == null) instance = new Defender();
-			}
-		}
-		return instance;
-	}
-
-	private Defender() {
+	public Defender() {
 		super(SecondaryRoles.DEFENDER);
-		this.SEM = SkillEffectManager.getInstance();
-		this.PM = PartyManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
+		this.pm = PartyManager.INSTANCE;
 	}
 
 	@Override
 	public void useFirstSkill(@NotNull Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Defender.getInstance(), emblem, EmblemType.TARGET);
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
 		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 
@@ -98,10 +87,10 @@ public class Defender extends AbstractSecondRole {
 
 					center.getNearbyEntities(0.8, 0.8, 0.8).forEach(e -> {
 						if (e instanceof LivingEntity target && !target.equals(p)) {
-							if (!PM.isParty(p.getUniqueId(), target.getUniqueId())) {
+							if (!pm.isParty(p.getUniqueId(), target.getUniqueId())) {
 								if (hitList.add(target.getUniqueId())) {
 									target.damage(5.0, p);
-									SEM.StunEntity(target.getUniqueId(), 30L);
+									sem.StunEntity(target.getUniqueId(), 30L);
 
 									target.getWorld().spawnParticle(Particle.SOUL, target.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.05);
 									target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 1.0f, 1.3f);
@@ -153,7 +142,7 @@ public class Defender extends AbstractSecondRole {
 
 	@Override
 	public void useSecondSkill(@NotNull Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, Defender.getInstance(), emblem, EmblemType.RANGE);
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
 		Bukkit.getPluginManager().callEvent(skillUse);
 		if (skillUse.isCancelled()) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
@@ -170,7 +159,7 @@ public class Defender extends AbstractSecondRole {
 
 		p.getNearbyEntities(5, 5, 5).stream()
 				.filter(e -> e != p && e instanceof LivingEntity)
-				.filter(e -> !PM.isParty(p.getUniqueId(), e.getUniqueId()))
+				.filter(e -> !pm.isParty(p.getUniqueId(), e.getUniqueId()))
 				.map(e -> (LivingEntity) e)
 				.forEach(le -> {
 					le.damage(8.0, p);

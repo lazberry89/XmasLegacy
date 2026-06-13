@@ -22,7 +22,7 @@ public class EnchantUserInterface implements InventoryHolder {
     private final XmasLegacy plugin;
 
     public EnchantUserInterface() {
-        this.ecm = EnchantManager.getInstance();
+        this.ecm = EnchantManager.INSTANCE;
         this.plugin = XmasLegacy.getInstance();
         this.inv = Bukkit.createInventory(this, 27, ColorUtils.chat("&c&l[ 장비 강화 ]"));
         ItemStack bg = ItemBuilder.of(plugin, Material.GRAY_STAINED_GLASS_PANE)

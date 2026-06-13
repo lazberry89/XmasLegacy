@@ -49,23 +49,20 @@ public class ServerTransfer {
                 .build();
     }
 
-    private static @NotNull Component reloadComponent(@NotNull UserManager um) {
-        return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
-                .hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
-                .clickEvent(ClickEvent.callback(audience -> {
-                    if (audience instanceof Player t) {
-                        um.onJoinAsync(t.getUniqueId(), t.getName(), true).whenComplete((reloadedUser, ex) -> Bukkit.getScheduler().runTask(plugin, () -> {
-                            if (ex != null || reloadedUser == null) {
-                                t.sendMessage(ColorUtils.chat(Alert.RED + " 다시 로드하는 데 실패했습니다. 관리자에게 문의하세요."));
-                            } else {
-                                plugin.infoMsg(InfoLevel.INFO, t, "유저정보가 성공적으로 로드되었습니다!");
-                                UserTagManager.createHoverTag(t, reloadedUser);
-                                UserTagManager.runTask();
-                            }
-                        }));
-                    }
-                }, option()));
-    }
+	public static void sendReloadNotice(@NotNull Player player) {
+		if (player.isOnline())
+			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보가 로드되지 않았습니다.").append(reloadComponent()));
+	}
+
+	private static @NotNull Component reloadComponent() {
+		return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
+				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
+				.clickEvent(ClickEvent.callback(audience -> {
+					if (audience instanceof Player t && t.isOnline()) {
+						loadUser(t, true);
+					}
+				}, option()));
+	}
 
     private static void sendMsg(@NotNull Player player, @NotNull User user) {
         Bukkit.getScheduler().runTask(plugin, () -> {
@@ -91,24 +88,24 @@ public class ServerTransfer {
         });
     }
 
-    private static void sendError(@NotNull Player player, Throwable throwable, @NotNull UserManager um) {
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            if (!player.isOnline()) return;
-            player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다.").append(reloadComponent(um)));
-            plugin.getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
-        });
-    }
+	private static void sendError(@NotNull Player player, Throwable throwable) {
+		Bukkit.getScheduler().runTask(plugin, () -> {
+			if (!player.isOnline()) return;
+			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다.").append(reloadComponent()));
+			plugin.getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
+		});
+	}
 
-    public static void loadUser(@NotNull Player player, boolean msg) {
-        @NotNull var um = UserManager.INSTANCE;
-        um.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
-            if (throwable != null || user == null) {
-                if (msg) sendError(player, throwable, um);
-                return;
-            }
-            if (msg) sendMsg(player, user);
-        });
-    }
+	public static void loadUser(@NotNull Player player, boolean msg) {
+		@NotNull var um = UserManager.INSTANCE;
+		um.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
+			if (throwable != null || user == null) {
+				if (msg) sendError(player, throwable);
+				return;
+			}
+			if (msg) sendMsg(player, user);
+		});
+	}
 
     public static boolean transfer(@NotNull ServerType toServer, @NotNull Player... players) {
         return Arrays.stream(players).allMatch(p -> sendBungeePacket(toServer, p));
