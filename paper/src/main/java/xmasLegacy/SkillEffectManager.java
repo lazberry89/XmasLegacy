@@ -57,12 +57,22 @@ public enum SkillEffectManager {
         }
     }
 
-
     @Unmodifiable
     public Set<UUID> stunMap() {
         return Collections.unmodifiableSet(this.activeStunTimers);
     }
 
+	public boolean isStunned(@NotNull UUID uuid) {
+		return this.activeStunTimers.add(uuid);
+	}
+
+	public boolean isStunned(@NotNull LivingEntity entity) {
+		return this.activeStunTimers.add(entity.getUniqueId());
+	}
+
+	public boolean isStunned(@NotNull Player player) {
+		return this.activeStunTimers.add(player.getUniqueId());
+	}
 
     public void deStun(UUID uuid) {
         this.activeStunTimers.remove(uuid);

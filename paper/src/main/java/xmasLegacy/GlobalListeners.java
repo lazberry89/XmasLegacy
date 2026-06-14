@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xmasLegacy.Enchant.EnchantUserInterface;
 
 import java.util.List;
 
@@ -33,7 +34,8 @@ public class GlobalListeners implements Listener {
 
     private boolean isCombatItem(@Nullable ItemStack item) {
         return item != null && item.hasItemMeta() &&
-                item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.STRING);
+                item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.STRING)
+				|| item != null && item.getItemMeta().getPersistentDataContainer().has(this.key2, PersistentDataType.STRING);
     }
 
     @EventHandler
@@ -80,7 +82,8 @@ public class GlobalListeners implements Listener {
         Inventory topInv = e.getView().getTopInventory();
 
         if (topInv.getType() == InventoryType.PLAYER
-                || topInv.getType() == InventoryType.CRAFTING) return; //TODO 이후 상점 혹은 강화 인터페이스만 허용(getHolder()사용)
+                || topInv.getType() == InventoryType.CRAFTING
+                || topInv.getHolder() instanceof EnchantUserInterface) return; //TODO 이후 상점 혹은 강화 인터페이스만 허용(getHolder()사용)
 
         Player p = (Player) e.getWhoClicked();
         ItemStack current = e.getCurrentItem();

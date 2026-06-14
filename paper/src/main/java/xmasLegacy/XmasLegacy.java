@@ -81,7 +81,6 @@ public final class XmasLegacy extends JavaPlugin {
 		UserManager.INSTANCE.getAllUsers().forEach(repository::saveUser);
 		getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
 
-
 		ConsumableManager.INSTANCE.stopCookieTimer();
 
 		BagManager.INSTANCE.saveAllBags();

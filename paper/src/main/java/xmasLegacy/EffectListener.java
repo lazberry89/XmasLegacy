@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -58,6 +60,17 @@ public class EffectListener implements Listener {
             //TODO Roped effect
         }
     }
+
+	@EventHandler
+	public void deStunWhenDead(EntityDeathEvent e) {
+		LivingEntity victim = e.getEntity();
+		if (sem.isStunned(victim)) sem.deStun(victim.getUniqueId());
+	}
+
+	@EventHandler
+	public void deStunWhenPlayerDead(PlayerDeathEvent e) {
+
+	}
 
     @EventHandler
     public void hideHiddenEntities(PlayerJoinEvent e) {

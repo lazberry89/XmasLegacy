@@ -178,11 +178,11 @@ public class Guardian extends AbstractSecondRole {
                 }
 
                 if (isAlly) {
-                    target.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 2, 0, true, false, false));
-                    target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2, 0, true, false, false));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 2, 1, true, false, false));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2, 1, true, false, false));
                 } else {
                     target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2, 1, true, false, false));
-                    target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2, 0, true, false, false));
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2, 1, true, false, false));
                 }
                 ticks++;
             }
