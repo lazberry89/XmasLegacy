@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.Roles;
@@ -258,14 +259,18 @@ public class SecondaryRoleListener implements Listener {
 			case "range" -> {
 				if (role instanceof Roles fr) rlm.getRoleInstance(fr).useSecondSkill(p);
 				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useSecondSkill(p);
-				else plugin.getSLF4JLogger().error("Role type mismatch. Role: {}", role.name());
+				else logger(role.name());
 			}
 			case "target" -> {
 				if (role instanceof Roles fr) rlm.getRoleInstance(fr).useFirstSkill(p);
 				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useFirstSkill(p);
-				else plugin.getSLF4JLogger().error("Role type mismatch. Role: {}", role.name());
+				else logger(role.name());
 			}
 			default -> plugin.getSLF4JLogger().error("Emblem type mismatch. Type: {}", type);
 		}
+	}
+
+	private void logger(@NotNull String role) {
+		plugin.getSLF4JLogger().error("Role type mismatch. Role: {}", role);
 	}
 }

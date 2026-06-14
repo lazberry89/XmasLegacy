@@ -21,16 +21,8 @@ public class HunterZombie extends AbstractUnratedMobs implements CustomMob, Unra
     private final @NotNull MobKey key;
     private final @NotNull ItemStack weapon;
     private final @NotNull ItemStack armor;
-    private static @Nullable HunterZombie instance;
 
-    @Contract(pure = true)
-    public static HunterZombie getInstance() {
-        if (instance == null) instance = new HunterZombie();
-        return instance;
-    }
-
-    @ApiStatus.Internal
-    private HunterZombie() {
+    public HunterZombie() {
         super();
         this.key = MobKey.HUNTER_ZOMBIE;
         this.weapon = weaponMaker();

@@ -57,8 +57,17 @@ commands:
   prefix: #0
     usage: /prefix inv
     description: 칭호를 설정합니다.
+
   파티:
     usage: /파티 <생성 | 초대 | 수락 | 거절 | 나가기> <Player>
+    description: 파티를 관리합니다.
+
+  party:
+    usage: /party <create | invite | leave | expel> <Player>
+    description: 파티를 관리합니다.
+
+  pt:
+    usage: /pt <create | invite | leave | expel> <Player>
     description: 파티를 관리합니다.
 
   role: #0

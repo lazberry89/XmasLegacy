@@ -215,7 +215,7 @@ public enum RegionManager {
 			regions.put(chunkKey, region);
 			userRegionsMap.computeIfAbsent(owner, k -> new ArrayList<>()).add(region);
 		}
-		plugin.getSLF4JLogger().info("[Region] 총 {}개의 구역 데이터를 성공적으로 로드했습니다.", regions.size());
+		plugin.getSLF4JLogger().info("총 {}개의 구역 데이터를 성공적으로 로드했습니다.", regions.size());
 	}
 
 	public void addRegion(Player p, Region region) {
@@ -251,7 +251,7 @@ public enum RegionManager {
 					userRegionsMap.remove(ownerUUID);
 				}
 				saveAll();
-				plugin.getSLF4JLogger().info("[Region] 구역이 삭제되었습니다. ID: {}", region.Id());
+				plugin.getSLF4JLogger().info("구역이 삭제되었습니다. ID: {}", region.Id());
 			}
 		}
 	}

@@ -31,6 +31,10 @@ import xmasLegacy.ServerPrefix.ChatPrefixListener;
 import xmasLegacy.ServerPrefix.UserTagManager;
 import xmasLegacy.TransferPortal.PortalManager;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("FieldCanBeLocal, DataFlowIssue")
 public final class XmasLegacy extends JavaPlugin {
 	private static XmasLegacy instance;
@@ -147,7 +151,7 @@ public final class XmasLegacy extends JavaPlugin {
 		java.awt.Toolkit.getDefaultToolkit().beep();
 	}
 
-	public void infoMsg(InfoLevel level, @NotNull Player p, String msg) {
+	public void infoMsg(@NotNull InfoLevel level, @NotNull Player p, @NotNull String msg) {
 		p.sendMessage(ColorUtils.chat(level.Prefix() + " " + msg));
 		p.playSound(p, level.Sound(), 1.0f, 1.0f);
 	}
@@ -192,16 +196,22 @@ public final class XmasLegacy extends JavaPlugin {
 				if (clazz.isInterface() || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) continue;
 
 				Commands autoCommand = clazz.getAnnotation(Commands.class);
-				String cmdName = autoCommand.command();
 
-				var pluginCommand = this.getCommand(cmdName);
-				if (pluginCommand == null) continue;
+				List<String> allCommands = new ArrayList<>();
+				allCommands.add(autoCommand.command());
+				allCommands.addAll(Arrays.asList(autoCommand.aliases()));
 
 				var commandInstance = clazz.getDeclaredConstructor().newInstance();
-				pluginCommand.setExecutor((CommandExecutor) commandInstance);
 
-				if (TabCompleter.class.isAssignableFrom(clazz)) {
-					pluginCommand.setTabCompleter((TabCompleter) commandInstance);
+				for (String cmdName : allCommands) {
+					var pluginCommand = this.getCommand(cmdName);
+					if (pluginCommand == null) continue;
+
+					pluginCommand.setExecutor((CommandExecutor) commandInstance);
+
+					if (TabCompleter.class.isAssignableFrom(clazz))
+						pluginCommand.setTabCompleter((TabCompleter) commandInstance);
+
 					this.getSLF4JLogger().info("Command {} Automatically registered", cmdName);
 				}
 			}

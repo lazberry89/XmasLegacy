@@ -14,16 +14,8 @@ import xmasLegacy.Utils.GlowUtils;
 @SuppressWarnings("unused")
 public class IceCube extends AbstractUnratedMobs implements CustomMob, UnratedMob {
     private final @NotNull MobKey key;
-    private static @Nullable IceCube instance;
 
-    @Contract(pure = true)
-    public static IceCube getInstance() {
-        if (instance == null) instance = new IceCube();
-        return instance;
-    }
-
-    @ApiStatus.Internal
-    private IceCube() {
+    public IceCube() {
         super();
         this.key = MobKey.ICE_CUBE;
     }

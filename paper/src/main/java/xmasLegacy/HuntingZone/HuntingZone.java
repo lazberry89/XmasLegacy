@@ -8,16 +8,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xmasLegacy.HuntingZone.CustomMobs.MobKey;
 import xmasLegacy.HuntingZone.CustomMobs.MobRepository;
 import xmasLegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@SuppressWarnings("unused")
 public class HuntingZone implements HZone {
 	private final @NotNull ZoneType type;
 	private final @NotNull String worldName;
@@ -25,8 +22,7 @@ public class HuntingZone implements HZone {
 	private final @NotNull List<MobKey> mobs;
 	private final @NotNull Set<Long> zones;
 	private final @NotNull Set<MobKey> mobKeySet;
-	private final int maxSpawn = 100;
-	private boolean isEnabled = false;
+    private boolean isEnabled = false;
 
 	public HuntingZone(@NotNull ZoneType type, @NotNull String worldName) {
 		this.zones = new HashSet<>();
@@ -99,7 +95,7 @@ public class HuntingZone implements HZone {
 		return this.isEnabled;
 	}
 	public int getMaxSpawn() {
-		return this.maxSpawn;
+        return 100;
 	}
 
 	public int getAliveMobCount() {
@@ -123,9 +119,9 @@ public class HuntingZone implements HZone {
 		return totalCount;
 	}
 
-	private boolean isCustomMobOfThisZone(LivingEntity entity) {
+	private boolean isCustomMobOfThisZone(@Nullable LivingEntity entity) {
 		for (MobKey mobKey : this.mobKeySet) {
-			CustomMob mob = mobRepository.getMobInstance(mobKey);
+			CustomMob mob = mobRepository.getMobInstance(mobKey, CustomMob.class);
 			if (mob != null && mob.isEntity(entity)) return true;
 		}
 		return false;

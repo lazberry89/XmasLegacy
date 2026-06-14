@@ -9,30 +9,18 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmasLegacy.HuntingZone.CustomMobs.MobKey;
 import xmasLegacy.Utils.GlowUtils;
 import xmasLegacy.Utils.ItemBuilder;
 
-@SuppressWarnings("unused")
 public class IcedZombie extends AbstractUnratedMobs implements CustomMob, UnratedMob {
     private final @NotNull MobKey key;
     private final @NotNull ItemStack chestplate;
     private final @NotNull ItemStack weapon;
-    private static @Nullable IcedZombie instance;
 
-    @Contract(pure = true)
-    public static IcedZombie getInstance() {
-        if (instance == null) instance = new IcedZombie();
-        return instance;
-    }
-
-    @ApiStatus.Internal
-    private IcedZombie() {
+    public IcedZombie() {
         super();
         this.key = MobKey.ICED_ZOMBIE;
         this.chestplate = makeTool(EquipmentSlot.CHEST);

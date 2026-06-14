@@ -24,9 +24,9 @@ public enum MobRepository {
     private final @NotNull IceCube iceCube;
 
     MobRepository() {
-        this.icedZombie = IcedZombie.getInstance();
-        this.hunterZombie = HunterZombie.getInstance();
-        this.iceCube = IceCube.getInstance();
+        this.icedZombie = new IcedZombie();
+        this.hunterZombie = new HunterZombie();
+        this.iceCube = new IceCube();
     }
 
     public void init() {
@@ -43,12 +43,12 @@ public enum MobRepository {
     @CheckReturnValue
     public @NotNull CustomMob[] getMobInstance(@NotNull MobGrade grade) {
         return switch (grade) {
-            case UNRATED -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractUnratedMobs).toArray(CustomMob[]::new);
-            case NAMED -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractNamedMobs).toArray(CustomMob[]::new);
-            case HONORED -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractHonoredMobs).toArray(CustomMob[]::new);
-            case ELITE -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractEliteMobs).toArray(CustomMob[]::new);
-            case MYTHIC -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractMythicMobs).toArray(CustomMob[]::new);
-            case BOSS -> this.mobInstances.values().stream().filter(i -> i instanceof AbstractBossMobs).toArray(CustomMob[]::new);
+            case UNRATED -> this.mobInstances.values().stream().filter(u -> u instanceof AbstractUnratedMobs).toArray(CustomMob[]::new);
+            case NAMED -> this.mobInstances.values().stream().filter(n -> n instanceof AbstractNamedMobs).toArray(CustomMob[]::new);
+            case HONORED -> this.mobInstances.values().stream().filter(h -> h instanceof AbstractHonoredMobs).toArray(CustomMob[]::new);
+            case ELITE -> this.mobInstances.values().stream().filter(e -> e instanceof AbstractEliteMobs).toArray(CustomMob[]::new);
+            case MYTHIC -> this.mobInstances.values().stream().filter(m -> m instanceof AbstractMythicMobs).toArray(CustomMob[]::new);
+            case BOSS -> this.mobInstances.values().stream().filter(b -> b instanceof AbstractBossMobs).toArray(CustomMob[]::new);
         };
     }
 
@@ -61,11 +61,12 @@ public enum MobRepository {
     }
 
 	@CheckReturnValue
-	public @Nullable CustomMob getMobInstance(MobKey key) {
-		return this.mobInstances.get(key);
+	public <C extends @NotNull CustomMob> @Nullable C getMobInstance(@NotNull MobKey key, @NotNull Class<C> clazz) {
+        var mob = this.mobInstances.get(key);
+        return mob != null ? clazz.cast(mob) : null;
 	}
 
-	public CustomMob[] getMobInstance(ZoneType type) {
+	public @NotNull CustomMob[] getMobInstance(@NotNull ZoneType type) {
 		return switch (type) {
 			case ICE_STAGE ->
 				new CustomMob[] {

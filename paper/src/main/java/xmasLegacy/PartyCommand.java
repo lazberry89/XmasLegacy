@@ -24,8 +24,9 @@ import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@Commands(command = "파티")
+@Commands(command = "파티", aliases = {"party", "pt"})
 @SuppressWarnings("unused")
 @UsedByReflection
 public class PartyCommand implements CommandExecutor, TabCompleter {
@@ -250,8 +251,14 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
 		if (args.length == 1) {
-			List<String> completions = List.of("도움", "생성", "멤버", "나가기", "초대", "참가", "추방");
-			return completions.stream()
+			String lowerLabel = label.toLowerCase();
+
+			if (lowerLabel.equals("party") || lowerLabel.equals("pt"))
+				return Stream.of("help", "create", "member", "leave", "invite", "join", "expel")
+						.filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
+						.collect(Collectors.toList());
+
+			return Stream.of("도움", "생성", "멤버", "나가기", "초대", "참가", "추방")
 					.filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
 					.collect(Collectors.toList());
 		}
