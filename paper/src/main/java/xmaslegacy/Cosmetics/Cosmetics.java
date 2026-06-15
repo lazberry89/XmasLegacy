@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import xmaslegacy.Cosmetics.CosmeticType;
 import xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;

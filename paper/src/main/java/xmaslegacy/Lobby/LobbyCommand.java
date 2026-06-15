@@ -82,7 +82,6 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                                 p.sendMessage(ColorUtils.chat(Alert.RED + " 로드 중 오류가 발생했거나 스폰 설정이 없습니다."));
                                 p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
                             }
-                            plugin.playConsoleSound();
                     }));
                 }
                 default -> {
