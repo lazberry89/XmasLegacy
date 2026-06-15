@@ -21,7 +21,7 @@ public enum UserManager {
 	INSTANCE;
 
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
-	private final @NotNull UserRepository repository = new SqlUserRepository();
+	private final @NotNull UserRepository repository = SqlUserRepository.INSTANCE;
 	private @NotNull File rootDataFolder = new File("plugins/XmasLegacy");
 	private static final @NotNull Logger logger = LoggerFactory.getLogger(UserManager.class);
 
@@ -36,9 +36,7 @@ public enum UserManager {
 	public void addUser(User user) {
         users.put(user.getUUID(), user);
     }
-    public void removeUser(UUID p) {
-        users.remove(p);
-    }
+    //public void removeUser(UUID p) {users.remove(p);}
     public User getUser(UUID p) {
 	    return users.get(p);
     }
@@ -85,6 +83,7 @@ public enum UserManager {
 		return loaded;
 	}
 
+	/*
 	@Blocking
 	public void onQuit(UUID uuid) {
 		User u = users.remove(uuid);
@@ -92,6 +91,7 @@ public enum UserManager {
 			repository.saveUser(u);
 		}
 	}
+	*/
 
 	@NonBlocking
 	public CompletableFuture<User> onJoinAsync(UUID uuid, String name, boolean isFloodgate) {
@@ -122,8 +122,8 @@ public enum UserManager {
 					logger.error("Failed to sync restored user {} back to DB.", uuid, e);
 				}
 			}
-
-			users.put(uuid, loaded);
+			this.addUser(loaded);
+			//users.put(uuid, loaded);
 			return loaded;
 		});
 	}

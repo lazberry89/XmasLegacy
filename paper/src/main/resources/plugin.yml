@@ -1,7 +1,7 @@
 name: XmasLegacy
 version: '${version}'
 
-main: xmasLegacy.XmasLegacy
+main: xmaslegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
 depend: [floodgate]

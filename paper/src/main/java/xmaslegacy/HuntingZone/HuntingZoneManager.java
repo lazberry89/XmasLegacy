@@ -1,0 +1,31 @@
+package xmaslegacy.HuntingZone;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public enum HuntingZoneManager {
+	INSTANCE;
+
+	private final Set<HuntingZone> zones = new HashSet<>(3);
+
+	HuntingZoneManager() {}
+
+	public void init() {
+		this.zones.add(new HuntingZone(ZoneType.ICE_STAGE, "world"));
+		this.zones.add(new HuntingZone(ZoneType.SKY_GARDEN, "world"));
+		this.zones.add(new HuntingZone(ZoneType.SOUL_GRAVEYARD, "world"));
+	}
+
+	public @Nullable HuntingZone getZones(ZoneType type) {
+		return this.zones.stream()
+				.filter(i -> i.getType() == type)
+				.findFirst().orElse(null);
+	}
+
+	public @NotNull Set<HuntingZone> getZones() {
+		return this.zones;
+	}
+}

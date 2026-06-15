@@ -10,15 +10,16 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.UUID;
 
-@SuppressWarnings("FieldCanBeLocal")
-public class SqlUserRepository implements UserRepository {
+public enum SqlUserRepository implements UserRepository {
+	INSTANCE;
+
 	private static final Logger logger = LoggerFactory.getLogger(SqlUserRepository.class);
 
 	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
 	private final String user = "root";
-	private final String password = "your_password";
+	private final String password = "your_password"; //TODO need I/O process
 
-	public SqlUserRepository() {
+	SqlUserRepository() {
 		createTable();
 	}
 
