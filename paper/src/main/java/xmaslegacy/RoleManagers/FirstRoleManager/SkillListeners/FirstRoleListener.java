@@ -63,7 +63,7 @@ public class FirstRoleListener implements Listener {
         if (role instanceof Roles fr) {
             AbstractFirstRole afr = frm.getRoleInstance(fr);
 			if (afr == null) return;
-            afr.useDash(p);
+            afr.useDash(p, role);
         }
     }
 

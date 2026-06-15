@@ -33,7 +33,7 @@ public class Merchant extends AbstractFirstRole {
 	public Merchant() {
 		super(Roles.MERCHANT);
 		this.PIF = PriceManager.INSTANCE;
-		this.MSI = MerchantStockInterface.getInstance();
+		this.MSI = MerchantStockInterface.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

@@ -4,8 +4,9 @@ import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import xmaslegacy.Cosmetics.CosmeticType;
 import xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;
@@ -16,9 +17,9 @@ public class Cosmetics {
 	private final ItemStack model;
 	private final String name;
 	private final CosmeticType type;
-	private final Map<UUID, ItemDisplay> display = new HashMap<>();
-	private final Map<UUID, BukkitTask> task = new HashMap<>();
-	private final XmasLegacy plugin = JavaPlugin.getPlugin(XmasLegacy.class);
+	private final @NotNull Map<UUID, ItemDisplay> display = new HashMap<>();
+	private final @NotNull Map<UUID, BukkitTask> task = new HashMap<>();
+	private final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
 
 	public Cosmetics(ItemStack model, String name, CosmeticType type) {
 		this.model = model;

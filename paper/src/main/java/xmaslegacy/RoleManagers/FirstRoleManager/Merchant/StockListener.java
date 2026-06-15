@@ -17,7 +17,7 @@ public class StockListener implements Listener {
 	private final MerchantStockInterface msi;
 
 	public StockListener() {
-		this.msi = MerchantStockInterface.getInstance();
+		this.msi = MerchantStockInterface.INSTANCE;
 	}
 
 	@EventHandler

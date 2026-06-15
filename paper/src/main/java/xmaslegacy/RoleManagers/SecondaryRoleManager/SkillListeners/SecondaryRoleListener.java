@@ -234,7 +234,7 @@ public class SecondaryRoleListener implements Listener {
 		if (role instanceof SecondaryRoles fr) {
 			AbstractSecondRole asr = srm.getRoleInstance(fr);
 			if (asr == null) return;
-			asr.useDash(p);
+			asr.useDash(p, role);
 		}
 	}
 

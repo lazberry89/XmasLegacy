@@ -13,7 +13,7 @@ import xmaslegacy.Env.ConsumableManager;
 import xmaslegacy.HuntingZone.MobSpawnManager;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.PluginUtils.ReflectionManager;
-import xmaslegacy.PluginUtils.ServerType;
+import xmaslegacy.PluginUtils.ServerInitializer;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
 import xmaslegacy.ServerPrefix.ChatPrefixListener;
@@ -46,7 +46,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ChatPrefixListener(), this);
 
 		registerGlobalCommand();
-		initiate();
+		ServerInitializer.initiate(this);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");
@@ -76,37 +76,21 @@ public final class XmasLegacy extends JavaPlugin {
 		RegionManager.INSTANCE.saveAll();
 
 		UserManager.INSTANCE.getAllUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
-		getSLF4JLogger().info("모든 유저 데이터를 자동 저장했습니다.");
+		getSLF4JLogger().info("User info is automatically saved!");
 
 		ConsumableManager.INSTANCE.stopCookieTimer();
 
 		BagManager.INSTANCE.saveAllBags();
-		getSLF4JLogger().info("모든 가방 데이터를 자동 저장했습니다.");
+		getSLF4JLogger().info("Bag data is automatically saved!");
 
-		getSLF4JLogger().info("사냥터 몹 스폰을 종료합니다.");
+		getSLF4JLogger().info("Stopping Hunting Zone spawning.");
 		MobSpawnManager.INSTANCE.stopTask();
 
 		UserTagManager.stopTask();
 	}
 
-	private void initiate() {
-		saveDefaultConfig();
-		ServerType serverType = ServerType.getServerType(getConfig().getString("server-type", ServerType.MAIN.str()));
-		switch (serverType) {
-			case MAIN -> {
-				serverType.getInitializer().setup(this);
-				registerReflection();
-			}
-			case LOBBY -> serverType.getInitializer().setup(this);
-		}
-	}
-
 	public @NotNull NamespacedKey getNamespacedKey(@NotNull String key) {
 		return new NamespacedKey(this, key);
-	}
-
-	public void playConsoleSound() {
-		java.awt.Toolkit.getDefaultToolkit().beep();
 	}
 
 	public void infoMsg(@NotNull InfoLevel level, @NotNull Player p, @NotNull String msg) {
