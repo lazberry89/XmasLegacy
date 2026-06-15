@@ -17,8 +17,9 @@ import xmaslegacy.XmasLegacy;
 import java.util.HashMap;
 import java.util.UUID;
 
-@SuppressWarnings("FieldCanBeLocal")
-public class MerchantStockInterface {
+public enum MerchantStockInterface {
+	INSTANCE;
+
 	private final Component title = ColorUtils.chat("&c&l상점 재고 관리");
 	private final Component titleFarm = ColorUtils.chat("&c&l농부 재고");
 	private final Component titleMiner = ColorUtils.chat("&c&l광부 재고");
@@ -33,20 +34,11 @@ public class MerchantStockInterface {
 	public void setOwner(Player p) {
 		this.owner = p.getUniqueId();
 	}
-	public void setOwner(UUID uuid) {
-		this.owner = uuid;
-	}
 	public @Nullable UUID getOwner() {
 		return this.owner;
 	}
-	private static MerchantStockInterface instance;
 
-	public static MerchantStockInterface getInstance() {
-		if (instance == null) instance = new MerchantStockInterface();
-		return instance;
-	}
-
-	private MerchantStockInterface() {
+	MerchantStockInterface() {
 		this.plugin = XmasLegacy.getInstance();
 		this.em = EconomyManager.INSTANCE;
 		//Main
