@@ -36,18 +36,26 @@ public interface UsingEnergy {
 
 		return true;
 	}
+
 	default void useDash(@NotNull Player p, @NotNull Role role) {
 		UUID uuid = p.getUniqueId();
+
 		dashCount.putIfAbsent(uuid, role.getDashCount());
-		int count = dashCount.getOrDefault(uuid, role.getDashCount());
+
 		ItemStack item = p.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;
 
+		if (p.getCooldown(item) == 0 && dashCount.get(uuid) <= 0) {
+			dashCount.put(uuid, role.getDashCount());
+		}
+
+		int count = dashCount.get(uuid);
 		if (count <= 0 || p.getCooldown(item) > 0) {
 			p.sendActionBar(ColorUtils.chat(Alert.RED + " 대시 사용 불가"));
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 			return;
 		}
+
 		Vector vector = p.getLocation().getDirection();
 		Vector velocity = vector.normalize().multiply(2.0);
 
@@ -62,13 +70,11 @@ public interface UsingEnergy {
 		SkillEffectManager.INSTANCE.followParticle(p, Particle.END_ROD, 10);
 		p.setVelocity(velocity);
 
-		dashCount.put(uuid, count - 1);
-		if (dashCount.getOrDefault(uuid, role.getDashCount()) == 0) {
-			p.setCooldown(item, 20 * 60);
-			dashCount.put(uuid, role.getDashCount());
-		} else {
-			p.setCooldown(item, 10);
-		}
+		int nextCount = count - 1;
+		dashCount.put(uuid, nextCount);
+
+		if (nextCount <= 0) p.setCooldown(item, 20 * 60);
+		else p.setCooldown(item, 10);
 	}
 
 	@CheckReturnValue
