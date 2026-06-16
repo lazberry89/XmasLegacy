@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
 import xmaslegacy.Utils.ItemBuilder;
@@ -20,7 +20,7 @@ public class RoleSelectionInterface implements InventoryHolder {
     private final Inventory inv;
     private final XmasLegacy plugin;
     private final FirstRoleManager rlm;
-    private final Roles selectedRole;
+    private final BasicRoles selectedRole;
     private final Component title;
     private final AbstractFirstRole selInst;
     /*
@@ -29,11 +29,11 @@ public class RoleSelectionInterface implements InventoryHolder {
     18 19 20 21 22 23 24 25 26
     */
 
-    public RoleSelectionInterface(Roles roles) {
+    public RoleSelectionInterface(BasicRoles basicRoles) {
         this.plugin = JavaPlugin.getPlugin(XmasLegacy.class);
         this.rlm = FirstRoleManager.INSTANCE;
-        this.selectedRole = roles;
-        this.title = ColorUtils.chat(String.format("&c&l[ %s ]", roles.getKor()));
+        this.selectedRole = basicRoles;
+        this.title = ColorUtils.chat(String.format("&c&l[ %s ]", basicRoles.getKor()));
         this.inv = Bukkit.createInventory(this, 36, title);
         ItemStack bg = ItemBuilder.of(plugin, Material.GRAY_STAINED_GLASS_PANE)
                 .setName(ColorUtils.chat("")).setLore(ColorUtils.chat("")).hideAllFlags().build().clone();
@@ -63,7 +63,7 @@ public class RoleSelectionInterface implements InventoryHolder {
     public @NotNull Inventory getInventory() {
         return this.inv;
     }
-    public @NotNull Roles getRole() {
+    public @NotNull BasicRoles getRole() {
         return this.selectedRole;
     }
     public @NotNull Component Title() {

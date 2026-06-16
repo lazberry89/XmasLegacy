@@ -18,21 +18,21 @@ import java.util.List;
 
 @Commands(command = "cos")
 public class CosmeticsCommand implements CommandExecutor, TabCompleter {
-	private final @NotNull CosmeticManager CSM;
+	private final @NotNull CosmeticManager csm;
 
 	public CosmeticsCommand() {
-		this.CSM = CosmeticManager.INSTANCE;
+		this.csm = CosmeticManager.INSTANCE;
 	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 2) {
-			Cosmetics cosmetic = CSM.getEquippedCosmetics(args[1]);
+			Cosmetics cosmetic = csm.getEquippedCosmetics(args[1]);
 
 			switch (args[0].toLowerCase()) {
 				case "add" -> {
-					if (CSM.getEquippedCosmetics(args[1]) != null) {
+					if (csm.getEquippedCosmetics(args[1]) != null) {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 등록된 코스메틱입니다!"));
 						return true;
 					}
@@ -40,7 +40,7 @@ public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 					if (model.getType().isAir()) {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 손에 아이템을 들고 명령어를 입력해주세요!"));
 					} else {
-						CSM.addCosmetics(model, args[1]);
+						csm.addCosmetics(model, args[1]);
 						p.sendMessage(ColorUtils.chat(Alert.GREEN + " 아이템이 " + args[1] + " 코스메틱으로 등록되었습니다!"));
 					}
 					return true;
@@ -51,7 +51,7 @@ public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					cosmetic.unequip(p);
-					CSM.deleteCosmetics(cosmetic);
+					csm.deleteCosmetics(cosmetic);
 					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 코스메틱이 제거되었습니다!"));
 				}
 				case "equip" -> {
@@ -86,7 +86,7 @@ public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 			result.addAll(Arrays.asList(subCommands));
 			return result;
 		} else if (args.length == 2) {
-			result.addAll(CSM.getCosmeticsName());
+			result.addAll(csm.getCosmeticsName());
 		}
 		return result;
 	}

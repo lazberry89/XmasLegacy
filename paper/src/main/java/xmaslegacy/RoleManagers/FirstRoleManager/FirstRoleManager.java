@@ -3,7 +3,7 @@ package xmaslegacy.RoleManagers.FirstRoleManager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
 public enum FirstRoleManager {
     INSTANCE;
 
-    private final @NotNull Map<Roles, AbstractFirstRole> roleInstance = new HashMap<>();
+    private final @NotNull Map<BasicRoles, AbstractFirstRole> roleInstance = new HashMap<>();
 
 	FirstRoleManager() {}
 
@@ -21,7 +21,7 @@ public enum FirstRoleManager {
 
     @SuppressWarnings("unchecked")
     @Contract(value = "null -> null", pure = true)
-    public <R extends AbstractFirstRole> @Nullable R getRoleInstance(@Nullable Roles role) {
+    public <R extends AbstractFirstRole> @Nullable R getRoleInstance(@Nullable BasicRoles role) {
 	    if (role == null) return null;
         return (R) this.roleInstance.get(role);
     }

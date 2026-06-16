@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Utils.ItemBuilder;
@@ -60,7 +60,7 @@ public class PromoteInterface implements InventoryHolder {
                         .build();
 
                 inv.setItem(slots[i], barrier);
-                this.roleMap.put(slots[i], Roles.USER);
+                this.roleMap.put(slots[i], BasicRoles.USER);
             }
         }
     }

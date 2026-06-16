@@ -1,7 +1,7 @@
 package xmaslegacy;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
@@ -27,7 +27,7 @@ public class RoleManager {
 		this.srm = SecondRoleManager.INSTANCE;
     }
 
-	public @NotNull AbstractFirstRole getRoleInstance(@NotNull Roles role) {
+	public @NotNull AbstractFirstRole getRoleInstance(@NotNull BasicRoles role) {
 		var result = frm.getRoleInstance(role);
 		if (result == null) throw new NullPointerException("No role found");
 		return result;

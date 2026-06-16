@@ -12,15 +12,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.Utils.ItemBuilder;
 
 import java.util.*;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Crafter extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
 	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.FIX);}
@@ -39,7 +40,7 @@ public class Crafter extends AbstractFirstRole {
 	private int second_skill_cooldown_ticks;
 
 	public Crafter() {
-		super(Roles.CRAFTER);
+		super(BasicRoles.CRAFTER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

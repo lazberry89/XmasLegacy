@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
@@ -58,9 +58,9 @@ public class FirstRoleListener implements Listener {
             role = Role.valueOf(value);
         } catch(IllegalArgumentException ex) {
             plugin.getSLF4JLogger().error("Could not find Role \"{}\"", value, ex);
-            role = Roles.USER;
+            role = BasicRoles.USER;
         }
-        if (role instanceof Roles fr) {
+        if (role instanceof BasicRoles fr) {
             AbstractFirstRole afr = frm.getRoleInstance(fr);
 			if (afr == null) return;
             afr.useDash(p, role);

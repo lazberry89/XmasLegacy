@@ -19,14 +19,15 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.UsingEnergy;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.ItemBuilder;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Warrior extends AbstractFirstRole implements UsingEnergy {
 	private Material weapon_item;
 	private Material armor_item;
@@ -41,7 +42,7 @@ public class Warrior extends AbstractFirstRole implements UsingEnergy {
 	private double second_skill_damage;
 
 	public Warrior() {
-		super(Roles.WARRIOR);
+		super(BasicRoles.WARRIOR);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

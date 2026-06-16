@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -53,13 +53,13 @@ public class RoleCommand implements CommandExecutor, TabCompleter {
 				return true;
 			}
 			try {
-				user.setRole(Roles.valueOf(args[1]));
+				user.setRole(BasicRoles.valueOf(args[1]));
 			} catch (IllegalArgumentException e) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 역할을 찾을 수 없습니다."));
 				p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 				return true;
 			}
-			p.sendMessage(ColorUtils.chat(Alert.GREEN + " " + target.getName() + "님의 역할이 " + Roles.valueOf(args[1]).getKor() + "(으)로 설정되었습니다."));
+			p.sendMessage(ColorUtils.chat(Alert.GREEN + " " + target.getName() + "님의 역할이 " + BasicRoles.valueOf(args[1]).getKor() + "(으)로 설정되었습니다."));
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 			return true;
 		}

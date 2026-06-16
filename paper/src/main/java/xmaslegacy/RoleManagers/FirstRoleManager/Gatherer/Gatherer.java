@@ -15,14 +15,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Gatherer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
@@ -40,7 +41,7 @@ public class Gatherer extends AbstractFirstRole {
 	private long second_skill_glow_duration;
 
 	public Gatherer() {
-		super(Roles.GATHERER);
+		super(BasicRoles.GATHERER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

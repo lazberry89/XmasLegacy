@@ -1,5 +1,5 @@
 name: XmasLegacy
-version: '${version}'
+version: '12.25.0.5.dev'
 
 main: xmaslegacy.XmasLegacy
 api-version: '1.21.11'

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import xmaslegacy.Emblems.Emblem;
 import xmaslegacy.RoleManagers.UsingEnergy;
 import xmaslegacy.XmasLegacy;
@@ -22,13 +22,13 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class AbstractFirstRole implements UsingEnergy {
-	private final @NotNull Roles role;
+	private final @NotNull BasicRoles role;
     private final @NotNull XmasLegacy plugin;
 	protected final @NotNull Emblem emblem;
 	protected int cooldown1;
 	protected int cooldown2;
 
-	public AbstractFirstRole(@NotNull Roles role) {
+	public AbstractFirstRole(@NotNull BasicRoles role) {
 		this.plugin = XmasLegacy.getInstance();
 		this.role = role;
 		this.emblem = new Emblem(role);
@@ -40,7 +40,7 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 	public @NotNull Emblem getEmblem() {
 		return this.emblem;
 	}
-	public @NotNull Roles getRole() {
+	public @NotNull BasicRoles getRole() {
 		return this.role;
 	}
 	public abstract void useFirstSkill(Player p);

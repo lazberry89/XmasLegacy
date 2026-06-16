@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Utils.InfoLevel;
@@ -105,7 +105,7 @@ public class EnchantListener implements Listener {
 						int amt = invItem.getAmount();
 						if (amt >= leftToRemove) {
 							invItem.setAmount(amt - leftToRemove);
-							leftToRemove = 0;
+							//leftToRemove = 0;
 							break;
 						} else {
 							leftToRemove -= amt;
@@ -205,10 +205,10 @@ public class EnchantListener implements Listener {
 			if (user == null) return;
 			Role role = user.getRole();
 
-			if (Roles.USER.equals(role)) return;
+			if (BasicRoles.USER.equals(role)) return;
 			if (random.nextInt(20) == 1) {
-                if (role instanceof Roles roles) {
-					switch (roles) {
+                if (role instanceof BasicRoles basicRoles) {
+					switch (basicRoles) {
 						case WARRIOR -> {
 							Vector vector = p.getLocation().getDirection();
 							Vector velocity = vector.normalize().multiply(1.3);
@@ -238,7 +238,7 @@ public class EnchantListener implements Listener {
 								var userT = um.getUser(s.getUniqueId());
 								if (userT == null) return false;
 								Role t = userT.getRole();
-								return Roles.KNIGHT.equals(t.parent()) || Roles.KNIGHT.equals(t);
+								return BasicRoles.KNIGHT.equals(t.parent()) || BasicRoles.KNIGHT.equals(t);
 							}).count();
 							AttributeInstance amo = p.getAttribute(Attribute.MAX_HEALTH);
 							if (amo == null) return;

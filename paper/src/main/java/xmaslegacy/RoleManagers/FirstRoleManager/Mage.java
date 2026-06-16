@@ -15,8 +15,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
@@ -24,7 +25,7 @@ import xmaslegacy.Utils.ItemBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Mage extends AbstractFirstRole {
 	private final @NotNull SkillEffectManager sem;
 
@@ -47,7 +48,7 @@ public class Mage extends AbstractFirstRole {
 	private double second_skill_pull_threshold;
 
 	public Mage() {
-		super(Roles.MAGE);
+		super(BasicRoles.MAGE);
 		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Economy.Currency.CurrencyManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
@@ -40,7 +40,7 @@ public class UserSellingInterface {
         List<MerchantRecipe> recipes = new ArrayList<>();
 
         switch (um.getUser(viewer.getUniqueId()).getRole()) {
-            case Roles.FARMER -> {
+            case BasicRoles.FARMER -> {
                 ItemStack resultForWheat = CurrencyManager.currency(3);
 	            ItemMeta meta = resultForWheat.getItemMeta();
 				meta.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -66,7 +66,7 @@ public class UserSellingInterface {
                 sunflower.addIngredient(ingredient);
                 recipes.add(sunflower);
             }
-            case Roles.MINER -> {
+            case BasicRoles.MINER -> {
 				ItemStack resultForCoal = CurrencyManager.currency(5);
 	            ItemMeta metac = resultForCoal.getItemMeta();
 	            metac.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);

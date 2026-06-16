@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
@@ -208,37 +208,6 @@ public class SecondaryRoleListener implements Listener {
 	}
 
 	@EventHandler
-	public void useDash(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		ItemStack item = p.getInventory().getItemInMainHand();
-		if (item.getType().isAir()) return;
-
-		if (!e.getAction().isRightClick()) return;
-
-		User user = um.getUser(p.getUniqueId());
-		if (user == null) return;
-
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return;
-
-		PersistentDataContainer container = meta.getPersistentDataContainer();
-		String value = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
-		if (value == null) return;
-		Role role;
-		try {
-			role = Role.valueOf(value);
-		} catch(IllegalArgumentException ex) {
-			plugin.getSLF4JLogger().error("Could not find Role \"{}\"", value);
-			role = Roles.USER;
-		}
-		if (role instanceof SecondaryRoles fr) {
-			AbstractSecondRole asr = srm.getRoleInstance(fr);
-			if (asr == null) return;
-			asr.useDash(p, role);
-		}
-	}
-
-	@EventHandler
 	public void skillUse(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		ItemStack tool = p.getInventory().getItemInMainHand();
@@ -257,12 +226,12 @@ public class SecondaryRoleListener implements Listener {
 		if (role == null) return;
 		switch (type) {
 			case "range" -> {
-				if (role instanceof Roles fr) rlm.getRoleInstance(fr).useSecondSkill(p);
+				if (role instanceof BasicRoles fr) rlm.getRoleInstance(fr).useSecondSkill(p);
 				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useSecondSkill(p);
 				else logger(role.name());
 			}
 			case "target" -> {
-				if (role instanceof Roles fr) rlm.getRoleInstance(fr).useFirstSkill(p);
+				if (role instanceof BasicRoles fr) rlm.getRoleInstance(fr).useFirstSkill(p);
 				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useFirstSkill(p);
 				else logger(role.name());
 			}

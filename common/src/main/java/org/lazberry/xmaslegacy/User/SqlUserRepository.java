@@ -53,10 +53,10 @@ public enum SqlUserRepository implements UserRepository {
 	}
 
 	private @NotNull Role parseRole(String roleName) {
-		if (roleName == null || roleName.isEmpty()) return Roles.USER;
+		if (roleName == null || roleName.isEmpty()) return BasicRoles.USER;
 
 		try {
-			return Roles.valueOf(roleName);
+			return BasicRoles.valueOf(roleName);
 		} catch (IllegalArgumentException e) {
 			try {
 				return SecondaryRoles.valueOf(roleName);
@@ -68,7 +68,7 @@ public enum SqlUserRepository implements UserRepository {
 						return HiddenRoles.valueOf(roleName);
 					} catch (IllegalArgumentException exc) {
 						logger.warn("알 수 없는 직업명이 DB에서 발견되어 기본값으로 로드합니다: {}", roleName);
-						return Roles.USER;
+						return BasicRoles.USER;
 					}
 				}
 			}

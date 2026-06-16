@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -48,30 +48,30 @@ public class SelectListener implements Listener {
             return;
         }
         Role role = user.getRole();
-        if (!Roles.USER.equals(role)) {
+        if (!BasicRoles.USER.equals(role)) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 직업을 선택했어요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             p.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
             return;
         }
         switch (slot) {
-            case 2 -> openSelectionInv(p, Roles.WARRIOR);
-            case 4 -> openSelectionInv(p, Roles.ROGUE);
-            case 6 -> openSelectionInv(p, Roles.MAGE);
-            case 11 -> openSelectionInv(p, Roles.KNIGHT);
-            case 13 -> openSelectionInv(p, Roles.ARCHER);
-            case 15 -> openSelectionInv(p, Roles.PRIEST);
-            case 20 -> openSelectionInv(p, Roles.MINER);
-            case 22 -> openSelectionInv(p, Roles.MERCHANT);
-            case 24 -> openSelectionInv(p, Roles.GATHERER);
-            case 29 -> openSelectionInv(p, Roles.FARMER);
-            case 31 -> openSelectionInv(p, Roles.CRAFTER);
+            case 2 -> openSelectionInv(p, BasicRoles.WARRIOR);
+            case 4 -> openSelectionInv(p, BasicRoles.ROGUE);
+            case 6 -> openSelectionInv(p, BasicRoles.MAGE);
+            case 11 -> openSelectionInv(p, BasicRoles.KNIGHT);
+            case 13 -> openSelectionInv(p, BasicRoles.ARCHER);
+            case 15 -> openSelectionInv(p, BasicRoles.PRIEST);
+            case 20 -> openSelectionInv(p, BasicRoles.MINER);
+            case 22 -> openSelectionInv(p, BasicRoles.MERCHANT);
+            case 24 -> openSelectionInv(p, BasicRoles.GATHERER);
+            case 29 -> openSelectionInv(p, BasicRoles.FARMER);
+            case 31 -> openSelectionInv(p, BasicRoles.CRAFTER);
             case 33 -> p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             default -> e.setCancelled(true);
         }
     }
 
-    private void openSelectionInv(@NotNull Player p,@NotNull Roles role) {
+    private void openSelectionInv(@NotNull Player p,@NotNull BasicRoles role) {
         RoleSelectionInterface RSI = new RoleSelectionInterface(role);
         p.closeInventory(InventoryCloseEvent.Reason.OPEN_NEW);
         p.openInventory(RSI.getInventory());
@@ -83,7 +83,7 @@ public class SelectListener implements Listener {
     public void FinalSelection(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (!(e.getInventory().getHolder() instanceof RoleSelectionInterface holder)) return;
-        Roles select = holder.getRole();
+        BasicRoles select = holder.getRole();
 
         var user = UM.getUser(p.getUniqueId());
         if (user == null) {

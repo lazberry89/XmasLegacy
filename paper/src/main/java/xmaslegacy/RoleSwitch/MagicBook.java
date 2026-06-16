@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Utils.InfoLevel;
@@ -47,7 +47,7 @@ public enum MagicBook {
     public void openRoleSelection(@NotNull Player p) {
         User user = um.getUser(p.getUniqueId());
         if (user == null) return;
-        if (!Roles.USER.equals(user.getRole())) {
+        if (!BasicRoles.USER.equals(user.getRole())) {
             plugin.infoMsg(InfoLevel.ERROR, p, "이미 직업이 선택되었어요.");
             return;
         }

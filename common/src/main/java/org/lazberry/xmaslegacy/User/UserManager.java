@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
@@ -75,7 +75,7 @@ public enum UserManager {
 	public User load(UUID uuid, String name) {
 		User loaded = repository.loadUser(uuid);
 		if (loaded == null) {
-			loaded = new User(uuid, Roles.USER, name);
+			loaded = new User(uuid, BasicRoles.USER, name);
 			loaded.setNewUser(true);
 			repository.saveUser(loaded);
 		}
@@ -107,7 +107,7 @@ public enum UserManager {
 			}
 
 			if (loaded == null) {
-				loaded = new User(uuid, Roles.USER, name);
+				loaded = new User(uuid, BasicRoles.USER, name);
 				loaded.setNewUser(true);
 
 				if (isFloodgate) {
@@ -189,7 +189,7 @@ public enum UserManager {
 			try {
 				role = Role.valueOf(props.getProperty("role", "USER"));
 			} catch (IllegalArgumentException e) {
-				role = Roles.USER;
+				role = BasicRoles.USER;
 				logger.warn("No valid role name of {}, replaced to Roles.USER.", name);
 			}
 
@@ -221,12 +221,12 @@ public enum UserManager {
 		}
 	}
 
-	public boolean startRole(UUID uuid, Roles role) {
+	public boolean startRole(UUID uuid, BasicRoles role) {
 		User user = getUser(uuid);
 		if (user == null) return false;
 
 		Role getRole = user.getRole();
-		if (Roles.USER.equals(getRole)) {
+		if (BasicRoles.USER.equals(getRole)) {
 			user.setRole(role);
 			return true;
 		}

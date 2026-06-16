@@ -13,13 +13,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Rogue extends AbstractFirstRole {
 	private final @NotNull SkillEffectManager sem;
 	private Material weapon_item;
@@ -36,7 +37,7 @@ public class Rogue extends AbstractFirstRole {
 	private long second_skill_duration;
 
 	public Rogue() {
-		super(Roles.ROGUE);
+		super(BasicRoles.ROGUE);
 		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

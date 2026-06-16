@@ -13,11 +13,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.Utils.ItemBuilder;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Archer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
@@ -31,7 +32,7 @@ public class Archer extends AbstractFirstRole {
 	private long second_skill_invulnerable_duration;
 
 	public Archer() {
-		super(Roles.ARCHER);
+		super(BasicRoles.ARCHER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.PluginUtils.ServerInitializer;
@@ -21,18 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @UsedByReflection
-public class LobbyCommand implements CommandExecutor, TabCompleter {
-    private final @NotNull LobbyManager lbm;
-    private final @NotNull XmasLegacy plugin;
-
-    public LobbyCommand(@NotNull LobbyManager lbm) {
-		this.lbm = lbm;
-        this.plugin = XmasLegacy.getInstance();
-    }
+public record LobbyCommand(@NotNull LobbyManager lbm) implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
+		var plugin = XmasLegacy.getInstance();
         if (!p.isOp()) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 죄송한데, 관리자용 명령어에요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
@@ -49,13 +42,13 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
                     Location loc = p.getLocation();
                     lbm.setSpawn(loc);
 
+                    p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 위치 저장 중..."));
                     lbm.save().thenRun(() ->
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             p.sendMessage(ColorUtils.chat(String.format("%s 스폰 위치가 파일에 저장되었습니다!", Alert.GREEN)));
                             p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
                         })
                     );
-                    p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 위치 저장 중..."));
                 }
                 case "location" -> {
                     Location loc = lbm.getSpawn();
@@ -99,7 +92,7 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         List<String> result = new ArrayList<>();
         if (args.length == 1) {
             result.add("set");

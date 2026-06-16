@@ -9,25 +9,22 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Region.Region;
 import xmaslegacy.Region.RegionManager;
+import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings("DuplicatedCode")
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Farmer extends AbstractFirstRole {
-	private final RegionManager rm;
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.RADIUS_HARVEST);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+	private final @NotNull RegionManager rm;
 	private Material weapon_item;
 	private Material armor_item;
 	private double armor_state_value;
@@ -40,7 +37,7 @@ public class Farmer extends AbstractFirstRole {
 	private double second_skill_particle_offset;
 
 	public Farmer() {
-		super(Roles.FARMER);
+		super(BasicRoles.FARMER);
 		this.rm = RegionManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
@@ -196,8 +193,8 @@ public class Farmer extends AbstractFirstRole {
 	}
 
 	@Override
-	public @NotNull Roles getRole() {
-		return Roles.FARMER;
+	public @NotNull BasicRoles getRole() {
+		return BasicRoles.FARMER;
 	}
 
 	@Override

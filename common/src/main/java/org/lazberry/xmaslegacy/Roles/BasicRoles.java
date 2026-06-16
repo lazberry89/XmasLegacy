@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.settings.Skill;
 import java.util.Arrays;
 import java.util.List;
 
-public enum Roles implements Role {
+public enum BasicRoles implements Role {
     KNIGHT("기사", BasicSkills.SHARP_SWEEPING, BasicSkills.TAUNT, 5, SecondaryRoles.GUARDIAN, SecondaryRoles.DEFENDER), //기사 o
     WARRIOR("전사", BasicSkills.TOMAHAWK, BasicSkills.BLOOD_FRENZY, 5, SecondaryRoles.BERSERKER, SecondaryRoles.FIGHTER), //전사 o
     ARCHER("궁수", BasicSkills.SHOCK_DART, BasicSkills.BACK_DASH, 5, SecondaryRoles.SNIPER, SecondaryRoles.RANGER, SecondaryRoles.TRAPPER), //궁수 o
@@ -30,7 +30,7 @@ public enum Roles implements Role {
     private final int dashCount;
     private final List<Role> next;
 
-    Roles(@NotNull String korName, BasicSkills skill1, BasicSkills skill2, int dashCount, @Nullable SecondaryRoles... next) {
+    BasicRoles(@NotNull String korName, BasicSkills skill1, BasicSkills skill2, int dashCount, @Nullable SecondaryRoles... next) {
         this.Prefix = korName;
 		this.skill1 = skill1;
 		this.skill2 = skill2;

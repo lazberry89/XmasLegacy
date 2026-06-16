@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
@@ -25,16 +25,16 @@ public class TestCommands implements CommandExecutor {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String... args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) return true;
-		AbstractFirstRole k = frm.getRoleInstance(Roles.KNIGHT);
-		AbstractFirstRole r = frm.getRoleInstance(Roles.ROGUE);
-		AbstractFirstRole a = frm.getRoleInstance(Roles.ARCHER);
-		AbstractFirstRole w = frm.getRoleInstance(Roles.WARRIOR);
-		AbstractFirstRole m = frm.getRoleInstance(Roles.MAGE);
-		AbstractFirstRole pr = frm.getRoleInstance(Roles.PRIEST);
-		AbstractFirstRole f = frm.getRoleInstance(Roles.FARMER);
-		AbstractFirstRole mi = frm.getRoleInstance(Roles.MINER);
-		AbstractFirstRole g = frm.getRoleInstance(Roles.GATHERER);
-		AbstractFirstRole mc = frm.getRoleInstance(Roles.MERCHANT);
+		AbstractFirstRole k = frm.getRoleInstance(BasicRoles.KNIGHT);
+		AbstractFirstRole r = frm.getRoleInstance(BasicRoles.ROGUE);
+		AbstractFirstRole a = frm.getRoleInstance(BasicRoles.ARCHER);
+		AbstractFirstRole w = frm.getRoleInstance(BasicRoles.WARRIOR);
+		AbstractFirstRole m = frm.getRoleInstance(BasicRoles.MAGE);
+		AbstractFirstRole pr = frm.getRoleInstance(BasicRoles.PRIEST);
+		AbstractFirstRole f = frm.getRoleInstance(BasicRoles.FARMER);
+		AbstractFirstRole mi = frm.getRoleInstance(BasicRoles.MINER);
+		AbstractFirstRole g = frm.getRoleInstance(BasicRoles.GATHERER);
+		AbstractFirstRole mc = frm.getRoleInstance(BasicRoles.MERCHANT);
 
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("weapon")) {

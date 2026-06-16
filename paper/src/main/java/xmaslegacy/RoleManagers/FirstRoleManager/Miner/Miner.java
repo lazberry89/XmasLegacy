@@ -12,8 +12,9 @@ import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.Utils.GlowUtils;
@@ -24,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Miner extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
@@ -36,7 +37,7 @@ public class Miner extends AbstractFirstRole {
 	private long second_skill_glow_duration;
 
 	public Miner() {
-		super(Roles.MINER);
+		super(BasicRoles.MINER);
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 

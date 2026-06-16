@@ -17,7 +17,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
@@ -26,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Knight extends AbstractFirstRole {
 	private final SkillEffectManager sem;
 
@@ -53,7 +54,7 @@ public class Knight extends AbstractFirstRole {
 	private long second_skill_ai_restore_delay;
 
 	public Knight() {
-		super(Roles.KNIGHT);
+		super(BasicRoles.KNIGHT);
 		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}

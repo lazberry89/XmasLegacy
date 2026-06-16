@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.UUID;
 
 @Roles(grade = 2)
-public class Ranger extends AbstractSecondRole implements UsingEnergy {
+public class Ranger extends AbstractSecondRole {
     private final @NotNull SkillEffectManager sem;
     private final @NotNull Map<UUID, List<Location>> recentTrails = new HashMap<>();
     private final @NotNull Map<UUID, Long> trailTimestamps = new HashMap<>();
 
     public Ranger() {
         super(SecondaryRoles.RANGER);
-        this.sem = SkillEffectManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
     }
 
     @Override
@@ -260,12 +260,12 @@ public class Ranger extends AbstractSecondRole implements UsingEnergy {
 
     @Override
     public @NotNull ItemStack roleWeapon() {
-        return null;
+        return new ItemStack(Material.STICK);
     }
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return null;
+        return new ItemStack(Material.LEATHER_BOOTS);
     }
 
     @Override

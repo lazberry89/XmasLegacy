@@ -7,12 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.Utils.ItemBuilder;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Merchant extends AbstractFirstRole {
 	private final @NotNull PriceManager prc;
 	private final @NotNull MerchantStockInterface msi;
@@ -20,7 +21,7 @@ public class Merchant extends AbstractFirstRole {
 	private Material armor_item;
 
 	public Merchant() {
-		super(Roles.MERCHANT);
+		super(BasicRoles.MERCHANT);
 		this.prc = PriceManager.INSTANCE;
 		this.msi = MerchantStockInterface.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());

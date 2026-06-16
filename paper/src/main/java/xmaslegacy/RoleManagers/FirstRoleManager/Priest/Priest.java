@@ -14,15 +14,16 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
-@xmaslegacy.Annotation.Roles
+@Roles
 public class Priest extends AbstractFirstRole {
 	private final @NotNull PartyManager pm;
 	private final @NotNull SkillEffectManager sem;
@@ -42,7 +43,7 @@ public class Priest extends AbstractFirstRole {
 	private double second_skill_radius;
 
 	public Priest() {
-		super(Roles.PRIEST);
+		super(BasicRoles.PRIEST);
 		this.pm = PartyManager.INSTANCE;
 		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
@@ -164,8 +165,8 @@ public class Priest extends AbstractFirstRole {
 	}
 
 	@Override
-	public @NotNull Roles getRole() {
-		return Roles.PRIEST;
+	public @NotNull BasicRoles getRole() {
+		return BasicRoles.PRIEST;
 	}
 
 	@Override

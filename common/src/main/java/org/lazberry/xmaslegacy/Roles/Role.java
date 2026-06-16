@@ -17,7 +17,7 @@ public interface Role {
     int getDashCount();
 
     static Role valueOf(@NotNull String name) throws IllegalArgumentException {
-        try { return Roles.valueOf(name); } catch (IllegalArgumentException ignored) {}
+        try { return BasicRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         try { return SecondaryRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         try { return ThirdRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         try { return HiddenRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}

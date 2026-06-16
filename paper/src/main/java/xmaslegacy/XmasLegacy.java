@@ -1,6 +1,7 @@
 package xmaslegacy;
 
 import com.google.common.reflect.ClassPath;
+import lombok.Getter;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,11 +24,9 @@ import xmaslegacy.Utils.InfoLevel;
 import java.io.IOException;
 
 public final class XmasLegacy extends JavaPlugin {
-	private static XmasLegacy instance;
 
-	public static XmasLegacy getInstance() {
-		return instance;
-	}
+	@Getter
+	private static XmasLegacy instance;
 
 	@Override
 	public void onEnable() {

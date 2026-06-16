@@ -1,5 +1,6 @@
 package xmaslegacy.Cosmetics;
 
+import lombok.Getter;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -13,8 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Cosmetics {
-	private final ItemStack model;
-	private final String name;
+	private final @Getter ItemStack model;
+	private final @Getter String name;
 	private final CosmeticType type;
 	private final @NotNull Map<UUID, ItemDisplay> display = new HashMap<>();
 	private final @NotNull Map<UUID, BukkitTask> task = new HashMap<>();
@@ -26,8 +27,6 @@ public class Cosmetics {
 		this.type = type;
 	}
 
-	public ItemStack getModel() {return model;}
-	public String getName() {return name;}
 
 	private void spawnCosmeticDisplay(Player p) {
 		ItemDisplay display = p.getWorld().spawn(p.getLocation(), ItemDisplay.class);

@@ -1,5 +1,7 @@
 package xmaslegacy.Gacha;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -15,13 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("unused")
 @Commands(command = "gacha")
 public class Gacha {
 	private final ItemStack item;
 	private final String key;
 	private final GachaGrade grade;
-	private double chance;
+	private @Getter @Setter double chance;
 	private final ItemStack showItem;
 
 	public Gacha(@NotNull ItemStack item, @NotNull String key, @NotNull GachaGrade grade, double chance) {
@@ -52,12 +53,7 @@ public class Gacha {
 	public @NotNull ItemStack getItem() {
 		return this.item;
 	}
-	public double getChance() {
-		return this.chance;
-	}
-	public void setChance(double chance) {
-		this.chance = chance;
-	}
+
 	public @NotNull String getKey() {
 		return this.key;
 	}
