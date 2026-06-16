@@ -17,21 +17,16 @@ import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings("DuplicatedCode")
 @xmaslegacy.Annotation.Roles
 public class Mage extends AbstractFirstRole {
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_INSANELY);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-	private final @NotNull SkillEffectManager SEM;
+	private final @NotNull SkillEffectManager sem;
 
 	private Material weapon_item;
 	private Material armor_item;
@@ -53,7 +48,7 @@ public class Mage extends AbstractFirstRole {
 
 	public Mage() {
 		super(Roles.MAGE);
-		this.SEM = SkillEffectManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 
@@ -122,15 +117,8 @@ public class Mage extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		Location startLoc = p.getEyeLocation();
 		Vector dir = startLoc.getDirection().normalize().multiply(this.first_skill_speed);
@@ -181,19 +169,10 @@ public class Mage extends AbstractFirstRole {
 		}
 	}
 
-	@SuppressWarnings("DuplicatedCode")
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null || tool.getType() == Material.AIR) return;
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 
@@ -219,9 +198,9 @@ public class Mage extends AbstractFirstRole {
 		}
 
 		Particle.DustOptions dust = new Particle.DustOptions(Color.PURPLE, 1.0f);
-		SEM.drawCircularLine(center, Particle.DUST, 3, true, 120, dust);
-		SEM.drawCircularLine(center.clone().add(0, -0.5, 0), Particle.DUST, 2.5, true, 120, dust);
-		SEM.drawCircularLine(center.clone().add(0, 0.5, 0), Particle.DUST, 2.5, true, 120, dust);
+		sem.drawCircularLine(center, Particle.DUST, 3, true, 120, dust);
+		sem.drawCircularLine(center.clone().add(0, -0.5, 0), Particle.DUST, 2.5, true, 120, dust);
+		sem.drawCircularLine(center.clone().add(0, 0.5, 0), Particle.DUST, 2.5, true, 120, dust);
 
 		p.getWorld().playSound(center, Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 1.0f, 0.7f);
 
@@ -270,11 +249,6 @@ public class Mage extends AbstractFirstRole {
 				ticks++;
 			}
 		}.runTaskTimer(getPlugin(), 0, 1);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.MAGE;
 	}
 
 	@Override

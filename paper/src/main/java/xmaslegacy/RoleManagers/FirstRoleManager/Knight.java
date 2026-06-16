@@ -18,22 +18,17 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
-@SuppressWarnings("DuplicatedCode")
 @xmaslegacy.Annotation.Roles
 public class Knight extends AbstractFirstRole {
-	private final SkillEffectManager SEM;
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHARP_SWEEPING);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+	private final SkillEffectManager sem;
 
 	private Material weapon_item;
 	private Material armor_item;
@@ -59,7 +54,7 @@ public class Knight extends AbstractFirstRole {
 
 	public Knight() {
 		super(Roles.KNIGHT);
-		this.SEM = SkillEffectManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 
@@ -131,14 +126,8 @@ public class Knight extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player player) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(player, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(player, this , emblem, EmblemType.TARGET)) return;
 		ItemStack tool = player.getInventory().getItemInMainHand();
-		if (player.getCooldown(tool) > 0) {
-			player.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) player.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
 		if (!consumeEnergy(player, this.first_skill_hunger_cost)) return;
 		Vector direction = player.getLocation().getDirection().normalize();
 		player.setVelocity(direction.multiply(this.first_skill_speed).setY(this.first_skill_y_velocity));
@@ -187,16 +176,8 @@ public class Knight extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) { //Taunt
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null || tool.getType() == Material.AIR) return;
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 30, 10, 10, 10, 0.01);
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 0.6f);
@@ -219,18 +200,10 @@ public class Knight extends AbstractFirstRole {
 						}
 					}, this.second_skill_duration);
 				}
-				if (e instanceof Player target) {
-					SEM.knockbackEntity(p, target, this.second_skill_knockback, this.second_skill_knockback_y);
-				}
-
+				if (e instanceof Player target) sem.knockbackEntity(p, target, this.second_skill_knockback, this.second_skill_knockback_y);
 			}
 		}
 		p.setCooldown(tool, this.getCooldown2() * 20);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.KNIGHT;
 	}
 
 	@Override

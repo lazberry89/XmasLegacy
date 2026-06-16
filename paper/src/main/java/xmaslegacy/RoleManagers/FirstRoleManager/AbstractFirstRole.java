@@ -21,30 +21,30 @@ import xmaslegacy.XmasLegacy;
 import java.io.File;
 import java.io.IOException;
 
-@SuppressWarnings("DuplicatedCode, unused, FieldCanBeLocal")
 public abstract class AbstractFirstRole implements UsingEnergy {
-	private final Roles role;
-    private final XmasLegacy plugin;
+	private final @NotNull Roles role;
+    private final @NotNull XmasLegacy plugin;
+	protected final @NotNull Emblem emblem;
 	protected int cooldown1;
 	protected int cooldown2;
-	protected final Emblem emblem;
 
-	public AbstractFirstRole(Roles role) {
+	public AbstractFirstRole(@NotNull Roles role) {
 		this.plugin = XmasLegacy.getInstance();
 		this.role = role;
 		this.emblem = new Emblem(role);
 	}
 
-    public XmasLegacy getPlugin() {
+    public @NotNull XmasLegacy getPlugin() {
         return this.plugin;
     }
 	public @NotNull Emblem getEmblem() {
 		return this.emblem;
 	}
-
+	public @NotNull Roles getRole() {
+		return this.role;
+	}
 	public abstract void useFirstSkill(Player p);
 	public abstract void useSecondSkill(Player p);
-	public abstract @NotNull Roles getRole();
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();
 	public abstract @NotNull ItemStack TargetEmblem();

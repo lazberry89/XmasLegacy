@@ -11,7 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,12 +32,12 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @UsedByReflection
 public class PartyCommand implements CommandExecutor, TabCompleter {
-    private final @NotNull XmasLegacy plugin;
+    private final @NotNull xmaslegacy.XmasLegacy plugin;
     private final @NotNull UserManager um;
     private final @NotNull PartyManager pm;
 
     public PartyCommand() {
-        this.plugin = XmasLegacy.getInstance();
+        this.plugin = xmaslegacy.XmasLegacy.getInstance();
         this.um = UserManager.INSTANCE;
         this.pm = PartyManager.INSTANCE;
     }

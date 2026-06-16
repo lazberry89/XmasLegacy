@@ -1,6 +1,5 @@
 package xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,31 +8,21 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-@SuppressWarnings("DuplicatedCode")
 @xmaslegacy.Annotation.Roles
 public class Merchant extends AbstractFirstRole {
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.OPEN_STOCKS);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-	private final PriceManager PIF;
-	private final MerchantStockInterface MSI;
+	private final @NotNull PriceManager prc;
+	private final @NotNull MerchantStockInterface msi;
 	private Material weapon_item;
 	private Material armor_item;
 
 	public Merchant() {
 		super(Roles.MERCHANT);
-		this.PIF = PriceManager.INSTANCE;
-		this.MSI = MerchantStockInterface.INSTANCE;
+		this.prc = PriceManager.INSTANCE;
+		this.msi = MerchantStockInterface.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 
@@ -61,31 +50,18 @@ public class Merchant extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getHelmet();
-		if (tool == null || tool.getType().isAir()) return;
-		MSI.setOwner(p);
-		MSI.OpenStock(p);
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+		msi.setOwner(p);
+		msi.OpenStock(p);
 		p.playSound(p, Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, 1.0f, 1.0f);
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (tool.getType().isAir()) return;
-		p.openInventory(PIF.MerchantShop());
-		PIF.setOwner(p.getUniqueId());
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		p.openInventory(prc.MerchantShop());
+		prc.setOwner(p.getUniqueId());
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.MERCHANT;
 	}
 
 	@Override

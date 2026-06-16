@@ -21,8 +21,8 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.InfoLevel;
@@ -30,16 +30,15 @@ import xmaslegacy.Utils.ItemBuilder;
 
 import java.util.*;
 
-
+@Roles(grade = 2)
 public class Sniper extends AbstractSecondRole {
     private final @NotNull PartyManager pm;
     private final @NotNull SkillEffectManager sem;
     private final @NotNull Map<UUID, BulletType> reloaded = new HashMap<>();
-    private final @NotNull Map<UUID, Integer> dashCount = new HashMap<>();
     private final @NotNull Set<UUID> isReloading = new HashSet<>();
     private final @NotNull Set<UUID> magicalBullet = new HashSet<>();
     private final @NotNull Map<UUID, BulletType> lastHitRecord = new HashMap<>();
-    public @Nullable BulletType getLastHitType(Entity entity) {
+    public @Nullable BulletType getLastHitType(@NotNull Entity entity) {
         return lastHitRecord.get(entity.getUniqueId());
     }
 
@@ -55,15 +54,9 @@ public class Sniper extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-        Bukkit.getPluginManager().callEvent(skillUse);
-        if (skillUse.isCancelled()) return;
+        if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+        if (!consumeEnergy(p, 3)) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
-        if (tool.getType().isAir()) return;
-        if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-            return;
-        }
         UUID uuid = p.getUniqueId();
         if (isReloading.contains(uuid)) {
             getPlugin().infoMsg(InfoLevel.WARN, p, "이미 장전중입니다!");
@@ -87,15 +80,10 @@ public class Sniper extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-        Bukkit.getPluginManager().callEvent(skillUse);
-        if (skillUse.isCancelled()) return;
+        if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+        if (!consumeEnergy(p, 3)) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
-        if (tool.getType().isAir()) return;
-        if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-            return;
-        }
+
         UUID uuid = p.getUniqueId();
         if (magicalBullet.contains(uuid)) {
             getPlugin().infoMsg(InfoLevel.ERROR, p, "이미 장전되어 있습니다.");

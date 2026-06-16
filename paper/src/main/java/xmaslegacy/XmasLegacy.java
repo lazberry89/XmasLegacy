@@ -36,11 +36,8 @@ public final class XmasLegacy extends JavaPlugin {
 
 		UserManager.INSTANCE.initDataFolder(this.getDataFolder());
 
-		if (AgeableCrops.RegisterRecipe()) {
-			getSLF4JLogger().info("Recipe Registered!");
-		} else {
-			getSLF4JLogger().error("Recipe Not Registered!");
-		}
+		if (AgeableCrops.RegisterRecipe()) getSLF4JLogger().info("Recipe Registered!");
+		else getSLF4JLogger().error("Recipe Not Registered!");
 
 		getServer().getPluginManager().registerEvents(new ServerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new ChatPrefixListener(), this);

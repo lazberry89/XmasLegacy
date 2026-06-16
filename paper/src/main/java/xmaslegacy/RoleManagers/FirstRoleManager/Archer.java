@@ -2,7 +2,6 @@ package xmaslegacy.RoleManagers.FirstRoleManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration; // 💡 [추가] 설정 파일 로드를 위한 임포트
 import org.bukkit.entity.AbstractArrow;
@@ -13,25 +12,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-@SuppressWarnings("DuplicatedCode, unused")
 @xmaslegacy.Annotation.Roles
 public class Archer extends AbstractFirstRole {
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.SHOCK_DART);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-
 	private Material weapon_item;
 	private Material armor_item;
 	private int first_skill_hunger_cost;
@@ -90,10 +77,8 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack bow = p.getInventory().getItemInMainHand();
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+		ItemStack bow = p.getInventory().getItemInMainHand(); //TODO 특수탄 장전으로 엠뷸럼과 활의 기능 분리가 필요해보임
 		if (p.getCooldown(bow) > 0) return;
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		p.getWorld().playSound(p.getLocation(), org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.0f, 0.6f);
@@ -101,7 +86,7 @@ public class Archer extends AbstractFirstRole {
 		Arrow arrow = p.launchProjectile(Arrow.class);
 		arrow.setVelocity(p.getLocation().getDirection().multiply(this.first_skill_arrow_speed));
 		arrow.setShooter(p);
-		arrow.getPersistentDataContainer().set(new NamespacedKey(getPlugin(), "skill"), PersistentDataType.STRING, "archer_arrow");
+		arrow.getPersistentDataContainer().set(getPlugin().getNamespacedKey("skill"), PersistentDataType.STRING, "archer_arrow");
 		arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
 
 		new BukkitRunnable() {
@@ -125,16 +110,8 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getHelmet();
-		if (tool == null || tool.getType() == Material.AIR) return;
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		p.setInvulnerable(true);
 		p.getWorld().createExplosion(p.getLocation(), this.second_skill_explosion_power, false, false);
@@ -146,11 +123,6 @@ public class Archer extends AbstractFirstRole {
 			}
 		}, this.second_skill_invulnerable_duration);
 		p.setCooldown(tool, getCooldown2() * 20);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.ARCHER;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package xmaslegacy.RoleManagers.FirstRoleManager;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -17,12 +16,10 @@ import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Utils.ItemBuilder;
 
 import java.util.*;
 
-@SuppressWarnings("DuplicatedCode")
 @xmaslegacy.Annotation.Roles
 public class Crafter extends AbstractFirstRole {
 	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
@@ -95,15 +92,9 @@ public class Crafter extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
+
 		Entity target = p.getTargetEntity(this.first_skill_raytrace_range, false);
 		if (target == null) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 대상이 없습니다!"));
@@ -116,23 +107,19 @@ public class Crafter extends AbstractFirstRole {
 		ItemStack itemStack = itemEntity.getItemStack();
 		ItemMeta meta = itemStack.getItemMeta();
 
-		// 1. 내구도가 있는 아이템인지 확인 (검, 곡괭이 등)
 		if (!(meta instanceof org.bukkit.inventory.meta.Damageable damageable)) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 수 없는 아이템입니다!"));
 			return;
 		}
 
-		// 2. 현재 대미지 확인 (0이면 새것)
 		int currentDamage = damageable.getDamage();
 		if (currentDamage <= 0) {
 			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 이미 새 아이템입니다!"));
 			return;
 		}
 
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		double percent = this.first_skill_repair_percent;
 		int repairAmount = (int) (itemStack.getType().getMaxDurability() * percent);
 		int newDamage = Math.max(0, currentDamage - repairAmount);
@@ -144,22 +131,13 @@ public class Crafter extends AbstractFirstRole {
 		// 5. 피드백
 		p.sendMessage(ColorUtils.chat(Alert.GREEN + " 성공적으로 수리했습니다! &7(수리량: " + repairAmount + ")"));
 		p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.2f);
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
-		p.setCooldown(p.getInventory().getItemInMainHand().getType(), this.first_skill_cooldown_ticks);
+		p.setCooldown(tool, this.first_skill_cooldown_ticks);
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null) return;
-
-		if (p.getCooldown(tool.getType()) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 
 		Entity target = p.getTargetEntity(this.second_skill_raytrace_range, false);
 		if (!(target instanceof Item itemEntity)) {
@@ -231,11 +209,6 @@ public class Crafter extends AbstractFirstRole {
 		lore.add(ColorUtils.chat(""));
 		lore.add(ColorUtils.chat(text));
 		meta.lore(lore);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.CRAFTER;
 	}
 
 	@Override

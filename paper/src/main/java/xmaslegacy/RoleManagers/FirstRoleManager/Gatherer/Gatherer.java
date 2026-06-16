@@ -17,24 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-@SuppressWarnings("DuplicatedCode, unused")
 @xmaslegacy.Annotation.Roles
 public class Gatherer extends AbstractFirstRole {
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.ETERNAL_POSE);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-
 	private Material weapon_item;
 	private Material armor_item;
 	private double weapon_movement_speed;
@@ -107,7 +96,7 @@ public class Gatherer extends AbstractFirstRole {
 		this.armor_item = armor;
 	}
 
-	private ItemStack CompassBuilder(Block target, Player p) {
+	private @NotNull ItemStack CompassBuilder(Block target, Player p) {
 		ItemStack compass = ItemBuilder.of(getPlugin(), Material.COMPASS)
 				.setName(ColorUtils.chat(String.format("&6&l%s의 이터널포스", p.getName())))
 				.setLore(ColorUtils.chat("&7제멋대로인 포스의 위치를 알려줍니다."))
@@ -122,19 +111,13 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
 		Block pose = p.getTargetBlockExact(this.first_skill_target_range);
 		if (pose == null || pose.getType() != Material.SEA_LANTERN) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 블록이 없습니다!"));
 			return;
 		}
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		p.getInventory().addItem(CompassBuilder(pose, p));
 
@@ -155,18 +138,11 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getBoots();
-		Location loc = p.getLocation();
-		if (tool == null || tool.getType() == Material.AIR) return;
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 
+		Location loc = p.getLocation();
 		Block block;
 		p.getNearbyEntities(this.second_skill_entity_range, this.second_skill_entity_range, this.second_skill_entity_range).forEach(e -> {
 			if (e instanceof LivingEntity le) {
@@ -193,13 +169,6 @@ public class Gatherer extends AbstractFirstRole {
 		p.setCooldown(tool, this.getCooldown2() * 20);
 	}
 
-	private boolean isContainer(@NotNull Block block) {
-		Material container = block.getType();
-		return container == Material.CHEST || container == Material.TRAPPED_CHEST ||
-				container == Material.ENDER_CHEST || container == Material.DISPENSER ||
-				container == Material.DROPPER || container == Material.HOPPER;
-	}
-
 	private void BlockGlow(Block block) {
 		Location loc = block.getLocation();
 		loc.getWorld().spawn(loc, Shulker.class, s -> {
@@ -212,11 +181,6 @@ public class Gatherer extends AbstractFirstRole {
 			GlowUtils.setGlowColor(s, NamedTextColor.GOLD);
 			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, this.second_skill_glow_duration);
 		});
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.GATHERER;
 	}
 
 	@Override

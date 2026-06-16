@@ -14,21 +14,18 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @xmaslegacy.Annotation.Roles
 public class Miner extends AbstractFirstRole {
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.CHAIN_MINING);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
-
 	private Material weapon_item;
 	private Material armor_item;
 	private int first_skill_hunger_cost;
@@ -83,14 +80,8 @@ public class Miner extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
 		Block targeted = p.getTargetBlockExact(this.first_skill_target_range);
 		if (targeted != null) {
 			Location targetLoc = targeted.getLocation();
@@ -146,16 +137,8 @@ public class Miner extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null || tool.getType() == Material.AIR) return;
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		List<Block> result = new ArrayList<>();
 		for (int i = -this.second_skill_scan_range; i <= this.second_skill_scan_range; i++) {
@@ -185,11 +168,6 @@ public class Miner extends AbstractFirstRole {
 			GlowUtils.setGlowColor(s, NamedTextColor.RED);
 			Bukkit.getScheduler().runTaskLater(getPlugin(), s::remove, this.second_skill_glow_duration);
 		});
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.MINER;
 	}
 
 	@Override

@@ -1,14 +1,19 @@
 package xmaslegacy.RoleManagers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Emblems.Emblem;
+import xmaslegacy.Emblems.EmblemType;
+import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 
 import java.util.HashMap;
@@ -64,5 +69,20 @@ public interface UsingEnergy {
 		} else {
 			p.setCooldown(item, 10);
 		}
+	}
+
+	@CheckReturnValue
+	default boolean isSkillCancelled(@NotNull Player p, @NotNull UsingEnergy usingEnergy, @NotNull Emblem emblem, @NotNull EmblemType emblemType) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, usingEnergy, emblem, emblemType);
+		Bukkit.getPluginManager().callEvent(skillUse);
+
+		ItemStack tool = p.getInventory().getItemInMainHand();
+		if (tool.getType().isAir()) return true;
+
+		if (p.getCooldown(tool) > 0) {
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+			return true;
+		}
+		return skillUse.isCancelled();
 	}
 }

@@ -4,7 +4,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.configuration.file.FileConfiguration; // 💡 [추가] 설정 파일 연동을 위한 임포트
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -12,29 +12,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Roles.Roles;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 @xmaslegacy.Annotation.Roles
 public class Priest extends AbstractFirstRole {
-	private final PartyManager PM;
-	private final SkillEffectManager SEM;
-	private final Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.COMPACT_HEAL);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+	private final @NotNull PartyManager pm;
+	private final @NotNull SkillEffectManager sem;
 
 	private Material weapon_item;
 	private Material armor_item;
@@ -52,14 +43,13 @@ public class Priest extends AbstractFirstRole {
 
 	public Priest() {
 		super(Roles.PRIEST);
-		this.PM = PartyManager.INSTANCE;
-		this.SEM = SkillEffectManager.INSTANCE;
+		this.pm = PartyManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 
 	@Override
 	protected void loadCustomStats(FileConfiguration config) {
-		// 1. 성직자 전용 YAML 스탯 기본값 주입
 		config.addDefault("stats.weapon_attack_damage", 5.0);
 		config.addDefault("stats.armor_state_value", 5.0);
 		config.addDefault("stats.armor_toughness_value", 5.0);
@@ -112,23 +102,15 @@ public class Priest extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! " + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
-			return;
-		}
-
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
+
 		int duration = this.first_skill_regen_duration;
 		int amplifier = this.first_skill_regen_amplifier;
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		Entity entity = p.getTargetEntity((int) this.first_skill_raytrace_range, false);
 		if (entity != null) {
-			if (!(entity instanceof Player target) || !PM.isParty(p.getUniqueId(), target.getUniqueId())) {
+			if (!(entity instanceof Player target) || !pm.isParty(p.getUniqueId(), target.getUniqueId())) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 타겟이 아닙니다!"));
 				GlowUtils.setGlowColor(entity, NamedTextColor.RED);
 				Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
@@ -154,29 +136,19 @@ public class Priest extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null || tool.getType() == Material.AIR) return;
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool.getType()) / 20 + "&f초 기다리세요"));
-			return;
-		}
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		int duration = this.second_skill_strength_duration;
 		int amplifier = this.second_skill_strength_amplifier;
 
 		Particle.DustOptions dust = new Particle.DustOptions(Color.YELLOW, 1.0f);
-		SEM.drawCircularLine(p.getLocation().add(0, 0.2, 0),
+		sem.drawCircularLine(p.getLocation().add(0, 0.2, 0),
 				Particle.DUST, 7, false, 100, dust);
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		double r = this.second_skill_radius;
 		for (Entity ally : p.getNearbyEntities(r, r, r)) {
 			if (!(ally instanceof Player target)) continue;
-			if (PM.isParty(p.getUniqueId(), target.getUniqueId())) {
+			if (pm.isParty(p.getUniqueId(), target.getUniqueId())) {
 				target.removePotionEffect(PotionEffectType.STRENGTH);
 				target.addPotionEffect(new PotionEffect(
 						PotionEffectType.STRENGTH,
@@ -198,14 +170,12 @@ public class Priest extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleWeapon() {
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&e&l힐링 스피어"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
 				.setRoleDefault(this.getRole())
-				// 💡 하드코딩 제거 및 설정 파일 변수 적용
 				.addAttribute(Attribute.ATTACK_DAMAGE, this.weapon_attack_damage, AttributeModifier.Operation.ADD_NUMBER)
 				.build()
 				.clone();
@@ -213,13 +183,11 @@ public class Priest extends AbstractFirstRole {
 
 	@Override
 	public @NotNull ItemStack roleArmor() {
-		// 💡 하드코딩 제거 및 설정 파일 변수 적용
 		return ItemBuilder.of(getPlugin(), this.armor_item)
 				.setName(ColorUtils.chat("&e&l단단한 근육"))
 				.setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
 				.setUnbreakable()
 				.hideAllFlags()
-				// 💡 하드코딩 제거 및 설정 파일 변수 적용
 				.setArmorState(this.armor_state_value, EquipmentSlotGroup.CHEST)
 				.addAttribute(Attribute.ARMOR_TOUGHNESS, this.armor_toughness_value, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
 				.setRoleDefault(this.getRole())

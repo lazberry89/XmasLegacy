@@ -16,9 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
-import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
@@ -26,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@SuppressWarnings("DuplicatedCode")
+@Roles(grade = 2)
 public class Berserker extends AbstractSecondRole {
     private final @NotNull Set<UUID> usedPassive = new HashSet<>();
     private final @NotNull PartyManager pm;
@@ -38,16 +37,9 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-        Bukkit.getPluginManager().callEvent(skillUse);
-        if (skillUse.isCancelled()) return;
-        ItemStack tool = p.getInventory().getItemInMainHand();
-        if (tool.getType().isAir()) return;
-        if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-            return;
-        }
+        if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
         if (!consumeEnergy(p, 3)) return;
+        ItemStack tool = p.getInventory().getItemInMainHand();
         Vector vector = p.getLocation().getDirection();
 
         vector.setY(0.3);
@@ -147,17 +139,9 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-        Bukkit.getPluginManager().callEvent(skillUse);
-        if (skillUse.isCancelled()) return;
-
-        ItemStack tool = p.getInventory().getItemInMainHand();
-        if (tool.getType().isAir()) return;
-        if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-            return;
-        }
+        if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
         if (!consumeEnergy(p, 3)) return;
+        ItemStack tool = p.getInventory().getItemInMainHand();
         Location loc = p.getLocation().clone();
         new BukkitRunnable() {
             int shot = 0;

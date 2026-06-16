@@ -19,8 +19,8 @@ public enum FirstRoleManager {
 		roleInstance.put(role.getRole(), role);
 	}
 
-    @Contract(value = "null -> null", pure = true)
     @SuppressWarnings("unchecked")
+    @Contract(value = "null -> null", pure = true)
     public <R extends AbstractFirstRole> @Nullable R getRoleInstance(@Nullable Roles role) {
 	    if (role == null) return null;
         return (R) this.roleInstance.get(role);

@@ -15,22 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 @xmaslegacy.Annotation.Roles
 public class Rogue extends AbstractFirstRole {
-	private final @NotNull SkillEffectManager SEM;
-	private final @NotNull Map<UUID, BasicSkills> currentSkill = new HashMap<>();
-	public BasicSkills getCurrentSkill(Player p) {return currentSkill.getOrDefault(p.getUniqueId(), BasicSkills.DAGGER_RUSH);}
-	public void next(Player p) {currentSkill.put(p.getUniqueId(), getCurrentSkill(p).next());}
+	private final @NotNull SkillEffectManager sem;
 	private Material weapon_item;
 	private Material armor_item;
 	private int first_skill_hunger_cost;
@@ -46,7 +37,7 @@ public class Rogue extends AbstractFirstRole {
 
 	public Rogue() {
 		super(Roles.ROGUE);
-		this.SEM = SkillEffectManager.INSTANCE;
+		this.sem = SkillEffectManager.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 
@@ -96,24 +87,16 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getBoots();
-		if (tool == null || tool.getType() == Material.AIR) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 		Entity target = p.getTargetEntity(this.first_skill_range, false);
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
 		if (target != null) {
 			if (target instanceof LivingEntity le) {
 				if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 
 				Vector vector = p.getLocation().getDirection().normalize();
 				p.setVelocity(vector.multiply(this.first_skill_speed).setY(this.first_skill_y_velocity));
-				SEM.followParticle(p, Particle.DUST, 0.5, new Particle.DustOptions(Color.GRAY, 1.5f));
+				sem.followParticle(p, Particle.DUST, 0.5, new Particle.DustOptions(Color.GRAY, 1.5f));
 
 				p.setCooldown(tool, this.getCooldown1() * 20);
 
@@ -145,21 +128,18 @@ public class Rogue extends AbstractFirstRole {
 		}
 	}
 
-	private void useDaggerRush(Player player, LivingEntity target) {
-		// 타겟 무적 틱 초기화 및 도트 데미지 틱 타이머 작동
+	private void useDaggerRush(@NotNull Player player, @NotNull LivingEntity target) {
 		new BukkitRunnable() {
 			int count = 0;
 
 			@Override
 			public void run() {
-				// 💡 하드코딩 제거 및 설정 파일 변수 적용
 				if (count >= dagger_rush_hits || !target.isValid() || target.isDead()) {
 					this.cancel();
 					return;
 				}
 				target.setNoDamageTicks(0);
 
-				// 💡 하드코딩 제거 및 설정 파일 변수 적용
 				target.damage(dagger_rush_damage, player);
 
 				target.getWorld().spawnParticle(Particle.SWEEP_ATTACK, target.getLocation().add(0, 1, 0), 1);
@@ -172,16 +152,11 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
+
+		ItemStack[] armorContents = p.getInventory().getArmorContents().clone();
 		Particle.DustOptions dust = new Particle.DustOptions(Color.GRAY, 5.0f);
 		p.getWorld().spawnParticle(Particle.DUST, p.getLocation(), 160, 5, 3, 5, 0.01, dust);
 		p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 0.8f);
@@ -198,11 +173,6 @@ public class Rogue extends AbstractFirstRole {
 			}
 		}, this.second_skill_duration);
 		p.setCooldown(tool, this.getCooldown2() * 20);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.ROGUE;
 	}
 
 	@Override

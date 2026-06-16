@@ -10,9 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
-import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.ItemBuilder;
 
@@ -20,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@SuppressWarnings("DuplicatedCode, unused")
+@Roles(grade = 2)
 public class Defender extends AbstractSecondRole {
 	private final @NotNull SkillEffectManager sem;
 	private final @NotNull PartyManager pm;
@@ -33,18 +32,10 @@ public class Defender extends AbstractSecondRole {
 
 	@Override
 	public void useFirstSkill(@NotNull Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+		if (!consumeEnergy(p, 3)) return;
 
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (tool.getType().isAir()) return;
-
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
-		if (!consumeEnergy(p, 3)) return;
 		Location loc = p.getLocation();
 
 		Location startLoc = loc.add(0, 1.2, 0);
@@ -141,16 +132,9 @@ public class Defender extends AbstractSecondRole {
 
 	@Override
 	public void useSecondSkill(@NotNull Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (tool.getType().isAir()) return;
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
 		if (!consumeEnergy(p, 3)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 
 		Location loc = p.getLocation();
 		SkillEffectManager.startHakiWave(getPlugin(), p.getLocation());

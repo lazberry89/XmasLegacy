@@ -17,13 +17,13 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Roles.Unpromotable;
-import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.PlayerSkillUseEvent;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.ItemBuilder;
 
+@Roles(grade = 2)
 public class Fighter extends AbstractSecondRole implements Unpromotable {
     private final @NotNull PartyManager pm;
     private final @NotNull SkillEffectManager sem;
@@ -36,20 +36,13 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-        Bukkit.getPluginManager().callEvent(skillUse);
-        if (skillUse.isCancelled()) return;
+        if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
-        if (tool.getType().isAir()) return;
-        if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-            return;
-        }
-        if (!consumeEnergy(p, 3)) return;
         if (!(p.getTargetEntity(2, false) instanceof LivingEntity target)) {
             getPlugin().infoMsg(InfoLevel.ERROR, p, "유효한 타겟이 없습니다.");
             return;
         }
+        if (!consumeEnergy(p, 3)) return;
         p.setCollidable(false);
         sem.hideEntity(p);
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {p.setCollidable(true); sem.showEntity(p);}, 5L);
@@ -99,22 +92,13 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-        PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-        Bukkit.getPluginManager().callEvent(skillUse);
-        if (skillUse.isCancelled()) return;
-
+        if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
-        if (tool.getType().isAir()) return;
-        if (p.getCooldown(tool) > 0) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-            return;
-        }
-        if (!(p.getTargetEntity(1, false) instanceof LivingEntity target)) {
+        if (!(p.getTargetEntity(2, false) instanceof LivingEntity target)) {
             getPlugin().infoMsg(InfoLevel.ERROR, p, "유효한 타겟이 없습니다.");
             return;
         }
         if (!consumeEnergy(p, 3)) return;
-
         Location centerLoc = p.getLocation().clone();
         p.getWorld().spawnParticle(Particle.EXPLOSION, centerLoc, 1, 0, 0, 0, 0);
 

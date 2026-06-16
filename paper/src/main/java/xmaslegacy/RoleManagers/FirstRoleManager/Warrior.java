@@ -20,16 +20,14 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Roles;
-import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.Utils.InfoLevel;
-import xmaslegacy.PlayerSkillUseEvent;
+import xmaslegacy.RoleManagers.UsingEnergy;
 import xmaslegacy.Utils.GlowUtils;
+import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.ItemBuilder;
 
-@SuppressWarnings("DuplicatedCode")
 @xmaslegacy.Annotation.Roles
-public class Warrior extends AbstractFirstRole {
+public class Warrior extends AbstractFirstRole implements UsingEnergy {
 	private Material weapon_item;
 	private Material armor_item;
 	private double first_skill_usable_rate;
@@ -91,15 +89,8 @@ public class Warrior extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.TARGET);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
-		ItemStack tool = p.getInventory().getChestplate();
-		if (tool == null || tool.getType() == Material.AIR) return;
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
+		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
+		ItemStack tool = p.getInventory().getItemInMainHand();
 
 		AttributeInstance health = p.getAttribute(Attribute.MAX_HEALTH);
 		if (health == null) return;
@@ -136,14 +127,8 @@ public class Warrior extends AbstractFirstRole {
 
 	@Override
 	public void useSecondSkill(Player p) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, EmblemType.RANGE);
-		Bukkit.getPluginManager().callEvent(skillUse);
-		if (skillUse.isCancelled()) return;
+		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat( Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
-			return;
-		}
 
 		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		Location startLoc = p.getEyeLocation();
@@ -217,11 +202,6 @@ public class Warrior extends AbstractFirstRole {
 				ticks++;
 			}
 		}.runTaskTimer(getPlugin(), 0L, 1L);
-	}
-
-	@Override
-	public @NotNull Roles getRole() {
-		return Roles.WARRIOR;
 	}
 
 	@Override
