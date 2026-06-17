@@ -115,7 +115,7 @@ public class ReflectionManager {
 				}
 
 			} catch (Exception e) {
-				plugin.getSLF4JLogger().error("Error occurred while registering class {}", classInfo.getName());
+				plugin.getSLF4JLogger().error("Error occurred while registering class {}", classInfo.getName(), e);
 			}
 		}
 	}

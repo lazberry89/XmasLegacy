@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.settings;
 
-@SuppressWarnings("DuplicatedCode")
+import org.jetbrains.annotations.NotNull;
+
 public enum SecondarySkill implements Skill {
 	//Defender
 	MAGNETIC_FIELD("자기장 영역"),
@@ -20,40 +21,25 @@ public enum SecondarySkill implements Skill {
 
 	//Sniper
 	SNIPE("저격"),
-	MAGIC_BULLET("특수 탄환");
+	MAGIC_BULLET("특수 탄환"),
 
-	private final String kor;
+	//Ranger
+	PRISM_LASER("프리즘 광선"),
+	CHAINING("체이닝");
 
-	SecondarySkill(String kor) {
+	private final @NotNull String kor;
+
+	SecondarySkill(@NotNull String kor) {
 		this.kor = kor;
 	}
 
-	public SecondarySkill next() {
-		return switch (this) {
-			case MAGNETIC_FIELD -> KARMA;
-			case KARMA -> MAGNETIC_FIELD;
-
-			case TARGET_GUARD -> OVERCHARGE_PRISM;
-			case OVERCHARGE_PRISM -> TARGET_GUARD;
-
-			case MADNESS -> TRIPLE_TOMAHAWK;
-			case TRIPLE_TOMAHAWK -> MADNESS;
-
-			case COUNTER -> FINISHER;
-			case FINISHER -> COUNTER;
-
-			case SNIPE -> MAGIC_BULLET;
-			case MAGIC_BULLET -> SNIPE;
-		};
-	}
-
 	@Override
-	public String getKor() {
+	public @NotNull String getKor() {
 		return this.kor;
 	}
 
 	@Override
-	public String getSkillName() {
+	public @NotNull String getSkillName() {
 		return "&e&l[ " + this.getKor() + " ]";
 	}
 }
