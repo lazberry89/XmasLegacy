@@ -105,19 +105,44 @@ public class Ranger extends AbstractSecondRole {
         return direction.subtract(normal.multiply(2 * dotProduct)).normalize();
     }
 
-    private void drawLaserTrail(@NotNull Location start, @NotNull Location end, @NotNull List<Location> trailPoints) {
-        double distance = start.distance(end);
-        Vector step = end.toVector().subtract(start.toVector()).normalize().multiply(0.2);
-        Location tempLoc = start.clone();
+	private void drawLaserTrail(@NotNull Location start, @NotNull Location end, @NotNull List<Location> trailPoints) {
+		double distance = start.distance(end);
+		Vector step = end.toVector().subtract(start.toVector()).normalize().multiply(0.2);
 
-        Particle.DustOptions dust = new Particle.DustOptions(Color.YELLOW, 0.8f);
+		List<Location> segmentPoints = new ArrayList<>();
+		Location tempLoc = start.clone();
 
-        for (double d = 0; d < distance; d += 0.2) {
-            tempLoc.add(step);
-            tempLoc.getWorld().spawnParticle(Particle.DUST, tempLoc, 1, 0, 0, 0, 0, dust);
-            if (Math.round(d * 10) % 10 == 0) trailPoints.add(tempLoc.clone());
-        }
-    }
+		Location lastSaved = trailPoints.isEmpty() ? start.clone() : trailPoints.getLast();
+
+		for (double d = 0; d < distance; d += 0.2) {
+			tempLoc.add(step);
+			segmentPoints.add(tempLoc.clone());
+
+			if (tempLoc.distance(lastSaved) >= 1.5) {
+				trailPoints.add(tempLoc.clone());
+				lastSaved = tempLoc.clone();
+			}
+		}
+
+		Particle.DustOptions dust = new Particle.DustOptions(Color.YELLOW, 0.8f);
+
+		new BukkitRunnable() {
+			int ticksLived = 0;
+			final int maxDuration = 20 * 4;
+
+			@Override
+			public void run() {
+				if (ticksLived >= maxDuration) {
+					this.cancel();
+					return;
+				}
+
+				for (Location loc : segmentPoints)
+					loc.getWorld().spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, dust, true);
+				ticksLived += 2;
+			}
+		}.runTaskTimer(getPlugin(), 0L, 2L);
+	}
 
     /**
      * 스킬의 최종 결과: 플레이어를 도착 지점으로 순간이동 시킵니다.
@@ -128,14 +153,10 @@ public class Ranger extends AbstractSecondRole {
         dest.setYaw(p.getLocation().getYaw());
         dest.setPitch(p.getLocation().getPitch());
 
-        p.getWorld().spawnParticle(Particle.REVERSE_PORTAL, p.getLocation(), 30, 0.5, 1, 0.5, 0.1);
         p.getWorld().playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.5f);
 
         p.teleport(dest);
         playDoubleVerticalChainExplosion(dest, p);
-
-        p.getWorld().spawnParticle(Particle.PORTAL, dest, 30, 0.5, 1, 0.5, 0.1);
-        p.getWorld().spawnParticle(Particle.FLASH, dest, 1);
         p.getWorld().playSound(dest, Sound.ENTITY_ILLUSIONER_MIRROR_MOVE, 1.0f, 1.2f);
 
         recentTrails.put(p.getUniqueId(), trailPoints);
@@ -168,7 +189,7 @@ public class Ranger extends AbstractSecondRole {
     }
 
     private void spawnExplosionEffect(@NotNull Location loc, float pitch, @NotNull Player caster) {
-        loc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, loc, 1, 0, 0, 0, 0);
+        loc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, loc, 1, 0, 0, 0, 0, null, true);
         loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.3f, pitch);
 
         loc.getWorld().getNearbyEntities(loc, 1.0, 1.0, 1.0).forEach(e -> {
@@ -197,30 +218,28 @@ public class Ranger extends AbstractSecondRole {
             p.getWorld().playSound(p.getLocation(), Sound.ENTITY_CREEPER_PRIMED, 1.0f, 1.5f);
             p.sendActionBar(ColorUtils.chat("&e&l[ 잔상 폭발! ]"));
 
-            new BukkitRunnable() {
-                int index = points.size() - 1;
+	        new BukkitRunnable() {
+		        int index = points.size() - 1;
 
-                @Override
-                public void run() {
-                    if (index < 0 || !p.isOnline()) {
-                        this.cancel();
-                        return;
-                    }
+		        @Override
+		        public void run() {
+			        if (index < 0 || !p.isOnline()) {
+				        this.cancel();
+				        return;
+			        }
 
-                    for (int i = 0; i < 2; i++) {
-                        if (index < 0) break;
-                        Location loc = points.get(index);
+			        Location loc = points.get(index);
 
-                        loc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, loc, 1, 0, 0, 0, 0);
-                        loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.4f, 1.2f);
+			        loc.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, loc, 1, 0, 0, 0, 0, null, true);
+			        loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 
-                        loc.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5).forEach(e -> {
-                            if (e instanceof LivingEntity le && !le.equals(p)) le.damage(5.0, p);
-                        });
-                        index--;
-                    }
-                }
-            }.runTaskTimer(getPlugin(), 0L, 1L);
+			        loc.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5).forEach(e -> {
+				        if (e instanceof LivingEntity le && !le.equals(p)) le.damage(5.0, p);
+			        });
+
+			        index--;
+		        }
+	        }.runTaskTimer(getPlugin(), 0L, 1L);
 
             recentTrails.remove(uuid);
             trailTimestamps.remove(uuid);
@@ -231,8 +250,7 @@ public class Ranger extends AbstractSecondRole {
             frontLoc.add(0, 1, 0);
 
             p.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, frontLoc, 1, 0, 0, 0, 0);
-            p.getWorld().spawnParticle(Particle.FLASH, frontLoc, 1);
-            p.getWorld().playSound(frontLoc, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 0.8f);
+            p.getWorld().playSound(frontLoc, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 
             Vector pushBack = p.getLocation().getDirection().normalize().multiply(-2.1);
             pushBack.setY(0.6);

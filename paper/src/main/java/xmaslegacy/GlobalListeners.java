@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,6 +41,12 @@ public class GlobalListeners implements Listener {
                 item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.STRING)
 				|| item != null && item.getItemMeta().getPersistentDataContainer().has(this.key2, PersistentDataType.STRING);
     }
+
+	@EventHandler
+	public void removeResourcePackOnJoin(PlayerJoinEvent e) {
+		Player p = e.getPlayer();
+		PlayerResourcePackStatusEvent.Status status = p.getResourcePackStatus();
+	}
 
     @EventHandler
     public void removeCombatItems(PlayerDeathEvent e) {

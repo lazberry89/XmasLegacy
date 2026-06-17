@@ -34,6 +34,7 @@ public final class XmasLegacy extends JavaPlugin {
 		instance = this;
 
 		UserManager.INSTANCE.initDataFolder(this.getDataFolder());
+		ServerInitializer.initiate(this);
 
 		if (AgeableCrops.RegisterRecipe()) getSLF4JLogger().info("Recipe Registered!");
 		else getSLF4JLogger().error("Recipe Not Registered!");
@@ -42,7 +43,6 @@ public final class XmasLegacy extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ChatPrefixListener(), this);
 
 		registerGlobalCommand();
-		ServerInitializer.initiate(this);
 
 		getLogger().info("XmasLegacy Plugin Enabled!");
 		getLogger().warning("This Christmas will be Perfect!");

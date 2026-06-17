@@ -15,26 +15,20 @@ import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 @TestOnly
 @Commands(command = "second")
 public class SecondTestCommand implements CommandExecutor {
-	private final Berserker berserker;
-	private final Defender defender;
-	private final Guardian guardian;
-	private final Fighter fighter;
-	private final Sniper sniper;
-	private final Ranger ranger;
 
     public SecondTestCommand() {
-	    @NotNull SecondRoleManager srm = SecondRoleManager.INSTANCE;
-		this.berserker = srm.getRoleInstance(BERSERKER);
-		this.defender = srm.getRoleInstance(DEFENDER);
-		this.guardian = srm.getRoleInstance(GUARDIAN);
-		this.fighter = srm.getRoleInstance(FIGHTER);
-		this.sniper = srm.getRoleInstance(SNIPER);
-		this.ranger = srm.getRoleInstance(RANGER);
 	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
+		@NotNull SecondRoleManager srm = SecondRoleManager.INSTANCE;
+		var berserker = srm.getRoleInstance(BERSERKER);
+		var defender = srm.getRoleInstance(DEFENDER);
+		var guardian = srm.getRoleInstance(GUARDIAN);
+		var fighter = srm.getRoleInstance(FIGHTER);
+		var sniper = srm.getRoleInstance(SNIPER);
+		var ranger = srm.getRoleInstance(RANGER);
 		if (args.length == 1) {
 			switch (args[0]) {
 				case "berserker" -> {

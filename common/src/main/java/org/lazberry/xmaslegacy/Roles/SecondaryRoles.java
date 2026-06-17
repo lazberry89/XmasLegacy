@@ -17,7 +17,7 @@ public enum SecondaryRoles implements Role {
 	FIGHTER("격투가" , BasicRoles.WARRIOR, SecondarySkill.COUNTER, new Skill[]{SecondarySkill.FINISHER}), //전사 2차전직 격투가
 
 	SNIPER("저격수" , BasicRoles.ARCHER, SecondarySkill.SNIPE, new Skill[]{SecondarySkill.MAGIC_BULLET}, ThirdRoles.WIND_WALKER), //궁수 2차전직 저격수
-	RANGER("유격병" , BasicRoles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 유격병
+	RANGER("유격병" , BasicRoles.ARCHER, SecondarySkill.PRISM_LASER, new Skill[]{SecondarySkill.CHAINING}, ThirdRoles.WIND_WALKER), //궁수 2차전직 유격병
 	TRAPPER("사냥꾼" , BasicRoles.ARCHER, ThirdRoles.WIND_WALKER), //궁수 2차전직 사냥꾼
 
 	WIZARD("위자드" , BasicRoles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 마법사(스킬변화)

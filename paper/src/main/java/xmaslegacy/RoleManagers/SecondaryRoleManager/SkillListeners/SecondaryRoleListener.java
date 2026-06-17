@@ -28,7 +28,6 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.RoleManager;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.Berserker;
-import xmaslegacy.RoleManagers.SecondaryRoleManager.Defender;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.Guardian;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.Sniper.BulletType;
@@ -47,11 +46,6 @@ public class SecondaryRoleListener implements Listener {
 	private final SkillEffectManager sem;
 	private final SecondRoleManager srm;
 
-    private final Defender defender;
-    private final Guardian guardian;
-    private final Berserker berserker;
-	private final Sniper sniper;
-
     public SecondaryRoleListener() {
         this.plugin = XmasLegacy.getInstance();
         this.um = UserManager.INSTANCE;
@@ -59,10 +53,6 @@ public class SecondaryRoleListener implements Listener {
 		this.rlm = RoleManager.getInstance();
 		this.sem = SkillEffectManager.INSTANCE;
 		this.srm = SecondRoleManager.INSTANCE;
-        this.defender = srm.getRoleInstance(DEFENDER);
-	    this.guardian = srm.getRoleInstance(GUARDIAN);
-        this.berserker = srm.getRoleInstance(BERSERKER);
-		this.sniper = srm.getRoleInstance(SNIPER);
     }
 
     @EventHandler
@@ -91,7 +81,8 @@ public class SecondaryRoleListener implements Listener {
     @EventHandler
     public void guardianPassive(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof LivingEntity victim)) return;
-
+		Guardian guardian = srm.getRoleInstance(GUARDIAN);
+		if (guardian == null) return;
         for (Player guardians : Bukkit.getOnlinePlayers()) {
             User user = um.getUser(guardians.getUniqueId());
             if (user == null) continue;
@@ -127,6 +118,9 @@ public class SecondaryRoleListener implements Listener {
 		ItemStack item = p.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;
 
+		Berserker berserker = srm.getRoleInstance(BERSERKER);
+		if (berserker == null) return;
+
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return;
 
@@ -153,6 +147,9 @@ public class SecondaryRoleListener implements Listener {
 		if (!e.getAction().isLeftClick()) return;
 		ItemStack item = p.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;
+
+		Guardian guardian = srm.getRoleInstance(GUARDIAN);
+		if (guardian == null) return;
 
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return;
@@ -195,6 +192,9 @@ public class SecondaryRoleListener implements Listener {
 
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return;
+
+		Sniper sniper = srm.getRoleInstance(SNIPER);
+		if (sniper == null) return;
 
 		PersistentDataContainer container = meta.getPersistentDataContainer();
 		String key = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);

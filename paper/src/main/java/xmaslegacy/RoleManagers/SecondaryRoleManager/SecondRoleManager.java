@@ -19,8 +19,8 @@ public enum SecondRoleManager {
 		this.roleInstance.put(role.getRole(), role);
 	}
 
-	@Contract(value = "null -> null", pure = true)
 	@SuppressWarnings("unchecked")
+	@Contract(value = "null -> null", pure = true)
 	public <T extends AbstractSecondRole> @Nullable T getRoleInstance(@Nullable SecondaryRoles role) {
 		if (role == null) return null;
 		return (T) this.roleInstance.get(role);
