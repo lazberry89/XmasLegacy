@@ -14,13 +14,10 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
-import xmaslegacy.RoleManagers.UsingEnergy;
 import xmaslegacy.SkillEffectManager;
+import xmaslegacy.Utils.ItemBuilder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Roles(grade = 2)
 public class Ranger extends AbstractSecondRole {
@@ -46,7 +43,7 @@ public class Ranger extends AbstractSecondRole {
     }
 
     private void launchLaserTrajectory(@NotNull Player p) {
-        List<Location> trailPoints = new java.util.ArrayList<>();
+        List<Location> trailPoints = new ArrayList<>();
 
         new BukkitRunnable() {
             int ticks = 0;
@@ -191,9 +188,7 @@ public class Ranger extends AbstractSecondRole {
 
         if (recentTrails.containsKey(uuid) && trailTimestamps.containsKey(uuid)) {
             long timePassed = System.currentTimeMillis() - trailTimestamps.get(uuid);
-            if (timePassed <= 5000) {
-                hasComboTrail = true;
-            }
+            if (timePassed <= 5000) hasComboTrail = true;
         }
 
         if (hasComboTrail) {
@@ -254,18 +249,26 @@ public class Ranger extends AbstractSecondRole {
     }
 
     @Override
-    public void usePassive(@NotNull Player p) {
-
-    }
+    public void usePassive(@NotNull Player p) {}
 
     @Override
     public @NotNull ItemStack roleWeapon() {
-        return new ItemStack(Material.STICK);
+        return ItemBuilder.of(getPlugin(), Material.IRON_HOE)
+		        .setRoleDefault(SecondaryRoles.RANGER)
+		        .setName(ColorUtils.chat("&e&l프리즘 슬라이서"))
+		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+		        .hideAllFlags()
+		        .build();
     }
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return new ItemStack(Material.LEATHER_BOOTS);
+        return ItemBuilder.of(getPlugin(), Material.GOLDEN_BOOTS)
+		        .setRoleDefault(SecondaryRoles.RANGER)
+		        .setName(ColorUtils.chat("&e&l프리즘 부츠"))
+		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+		        .hideAllFlags()
+		        .build();
     }
 
     @Override

@@ -20,6 +20,7 @@ public class SecondTestCommand implements CommandExecutor {
 	private final Guardian guardian;
 	private final Fighter fighter;
 	private final Sniper sniper;
+	private final Ranger ranger;
 
     public SecondTestCommand() {
 	    @NotNull SecondRoleManager srm = SecondRoleManager.INSTANCE;
@@ -27,7 +28,8 @@ public class SecondTestCommand implements CommandExecutor {
 		this.defender = srm.getRoleInstance(DEFENDER);
 		this.guardian = srm.getRoleInstance(GUARDIAN);
 		this.fighter = srm.getRoleInstance(FIGHTER);
-		this.sniper = srm.getRoleInstance(SNIPER);;
+		this.sniper = srm.getRoleInstance(SNIPER);
+		this.ranger = srm.getRoleInstance(RANGER);
 	}
 
 	@Override
@@ -64,6 +66,12 @@ public class SecondTestCommand implements CommandExecutor {
 					p.getInventory().addItem(sniper.roleArmor());
 					p.getInventory().addItem(sniper.TargetEmblem());
 					p.getInventory().addItem(sniper.RangeEmblem());
+				}
+				case "ranger" -> {
+					p.getInventory().addItem(ranger.roleWeapon());
+					p.getInventory().addItem(ranger.roleArmor());
+					p.getInventory().addItem(ranger.TargetEmblem());
+					p.getInventory().addItem(ranger.RangeEmblem());
 				}
 			}
 		}
