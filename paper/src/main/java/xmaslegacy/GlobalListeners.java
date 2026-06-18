@@ -11,11 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xmaslegacy.Annotation.Listeners;
@@ -37,16 +34,12 @@ public class GlobalListeners implements Listener {
     }
 
     private boolean isCombatItem(@Nullable ItemStack item) {
-        return item != null && item.hasItemMeta() &&
-                item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.STRING)
-				|| item != null && item.getItemMeta().getPersistentDataContainer().has(this.key2, PersistentDataType.STRING);
+        if (item == null || item.getType().isAir()) return false;
+		var meta = item.getItemMeta();
+		if (meta == null) return false;
+		var container = meta.getPersistentDataContainer();
+	    return container.has(key) || container.has(key2);
     }
-
-	@EventHandler
-	public void removeResourcePackOnJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		PlayerResourcePackStatusEvent.Status status = p.getResourcePackStatus();
-	}
 
     @EventHandler
     public void removeCombatItems(PlayerDeathEvent e) {
@@ -56,12 +49,7 @@ public class GlobalListeners implements Listener {
         if (e.getKeepInventory()) return;
         if (remain.isEmpty()) return;
 
-        remain.removeIf(item -> item != null
-                && item.hasItemMeta()
-                && item.getItemMeta().getPersistentDataContainer().has(this.key, PersistentDataType.STRING));
-	    remain.removeIf(item -> item != null
-			    && item.hasItemMeta()
-			    && item.getItemMeta().getPersistentDataContainer().has(this.key2, PersistentDataType.STRING));
+        remain.removeIf(this::isCombatItem);
         plugin.infoMsg(InfoLevel.WARN, victim, "직업관련 아이템은 소멸합니다.");
     }
 
