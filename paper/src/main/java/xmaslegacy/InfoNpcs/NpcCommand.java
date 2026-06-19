@@ -28,16 +28,14 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
 		if (!(sender instanceof Player p)) return true;
 		if (!p.isOp()) return true;
 		if (args.length == 1) {
-			switch (args[0].toLowerCase()) {
-				case "main" -> {
-					var main = ncm.getNpcInstance(NpcType.MAIN);
-					if (main == null) {
-						plugin.infoMsg(InfoLevel.ERROR, p, "등록되지 않은 가이드입니다.");
-						return true;
-					}
-					main.sendCaption(p);
-				}
-				default -> {}
+			AbstractNpc npc;
+			try {
+				NpcType type = NpcType.valueOf(args[0].toUpperCase());
+				npc = ncm.getNpcInstance(type);
+				npc.sendCaption(p);
+			} catch (IllegalArgumentException e) {
+				plugin.infoMsg(InfoLevel.ERROR, p, "등록되지 않은 가이드이거나 잘못된 명령어입니다.");
+				return true;
 			}
 		} else return true;
         return true;

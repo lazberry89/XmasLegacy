@@ -12,6 +12,7 @@ public enum NpcManager {
 
     NpcManager() {
         this.npcMap.put(NpcType.MAIN, new MainNpc());
+		this.npcMap.put(NpcType.ROLE, new CenterNpc());
     }
 
     @SuppressWarnings("unchecked")
