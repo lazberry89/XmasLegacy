@@ -4,8 +4,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,41 +25,21 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!(sender instanceof Player p)) return true;
-        if (!p.isOp()) {
-            plugin.infoMsg(InfoLevel.ERROR, p, "관리자 전용 명령어입니다!");
-            return true;
-        }
-        if (args.length == 3) {
-            NpcType type;
-            try {
-                type = NpcType.valueOf(args[0].toUpperCase());
-            } catch (IllegalArgumentException e) {
-                plugin.infoMsg(InfoLevel.ERROR, p, "유효하지 않은 타입입니다.");
-                return true;
-            }
-	        EntityType enType;
-			try {
-				enType = EntityType.valueOf(args[2]);
-			} catch (IllegalArgumentException e) {
-				plugin.infoMsg(InfoLevel.ERROR, p, "유효하지 않은 타입입니다.");
-				return true;
+		if (!(sender instanceof Player p)) return true;
+		if (!p.isOp()) return true;
+		if (args.length == 1) {
+			switch (args[0].toLowerCase()) {
+				case "main" -> {
+					var main = ncm.getNpcInstance(NpcType.MAIN);
+					if (main == null) {
+						plugin.infoMsg(InfoLevel.ERROR, p, "등록되지 않은 가이드입니다.");
+						return true;
+					}
+					main.sendCaption(p);
+				}
+				default -> {}
 			}
-            if (args[1].equalsIgnoreCase("spawn"))
-                ncm.getNpcInstance(type).spawn(p.getLocation(), enType);
-        }
-		if (args.length == 1 && args[0].equalsIgnoreCase("remove")) {
-			Entity target = p.getTargetEntity(10, false);
-			if (target == null) {
-				plugin.infoMsg(InfoLevel.ERROR, p, "타겟이 없습니다.");
-				return true;
-			}
-			var container = target.getPersistentDataContainer();
-			if (container.has(AbstractNpc.key())) {
-				target.remove();
-				plugin.infoMsg(InfoLevel.INFO, p, "제거하였습니다.");
-			}
-		}
+		} else return true;
         return true;
     }
 

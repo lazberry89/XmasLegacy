@@ -80,25 +80,4 @@ public class MainNpc extends AbstractNpc {
         player.sendActionBar(txt);
         if (user.isMobile()) player.sendMessage(txt);
     }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Entity> T spawn(Location loc, EntityType entityType) {
-        @Nullable Class<? extends Entity> entityClass = entityType.getEntityClass();
-
-        if (entityClass == null) {
-            throw new IllegalArgumentException("지원하지 않는 EntityType입니다: " + entityType);
-        }
-
-        return (T) loc.getWorld().spawn(loc, entityClass, e -> {
-            e.customName(ColorUtils.chat("&e&l크리아 마을 주민"));
-            e.setCustomNameVisible(true);
-            if (e instanceof LivingEntity le) {
-                le.setCollidable(false);
-            }
-            e.setInvulnerable(true);
-            GlowUtils.setGlowColor(e, NamedTextColor.YELLOW);
-            e.getPersistentDataContainer().set(getKey(), PersistentDataType.STRING, NpcType.MAIN.name());
-        });
-    }
 }

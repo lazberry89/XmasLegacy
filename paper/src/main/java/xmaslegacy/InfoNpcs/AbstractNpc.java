@@ -26,10 +26,6 @@ public abstract class AbstractNpc {
         this.caption = cap;
     }
 
-    public static @NotNull NamespacedKey key() {
-        return XmasLegacy.getInstance().getNamespacedKey("npc");
-    }
     protected abstract @NotNull String next(@NotNull Player player);
     public abstract void sendCaption(@NotNull Player player);
-    public abstract <T extends Entity> T spawn(@NotNull Location loc, EntityType entity);
 }
