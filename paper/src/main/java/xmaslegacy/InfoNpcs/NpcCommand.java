@@ -11,6 +11,7 @@ import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.XmasLegacy;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "guide")
@@ -43,6 +44,6 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        return List.of();
+        return List.of(Arrays.stream(NpcType.values()).map(NpcType::name).toArray(String[]::new));
     }
 }

@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmaslegacy.Utils.ItemBuilder;
 import xmaslegacy.XmasLegacy;
@@ -64,7 +65,7 @@ public class ConductableItems {
                 .clone();
     }
 
-    //???
+    @TestOnly
     public static @NotNull ItemStack DeathSave() {
         return ItemBuilder.of(plugin, Material.POTION)
                 .setName(ColorUtils.chat("&4&l???"))

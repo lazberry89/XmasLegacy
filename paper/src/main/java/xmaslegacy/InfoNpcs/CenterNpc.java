@@ -1,7 +1,6 @@
 package xmaslegacy.InfoNpcs;
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.Sound;
 import org.lazberry.xmaslegacy.ColorUtils;
 
 import java.util.List;
@@ -22,20 +21,6 @@ public class CenterNpc extends AbstractNpc {
 				"저기 &6도서관&f에 가면 찾아볼 수 있을거야. 여기서 말하긴 꺼려지는군.",
 				"옆에 서적이 보이는가? 저 책이 자네의 직업을 결정해 줄걸세.",
 				"행운을 비네. 서로 도와야만 살아남을 수 있어."
-		), ColorUtils.chat("&b&l마을 이장"));
-	}
-
-	@Override
-	protected @NotNull String next(@NotNull Player player) {
-		var uuid = player.getUniqueId();
-		int num = this.playerCaption.getOrDefault(uuid, 0);
-		String currentCaption = this.caption.get(num);
-
-		num++;
-
-		if (num >= this.caption.size()) num = 0;
-
-		this.playerCaption.put(uuid, num);
-		return currentCaption;
+		), ColorUtils.chat("&b&l마을 이장"), Sound.ENTITY_VILLAGER_AMBIENT);
 	}
 }
