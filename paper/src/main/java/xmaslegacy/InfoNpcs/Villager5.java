@@ -13,6 +13,6 @@ public class Villager5 extends AbstractNpc {
 				"정부는 인플레이션 관리도 안하고 뭐하는거야..",
 				"태양초 없이 어떻게 살라고??",
 				"마을이 망해가는구만.."
-		), ColorUtils.chat("&7&l마을주민5"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민5"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER5);
 	}
 }

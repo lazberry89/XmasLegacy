@@ -16,6 +16,6 @@ public class Villager2 extends AbstractNpc {
 				"누가 결사대가 될지 궁금해지는구만.",
 				"빨리 이 &b대백야&f 시대가 끝나면 좋겠는데..",
 				"..."
-		), ColorUtils.chat("&7&l마을주민2"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민2"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER2);
 	}
 }

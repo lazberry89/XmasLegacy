@@ -14,6 +14,6 @@ public class Villager3 extends AbstractNpc {
 				"결사대가 과연 저 괴물들을 물리칠 수 있을진 모르겠지만 유일한 희망인건 변치않는거같군.",
 				"자네는 결사대에 관심 없나? 몸도 꽤 탄탄해보이는걸.",
 				"누가 되든간에, 빨리 이 시대를 끝내야돼. 불꽃이 점점 약해지고있어.."
-		), ColorUtils.chat("&7&l마을주민3"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민3"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER3);
 	}
 }

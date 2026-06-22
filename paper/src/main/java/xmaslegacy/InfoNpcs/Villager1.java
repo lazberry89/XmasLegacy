@@ -14,6 +14,6 @@ public class Villager1 extends AbstractNpc {
 				"결사대가 우리를 위해 지금 얼마나 노력하는데.",
 				"그냥 미친 할멈이야.",
 				"그래도 갈거면 가서 뭐라는지나 들어봐. 이상한 사람일세."
-		), ColorUtils.chat("&7&l마을주민1"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민1"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER1);
 	}
 }

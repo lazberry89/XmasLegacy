@@ -2,22 +2,35 @@ package org.lazberry.xmaslegacy;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ColorUtils {
 
-	private static final LegacyComponentSerializer SERIALIZER = LegacyComponentSerializer.builder()
+	private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.builder()
 			.character('&')
 			.hexColors()
 			.build();
 
-	public static Component chat(String message) {
+	private static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.builder()
+			.character(LegacyComponentSerializer.SECTION_CHAR)
+			.hexColors()
+			.build();
+
+	public static @NotNull Component chat(String message) {
 		if (message == null) return Component.empty();
 
-		return SERIALIZER.deserialize(message);
+		return AMPERSAND_SERIALIZER.deserialize(message);
 	}
 
-	public static String toLegacy(Component component) {
-		return SERIALIZER.serialize(component);
+	public static @NotNull String chatStr(@Nullable String message) {
+		if (message == null) return "";
+
+		return SECTION_SERIALIZER.serialize(AMPERSAND_SERIALIZER.deserialize(message));
+	}
+
+	public static @NotNull String toLegacy(@NotNull Component component) {
+		return AMPERSAND_SERIALIZER.serialize(component);
 	}
 }
 

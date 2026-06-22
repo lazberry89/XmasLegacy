@@ -18,6 +18,6 @@ public class WitchNpc extends AbstractNpc {
 				"...",
 				"..",
 				"..엘리안 도대체 무슨짓을 한거야.."
-		), ColorUtils.chat("&5&l미치광이 마녀"), Sound.ENTITY_WITCH_AMBIENT);
+		), ColorUtils.chat("&5&l미치광이 마녀"), Sound.ENTITY_WITCH_AMBIENT, NpcType.WITCH);
 	}
 }

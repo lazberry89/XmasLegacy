@@ -28,6 +28,6 @@ public class HidingBook extends AbstractNpc {
 				"..무슨일이 있어도,",
 				"그 서적은 세상에 알려져선 안돼.",
 				"우리의 희망이 희망이 아니었단걸 알게 된 순간, 이 마을은 끝이야."
-		), ColorUtils.chat("&8&l의심스런 주민"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&8&l의심스런 주민"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.BOOK);
 	}
 }

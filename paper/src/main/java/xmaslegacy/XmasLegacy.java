@@ -2,6 +2,7 @@ package xmaslegacy;
 
 import com.google.common.reflect.ClassPath;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,6 +13,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Env.ConsumableManager;
 import xmaslegacy.HuntingZone.MobSpawnManager;
+import xmaslegacy.Icing.IcingSystem;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.PluginUtils.ReflectionManager;
 import xmaslegacy.PluginUtils.ServerInitializer;
@@ -20,6 +22,7 @@ import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
 import xmaslegacy.ServerPrefix.ChatPrefixListener;
 import xmaslegacy.ServerPrefix.UserTagManager;
 import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.ServerTransfer;
 
 import java.io.IOException;
 
@@ -34,9 +37,13 @@ public final class XmasLegacy extends JavaPlugin {
 		instance = this;
 
 		UserManager.INSTANCE.initDataFolder(this.getDataFolder());
+
+		//빙결시스템 시작
+		IcingSystem.INSTANCE.startTask(this);
+
 		ServerInitializer.initiate(this);
 
-		if (AgeableCrops.RegisterRecipe()) getSLF4JLogger().info("Recipe Registered!");
+		if (AgeableCrops.RegisterRecipe(this)) getSLF4JLogger().info("Recipe Registered!");
 		else getSLF4JLogger().error("Recipe Not Registered!");
 
 		getServer().getPluginManager().registerEvents(new ServerJoinListener(), this);
@@ -74,6 +81,8 @@ public final class XmasLegacy extends JavaPlugin {
 		UserManager.INSTANCE.getAllUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
 		getSLF4JLogger().info("User info is automatically saved!");
 
+		IcingSystem.INSTANCE.stopTask();
+
 		ConsumableManager.INSTANCE.stopCookieTimer();
 
 		BagManager.INSTANCE.saveAllBags();
@@ -90,8 +99,15 @@ public final class XmasLegacy extends JavaPlugin {
 	}
 
 	public void infoMsg(@NotNull InfoLevel level, @NotNull Player p, @NotNull String msg) {
-		p.sendMessage(ColorUtils.chat(level.Prefix() + " " + msg));
+		Component txt = ColorUtils.chat(level.Prefix() + " " + msg);
+		p.sendMessage(txt);
 		p.playSound(p, level.Sound(), 1.0f, 1.0f);
+		var user = UserManager.INSTANCE.getUser(p.getUniqueId());
+		if (user == null) {
+			ServerTransfer.sendReloadNotice(p);
+			return;
+		}
+		if (user.isMobile()) p.sendActionBar(txt);
 	}
 
 	public void registerReflection() {
@@ -102,7 +118,7 @@ public final class XmasLegacy extends JavaPlugin {
 			ReflectionManager.registerAllRoles(classPath);
 		} catch (IOException e) {
 			this.getSLF4JLogger().error("Error occurred while registering instances! Disabling plugin.", e);
-			this.getServer().broadcast(ColorUtils.chat(Alert.RED + " 서버 메인 플러그인 로드를 실패하였습니다. 플러그인을 비활성화합니다."));
+			this.getServer().broadcast(ColorUtils.chat(Alert.RED + " Failed to load main plugin System. Disabling plugin."));
 			this.getServer().getPluginManager().disablePlugin(this);
 		}
 	}

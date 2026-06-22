@@ -3,12 +3,11 @@ package org.lazberry.xmaslegacy.User;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,7 @@ public class User {
 	private final @NotNull List<ServerPrefix> availablePrefix = new ArrayList<>();
 	private @Nullable ServerPrefix equipPrefix;
 	private boolean combatMode = false;
+    private boolean isImmuneToIcing = false;
 
     public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {
         this.uuid = uuid;

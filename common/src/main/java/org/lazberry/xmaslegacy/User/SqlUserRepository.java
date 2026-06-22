@@ -42,6 +42,7 @@ public enum SqlUserRepository implements UserRepository {
 				"wantsCookie BOOLEAN, " +
 				"tier VARCHAR(20), " +
 				"mastery VARCHAR(20)" +
+				"isImmuneToIcing BOOLEAN" +
 				");";
 
 		try (Connection conn = getConnection();
@@ -104,6 +105,7 @@ public enum SqlUserRepository implements UserRepository {
 				RoleMastery mastery = RoleMastery.valueOf(rs.getString("mastery"));
 				loadedUser.setTier(tier);
 				loadedUser.setMastery(mastery);
+				loadedUser.setImmuneToIcing(rs.getBoolean("isImmuneToIcing"));
 
 				return loadedUser;
 			}
@@ -146,8 +148,8 @@ public enum SqlUserRepository implements UserRepository {
 	@Override
 	public void saveUser(User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
-		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {

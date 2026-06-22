@@ -14,6 +14,6 @@ public class Villager8 extends AbstractNpc {
 				"혹시 뭐 타이레놀같은거 들고다니나?",
 				"에휴, 나이들었으니 당연히 아픈거겠지.",
 				"조용히 살다 가야지, 미치광이 취급받을바엔."
-		), ColorUtils.chat("&7&l마을주민8"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민8"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER8);
 	}
 }

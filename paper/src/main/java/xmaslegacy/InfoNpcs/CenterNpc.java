@@ -21,6 +21,6 @@ public class CenterNpc extends AbstractNpc {
 				"저기 &6도서관&f에 가면 찾아볼 수 있을거야. 여기서 말하긴 꺼려지는군.",
 				"옆에 서적이 보이는가? 저 책이 자네의 직업을 결정해 줄걸세.",
 				"행운을 비네. 서로 도와야만 살아남을 수 있어."
-		), ColorUtils.chat("&b&l마을 이장"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&b&l마을 이장"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.ROLE);
 	}
 }

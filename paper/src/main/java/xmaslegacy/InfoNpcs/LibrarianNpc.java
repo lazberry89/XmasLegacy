@@ -14,6 +14,6 @@ public class LibrarianNpc extends AbstractNpc {
 				"도서관은 이 마을에서 가장 귀중한 장소라고 할 수 있지.",
 				"근데, 누군가 책 몇개를 반납을 안해. 분명 민간 주택 어딘가에 있을거야.",
 				"꼭 나이드신 분들이 빌려가서 반납을 안한다니깐."
-		), ColorUtils.chat("&a&l사서"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&a&l사서"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.LIBRARIAN);
 	}
 }

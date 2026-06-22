@@ -1,13 +1,13 @@
 package xmaslegacy.Env;
 
 import io.th0rgal.oraxen.api.OraxenItems;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +24,7 @@ public enum ConsumableManager {
 	INSTANCE;
 
     private @Nullable BukkitTask task;
+    @Getter
     private boolean isRunning = false;
     private final @NotNull UserManager um;
 	private final @NotNull BagManager bm;
@@ -39,7 +40,7 @@ public enum ConsumableManager {
 		if (oraxen == null) {item = new ItemStack(Material.COOKIE);} else {
 		item = oraxen.build();}
 
-        ItemStack a = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), item)
+        ItemStack a = ItemBuilder.of(XmasLegacy.getInstance(), item)
                 .setName(ColorUtils.chat("&c&l라즈베리 쿠키"))
                 .setLore(ColorUtils.chat("&8맛은 있는데,배는 고플걸"))
                 .setGlint(true)
@@ -73,7 +74,4 @@ public enum ConsumableManager {
         this.isRunning = false;
     }
 
-    public boolean isRunning() {
-        return this.isRunning;
-    }
 }

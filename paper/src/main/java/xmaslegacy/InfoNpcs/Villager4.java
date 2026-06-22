@@ -16,6 +16,6 @@ public class Villager4 extends AbstractNpc {
 				"아마 저 마녀 때문이 아닌가 싶어.",
 				"왜 드디어 자유로워질려 하는데, 그걸 막는건지. 도무지 이해할 수 없군.",
 				"결사대는 우리의 마지막 희망이자 꿈인데..."
-		), ColorUtils.chat("&7&l마을주민4"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민4"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER4);
 	}
 }

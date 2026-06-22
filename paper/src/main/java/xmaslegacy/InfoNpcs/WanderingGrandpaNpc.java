@@ -17,6 +17,6 @@ public class WanderingGrandpaNpc extends AbstractNpc {
 				"누구보다 우리를 위했지만, 동시에 그 누구보다 악당을 잘 알았던.",
 				"그게 누구냐고? 그것도 모르면서 여기를 온거야?",
 				"..."
-		), ColorUtils.chat("&7&l떠돌이"), Sound.ENTITY_WANDERING_TRADER_AMBIENT);
+		), ColorUtils.chat("&7&l떠돌이"), Sound.ENTITY_WANDERING_TRADER_AMBIENT, NpcType.WANDER);
 	}
 }

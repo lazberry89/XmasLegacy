@@ -14,6 +14,6 @@ public class Villager6 extends AbstractNpc {
 				"하필 제일 위험한 거울신전으로 갔다더군.",
 				"뭔 암호를 찾았다고 그러면서 말이야.",
 				"다 필요없어..딸도 없이 무슨 낙으로 여기서 살아.."
-		), ColorUtils.chat("&7&l마을주민6"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민6"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER6);
 	}
 }

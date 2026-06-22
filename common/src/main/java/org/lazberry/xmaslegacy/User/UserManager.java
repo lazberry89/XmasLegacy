@@ -151,7 +151,7 @@ public enum UserManager {
 				logger.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUUID());
 				return;
 			}
-		File dumpFile = new File(dumpDir, user.getUUID().toString() + ".properties");
+		File dumpFile = new File(dumpDir, user.getUUID() + ".properties");
 
 		Properties props = new Properties();
 		props.setProperty("uuid", user.getUUID().toString());
@@ -167,6 +167,7 @@ public enum UserManager {
 		props.setProperty("wantsCookie", String.valueOf(user.ifWantsCookie()));
 		props.setProperty("tier", user.getTier().name());
 		props.setProperty("mastery", user.getMastery().name());
+		props.setProperty("isImmuneToIcing", String.valueOf(user.isImmuneToIcing()));
 
 		try (FileOutputStream out = new FileOutputStream(dumpFile)) {
 			props.store(out, "Emergency Backup for " + user.getName());
@@ -206,6 +207,7 @@ public enum UserManager {
 
 			recoveredUser.setTier(Tier.valueOf(props.getProperty("tier", "BRONZE")));
 			recoveredUser.setMastery(RoleMastery.valueOf(props.getProperty("mastery", "BEGINNER")));
+			recoveredUser.setImmuneToIcing(Boolean.parseBoolean(props.getProperty("isImmuneToIcing", "false")));
 
 			return recoveredUser;
 		} catch (Exception e) {

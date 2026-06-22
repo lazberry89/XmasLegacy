@@ -15,6 +15,6 @@ public class Villager7 extends AbstractNpc {
 				"최소한 영혼의 불빛은 항상 밝았는데, 내 눈이 침침해진건지 어두워졌군.",
 				"아 자네 혹시 결사대에 대해 아는가?",
 				"..."
-		), ColorUtils.chat("&7&l마을주민7"), Sound.ENTITY_VILLAGER_AMBIENT);
+		), ColorUtils.chat("&7&l마을주민7"), Sound.ENTITY_VILLAGER_AMBIENT, NpcType.VILLAGER7);
 	}
 }
