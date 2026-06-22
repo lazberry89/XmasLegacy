@@ -5,16 +5,14 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmaslegacy.Utils.BookUtils;
 
-public class Documents {
-
-
+public final class Documents {
     public static @NotNull ItemStack IcingDocument() {
         return BookUtils.create(
-                ColorUtils.chat("&4엘&k리&r&4ㅇ"),
+                ColorUtils.chat("&4엘&k리&r&4#"),
                 ColorUtils.chat("&b&l빙결 마법 관련 서적"),
                 ColorUtils.chat(
                         """
-                        &b&l빙결 관련 고대 서적
+                        &b&l빙결&0 관련 고대 서적
                 
                         빙결마법은 생체를 뒤바꾸는
                         &4국가재앙&r수준의 고대 마법이다.
@@ -23,9 +21,9 @@ public class Documents {
                         """),
                 ColorUtils.chat(
                         """
-                        &6&l관련 조항
+                        &6&l관련 조항&r&0
                         
-                        - 해당 마법은 &4국가 비상수준&r의
+                        - 해당 마법은 &4국가 비상수준&0의
                         장악력과 파괴력을 사용하므로,
                         개인의 사용을 절대적으로 금한다.
                         
@@ -34,9 +32,9 @@ public class Documents {
                         """),
                 ColorUtils.chat(
                         """
-                        &7관련 문항&r
+                        &7관련 문항&0
                         
-                        기존 &4&k영원한 봄&r프로젝트에
+                        기존 &4&k영원한 봄&r&0프로젝트에
                         사용되었던 마법이다. 추위를 응축시키기
                         위해 사용되었던 걸로 보인다.
                         
@@ -47,6 +45,19 @@ public class Documents {
     }
 
     public static @NotNull ItemStack StolenBook() {
-        return BookUtils.create(); //TODO
+        return BookUtils.create(
+				ColorUtils.chat("&5엘리스"),
+		        ColorUtils.chat("&b백야&f에 관하여"),
+		        ColorUtils.chat( //엘리안에게 바칩니다.
+				        """
+				        이 책을 &b&k###&r&0에게 바칩니다..
+				        
+				        이 기록은 &4### #&r&0프로젝트의
+				        기록을 위해 작성되었습니다.
+				        """),
+		        ColorUtils.chat(
+				        """
+				        """)
+        );
     }
 }

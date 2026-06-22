@@ -8,7 +8,6 @@ import xmaslegacy.HuntingZone.MobSpawnManager;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleSelection.RoleViewDesign;
-import xmaslegacy.ServerPrefix.UserTagManager;
 import xmaslegacy.TransferPortal.PortalManager;
 import xmaslegacy.XmasLegacy;
 
@@ -31,6 +30,6 @@ public class MainInitializer implements ServerInitializer {
 		MobSpawnManager.INSTANCE.startTask();
 		PortalManager.INSTANCE.startPortalScheduler();
 
-		UserTagManager.runTask();
+		//UserTagManager.runTask();
 	}
 }

@@ -13,6 +13,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Env.ConsumableManager;
 import xmaslegacy.HuntingZone.MobSpawnManager;
+import xmaslegacy.Icing.IcingListener;
 import xmaslegacy.Icing.IcingSystem;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.PluginUtils.ReflectionManager;
@@ -20,7 +21,6 @@ import xmaslegacy.PluginUtils.ServerInitializer;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
 import xmaslegacy.ServerPrefix.ChatPrefixListener;
-import xmaslegacy.ServerPrefix.UserTagManager;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.ServerTransfer;
 
@@ -40,6 +40,7 @@ public final class XmasLegacy extends JavaPlugin {
 
 		//빙결시스템 시작
 		IcingSystem.INSTANCE.startTask(this);
+		getServer().getPluginManager().registerEvents(new IcingListener(), this);
 
 		ServerInitializer.initiate(this);
 
@@ -91,7 +92,7 @@ public final class XmasLegacy extends JavaPlugin {
 		getSLF4JLogger().info("Stopping Hunting Zone spawning.");
 		MobSpawnManager.INSTANCE.stopTask();
 
-		UserTagManager.stopTask();
+		//UserTagManager.stopTask();
 	}
 
 	public @NotNull NamespacedKey getNamespacedKey(@NotNull String key) {

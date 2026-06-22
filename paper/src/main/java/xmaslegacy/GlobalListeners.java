@@ -15,8 +15,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.Enchant.EnchantUserInterface;
+import xmaslegacy.Icing.IcingSystem;
+import xmaslegacy.RoleSelection.RoleSelectInterface;
+import xmaslegacy.RoleSelection.RoleSelectionInterface;
 import xmaslegacy.Utils.InfoLevel;
 
 import java.util.List;
@@ -134,7 +138,9 @@ public class GlobalListeners implements Listener {
         Inventory topInv = e.getView().getTopInventory();
 
         if (topInv.getType() == InventoryType.PLAYER
-                || topInv.getType() == InventoryType.CRAFTING) return;
+                || topInv.getType() == InventoryType.CRAFTING
+                || topInv.getHolder() instanceof RoleSelectInterface
+                || topInv.getHolder() instanceof RoleSelectionInterface) return;
 
         Player p = (Player) e.getPlayer();
 

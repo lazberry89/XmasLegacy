@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.User;
 
 import lombok.Data;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
@@ -34,6 +35,7 @@ public class User {
 	private @Nullable ServerPrefix equipPrefix;
 	private boolean combatMode = false;
     private boolean isImmuneToIcing = false;
+	private int icingState = 100;
 
     public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {
         this.uuid = uuid;
@@ -42,6 +44,12 @@ public class User {
         this.availablePrefix.add(org.lazberry.xmaslegacy.settings.Tier.VISITOR);
     }
 
+	public void addIcingState(int icingState) {
+		this.icingState = Math.min(100, Math.max(0, this.icingState + icingState));
+	}
+	public void setIcingState(int icingState) {
+		this.icingState = Math.min(100, Math.max(0, icingState));
+	}
     public @NotNull UUID getUUID() {return this.uuid;}
     public @NotNull Role getRole() {return this.role;}
     public void setRole(@NotNull Role role) {this.role = role;}

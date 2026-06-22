@@ -1,7 +1,10 @@
 package xmaslegacy.Icing;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,31 +14,22 @@ import xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 public enum IcingSystem {
     INSTANCE;
 
-    private final @NotNull Map<UUID, Integer> icingMap = new HashMap<>();
-    private final @NotNull Random random = new Random();
     private @Nullable BukkitTask task;
 
     IcingSystem() {}
 
-    public int getState(@NotNull UUID uuid) {
-        return this.icingMap.getOrDefault(uuid, 100);
-    }
-
-    public void setState(@NotNull UUID uuid, int amount) {
-        this.icingMap.put(uuid, Math.max(0, amount));
-    }
-
     public void startTask(@NotNull XmasLegacy plugin) {
         if (this.task != null) return;
-        this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        this.task = Bukkit.getScheduler().runTaskTimer(plugin, () ->
             Bukkit.getOnlinePlayers().forEach(p -> {
-                if (p.isInvulnerable()) return;
+                if (p.isInvulnerable()
+		                || p.getGameMode() == GameMode.CREATIVE
+		                || p.getGameMode() == GameMode.SPECTATOR) return;
                 var uuid = p.getUniqueId();
                 var user = UserManager.INSTANCE.getUser(uuid);
                 if (user == null || user.isImmuneToIcing()) {
@@ -43,24 +37,30 @@ public enum IcingSystem {
                     return;
                 }
 
-                int amount = this.getState(uuid);
-                int nextAmount = amount - 1;
-                this.setState(uuid, amount - 1);
+                int amount = user.getIcingState();
+				int nextAmount = Math.max(0, amount - 1);
+                user.setIcingState(nextAmount);
 
                 IcingBossBar.INSTANCE.updateBar(p, nextAmount);
 
                 if (nextAmount <= 20) {
-                    p.setFreezeTicks(150);
+                    p.setFreezeTicks(400);
                     p.sendActionBar(ColorUtils.chat(String.format("&4&l[ 빙결수치 경고 : %d%% ]", nextAmount)));
 
                     if (nextAmount == 0) {
                         p.damage(9.0);
-                        p.playSound(p, Sound.BLOCK_BELL_USE, 1.0f, 0.5f);
+                        p.playSound(p, Sound.BLOCK_BELL_USE, 1.0f, 0.4f);
+                    } else {
+						p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
+						p.getWorld().spawnParticle(Particle.SNOWFLAKE, p.getLocation(), 15, 0.5, 0.5, 0.5, 0.01);
                     }
                 }
-            });
-        }, 0L, 20 * 3);
+            }), 0L, 20 * 3);
     }
+
+	public boolean isTaskRunning() {
+		return this.task != null;
+	}
 
     public void stopTask() {
         if (this.task == null) return;
