@@ -2,7 +2,7 @@ package xmaslegacy.PluginUtils;
 
 import org.bukkit.command.PluginCommand;
 import org.jetbrains.annotations.NotNull;
-import xmaslegacy.Lobby.LobbyCommand;
+import xmaslegacy.Lobby.LobbyCommands.LobbyCommand;
 import xmaslegacy.Lobby.LobbyListener;
 import xmaslegacy.Lobby.LobbyManager;
 import xmaslegacy.XmasLegacy;

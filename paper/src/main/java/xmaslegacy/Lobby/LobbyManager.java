@@ -10,7 +10,7 @@ import xmaslegacy.XmasLegacy;
 
 import java.util.concurrent.CompletableFuture;
 
-public class LobbyManager {
+public final class LobbyManager {
     private @Nullable Location spawn;
     private @NotNull final XmasLegacy plugin;
 

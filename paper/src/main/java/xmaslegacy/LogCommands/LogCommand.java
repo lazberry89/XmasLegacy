@@ -1,9 +1,6 @@
 package xmaslegacy.LogCommands;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,15 +10,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Annotation.Commands;
-import xmaslegacy.Region.Region;
-import xmaslegacy.Region.RegionManager;
 import xmaslegacy.Utils.SubCommand;
-import xmaslegacy.XmasLegacy;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Commands(command = "log")
 public class LogCommand implements CommandExecutor, TabCompleter {
@@ -29,6 +25,7 @@ public class LogCommand implements CommandExecutor, TabCompleter {
 
     public LogCommand() {
 		this.commandMap.put("inquiry", new LogCommandInquiry());
+		this.commandMap.put("inquiries", new LogCommandInquiries());
 		this.commandMap.put("regions", new LogCommandRegions());
     }
 
@@ -40,80 +37,16 @@ public class LogCommand implements CommandExecutor, TabCompleter {
             p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             return true;
         }
-        if (args.length == 2) {
-            switch (args[0].toLowerCase()) {
-	            case "inquiry" -> {
-					String targetName = args[1];
-	                p.sendMessage(ColorUtils.chat("&7로그를 불러오는 중입니다..."));
+		if (args.length == 0) return false;
 
-	                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-		                OfflinePlayer op = Bukkit.getOfflinePlayer(targetName);
-		                UUID uuid = op.getUniqueId();
-
-		                List<String> logs = im.getInquiryLogs(uuid);
-
-		                if (logs.isEmpty() || (logs.size() == 1 && logs.getFirst().contains("없습니다")))
-			                p.sendMessage(ColorUtils.chat(Alert.RED + "'" + targetName + "' 유저의 기록이 없습니다."));
-		                else logs.forEach(p::sendMessage);
-	                });
-	            }
-	            case "regions" -> {
-		            OfflinePlayer of = Bukkit.getOfflinePlayer(args[1]);
-					if (of.hasPlayedBefore()) {
-						List<Region> regions = rm.getRegion(of.getUniqueId());
-						if (regions.isEmpty()) {
-							p.sendMessage(ColorUtils.chat(Alert.RED + " 구역이 없습니다."));
-							return true;
-						}
-						SendRegions(p, regions);
-					} else {
-						p.sendMessage(ColorUtils.chat(Alert.RED + " 유저가 존재하지 않습니다."));
-						p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
-						return true;
-					}
-	            }
-                default -> {
-                    p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 명령어가 아닙니다."));
-                    p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
-					return true;
-                }
-            }
-        } else if (args.length == 1) {
-			switch (args[0]) {
-				case "inquiries" -> {
-					p.sendMessage(ColorUtils.chat("&b&l[현재 대기 중인 문의 목록]"));
-
-					if (im.getInquiryMap().isEmpty()) {
-						p.sendMessage(ColorUtils.chat("&7대기 중인 문의가 없습니다. 평화롭네요!"));
-						return true;
-					}
-
-					for (Map.Entry<UUID, String> entry : im.getInquiryMap().entrySet()) {
-						String userName = Bukkit.getOfflinePlayer(entry.getKey()).getName();
-						String msg = entry.getValue();
-
-						Component comp = ColorUtils.chat(String.format("&e- &f%s &7: %s ", userName, msg))
-								.append(ColorUtils.chat("&a&l[이동]"))
-								.clickEvent(ClickEvent.runCommand("/이동문의 " + userName));
-
-						p.sendMessage(comp);
-					}
-				}
-				case "regions" -> {
-					List<Region> regions = rm.getRegions();
-					if (regions.isEmpty()) {
-						p.sendMessage(ColorUtils.chat(Alert.RED + " 구역이 없습니다."));
-						return true;
-					}
-					SendRegions(p, regions);
-				}
-				default -> {
-					p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 명령어가 아닙니다."));
-					p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
-				}
-			}
-        }
-        return true;
+		SubCommand sub = commandMap.get(args[0].toLowerCase());
+		if (sub == null) {
+			p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 명령어가 아닙니다."));
+			p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
+			return true;
+		}
+		sub.execute(p, args);
+		return true;
     }
 
 	@Override
