@@ -21,19 +21,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PrefixInterface implements InventoryHolder {
-	private final Inventory inv;
-	private final XmasLegacy plugin;
-	private final PrefixManager PFM;
-	private final UserManager UM;
+	private final @NotNull Inventory inv;
+	private final @NotNull XmasLegacy plugin;
+	private final @NotNull UserManager um;
 	private final int MAX_SLOTS = 45;
-	private final Map<Integer, ServerPrefix> slotMap = new HashMap<>();
+	private final @NotNull Map<Integer, ServerPrefix> slotMap = new HashMap<>();
 	private int page = 0;
 	private int MAX_PAGE = 0;
 
 	public PrefixInterface(@NotNull Player p) {
 		this.plugin = XmasLegacy.getInstance();
-		this.PFM = PrefixManager.INSTANCE;
-		this.UM = UserManager.INSTANCE;
+		this.um = UserManager.INSTANCE;
 
 		this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat("&c&l칭호관리"));
 		for (int i = 45; i < 54; i++) this.inv.setItem(i, bg());
@@ -47,7 +45,7 @@ public class PrefixInterface implements InventoryHolder {
 	public void update(@NotNull Player p) {
 		for (int i = 0; i < MAX_SLOTS; i++) inv.setItem(i, null);
 		this.slotMap.clear();
-		User user = UM.getUser(p.getUniqueId());
+		User user = um.getUser(p.getUniqueId());
 		if (user == null) return;
 
 		var allPrefixes = user.getAvailablePrefix();

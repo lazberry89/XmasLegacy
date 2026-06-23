@@ -28,7 +28,7 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) return true;
-		if (args.length == 3) { //currency add Lazberry89 100
+		if (args.length == 3) {
 			Player target = Bukkit.getPlayerExact(args[1]);
 			if (target == null) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 플레이어가 아닙니다!"));

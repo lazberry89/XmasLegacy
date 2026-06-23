@@ -49,7 +49,7 @@ public class RegionIndicator implements Listener {
 		}
 		if (rm.hasRegion(loc)) {
 			e.setCancelled(true);
-			plugin.infoMsg(InfoLevel.ERROR, p, "이미 누군가의 구역입니다!");
+			InfoUtils.infoMsg(InfoLevel.ERROR, p, "이미 누군가의 구역입니다!");
 			return;
 		}
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
@@ -87,7 +87,7 @@ public class RegionIndicator implements Listener {
 		if (region == null) return;
 		if (!p.getUniqueId().equals(region.getOwner())) return;
 
-		if (!target.getPersistentDataContainer().has(plugin.getNamespacedKey(Constants.regionKey))) return;
+		if (!target.getPersistentDataContainer().has(KeyUtils.get(Constants.regionKey))) return;
 		p.playSound(p, Sound.BLOCK_BEACON_ACTIVATE, 0.5f, 1.0f);
 		p.openInventory(new RegionSettingInterface(region).getInventory());
 	}

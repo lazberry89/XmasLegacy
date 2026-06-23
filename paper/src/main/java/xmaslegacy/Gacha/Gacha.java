@@ -7,11 +7,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmaslegacy.Annotation.Commands;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.KeyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class Gacha {
 
 	private @NotNull ItemStack createShowItem(@NotNull ItemStack item) {
 		ItemStack showTem = item.clone();
-		NamespacedKey nameKey = JavaPlugin.getPlugin(XmasLegacy.class).getNamespacedKey("gacha");
+		NamespacedKey nameKey = KeyUtils.get("gacha");
 		List<Component> lore = new ArrayList<>();
 		lore.add(ColorUtils.chat("&6&lGRADE&f&l " + grade.name()));
 		lore.add(ColorUtils.chat(String.format("&6&lCHANCE&f&l %.4f", chance)));

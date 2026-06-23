@@ -7,15 +7,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Utils.InfoLevel;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.InfoUtils;
 
 @Commands(command = "delstand")
 public class DeleteStandCommand implements CommandExecutor {
-    private final XmasLegacy plugin;
     private final MagicBook MB;
 
     public DeleteStandCommand() {
-        this.plugin = XmasLegacy.getInstance();
         this.MB = MagicBook.INSTANCE;
     }
 
@@ -23,14 +21,14 @@ public class DeleteStandCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
         if (!p.isOp()) {
-            plugin.infoMsg(InfoLevel.ERROR, p, "관리자용 명령어에요!");
+            InfoUtils.infoMsg(InfoLevel.ERROR, p, "관리자용 명령어에요!");
             return true;
         }
         if (MB.getStand() == null) {
-            plugin.infoMsg(InfoLevel.ERROR, p, "현재 직업책이 없어요!");
+            InfoUtils.infoMsg(InfoLevel.ERROR, p, "현재 직업책이 없어요!");
         } else {
             MB.deleteStand();
-            plugin.infoMsg(InfoLevel.INFO, p, "삭제되었습니다.");
+            InfoUtils.infoMsg(InfoLevel.INFO, p, "삭제되었습니다.");
         }
         return true;
     }

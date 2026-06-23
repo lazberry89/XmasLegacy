@@ -3,6 +3,7 @@ package xmaslegacy.RoleSwitch;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.papermc.paper.math.Rotation;
 import io.th0rgal.oraxen.api.OraxenItems;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,6 +23,8 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.RoleSelection.RoleSelectInterface;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 public enum MagicBook {
@@ -29,6 +32,7 @@ public enum MagicBook {
 
     private final XmasLegacy plugin;
     private final UserManager um;
+    @Setter
     private ItemDisplay display;
 
     MagicBook() {
@@ -48,7 +52,7 @@ public enum MagicBook {
         User user = um.getUser(p.getUniqueId());
         if (user == null) return;
         if (!BasicRoles.USER.equals(user.getRole())) {
-            plugin.infoMsg(InfoLevel.ERROR, p, "이미 직업이 선택되었어요.");
+            InfoUtils.infoMsg(InfoLevel.ERROR, p, "이미 직업이 선택되었어요.");
             return;
         }
         p.openInventory(new RoleSelectInterface().getInventory());
@@ -62,8 +66,8 @@ public enum MagicBook {
 
     @CanIgnoreReturnValue
     public ItemDisplay BookStand(@NotNull Location loc) {
-        NamespacedKey key = plugin.getNamespacedKey("book");
-        return loc.getWorld().spawn(loc.clone().add(0, 1.5, 0).setRotation(Rotation.rotation(90, 10)), ItemDisplay.class, i -> {
+        NamespacedKey key = KeyUtils.get("book");
+        return loc.getWorld().spawn(loc.clone().add(0.5, 1.5, 0.5).setRotation(Rotation.rotation(90, 25)), ItemDisplay.class, i -> {
             i.setItemStack(magicBook());
             i.setBrightness(new Display.Brightness(8, 8));
             Transformation tr = i.getTransformation();
@@ -73,10 +77,6 @@ public enum MagicBook {
             i.customName(ColorUtils.chat("&c&k#####"));
             i.setCustomNameVisible(true);
         });
-    }
-
-    public void setDisplay(ItemDisplay display) {
-        this.display = display;
     }
 
     public @Nullable ItemDisplay getStand() {

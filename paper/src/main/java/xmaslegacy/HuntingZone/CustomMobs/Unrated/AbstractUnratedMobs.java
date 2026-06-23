@@ -17,7 +17,7 @@ public abstract class AbstractUnratedMobs implements CustomMob, UnratedMob {
 
     @Override
     public boolean isEntity(LivingEntity e) {
-        String value = e.getPersistentDataContainer().get(plugin.getNamespacedKey("custom_mobs"), PersistentDataType.STRING);
+        String value = e.getPersistentDataContainer().get(KeyUtils.get("custom_mobs"), PersistentDataType.STRING);
         return value != null && value.equals(getKey().name());
     }
 

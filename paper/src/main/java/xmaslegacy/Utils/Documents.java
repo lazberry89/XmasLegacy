@@ -1,11 +1,17 @@
-package xmaslegacy;
+package xmaslegacy.Utils;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import xmaslegacy.Utils.BookUtils;
 
 public final class Documents {
+
+	@ApiStatus.Internal
+	private Documents() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+
     public static @NotNull ItemStack IcingDocument() {
         return BookUtils.create(
                 ColorUtils.chat("&4엘&k리&r&4#"),
@@ -54,10 +60,39 @@ public final class Documents {
 				        
 				        이 기록은 &4### #&r&0프로젝트의
 				        기록을 위해 작성되었습니다.
+				        &61급 기밀&0자료이며
+				        외부에서의 수정 혹은 열람을
+				        법적으로 금지합니다.
 				        """),
 		        ColorUtils.chat(
 				        """
-				        """)
+				        &6발단&0
+				        
+				        &4&k엘리안&r&0이 프로젝트를 시작하게 된
+				        계기이다. 그녀는 이미 이 행성의 에너지가
+				        모두 고갈되었음을 발견했다.
+				        그 즉시 상부에 보고하며 2광년 거리의
+				        행성으로의 이주와 테라포밍을 위한
+				        자금을 요청했다.
+				        """),
+				ColorUtils.chat(
+						"""
+						하지만 상부는 먹고 놀기에 바빴다.
+						아무도 &4&k엘리안&r&0의 말을 듣지 않았고, 상부 비서를
+						아버지로 둔 나의 호소조차 먹히지
+						않았다.그때였다. &4&k엘리안&r&0이 나에게
+						이상한 프로젝트를 제안한 시점이.
+						"""),
+				ColorUtils.chat(
+						"""
+						비상 해결 프로토컬, &4영원&k# #&r&0
+						
+						이주와 테라포밍 자금모금에 실패하자
+						그녀는 도망치기보다 행성을 고치기로 했다.
+						그렇게 시작되었다. 재앙이.
+						
+						(..이후 내용은 찢어져 보이지 않는다.)
+						""")
         );
     }
 }

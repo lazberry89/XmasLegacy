@@ -67,11 +67,11 @@ public class EnchantListener implements Listener {
 			if (slot == 22) {
 				ItemStack item = topInv.getItem(13);
 				if (item == null || item.getType() == Material.AIR) {
-					plugin.infoMsg(InfoLevel.ERROR, p, "강화할 아이템을 먼저 올려주세요.");
+					InfoUtils.infoMsg(InfoLevel.ERROR, p, "강화할 아이템을 먼저 올려주세요.");
 					return;
 				}
 				if (!ecm.isEnchantable(item)) {
-					plugin.infoMsg(InfoLevel.ERROR, p, "강화 가능한 아이템이 아니에요!");
+					InfoUtils.infoMsg(InfoLevel.ERROR, p, "강화 가능한 아이템이 아니에요!");
 					return;
 				}
 
@@ -182,7 +182,7 @@ public class EnchantListener implements Listener {
 		if (meta == null) return;
 
 		PersistentDataContainer container = meta.getPersistentDataContainer();
-		Integer value = container.get(plugin.getNamespacedKey("enchant"), PersistentDataType.INTEGER);
+		Integer value = container.get(KeyUtils.get("enchant"), PersistentDataType.INTEGER);
 		if (value == null) return;
 
 		if (value < 1 || value - 1 >= Constants.ENCHANT_MULTIPLIERS.size()) return;

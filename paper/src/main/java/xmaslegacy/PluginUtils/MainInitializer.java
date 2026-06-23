@@ -24,6 +24,8 @@ public class MainInitializer implements ServerInitializer {
 		ConsumableManager.INSTANCE.runCookieTimer(plugin);
 		BagManager.INSTANCE.loadAllBags();
 
+		RoleViewDesign.INSTANCE.init();
+
 		MobRepository.INSTANCE.init();
 
 		HuntingZoneManager.INSTANCE.init();

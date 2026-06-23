@@ -77,7 +77,7 @@ public class ShopListener implements Listener {
 
                 if (item == null || item.isEmpty()) return;
 
-                String data = item.getPersistentDataContainer().get(plugin.getNamespacedKey("potion"), PersistentDataType.STRING);
+                String data = item.getPersistentDataContainer().get(KeyUtils.get("potion"), PersistentDataType.STRING);
                 if (data == null || !isConductableItem(item)) {
                     p.sendMessage(ColorUtils.chat(Alert.RED + " 판매 가능한 아이템이 아닙니다!"));
                     p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.5f, 1.0f);

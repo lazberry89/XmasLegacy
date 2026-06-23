@@ -1,4 +1,4 @@
-package xmaslegacy;
+package xmaslegacy.RuleCommands;
 
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -9,19 +9,27 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.RuleManager;
+import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Annotation.Commands;
+import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.SubCommand;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Commands(command = "filter")
 public class RuleCommand implements CommandExecutor, TabCompleter {
-    private final RuleManager RM;
+    private final @NotNull RuleManager rm;
+    private final @NotNull Map<String, SubCommand> subCommands = new HashMap<>(4);
 
     public RuleCommand() {
-        this.RM = RuleManager.INSTANCE;
+        this.rm = RuleManager.INSTANCE;
+        this.subCommands.put("add", new RuleCommandAdd());
+        this.subCommands.put("remove", new RuleCommandRemove());
     }
 
     @Override
@@ -33,35 +41,21 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (args.length == 0) {
+        if (args.length == 0 || args.length == 1 && args[0].equalsIgnoreCase("list")) {
             p.sendMessage(ColorUtils.chat("&c&l차단&f&l 단어 리스트: "));
-            for (String bw : RM.getBadWordList()) {
+            for (String bw : rm.getBadWordList()) {
                 p.sendMessage(ColorUtils.chat(String.format("&c&l-&f %s", bw)));
             }
+            return true;
         }
-        if (args.length == 2) {
-            switch (args[0].toLowerCase()) {
-                case "append" -> {
-                    if (RM.getBadWordList().contains(args[1])) {
-                        p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 존재하는 항목입니다."));
-                        p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
-                    } else {
-                        RM.addBadWordList(args[1]);
-                        p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 추가되었습니다. /filter list로 확인"));
-                        p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
-                    }
-                }
-                case "remove" -> {
-                    if (RM.getBadWordList().contains(args[1])) {
-                        RM.removeBadWordList(args[1]);
-                        p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
-                    } else {
-                        p.sendMessage(ColorUtils.chat(Alert.RED + " 존재하지 않는 항목입니다."));
-                        p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
-                    }
-                }
-            }
+
+        SubCommand sub = this.subCommands.get(args[0].toLowerCase());
+
+        if (sub != null) {
+            sub.execute(p, args);
+            return true;
         }
+        InfoUtils.infoMsg(InfoLevel.ERROR, p, "유효하지 않은 명령어입니다.");
         return true;
     }
 
@@ -70,7 +64,7 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            completions.add("append");
+            completions.add("add");
             completions.add("remove");
             completions.add("list");
 
@@ -81,12 +75,12 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("remove")) {
-                return RM.getBadWordList().stream()
+                return rm.getBadWordList().stream()
                         .filter(word -> word.toLowerCase().startsWith(args[1].toLowerCase()))
                         .toList();
             }
 
-            if (args[0].equalsIgnoreCase("append")) {
+            if (args[0].equalsIgnoreCase("add")) {
                 completions.add("<단어>");
                 return completions;
             }

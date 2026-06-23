@@ -165,11 +165,6 @@ public class Priest extends AbstractFirstRole {
 	}
 
 	@Override
-	public @NotNull BasicRoles getRole() {
-		return BasicRoles.PRIEST;
-	}
-
-	@Override
 	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&e&l힐링 스피어"))

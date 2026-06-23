@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.User;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
@@ -33,18 +34,18 @@ public enum UserManager {
 		}
 	}
 
-	public void addUser(User user) {
+	public void addUser(@NotNull User user) {
         users.put(user.getUUID(), user);
     }
-    //public void removeUser(UUID p) {users.remove(p);}
-    public User getUser(UUID p) {
-	    return users.get(p);
+    public void removeUser(UUID uuid) {users.remove(uuid);}
+    public @Nullable User getUser(@NotNull UUID uuid) {
+	    return users.get(uuid);
     }
 	public List<User> getAllUsers() {
 		return new ArrayList<>(users.values());
 	}
-    public boolean withdraw(UUID p, int amount) {
-        User user = getUser(p);
+    public boolean withdraw(UUID uuid, int amount) {
+        User user = getUser(uuid);
         if (user != null && user.getDollars() >= amount) {
             user.setDollars(user.getDollars() - amount);
             return true;
@@ -82,16 +83,6 @@ public enum UserManager {
 		users.put(uuid, loaded);
 		return loaded;
 	}
-
-	/*
-	@Blocking
-	public void onQuit(UUID uuid) {
-		User u = users.remove(uuid);
-		if (u != null) {
-			repository.saveUser(u);
-		}
-	}
-	*/
 
 	@NonBlocking
 	public CompletableFuture<User> onJoinAsync(UUID uuid, String name, boolean isFloodgate) {
@@ -168,6 +159,7 @@ public enum UserManager {
 		props.setProperty("tier", user.getTier().name());
 		props.setProperty("mastery", user.getMastery().name());
 		props.setProperty("isImmuneToIcing", String.valueOf(user.isImmuneToIcing()));
+		props.setProperty("icingState", String.valueOf(user.getIcingState()));
 
 		try (FileOutputStream out = new FileOutputStream(dumpFile)) {
 			props.store(out, "Emergency Backup for " + user.getName());
@@ -208,6 +200,7 @@ public enum UserManager {
 			recoveredUser.setTier(Tier.valueOf(props.getProperty("tier", "BRONZE")));
 			recoveredUser.setMastery(RoleMastery.valueOf(props.getProperty("mastery", "BEGINNER")));
 			recoveredUser.setImmuneToIcing(Boolean.parseBoolean(props.getProperty("isImmuneToIcing", "false")));
+			recoveredUser.setIcingState(Integer.parseInt(props.getProperty("icingState", "100")));
 
 			return recoveredUser;
 		} catch (Exception e) {

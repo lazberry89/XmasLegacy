@@ -193,11 +193,6 @@ public class Farmer extends AbstractFirstRole {
 	}
 
 	@Override
-	public @NotNull BasicRoles getRole() {
-		return BasicRoles.FARMER;
-	}
-
-	@Override
 	public @NotNull ItemStack roleWeapon() {
 		return ItemBuilder.of(getPlugin(), this.weapon_item)
 				.setName(ColorUtils.chat("&e&l눙부의 낫"))

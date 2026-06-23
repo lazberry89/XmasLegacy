@@ -1,5 +1,8 @@
 package xmaslegacy.Gacha;
 
+import lombok.Getter;
+
+@Getter
 public enum BundleType {
     NORMAL("일반 치장"),
     HIGH_END("고급 치장"),
@@ -12,7 +15,4 @@ public enum BundleType {
         this.kor = kor;
     }
 
-    public String getKor() {
-        return this.kor;
-    }
 }

@@ -11,11 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
-import xmaslegacy.Documents;
+import xmaslegacy.PlayerUtils.BagManager;
+import xmaslegacy.Utils.*;
 import xmaslegacy.Economy.Currency.CurrencyManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
-import xmaslegacy.Utils.InfoLevel;
-import xmaslegacy.Utils.ServerTransfer;
 import xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;
@@ -34,17 +33,19 @@ public abstract class AbstractNpc {
 	protected final @NotNull Map<UUID, Long> lastTalkTime = new HashMap<>();
 	private final @Getter NamespacedKey checkKey;
 	private final @Getter NamespacedKey foodKey;
+	private final @Getter NamespacedKey bookKey;
 	private static final long DIALOGUE_TIMEOUT = 20000L;
 
     public AbstractNpc(@NotNull List<String> cap, @NotNull Component name, @NotNull Sound conversationSound, @NotNull NpcType type) {
         this.plugin = XmasLegacy.getInstance();
 		this.type = type;
-        this.key = plugin.getNamespacedKey("npc");
+        this.key = KeyUtils.get("npc");
         this.caption = cap;
 		this.name = name;
 		this.conversationSound = conversationSound;
-		this.checkKey = plugin.getNamespacedKey("check");
-		this.foodKey = plugin.getNamespacedKey("foodKey");
+		this.checkKey = KeyUtils.get("check");
+		this.foodKey = KeyUtils.get("foodKey");
+		this.bookKey = KeyUtils.get("bookKey");
     }
 
 	protected @NotNull String next(@NotNull Player player) {
@@ -64,23 +65,34 @@ public abstract class AbstractNpc {
 		String currentCaption = this.caption.get(num);
 
 		num++;
-		if (num == 1 && NpcType.MAIN.equals(type)) provideFood(player);
+		if (num == 2 && NpcType.MAIN.equals(type)) provideFood(player);
 
 		if (num >= this.caption.size()) {
 			num = 0;
 			this.lastTalkTime.remove(uuid);
 			if (type == NpcType.MAIN) provideMoney(player);
+			else if (type == NpcType.BOOK) provideStolenBook(player);
 		}
 
 		this.playerCaption.put(uuid, num);
 		return currentCaption;
 	}
 
+	private void provideStolenBook(@NotNull Player player) {
+		if (catchKey(player, bookKey)) {
+			Map<Integer, ItemStack> remain = player.getInventory().addItem(Documents.StolenBook());
+			if (!remain.isEmpty()) {
+				remain.values().forEach(i ->
+						BagManager.INSTANCE.addItem(player, i));
+				InfoUtils.infoMsg(InfoLevel.WARN, player, "인벤토리가 가득 찼습니다. 가방을 확인하세요.");
+			}
+		}
+	}
 
 	private void provideMoney(@NotNull Player player) {
 		if (catchKey(player, checkKey)) {
 			player.getInventory().addItem(CurrencyManager.currency(5));
-			plugin.infoMsg(InfoLevel.INFO, player, "재화를 클릭하여 현금 입금을 해보세요!");
+			InfoUtils.infoMsg(InfoLevel.INFO, player, "재화를 클릭하여 현금 입금을 해보세요!");
 		}
 	}
 
@@ -89,8 +101,8 @@ public abstract class AbstractNpc {
 			ItemStack item = AgeableCrops.SunFlowerBread();
 			item.setAmount(5);
 			player.getInventory().addItem(item);
-			plugin.infoMsg(InfoLevel.INFO, player, "태양초 음식이 제공되었습니다.");
-			plugin.infoMsg(InfoLevel.WARN, player, "관련 서적도 같이 제공되었습니다. 필히 열람하십시오.");
+			InfoUtils.infoMsg(InfoLevel.INFO, player, "태양초 음식이 제공되었습니다.");
+			InfoUtils.infoMsg(InfoLevel.WARN, player, "관련 서적도 같이 제공되었습니다. 필히 열람하십시오.");
 			player.getInventory().addItem(Documents.IcingDocument());
 		}
 	}

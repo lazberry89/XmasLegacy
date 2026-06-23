@@ -1,5 +1,7 @@
 package xmaslegacy.RoleManagers.FirstRoleManager;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -23,10 +25,10 @@ import java.io.IOException;
 
 public abstract class AbstractFirstRole implements UsingEnergy {
 	private final @NotNull BasicRoles role;
-    private final @NotNull XmasLegacy plugin;
-	protected final @NotNull Emblem emblem;
-	protected int cooldown1;
-	protected int cooldown2;
+    private final @NotNull @Getter XmasLegacy plugin;
+	protected final @NotNull @Getter Emblem emblem;
+    protected @Getter @Setter int cooldown1;
+    protected @Getter @Setter int cooldown2;
 
 	public AbstractFirstRole(@NotNull BasicRoles role) {
 		this.plugin = XmasLegacy.getInstance();
@@ -34,12 +36,6 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 		this.emblem = new Emblem(role);
 	}
 
-    public @NotNull XmasLegacy getPlugin() {
-        return this.plugin;
-    }
-	public @NotNull Emblem getEmblem() {
-		return this.emblem;
-	}
 	public @NotNull BasicRoles getRole() {
 		return this.role;
 	}
@@ -51,13 +47,7 @@ public abstract class AbstractFirstRole implements UsingEnergy {
 	public abstract @NotNull ItemStack RangeEmblem();
 	public abstract @NotNull ItemStack roleBook();
 
-	public int getCooldown1() {
-		return cooldown1;
-	}
-	public int getCooldown2() {
-		return cooldown2;
-	}
-	protected abstract void loadCustomStats(FileConfiguration config);
+    protected abstract void loadCustomStats(FileConfiguration config);
 
 	public void loadRoleData(String path) {
 		File roleFolder = new File(plugin.getDataFolder(), "roles");

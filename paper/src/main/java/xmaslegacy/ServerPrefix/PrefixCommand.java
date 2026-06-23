@@ -16,23 +16,20 @@ import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Utils.InfoLevel;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.InfoUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("FieldCanBeLocal")
 @Commands(command = "prefix")
 public class PrefixCommand implements CommandExecutor, TabCompleter {
-    private final XmasLegacy plugin;
-    private final PrefixManager PFM;
-    private final UserManager UM;
+    private final @NotNull PrefixManager pfm;
+    private final @NotNull UserManager um;
 
     public PrefixCommand() {
-        this.plugin = XmasLegacy.getInstance();
-        this.PFM = PrefixManager.INSTANCE;
-        this.UM = UserManager.INSTANCE;
+        this.pfm = PrefixManager.INSTANCE;
+        this.um = UserManager.INSTANCE;
     }
 
     @Override
@@ -43,12 +40,12 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
             if (args.length == 4) {
                 Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
-                    plugin.infoMsg(InfoLevel.ERROR, p, "해당 플레이어를 찾을 수 없습니다!");
+                    InfoUtils.infoMsg(InfoLevel.ERROR, p, "해당 플레이어를 찾을 수 없습니다!");
                     return true;
                 }
-                var user = UM.getUser(target.getUniqueId());
+                var user = um.getUser(target.getUniqueId());
                 if (user == null) {
-                    plugin.infoMsg(InfoLevel.ERROR, p, "해당 플레이어를 찾을 수 없습니다!");
+                    InfoUtils.infoMsg(InfoLevel.ERROR, p, "해당 플레이어를 찾을 수 없습니다!");
                     return true;
                 }
                 ServerPrefix prefix = null;
@@ -57,60 +54,60 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                         try {
                             prefix = Tier.valueOf(args[3]);
                         } catch (IllegalArgumentException e) {
-                            plugin.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
+                            InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
                         }
                     }
                     case "mastery" -> {
                         try {
                             prefix = RoleMastery.valueOf(args[3]);
                         } catch (IllegalArgumentException e) {
-                            plugin.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
+                            InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
                         }
                     }
                     case "mission" -> {
                         try {
                             prefix = MissionPrefix.valueOf(args[3]);
                         } catch (IllegalArgumentException e) {
-                            plugin.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
+                            InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
                         }
                     }
                     default -> {
-                        plugin.infoMsg(InfoLevel.ERROR, p, "칭호 타입이 잘못되었습니다!");
+                        InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호 타입이 잘못되었습니다!");
                         return true;
                     }
                 }
                 if (prefix == null) return true;
                 switch (args[0].toLowerCase()) {
                     case "grant" -> {
-                        if (PFM.addPrefix(target, prefix)) {
-                            plugin.infoMsg(InfoLevel.INFO, p, String.format("%s님에게 칭호 '%s'를 추가했습니다", target.getName(), prefix.name()));
-                            plugin.infoMsg(InfoLevel.INFO, target, "칭호 '" + prefix.name() + "'가 부여되었습니다.");
+                        if (pfm.addPrefix(target, prefix)) {
+                            InfoUtils.infoMsg(InfoLevel.INFO, p, String.format("%s님에게 칭호 '%s'를 추가했습니다", target.getName(), prefix.name()));
+                            InfoUtils.infoMsg(InfoLevel.INFO, target, "칭호 '" + prefix.name() + "'가 부여되었습니다.");
                         } else {
-                            plugin.infoMsg(InfoLevel.INFO, p, "이미 해당 칭호가 유저에게 존재합니다.");
+                            InfoUtils.infoMsg(InfoLevel.INFO, p, "이미 해당 칭호가 유저에게 존재합니다.");
                         }
                     }
                     case "deprive" -> {
-                        if (PFM.removePrefix(target, prefix)) {
-                            plugin.infoMsg(InfoLevel.INFO, p, String.format("%s님에게서 칭호 '%s'를 제거했습니다", target.getName(), prefix.name()));
+                        if (pfm.removePrefix(target, prefix)) {
+                            InfoUtils.infoMsg(InfoLevel.INFO, p, String.format("%s님에게서 칭호 '%s'를 제거했습니다", target.getName(), prefix.name()));
                         } else {
-                            plugin.infoMsg(InfoLevel.WARN, p, "해당 칭호를 보유하고 있지 않아요!");
+                            InfoUtils.infoMsg(InfoLevel.WARN, p, "해당 칭호를 보유하고 있지 않아요!");
                         }
                     }
                     case "equip" -> {
-                        if (PFM.equipPrefix(target, prefix)) {
-                            plugin.infoMsg(InfoLevel.INFO, p, String.format("칭호 '%s'를 %s님에게 장착했습니다.", prefix.name(), target.getName()));
+                        if (pfm.equipPrefix(target, prefix)) {
+                            InfoUtils.infoMsg(InfoLevel.INFO, p, String.format("칭호 '%s'를 %s님에게 장착했습니다.", prefix.name(), target.getName()));
                         } else {
-                            plugin.infoMsg(InfoLevel.WARN, p, "유저가 해당 칭호를 보유하고 있지 않습니다.");
+                            InfoUtils.infoMsg(InfoLevel.WARN, p, "유저가 해당 칭호를 보유하고 있지 않습니다.");
                         }
                     }
                     case "unequip" -> {
-                        if (PFM.unequipPrefix(target)) {
-                            plugin.infoMsg(InfoLevel.WARN, p, "유저의 칭호를 해제했습니다.");
+                        if (pfm.unequipPrefix(target)) {
+                            InfoUtils.infoMsg(InfoLevel.WARN, p, "유저의 칭호를 해제했습니다.");
                         } else {
-                            plugin.infoMsg(InfoLevel.WARN, p, "유저가 칭호를 장착하고 있지 않습니다.");
+                            InfoUtils.infoMsg(InfoLevel.WARN, p, "유저가 칭호를 장착하고 있지 않습니다.");
                         }
                     }
-                    default -> plugin.infoMsg(InfoLevel.ERROR, p, "잘못된 인자가 존재합니다.");
+                    default -> InfoUtils.infoMsg(InfoLevel.ERROR, p, "잘못된 인자가 존재합니다.");
                 }
             } else if (args.length == 1) {
                 if (args[0].startsWith("inv")) {

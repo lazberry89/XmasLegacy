@@ -14,7 +14,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Utils.InfoLevel;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.InfoUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,11 +22,9 @@ import java.util.List;
 
 @Commands(command = "gacha")
 public class GachaCommand implements CommandExecutor, TabCompleter {
-    private final XmasLegacy plugin;
     private final GachaManager gm;
 
     public GachaCommand() {
-        this.plugin = XmasLegacy.getInstance();
         this.gm = GachaManager.INSTANCE;
     }
 
@@ -50,7 +48,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 					case "high_end" -> p.getInventory().addItem(gm.HighEndBundle());
 					case "chromatic_bundle" -> p.getInventory().addItem(gm.ChromaticBundle());
 					case "chromatic_box" -> p.getInventory().addItem(gm.ChromaticBox());
-					default -> plugin.infoMsg(InfoLevel.ERROR, p, "번들 종류는 bundle, high_end, chromatic_bundle, chromatic_box 중 하나여야 합니다! (예시: /gacha bundle bundle)");
+					default -> InfoUtils.infoMsg(InfoLevel.ERROR, p, "번들 종류는 bundle, high_end, chromatic_bundle, chromatic_box 중 하나여야 합니다! (예시: /gacha bundle bundle)");
 				}
 			}
 		}

@@ -17,6 +17,8 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 @Listeners
@@ -44,7 +46,7 @@ public class GachaListener implements Listener {
 
         ItemStack item = e.getCurrentItem();
         if (item == null || item.getType().isAir()) return;
-        NamespacedKey nameKey = plugin.getNamespacedKey("gacha");
+        NamespacedKey nameKey = KeyUtils.get("gacha");
         String key = item.getPersistentDataContainer().get(nameKey, PersistentDataType.STRING);
         Gacha gacha = GM.getGacha(key, type);
         if (gacha == null) return;
@@ -63,7 +65,7 @@ public class GachaListener implements Listener {
         if (click == null) return;
 
         try {
-            String value = click.getPersistentDataContainer().get(plugin.getNamespacedKey("gacha"), PersistentDataType.STRING);
+            String value = click.getPersistentDataContainer().get(KeyUtils.get("gacha"), PersistentDataType.STRING);
             BundleType type = BundleType.valueOf(value);
             p.openInventory(new GachaStockInterface(plugin, type).getInventory());
             p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
@@ -87,7 +89,7 @@ public class GachaListener implements Listener {
         if (meta == null) return;
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        NamespacedKey key = plugin.getNamespacedKey("gacha");
+        NamespacedKey key = KeyUtils.get("gacha");
         String value = container.get(key, PersistentDataType.STRING);
         if (value == null) return;
         try {
@@ -95,20 +97,20 @@ public class GachaListener implements Listener {
             this.Random(p, grade);
         } catch (IllegalArgumentException err) {
             plugin.getSLF4JLogger().error("Bundle type setting error : {}", value, err);
-            plugin.infoMsg(InfoLevel.ERROR, p, "문제가 발생했습니다. 관리자에게 문의하세요.");
+            InfoUtils.infoMsg(InfoLevel.ERROR, p, "문제가 발생했습니다. 관리자에게 문의하세요.");
         }
     }
     @Contract(pure = true)
     private void Random(@NotNull Player p, @NotNull BundleType type) {
         Gacha gacha = GM.getRandomItem(type);
         if (gacha == null) {
-            plugin.infoMsg(InfoLevel.ERROR, p, "현재 등록된 아이템이 없어요! 관리자에게 문의하세요.");
+            InfoUtils.infoMsg(InfoLevel.ERROR, p, "현재 등록된 아이템이 없어요! 관리자에게 문의하세요.");
             return;
         }
         GachaGrade grade = gacha.getGrade();
         p.getInventory().addItem(gacha.getItem());
         switch (grade) {
-            case NORMAL, RARE -> plugin.infoMsg(InfoLevel.INFO, p, "아이템을 획득하였습니다! " + grade.getColor() + grade.name() + "[" + gacha.getKey() + "]");
+            case NORMAL, RARE -> InfoUtils.infoMsg(InfoLevel.INFO, p, "아이템을 획득하였습니다! " + grade.getColor() + grade.name() + "[" + gacha.getKey() + "]");
             case MYTHIC -> {
                 p.sendMessage(" ");
                 p.sendMessage(ColorUtils.chat("  &4&l[!] &e&l신화급 아이템을 발견했습니다."));

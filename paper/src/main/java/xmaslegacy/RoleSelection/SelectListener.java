@@ -19,6 +19,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
+import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.XmasLegacy;
 
 import java.time.Duration;
@@ -83,7 +84,7 @@ public class SelectListener implements Listener {
     public void FinalSelection(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player p)) return;
         if (!(e.getInventory().getHolder() instanceof RoleSelectionInterface holder)) return;
-        BasicRoles select = holder.getRole();
+        BasicRoles select = holder.getSelectedRole();
 
         var user = UM.getUser(p.getUniqueId());
         if (user == null) {
@@ -100,7 +101,7 @@ public class SelectListener implements Listener {
                                     plugin.getSLF4JLogger().error("Error occurred while reloading User Info UUID -> {} ", t.getUniqueId(), throwable);
                                     return;
                                 }
-                                plugin.infoMsg(InfoLevel.INFO, t, "유저정보를 성공적으로 불러왔습니다!");
+                                InfoUtils.infoMsg(InfoLevel.INFO, t, "유저정보를 성공적으로 불러왔습니다!");
                             });
                         }
                     }, options));

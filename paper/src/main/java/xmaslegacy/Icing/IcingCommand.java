@@ -25,17 +25,17 @@ public record IcingCommand(@NotNull IcingSystem system) implements CommandExecut
 		var um = UserManager.INSTANCE;
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) {
-			plugin.infoMsg(InfoLevel.ERROR, p, "관리자용 명령어에요!");
+			InfoUtils.infoMsg(InfoLevel.ERROR, p, "관리자용 명령어에요!");
 			return true;
 		}
 		if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("task")) {
 				if (system.isTaskRunning()) {
 					system.stopTask();
-					plugin.infoMsg(InfoLevel.INFO, p, "빙결 시스템을 정지하였습니다.");
+					InfoUtils.infoMsg(InfoLevel.INFO, p, "빙결 시스템을 정지하였습니다.");
 				} else {
 					system.startTask(plugin);
-					plugin.infoMsg(InfoLevel.INFO, p, "빙결 시스템을 시작하였습니다.");
+					InfoUtils.infoMsg(InfoLevel.INFO, p, "빙결 시스템을 시작하였습니다.");
 				}
 			}
 		}

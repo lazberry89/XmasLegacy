@@ -1,31 +1,29 @@
 package xmaslegacy.HuntingZone;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
 
 public enum HuntingZoneManager {
 	INSTANCE;
 
-	private final Set<HuntingZone> zones = new HashSet<>(3);
+	private final @NotNull Map<ZoneType, HuntingZone> zones = new EnumMap<>(ZoneType.class);
 
 	HuntingZoneManager() {}
 
 	public void init() {
-		this.zones.add(new HuntingZone(ZoneType.ICE_STAGE, "world"));
-		this.zones.add(new HuntingZone(ZoneType.SKY_GARDEN, "world"));
-		this.zones.add(new HuntingZone(ZoneType.SOUL_GRAVEYARD, "world"));
+		this.zones.put(ZoneType.ICE_STAGE, new HuntingZone(ZoneType.ICE_STAGE, "world"));
+		this.zones.put(ZoneType.SKY_GARDEN, new HuntingZone(ZoneType.SKY_GARDEN, "world"));
+		this.zones.put(ZoneType.SOUL_GRAVEYARD, new HuntingZone(ZoneType.SOUL_GRAVEYARD, "world"));
 	}
 
-	public @Nullable HuntingZone getZones(ZoneType type) {
-		return this.zones.stream()
-				.filter(i -> i.getType() == type)
-				.findFirst().orElse(null);
+	public @NotNull HuntingZone getZone(@NotNull ZoneType type) {
+		return this.zones.get(type);
 	}
 
-	public @NotNull Set<HuntingZone> getZones() {
-		return this.zones;
+	public @NotNull Collection<HuntingZone> getZones() {
+		return this.zones.values();
 	}
 }

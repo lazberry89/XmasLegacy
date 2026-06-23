@@ -1,10 +1,12 @@
 package xmaslegacy;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import xmaslegacy.Emblems.Emblem;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.UsingEnergy;
@@ -12,22 +14,20 @@ import xmaslegacy.RoleManagers.UsingEnergy;
 public class PlayerSkillUseEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
-    private final Player player;
-    private final UsingEnergy usingEnergy;
-    private final Emblem emblem;
-    private final EmblemType type;
+    @Getter
+    private final @NotNull Player player;
+    private final @NotNull UsingEnergy usingEnergy;
+    private final @NotNull Emblem emblem;
+    private final @NotNull EmblemType type;
     private boolean cancelled = false;
 
-    public PlayerSkillUseEvent(Player player, UsingEnergy usingEnergy, Emblem emblem, EmblemType type) {
+    public PlayerSkillUseEvent(@NotNull Player player, @NotNull UsingEnergy usingEnergy, @NotNull Emblem emblem, @NotNull EmblemType type) {
         this.player = player;
         this.usingEnergy = usingEnergy;
         this.emblem = emblem;
         this.type = type;
     }
 
-    public Player getPlayer() {
-        return this.player;
-    }
     public UsingEnergy getRoleInstance() {
         return this.usingEnergy;
     }

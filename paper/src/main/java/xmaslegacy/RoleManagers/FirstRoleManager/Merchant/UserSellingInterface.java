@@ -36,7 +36,7 @@ public class UserSellingInterface {
         this.um = UserManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
         this.inv = Bukkit.createMerchant(title);
-		this.key = plugin.getNamespacedKey("merchant_money");
+		this.key = KeyUtils.get("merchant_money");
         List<MerchantRecipe> recipes = new ArrayList<>();
 
         switch (um.getUser(viewer.getUniqueId()).getRole()) {
@@ -100,7 +100,7 @@ public class UserSellingInterface {
 				recipes.add(diamond);
             }
 	        default -> {
-		        plugin.infoMsg(InfoLevel.WARN, viewer, "해당 직업이 아니네요!");
+		        InfoUtils.infoMsg(InfoLevel.WARN, viewer, "해당 직업이 아니네요!");
 				viewer.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
 	        }
         }

@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Utils.ItemBuilder;
@@ -20,15 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("FieldCanBeLocal")
 public class PromoteInterface implements InventoryHolder {
     private final Inventory inv;
-    private final UserManager um;
-    private final Map<Integer, Role> roleMap = new HashMap<>();
-    private final XmasLegacy plugin = XmasLegacy.getInstance();
+    private final @NotNull Map<Integer, Role> roleMap = new HashMap<>();
 
     public PromoteInterface(Player view) {
-        this.um = UserManager.INSTANCE;
+        var plugin = XmasLegacy.getInstance();
+        var um = UserManager.INSTANCE;
         User user = um.getUser(view.getUniqueId());
 
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&b&l전직 루트 선택"));

@@ -33,6 +33,7 @@ import xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.Sniper.BulletType;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.Sniper.Sniper;
 import xmaslegacy.SkillEffectManager;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
@@ -125,7 +126,7 @@ public class SecondaryRoleListener implements Listener {
 		if (meta == null) return;
 
 		PersistentDataContainer pdc = meta.getPersistentDataContainer();
-		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		String type = pdc.get(KeyUtils.get("role_id"), PersistentDataType.STRING);
 		if (type == null) return;
 		if (!type.equalsIgnoreCase(SecondaryRoles.BERSERKER.name())) return;
 		if (berserker.used(p)) {
@@ -155,7 +156,7 @@ public class SecondaryRoleListener implements Listener {
 		if (meta == null) return;
 
 		PersistentDataContainer pdc = meta.getPersistentDataContainer();
-		String type = pdc.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		String type = pdc.get(KeyUtils.get("role_id"), PersistentDataType.STRING);
 		if (type == null) return;
 		if (!type.equalsIgnoreCase(GUARDIAN.name())) return;
 
@@ -197,7 +198,7 @@ public class SecondaryRoleListener implements Listener {
 		if (sniper == null) return;
 
 		PersistentDataContainer container = meta.getPersistentDataContainer();
-		String key = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+		String key = container.get(KeyUtils.get("role_id"), PersistentDataType.STRING);
 		if (key == null || !key.equalsIgnoreCase(SecondaryRoles.SNIPER.name())) return;
 		var bullet = sniper.getReloaded(p.getUniqueId());
 
@@ -216,8 +217,8 @@ public class SecondaryRoleListener implements Listener {
 		ItemStack tool = p.getInventory().getItemInMainHand();
 		if (tool.getType().isAir()) return;
 		PersistentDataContainer container = tool.getItemMeta().getPersistentDataContainer();
-		String type = container.get(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING);
-		String roleS = container.get(plugin.getNamespacedKey("emblem_role"), PersistentDataType.STRING);
+		String type = container.get(KeyUtils.get("emblem_type"), PersistentDataType.STRING);
+		String roleS = container.get(KeyUtils.get("emblem_role"), PersistentDataType.STRING);
 		if (type == null || roleS == null) return;
 		Role role;
 		try {

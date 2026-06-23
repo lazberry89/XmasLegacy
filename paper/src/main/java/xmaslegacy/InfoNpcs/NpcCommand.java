@@ -35,7 +35,7 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
 				npc = ncm.getNpcInstance(type);
 				npc.sendCaption(p);
 			} catch (IllegalArgumentException e) {
-				plugin.infoMsg(InfoLevel.ERROR, p, "등록되지 않은 가이드이거나 잘못된 명령어입니다.");
+				InfoUtils.infoMsg(InfoLevel.ERROR, p, "등록되지 않은 가이드이거나 잘못된 명령어입니다.");
 				return true;
 			}
 		} else return true;

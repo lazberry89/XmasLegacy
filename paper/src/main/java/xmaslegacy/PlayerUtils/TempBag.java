@@ -49,11 +49,10 @@ public class TempBag implements InventoryHolder {
 	}
 
     @CanIgnoreReturnValue
-	public @NotNull List<ItemStack> addItem(ItemStack item, int amount) {
+	public @NotNull List<ItemStack> addItem(ItemStack item) {
 		if (item == null || item.getType() == Material.AIR) return new ArrayList<>();
 
 		ItemStack toAdd = item.clone();
-		toAdd.setAmount(amount);
 
 		Map<Integer, ItemStack> left = this.inv.addItem(toAdd);
 		if (left.isEmpty()) return new ArrayList<>();

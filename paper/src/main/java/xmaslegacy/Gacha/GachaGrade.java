@@ -1,7 +1,8 @@
 package xmaslegacy.Gacha;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
 
+@Getter
 public enum GachaGrade {
     NORMAL("&7&l", "일반"),
     RARE("&a&l", "희귀"),
@@ -15,12 +16,5 @@ public enum GachaGrade {
     GachaGrade(String color, String key) {
         this.color = color;
         this.key = key;
-    }
-
-    public @NotNull String getColor() {
-        return this.color;
-    }
-    public @NotNull String getKey() {
-        return this.key;
     }
 }

@@ -29,7 +29,7 @@ public record CurrencyManager(@NotNull EconomyManager em, @NotNull XmasLegacy pl
 		if (money == null || money.getType() == Material.AIR) return;
 
 		Integer value = money.getPersistentDataContainer().get(
-				plugin.getNamespacedKey("money"),
+				KeyUtils.get("money"),
 				PersistentDataType.INTEGER
 		);
 		int count = money.getAmount();

@@ -11,6 +11,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -26,11 +27,17 @@ import xmaslegacy.XmasLegacy;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class ServerTransfer {
-    private static final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
+public final class ServerTransfer {
 	private static final @NotNull FloodgateApi instance = FloodgateApi.getInstance();
 
-    public ServerTransfer() {}
+	@ApiStatus.Internal
+	private ServerTransfer() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+
+	private static @NotNull XmasLegacy plugin() {
+		return XmasLegacy.getInstance();
+	}
 
     @CheckReturnValue
     public static boolean isFloodgate(@NotNull Player player) {
@@ -67,7 +74,7 @@ public class ServerTransfer {
 	}
 
     private static void sendMsg(@NotNull Player player, @NotNull User user) {
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        Bukkit.getScheduler().runTask(plugin(), () -> {
             if (!player.isOnline()) return;
 
             if (user.isNewUser()) {
@@ -91,10 +98,10 @@ public class ServerTransfer {
     }
 
 	private static void sendError(@NotNull Player player, Throwable throwable) {
-		Bukkit.getScheduler().runTask(plugin, () -> {
+		Bukkit.getScheduler().runTask(plugin(), () -> {
 			if (!player.isOnline()) return;
 			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다.").append(reloadComponent()));
-			plugin.getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
+			plugin().getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
 		});
 	}
 
@@ -128,6 +135,8 @@ public class ServerTransfer {
         @NotNull var pm = PartyManager.INSTANCE;
         @NotNull var um = UserManager.INSTANCE;
         UUID uuid = player.getUniqueId();
+		var user = um.getUser(uuid);
+		if (user == null) return false;
 
         if (!pm.isInParty(uuid)) return sendBungeePacket(toServer, player);
 
@@ -145,7 +154,7 @@ public class ServerTransfer {
             return true;
         }
 
-        pm.leaveParty(um.getUser(uuid));
+        pm.leaveParty(user);
         player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 파티에서 탈퇴되어 단독으로 서버를 이동합니다."));
 
         return sendBungeePacket(toServer, player);
@@ -157,10 +166,10 @@ public class ServerTransfer {
         out.writeUTF(toServer.str());
 
         try {
-            player.sendPluginMessage(plugin, "bungeecord:main", out.toByteArray());
+            player.sendPluginMessage(plugin(), "bungeecord:main", out.toByteArray());
             return true;
         } catch (IllegalArgumentException e) {
-            plugin.getSLF4JLogger().error("Error occurred while transferring player {}", player, e);
+            plugin().getSLF4JLogger().error("Error occurred while transferring player {}", player, e);
             return false;
         }
     }
@@ -211,7 +220,7 @@ public class ServerTransfer {
 							target.sendMessage(ColorUtils.chat(Alert.GREEN + " 서버 이동을 시작합니다..."));
 						} else {
 							target.sendMessage(ColorUtils.chat(Alert.RED + " 서버 이동 중 오류가 발생했습니다. 관리자에게 문의하세요."));
-							plugin.getSLF4JLogger().error("Failed to transfer player {} to server {} via BungeeCord", target, type);
+							plugin().getSLF4JLogger().error("Failed to transfer player {} to server {} via BungeeCord", target, type);
 						}
 					}
 				}, options));

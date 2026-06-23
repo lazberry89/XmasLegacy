@@ -28,7 +28,7 @@ public class IceCube extends AbstractUnratedMobs implements CustomMob, UnratedMo
             GlowUtils.setGlowColor(m, getGrade().color());
             m.setWander(false);
             m.setSize(2);
-            m.getPersistentDataContainer().set(plugin.getNamespacedKey("custom_mobs"), PersistentDataType.STRING, this.key.name());
+            m.getPersistentDataContainer().set(KeyUtils.get("custom_mobs"), PersistentDataType.STRING, this.key.name());
         });
     }
 

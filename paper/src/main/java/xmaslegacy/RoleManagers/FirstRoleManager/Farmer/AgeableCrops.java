@@ -42,25 +42,28 @@ public class AgeableCrops {
 		ItemStack bread = ItemBuilder.of(XmasLegacy.getInstance(), Material.BREAD)
 				.setName(ColorUtils.chat("&e&l태양초 빵"))
 				.setLore(ColorUtils.chat("&7농부만이 만들 수 있는 이 세상을 살아갈 식량입니다."))
-				.setTag("farmer", "sunflowerBread")
+				.setTag("farmer", "sunflower_bread")
 				.hideAllFlags()
 				.setGlint(true)
-				.build()
-				.clone();
+				.build();
+
 		ItemMeta meta = bread.getItemMeta();
-		if (meta.hasFood()) {
+		if (meta != null) {
 			FoodComponent food = meta.getFood();
+
 			food.setNutrition(3);
-			food.setSaturation(6);
+			food.setSaturation(6.0f);
 			food.setCanAlwaysEat(true);
+
 			meta.setFood(food);
+			bread.setItemMeta(meta);
 		}
-		bread.setItemMeta(meta);
+
 		return bread;
 	}
 
 	public static boolean RegisterRecipe(@NotNull XmasLegacy plugin) {
-		NamespacedKey key = plugin.getNamespacedKey("sunflower_bread");
+		NamespacedKey key = KeyUtils.get("sunflower_bread");
 
 		if (Bukkit.getRecipe(key) != null) {
 			Bukkit.removeRecipe(key);

@@ -1,4 +1,4 @@
-package xmaslegacy;
+package xmaslegacy.LogCommands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -18,22 +18,18 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Region.Region;
 import xmaslegacy.Region.RegionManager;
+import xmaslegacy.Utils.SubCommand;
+import xmaslegacy.XmasLegacy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Commands(command = "log")
 public class LogCommand implements CommandExecutor, TabCompleter {
-    private final @NotNull InquiryManager im;
-	private final @NotNull RegionManager rm;
-    private final @NotNull XmasLegacy plugin;
+	private final @NotNull Map<String, SubCommand> commandMap = new HashMap<>();
 
     public LogCommand() {
-        this.im = InquiryManager.INSTANCE;
-		this.rm = RegionManager.INSTANCE;
-        this.plugin = XmasLegacy.getInstance();
+		this.commandMap.put("inquiry", new LogCommandInquiry());
+		this.commandMap.put("regions", new LogCommandRegions());
     }
 
     @Override
@@ -119,25 +115,6 @@ public class LogCommand implements CommandExecutor, TabCompleter {
         }
         return true;
     }
-
-	private void SendRegions(Player p, List<Region> regions) {
-		for (Region region : regions) {
-			p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
-			p.sendMessage(ColorUtils.chat("&6&lRegion ID : &f" + region.Id()));
-			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.Id()));
-
-			int x = region.getChunkX();
-			int z = region.getChunkZ();
-			String world = region.getWorld().getName();
-
-			p.sendMessage(ColorUtils.chat(String.format("&eLocation : &7%s (%d, %d)", world, x, z)));
-
-			String entry = region.isEntryAllowed() ? "&a허용" : "&c차단";
-			String interact = region.isInteractionAllowed() ? "&a허용" : "&c차단";
-			p.sendMessage(ColorUtils.chat(String.format("&eSettings : &f출입[%s&f] 상호작용[%s&f]", entry, interact)));
-		}
-		p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
-	}
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {

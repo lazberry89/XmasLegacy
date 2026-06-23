@@ -1,28 +1,24 @@
 package xmaslegacy.RoleSelection;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
-import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
 import xmaslegacy.Utils.ItemBuilder;
 import xmaslegacy.XmasLegacy;
 
-@SuppressWarnings("FieldCanBeLocal")
 public class RoleSelectionInterface implements InventoryHolder {
-    private final Inventory inv;
-    private final XmasLegacy plugin;
-    private final FirstRoleManager rlm;
-    private final BasicRoles selectedRole;
-    private final Component title;
-    private final AbstractFirstRole selInst;
+    private final @NotNull Inventory inv;
+    private final @Getter BasicRoles selectedRole;
+    private final @Getter Component title;
+
     /*
     00 01 02 03 04 05 06 07 08
     09 10 11 12 13 14 15 16 17
@@ -30,15 +26,18 @@ public class RoleSelectionInterface implements InventoryHolder {
     */
 
     public RoleSelectionInterface(BasicRoles basicRoles) {
-        this.plugin = JavaPlugin.getPlugin(XmasLegacy.class);
-        this.rlm = FirstRoleManager.INSTANCE;
+        var plugin = XmasLegacy.getInstance();
+        var rlm = FirstRoleManager.INSTANCE;
         this.selectedRole = basicRoles;
         this.title = ColorUtils.chat(String.format("&c&l[ %s ]", basicRoles.getKor()));
         this.inv = Bukkit.createInventory(this, 36, title);
         ItemStack bg = ItemBuilder.of(plugin, Material.GRAY_STAINED_GLASS_PANE)
                 .setName(ColorUtils.chat("")).setLore(ColorUtils.chat("")).hideAllFlags().build().clone();
         for (int i = 0; i < 9; i++) this.inv.setItem(i, bg);
-        this.selInst = rlm.getRoleInstance(selectedRole);
+
+        var selInst = rlm.getRoleInstance(selectedRole);
+        if (selInst == null) return;
+
         ItemStack tool1 = selInst.roleWeapon();
         ItemStack tool2 = selInst.roleArmor();
         ItemStack tool3 = selInst.roleBook();
@@ -62,11 +61,5 @@ public class RoleSelectionInterface implements InventoryHolder {
     @Override
     public @NotNull Inventory getInventory() {
         return this.inv;
-    }
-    public @NotNull BasicRoles getRole() {
-        return this.selectedRole;
-    }
-    public @NotNull Component Title() {
-        return this.title;
     }
 }

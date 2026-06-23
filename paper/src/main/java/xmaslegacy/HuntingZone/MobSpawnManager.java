@@ -59,8 +59,8 @@ public enum MobSpawnManager {
 	}
 
 	public void spawn(ZoneType type) {
-		HuntingZone zone = this.hzm.getZones(type);
-		if (zone == null || !zone.isEnabled()) return;
+		HuntingZone zone = this.hzm.getZone(type);
+		if (!zone.isEnabled()) return;
 
 		int currentMobCount = zone.getAliveMobCount();
 		int maxSpawnLimit = zone.getMaxSpawn();

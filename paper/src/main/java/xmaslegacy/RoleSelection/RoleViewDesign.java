@@ -39,7 +39,7 @@ public enum RoleViewDesign {
         for (int f = 0; f < 3; f++) {
             allFrames[f] = setupFrame(f);
         }
-        startVisualLoop();
+        this.startVisualLoop();
     }
 
     private ItemStack createGuiItem(Material material) {

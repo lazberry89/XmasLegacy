@@ -106,7 +106,7 @@ public class StockListener implements Listener {
 		Player p = e.getPlayer();
 		ItemStack result = e.getTrade().getResult();
 		List<ItemStack> ingredients = e.getTrade().getIngredients();
-		boolean value = Boolean.TRUE.equals(result.getPersistentDataContainer().get(plugin.getNamespacedKey("merchant_money"), PersistentDataType.BOOLEAN));
+		boolean value = Boolean.TRUE.equals(result.getPersistentDataContainer().get(KeyUtils.get("merchant_money"), PersistentDataType.BOOLEAN));
 		if (value) {
 
 		}

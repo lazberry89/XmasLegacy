@@ -14,20 +14,6 @@ public enum ExpManager {
 	ExpManager() {
         this.um = UserManager.INSTANCE;
     }
-    /*
-    @Contract(pure = true)
-    public boolean promote(@NotNull Player p, @NotNull Role currentRole, @NotNull Role target) {
-        User user = um.getUser(p.getUniqueId());
-        if (currentRole.getTier() >= target.getTier()) return false;
-        if (user == null) return false;
-
-        if (currentRole.next().contains(target)) {
-            user.setRole(target);
-            return true;
-        }
-        return false;
-    }
-    */
 
     public boolean addExp(@NotNull Player p, double amount) {
         User user = um.getUser(p.getUniqueId());

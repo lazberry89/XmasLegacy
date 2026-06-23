@@ -45,10 +45,10 @@ public class User {
     }
 
 	public void addIcingState(int icingState) {
-		this.icingState = Math.min(100, Math.max(0, this.icingState + icingState));
+		this.icingState = Math.clamp(this.icingState + icingState, 0, 100);
 	}
 	public void setIcingState(int icingState) {
-		this.icingState = Math.min(100, Math.max(0, icingState));
+		this.icingState = Math.clamp(icingState, 0, 100);
 	}
     public @NotNull UUID getUUID() {return this.uuid;}
     public @NotNull Role getRole() {return this.role;}

@@ -21,6 +21,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
 import xmaslegacy.Annotation.Listeners;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 @SuppressWarnings("unused, FieldCanBeLocal, DuplicatedCode")
@@ -51,7 +52,7 @@ public class FirstRoleListener implements Listener {
         if (meta == null) return;
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        String value = container.get(plugin.getNamespacedKey("role_id"), PersistentDataType.STRING);
+        String value = container.get(KeyUtils.get("role_id"), PersistentDataType.STRING);
         if (value == null) return;
         Role role;
         try {
@@ -70,7 +71,7 @@ public class FirstRoleListener implements Listener {
     //Archer skill
     @EventHandler
     public void onShockHit(ProjectileHitEvent e) {
-        NamespacedKey key =  new NamespacedKey(plugin, "skill");
+        NamespacedKey key = KeyUtils.get("skill");
         String npKey = e.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING);
         Projectile projectile = e.getEntity();
         if (!(projectile.getShooter() instanceof Player) && !(projectile instanceof Arrow a)) return;

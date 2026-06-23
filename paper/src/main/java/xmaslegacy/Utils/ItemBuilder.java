@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ItemBuilder {
+public final class ItemBuilder {
 	private final ItemStack item;
 	private final ItemMeta meta;
 	private final XmasLegacy plugin;

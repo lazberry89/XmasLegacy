@@ -4,9 +4,15 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class BookUtils {
+public final class BookUtils {
+
+    @ApiStatus.Internal
+    private BookUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static @NotNull ItemStack create(Component author, Component title, Component... pages) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);

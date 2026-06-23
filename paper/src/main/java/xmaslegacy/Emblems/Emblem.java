@@ -40,8 +40,8 @@ public class Emblem {
 			meta.displayName(ColorUtils.chat("&cTarget Emblem"));
 			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : &6" + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + role.bindTarget().getKor())));
 			meta.lore(lore);
-			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING, "target");
-			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_role"), PersistentDataType.STRING, role.name());
+			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_type"), PersistentDataType.STRING, "target");
+			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_role"), PersistentDataType.STRING, role.name());
 			meta.setRarity(ItemRarity.EPIC);
 		});
 		return target;
@@ -59,8 +59,8 @@ public class Emblem {
 					.collect(java.util.stream.Collectors.joining(", "));
 			List<Component> lore = new ArrayList<>(List.of(ColorUtils.chat("&f현재직업 : &6" + role.getKor()), ColorUtils.chat("&f귀속능력 : &6" + skillListString)));
 			meta.lore(lore);
-			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_type"), PersistentDataType.STRING, "range");
-			meta.getPersistentDataContainer().set(plugin.getNamespacedKey("emblem_role"), PersistentDataType.STRING, role.name());
+			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_type"), PersistentDataType.STRING, "range");
+			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_role"), PersistentDataType.STRING, role.name());
 			meta.setRarity(ItemRarity.EPIC);
 		});
 		return target;

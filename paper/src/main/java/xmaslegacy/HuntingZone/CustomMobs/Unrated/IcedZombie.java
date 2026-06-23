@@ -64,7 +64,7 @@ public class IcedZombie extends AbstractUnratedMobs implements CustomMob, Unrate
             z.getEquipment().setItemInMainHand(weapon);
             z.setAdult();
 
-            z.getPersistentDataContainer().set(plugin.getNamespacedKey("custom_mobs"), PersistentDataType.STRING, getKey().name());
+            z.getPersistentDataContainer().set(KeyUtils.get("custom_mobs"), PersistentDataType.STRING, getKey().name());
         });
     }
 

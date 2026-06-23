@@ -28,7 +28,7 @@ public class SpecialOre {
 	//Recipe
 	public static boolean RegisterRecipe() {
 		XmasLegacy plugin = JavaPlugin.getPlugin(XmasLegacy.class);
-		NamespacedKey key = plugin.getNamespacedKey("glacier_shard");
+		NamespacedKey key = KeyUtils.get("glacier_shard");
 
 		if (Bukkit.getRecipe(key) != null) {
 			Bukkit.removeRecipe(key);

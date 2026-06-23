@@ -51,7 +51,7 @@ public class HunterZombie extends AbstractUnratedMobs implements CustomMob, Unra
             h.getEquipment().setItemInMainHand(weapon);
             h.setAdult();
 
-            h.getPersistentDataContainer().set(plugin.getNamespacedKey("custom_mobs"), PersistentDataType.STRING, key.name());
+            h.getPersistentDataContainer().set(KeyUtils.get("custom_mobs"), PersistentDataType.STRING, key.name());
             h.getEquipment().setDropChance(EquipmentSlot.CHEST, 0);
             h.getEquipment().setDropChance(EquipmentSlot.HAND, 0);
         });

@@ -42,11 +42,11 @@ public class RegionCreateListener implements Listener {
 			Region region = new Region(p, p.getLocation());
 			if (region.isValid() && !rm.hasRegion(p.getLocation())) {
 				rm.addRegion(p, region);
-				plugin.infoMsg(InfoLevel.INFO, p, "구역이 성공적으로 생성되었습니다!");
+				InfoUtils.infoMsg(InfoLevel.INFO, p, "구역이 성공적으로 생성되었습니다!");
 				p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 				p.closeInventory();
 			} else {
-				plugin.infoMsg(InfoLevel.ERROR, p, "구역을 생성할 수 없습니다! 이미 구역이 존재하거나 청크가 생성되지 않았습니다.");
+				InfoUtils.infoMsg(InfoLevel.ERROR, p, "구역을 생성할 수 없습니다! 이미 구역이 존재하거나 청크가 생성되지 않았습니다.");
 				p.closeInventory();
 			}
 		}

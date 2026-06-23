@@ -115,7 +115,7 @@ public enum RegionManager {
 			trans.getScale().set(0.5f);
 			trans.getTranslation().set(-0.25f, 0.0f, -0.25f);
 			b.setTransformation(trans);
-			b.getPersistentDataContainer().set(plugin.getNamespacedKey(Constants.regionKey), PersistentDataType.STRING, "indicator");
+			b.getPersistentDataContainer().set(KeyUtils.get(Constants.regionKey), PersistentDataType.STRING, "indicator");
 		});
 	}
 
@@ -135,7 +135,7 @@ public enum RegionManager {
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return false;
 		PersistentDataContainer container = meta.getPersistentDataContainer();
-		String value = container.get(plugin.getNamespacedKey("region"), PersistentDataType.STRING);
+		String value = container.get(KeyUtils.get("region"), PersistentDataType.STRING);
 		return value != null && value.equals("beacon");
 	}
 

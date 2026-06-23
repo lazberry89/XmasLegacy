@@ -4,17 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.XmasLegacy;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public enum IcingSystem {
     INSTANCE;
@@ -49,10 +44,10 @@ public enum IcingSystem {
 
                     if (nextAmount == 0) {
                         p.damage(9.0);
-                        p.playSound(p, Sound.BLOCK_BELL_USE, 1.0f, 0.4f);
+                        p.getWorld().playSound(p, Sound.BLOCK_BELL_USE, 1.0f, 0.4f);
                     } else {
-						p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
-						p.getWorld().spawnParticle(Particle.SNOWFLAKE, p.getLocation(), 15, 0.5, 0.5, 0.5, 0.01);
+						//p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
+						p.getWorld().spawnParticle(Particle.SNOWFLAKE, p.getLocation(), 25, 0.7, 1, 0.7, 0.01);
                     }
                 }
             }), 0L, 20 * 3);

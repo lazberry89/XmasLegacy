@@ -24,8 +24,7 @@ public enum ConsumableManager {
 	INSTANCE;
 
     private @Nullable BukkitTask task;
-    @Getter
-    private boolean isRunning = false;
+    private @Getter boolean isRunning = false;
     private final @NotNull UserManager um;
 	private final @NotNull BagManager bm;
 
@@ -56,11 +55,14 @@ public enum ConsumableManager {
         this.isRunning = true;
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!um.getUser(p.getUniqueId()).ifWantsCookie()) continue;
+                var user = um.getUser(p.getUniqueId());
+                if (user == null) continue;
+
+                if (!user.ifWantsCookie()) continue;
                 Map<Integer, ItemStack> leftOver = p.getInventory().addItem(basicFood(Constants.COOKIE_COUNT));
 
 				if (!leftOver.isEmpty()) {
-					leftOver.values().forEach(item -> bm.addItem(p, item, item.getAmount()));
+					leftOver.values().forEach(item -> bm.addItem(p, item));
 				}
             }
         }, 20 * 60 * Constants.COOKIE_TIMER_MINUTE, 20 * 60 * Constants.COOKIE_TIMER_MINUTE);

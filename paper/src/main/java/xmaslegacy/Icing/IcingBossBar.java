@@ -1,9 +1,6 @@
 package xmaslegacy.Icing;
 
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
+import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -23,31 +20,30 @@ public enum IcingBossBar {
         UUID uuid = p.getUniqueId();
 
         BossBar bar = bars.computeIfAbsent(uuid, k -> {
-            BossBar newBar = Bukkit.createBossBar(
-                    ColorUtils.chatStr("&b&l[ 한기 수치 ]"),
-                    BarColor.BLUE,
-                    BarStyle.SOLID
+            BossBar newBar = BossBar.bossBar(
+                    ColorUtils.chat("&b&l[ 한기 수치 ]"),
+                    1.0f,
+                    BossBar.Color.BLUE,
+                    BossBar.Overlay.PROGRESS
             );
-            newBar.addPlayer(p);
+            p.showBossBar(newBar);
             return newBar;
         });
 
         double progress = Math.clamp(amount / 100.0, 0.0, 1.0);
-        bar.setProgress(progress);
+        bar.progress((float) progress);
 
         if (amount <= 20) {
-            bar.setColor(BarColor.RED);
-            bar.setTitle(ColorUtils.chatStr("&4&l[ 한기수치 : 저체온증 진행 중 ]"));
+            bar.color(BossBar.Color.RED);
+            bar.name(ColorUtils.chat("&4&l[ 한기수치 : 저체온증 진행 중 ]"));
         } else {
-            bar.setColor(BarColor.BLUE);
-            bar.setTitle(ColorUtils.chatStr("&b&l[ 한기 수치 ]"));
+            bar.color(BossBar.Color.BLUE);
+            bar.name(ColorUtils.chat("&b&l[ 한기 수치 ]"));
         }
     }
 
     public void removeBar(@NotNull Player p) {
         BossBar bar = bars.remove(p.getUniqueId());
-        if (bar != null) {
-            bar.removePlayer(p);
-        }
+        if (bar != null) bar.removeViewer(p);
     }
 }

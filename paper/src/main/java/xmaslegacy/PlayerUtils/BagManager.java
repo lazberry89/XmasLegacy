@@ -39,12 +39,12 @@ public enum BagManager {
 	}
 
     @CanIgnoreReturnValue
-	public List<ItemStack> addItem(Player p, ItemStack item, int amount) {
+	public List<ItemStack> addItem(Player p, ItemStack item) {
 		ItemStack clone = item.clone();
-		List<ItemStack> result = getUserBags(p).addItem(clone, amount);
+		List<ItemStack> result = getUserBags(p).addItem(clone);
 		if (!result.isEmpty()) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 가방이 가득 찼습니다!"));
-            result.forEach(s -> p.getWorld().dropItemNaturally(p.getLocation(), s));
+            result.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 0.6f, 1.0f);
 		} else {
 			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 가방에 아이템이 추가되었습니다!"));
