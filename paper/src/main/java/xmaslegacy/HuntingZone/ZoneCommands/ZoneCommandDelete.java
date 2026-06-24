@@ -17,15 +17,15 @@ public class ZoneCommandDelete implements SubCommand {
             var zone = hzm.getZone(args[1]);
 
             if (zone == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
+                InfoUtils.error(player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
                 return;
             }
             if (zone.inZone(chunk)) {
                 zone.shrink(chunk);
-                InfoUtils.infoMsg(InfoLevel.INFO, player, "해당 위치의 구역을 제외하였습니다.");
+                InfoUtils.info(player, "해당 위치의 구역을 제외하였습니다.");
             } else {
-                InfoUtils.infoMsg(InfoLevel.WARN, player, "해당 구역에 포함되지않은 청크입니다.");
+                InfoUtils.warn(player, "해당 구역에 포함되지않은 청크입니다.");
             }
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

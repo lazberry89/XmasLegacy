@@ -34,6 +34,6 @@ public class LogCommandInquiry implements SubCommand {
                     player.sendMessage(ColorUtils.chat(Alert.RED + "'" + targetName + "' 유저의 기록이 없습니다."));
                 else logs.forEach(player::sendMessage);
             });
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

@@ -32,13 +32,13 @@ public class ZoneCommand implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) {
-			InfoUtils.infoMsg(InfoLevel.WARN, p, "관리자용 명령어에요!");
+			InfoUtils.warn(p, "관리자용 명령어에요!");
 			return true;
 		}
 		if (args.length == 0) return false;
 		SubCommand sub = this.subCommand.get(args[0].toLowerCase());
 		if (sub == null) {
-			InfoUtils.infoMsg(InfoLevel.ERROR, p, "잘못된 명령어입니다.");
+			InfoUtils.error(p, "잘못된 명령어입니다.");
 			return true;
 		}
 		sub.execute(p, args);

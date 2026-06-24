@@ -53,7 +53,7 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 
 		SubCommand sub = commands.get(args[0]);
 		if (sub == null) {
-			InfoUtils.infoMsg(InfoLevel.ERROR, p, "유효하지 않는 명령어입니다.");
+			InfoUtils.error(p, "유효하지 않는 명령어입니다.");
 			return true;
 		}
 		sub.execute(p, args);

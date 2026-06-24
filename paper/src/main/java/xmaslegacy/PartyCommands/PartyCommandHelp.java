@@ -13,7 +13,7 @@ public class PartyCommandHelp implements SubCommand {
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         if (args.length >= 1)
             sendHelpMessage(player);
-        else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 
     private void sendHelpMessage(@NotNull Player p) {

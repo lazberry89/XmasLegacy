@@ -21,6 +21,7 @@ import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
 @Roles(grade = 2)
@@ -39,7 +40,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
         if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (!(p.getTargetEntity(2, false) instanceof LivingEntity target)) {
-            getPlugin().infoMsg(InfoLevel.ERROR, p, "유효한 타겟이 없습니다.");
+            InfoUtils.error(p, "유효한 타겟이 없습니다.");
             return;
         }
         if (!consumeEnergy(p, 3)) return;
@@ -95,7 +96,7 @@ public class Fighter extends AbstractSecondRole implements Unpromotable {
         if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
         ItemStack tool = p.getInventory().getItemInMainHand();
         if (!(p.getTargetEntity(2, false) instanceof LivingEntity target)) {
-            getPlugin().infoMsg(InfoLevel.ERROR, p, "유효한 타겟이 없습니다.");
+            InfoUtils.error(p, "유효한 타겟이 없습니다.");
             return;
         }
         if (!consumeEnergy(p, 3)) return;

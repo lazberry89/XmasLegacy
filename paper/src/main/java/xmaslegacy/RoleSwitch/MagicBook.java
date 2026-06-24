@@ -52,7 +52,7 @@ public enum MagicBook {
         User user = um.getUser(p.getUniqueId());
         if (user == null) return;
         if (!BasicRoles.USER.equals(user.getRole())) {
-            InfoUtils.infoMsg(InfoLevel.ERROR, p, "이미 직업이 선택되었어요.");
+            InfoUtils.error(p, "이미 직업이 선택되었어요.");
             return;
         }
         p.openInventory(new RoleSelectInterface().getInventory());

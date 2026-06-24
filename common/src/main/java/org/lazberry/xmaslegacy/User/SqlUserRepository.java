@@ -43,7 +43,8 @@ public enum SqlUserRepository implements UserRepository {
 				"tier VARCHAR(20), " +
 				"mastery VARCHAR(20)," +
 				"isImmuneToIcing BOOLEAN," +
-				"icingState INT" +
+				"icingState INT," +
+				"showBoard BOOLEAN," +
 				");";
 
 		try (Connection conn = getConnection();
@@ -108,6 +109,7 @@ public enum SqlUserRepository implements UserRepository {
 				loadedUser.setMastery(mastery);
 				loadedUser.setImmuneToIcing(rs.getBoolean("isImmuneToIcing"));
 				loadedUser.setIcingState(rs.getInt("icingState"));
+				loadedUser.setShowBoard(rs.getBoolean("showBoard"));
 
 				return loadedUser;
 			}
@@ -150,8 +152,8 @@ public enum SqlUserRepository implements UserRepository {
 	@Override
 	public void saveUser(User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
-		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -171,6 +173,7 @@ public enum SqlUserRepository implements UserRepository {
 			pstmt.setString(13, user.getMastery().name());
 			pstmt.setBoolean(14, user.isImmuneToIcing());
 			pstmt.setInt(15, user.getIcingState());
+			pstmt.setBoolean(16, user.isShowBoard());
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {

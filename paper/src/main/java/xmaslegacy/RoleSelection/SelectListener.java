@@ -101,7 +101,7 @@ public class SelectListener implements Listener {
                                     plugin.getSLF4JLogger().error("Error occurred while reloading User Info UUID -> {} ", t.getUniqueId(), throwable);
                                     return;
                                 }
-                                InfoUtils.infoMsg(InfoLevel.INFO, t, "유저정보를 성공적으로 불러왔습니다!");
+                                InfoUtils.info(t, "유저정보를 성공적으로 불러왔습니다!");
                             });
                         }
                     }, options));

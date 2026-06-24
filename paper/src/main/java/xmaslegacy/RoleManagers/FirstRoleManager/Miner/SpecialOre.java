@@ -8,6 +8,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmaslegacy.Utils.ItemBuilder;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 public class SpecialOre {

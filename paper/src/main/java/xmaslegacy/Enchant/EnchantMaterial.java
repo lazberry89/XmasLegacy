@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.ColorUtils;
 import xmaslegacy.Utils.ItemBuilder;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 import java.util.List;
@@ -74,8 +75,8 @@ public class EnchantMaterial {
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return false;
 
-		if (!meta.getPersistentDataContainer().has(XmasLegacy.getInstance().getNamespacedKey("enchant_material"), PersistentDataType.STRING)) return false;
-		String type = meta.getPersistentDataContainer().get(XmasLegacy.getInstance().getNamespacedKey("enchant_material"), PersistentDataType.STRING);
+		if (!meta.getPersistentDataContainer().has(KeyUtils.get("enchant_material"), PersistentDataType.STRING)) return false;
+		String type = meta.getPersistentDataContainer().get(KeyUtils.get("enchant_material"), PersistentDataType.STRING);
 		return type != null && type.equalsIgnoreCase("prism_fractal");
 	}
 }

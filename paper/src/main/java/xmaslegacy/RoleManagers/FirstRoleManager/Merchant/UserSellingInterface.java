@@ -1,5 +1,6 @@
 package xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,6 +19,8 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Economy.Currency.CurrencyManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
 import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ public class UserSellingInterface {
     private final Merchant inv;
     private final UserManager um;
     private final XmasLegacy plugin;
+	@Getter
 	private final Component title = ColorUtils.chat("&c&lSystem - &7&l매입");
 	private final NamespacedKey key;
 
@@ -39,7 +43,10 @@ public class UserSellingInterface {
 		this.key = KeyUtils.get("merchant_money");
         List<MerchantRecipe> recipes = new ArrayList<>();
 
-        switch (um.getUser(viewer.getUniqueId()).getRole()) {
+		var user = um.getUser(viewer.getUniqueId());
+		if (user == null) return;
+
+        switch (user.getRole()) {
             case BasicRoles.FARMER -> {
                 ItemStack resultForWheat = CurrencyManager.currency(3);
 	            ItemMeta meta = resultForWheat.getItemMeta();
@@ -100,15 +107,14 @@ public class UserSellingInterface {
 				recipes.add(diamond);
             }
 	        default -> {
-		        InfoUtils.infoMsg(InfoLevel.WARN, viewer, "해당 직업이 아니네요!");
+		        InfoUtils.warn(viewer, "해당 직업이 아니네요!");
 				viewer.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
 	        }
         }
 		this.inv.setRecipes(recipes);
     }
-	public Component getTitle() {return this.title;}
 
-    public @NotNull Merchant getInventory() {
+	public @NotNull Merchant getInventory() {
         return this.inv;
     }
 }

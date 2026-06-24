@@ -21,14 +21,14 @@ public class DeleteStandCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
         if (!p.isOp()) {
-            InfoUtils.infoMsg(InfoLevel.ERROR, p, "관리자용 명령어에요!");
+            InfoUtils.error(p, "관리자용 명령어에요!");
             return true;
         }
         if (MB.getStand() == null) {
-            InfoUtils.infoMsg(InfoLevel.ERROR, p, "현재 직업책이 없어요!");
+            InfoUtils.error(p, "현재 직업책이 없어요!");
         } else {
             MB.deleteStand();
-            InfoUtils.infoMsg(InfoLevel.INFO, p, "삭제되었습니다.");
+            InfoUtils.info(p, "삭제되었습니다.");
         }
         return true;
     }

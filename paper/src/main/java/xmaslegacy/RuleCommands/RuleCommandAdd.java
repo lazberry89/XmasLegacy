@@ -28,6 +28,6 @@ public class RuleCommandAdd implements SubCommand {
                 player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 추가되었습니다. /filter list로 확인"));
                 player.playSound(player, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
             }
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

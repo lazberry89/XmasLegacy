@@ -18,7 +18,7 @@ public class LobbyCommandReset implements SubCommand {
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         if (args.length == 1) {
             lbm.resetSpawn();
-            InfoUtils.infoMsg(InfoLevel.INFO, player, "성공적으로 위치가 초기화 되었습니다.");
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+            InfoUtils.info(player, "성공적으로 위치가 초기화 되었습니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

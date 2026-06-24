@@ -17,16 +17,16 @@ public class ZoneCommandExpand implements SubCommand {
             var zone = hzm.getZone(args[1]);
 
             if (zone == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
+                InfoUtils.error(player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
                 return;
             }
             if (chunk.isLoaded() && chunk.isGenerated()) {
                 if (zone.inZone(chunk)) {
-                    InfoUtils.infoMsg(InfoLevel.WARN, player, "이미 포함되어 있는 청크입니다.");
+                    InfoUtils.warn(player, "이미 포함되어 있는 청크입니다.");
                 } else {
                     zone.enLarge(chunk);
                 }
             }
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

@@ -16,14 +16,14 @@ public class ZoneCommandDespawn implements SubCommand {
             var zone = hzm.getZone(args[1]);
 
             if (zone == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
+                InfoUtils.error(player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
                 return;
             }
 
             if (zone.isEnabled()) {
-                InfoUtils.infoMsg(InfoLevel.INFO, player, "비활성화 하였습니다.");
+                InfoUtils.info(player, "비활성화 하였습니다.");
                 zone.disable();
-            } else InfoUtils.infoMsg(InfoLevel.WARN, player, "이미 비활성화 상태입니다.");
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+            } else InfoUtils.warn(player, "이미 비활성화 상태입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

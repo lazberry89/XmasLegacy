@@ -28,6 +28,6 @@ public class LobbyCommandLocation implements SubCommand {
                 return;
             }
             player.sendMessage(ColorUtils.chat(String.format("%s 현재 로비 스폰위치 :&6 %.1f %.1f %.1f", Alert.YELLOW, loc.getX(), loc.getY(), loc.getZ())));
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

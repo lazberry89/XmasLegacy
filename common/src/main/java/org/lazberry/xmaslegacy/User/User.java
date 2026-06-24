@@ -1,7 +1,6 @@
 package org.lazberry.xmaslegacy.User;
 
 import lombok.Data;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
@@ -36,6 +35,7 @@ public class User {
 	private boolean combatMode = false;
     private boolean isImmuneToIcing = false;
 	private int icingState = 100;
+	private boolean showBoard = true;
 
     public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {
         this.uuid = uuid;

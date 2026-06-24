@@ -55,7 +55,7 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
             sub.execute(p, args);
             return true;
         }
-        InfoUtils.infoMsg(InfoLevel.ERROR, p, "유효하지 않은 명령어입니다.");
+        InfoUtils.error(p, "유효하지 않은 명령어입니다.");
         return true;
     }
 

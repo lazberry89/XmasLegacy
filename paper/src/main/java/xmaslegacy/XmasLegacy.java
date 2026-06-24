@@ -13,11 +13,13 @@ import xmaslegacy.HuntingZone.MobSpawnManager;
 import xmaslegacy.Icing.IcingListener;
 import xmaslegacy.Icing.IcingSystem;
 import xmaslegacy.LogCommands.LogCommand;
+import xmaslegacy.PartyScoreBoard.UserPartyScoreBoard;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.PluginUtils.ReflectionManager;
 import xmaslegacy.PluginUtils.ServerInitializer;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
+import xmaslegacy.RoleManagers.FirstRoleManager.Miner.SpecialOre;
 import xmaslegacy.RoleSelection.RoleViewDesign;
 import xmaslegacy.RuleCommands.RuleCommand;
 import xmaslegacy.ServerPrefix.ChatPrefixListener;
@@ -45,6 +47,9 @@ public final class XmasLegacy extends JavaPlugin {
 		ServerInitializer.initiate(this);
 
 		if (AgeableCrops.RegisterRecipe(this)) log.info("Recipe Registered!");
+		else log.error("Recipe Not Registered!");
+
+		if (SpecialOre.RegisterRecipe()) log.info("Recipe Registered!");
 		else log.error("Recipe Not Registered!");
 
 		getServer().getPluginManager().registerEvents(new ServerJoinListener(), this);
@@ -84,6 +89,7 @@ public final class XmasLegacy extends JavaPlugin {
 	public void onDisable() {
 		RegionManager.INSTANCE.saveAll();
 
+		UserPartyScoreBoard.INSTANCE.stopTask();
 		UserManager.INSTANCE.getAllUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
 		log.info("User info is automatically saved!");
 

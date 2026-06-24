@@ -27,6 +27,6 @@ public class RuleCommandRemove implements SubCommand {
                 player.sendMessage(ColorUtils.chat(Alert.RED + " 존재하지 않는 항목입니다."));
                 player.playSound(player, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             }
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

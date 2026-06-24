@@ -40,12 +40,12 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
             if (args.length == 4) {
                 Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
-                    InfoUtils.infoMsg(InfoLevel.ERROR, p, "해당 플레이어를 찾을 수 없습니다!");
+                    InfoUtils.error(p, "해당 플레이어를 찾을 수 없습니다!");
                     return true;
                 }
                 var user = um.getUser(target.getUniqueId());
                 if (user == null) {
-                    InfoUtils.infoMsg(InfoLevel.ERROR, p, "해당 플레이어를 찾을 수 없습니다!");
+                    InfoUtils.error(p, "해당 플레이어를 찾을 수 없습니다!");
                     return true;
                 }
                 ServerPrefix prefix = null;
@@ -54,25 +54,25 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                         try {
                             prefix = Tier.valueOf(args[3]);
                         } catch (IllegalArgumentException e) {
-                            InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
+                            InfoUtils.error(p, "칭호를 찾을 수 없습니다 : " + args[3]);
                         }
                     }
                     case "mastery" -> {
                         try {
                             prefix = RoleMastery.valueOf(args[3]);
                         } catch (IllegalArgumentException e) {
-                            InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
+                            InfoUtils.error(p, "칭호를 찾을 수 없습니다 : " + args[3]);
                         }
                     }
                     case "mission" -> {
                         try {
                             prefix = MissionPrefix.valueOf(args[3]);
                         } catch (IllegalArgumentException e) {
-                            InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호를 찾을 수 없습니다 : " + args[3]);
+                            InfoUtils.error(p, "칭호를 찾을 수 없습니다 : " + args[3]);
                         }
                     }
                     default -> {
-                        InfoUtils.infoMsg(InfoLevel.ERROR, p, "칭호 타입이 잘못되었습니다!");
+                        InfoUtils.error(p, "칭호 타입이 잘못되었습니다!");
                         return true;
                     }
                 }
@@ -80,34 +80,34 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                 switch (args[0].toLowerCase()) {
                     case "grant" -> {
                         if (pfm.addPrefix(target, prefix)) {
-                            InfoUtils.infoMsg(InfoLevel.INFO, p, String.format("%s님에게 칭호 '%s'를 추가했습니다", target.getName(), prefix.name()));
-                            InfoUtils.infoMsg(InfoLevel.INFO, target, "칭호 '" + prefix.name() + "'가 부여되었습니다.");
+                            InfoUtils.info(p, String.format("%s님에게 칭호 '%s'를 추가했습니다", target.getName(), prefix.name()));
+                            InfoUtils.info(target, "칭호 '" + prefix.name() + "'가 부여되었습니다.");
                         } else {
-                            InfoUtils.infoMsg(InfoLevel.INFO, p, "이미 해당 칭호가 유저에게 존재합니다.");
+                            InfoUtils.info(p, "이미 해당 칭호가 유저에게 존재합니다.");
                         }
                     }
                     case "deprive" -> {
                         if (pfm.removePrefix(target, prefix)) {
-                            InfoUtils.infoMsg(InfoLevel.INFO, p, String.format("%s님에게서 칭호 '%s'를 제거했습니다", target.getName(), prefix.name()));
+                            InfoUtils.info(p, String.format("%s님에게서 칭호 '%s'를 제거했습니다", target.getName(), prefix.name()));
                         } else {
-                            InfoUtils.infoMsg(InfoLevel.WARN, p, "해당 칭호를 보유하고 있지 않아요!");
+                            InfoUtils.warn(p, "해당 칭호를 보유하고 있지 않아요!");
                         }
                     }
                     case "equip" -> {
                         if (pfm.equipPrefix(target, prefix)) {
-                            InfoUtils.infoMsg(InfoLevel.INFO, p, String.format("칭호 '%s'를 %s님에게 장착했습니다.", prefix.name(), target.getName()));
+                            InfoUtils.info(p, String.format("칭호 '%s'를 %s님에게 장착했습니다.", prefix.name(), target.getName()));
                         } else {
-                            InfoUtils.infoMsg(InfoLevel.WARN, p, "유저가 해당 칭호를 보유하고 있지 않습니다.");
+                            InfoUtils.warn(p, "유저가 해당 칭호를 보유하고 있지 않습니다.");
                         }
                     }
                     case "unequip" -> {
                         if (pfm.unequipPrefix(target)) {
-                            InfoUtils.infoMsg(InfoLevel.WARN, p, "유저의 칭호를 해제했습니다.");
+                            InfoUtils.warn(p, "유저의 칭호를 해제했습니다.");
                         } else {
-                            InfoUtils.infoMsg(InfoLevel.WARN, p, "유저가 칭호를 장착하고 있지 않습니다.");
+                            InfoUtils.warn(p, "유저가 칭호를 장착하고 있지 않습니다.");
                         }
                     }
-                    default -> InfoUtils.infoMsg(InfoLevel.ERROR, p, "잘못된 인자가 존재합니다.");
+                    default -> InfoUtils.error(p, "잘못된 인자가 존재합니다.");
                 }
             } else if (args.length == 1) {
                 if (args[0].startsWith("inv")) {

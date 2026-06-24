@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
@@ -16,7 +17,7 @@ import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.PlayerUtils.BagManager;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.KeyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +25,14 @@ import java.util.Map;
 
 @Listeners
 public class ShopListener implements Listener {
-	private final PriestShopManager PSM;
-	private final EconomyManager ECM;
-	private final XmasLegacy plugin;
-    private final BagManager BAG;
+	private final @NotNull PriestShopManager PSM;
+	private final @NotNull EconomyManager ECM;
+    private final @NotNull BagManager BAG;
 
 	public ShopListener() {
 		this.PSM = PriestShopManager.INSTANCE;
 		this.ECM = EconomyManager.INSTANCE;
         this.BAG = BagManager.INSTANCE;
-		this.plugin = XmasLegacy.getInstance();
 	}
 
     private boolean isConductableItem(ItemStack item) {
@@ -126,7 +125,7 @@ public class ShopListener implements Listener {
 
                     if (!invLeftover.isEmpty()) {
                         for (ItemStack toBag : invLeftover.values()) {
-                            BAG.addItem(p, toBag, toBag.getAmount());
+                            BAG.addItem(p, toBag);
                         }
                     }
                 }
@@ -221,7 +220,7 @@ public class ShopListener implements Listener {
 		viewer.sendMessage(ColorUtils.chat(Alert.GREEN + " 상품을 구매하였습니다."));
 		Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(item);
 		if (!leftOver.isEmpty()) {
-			leftOver.values().forEach(s -> BAG.addItem(viewer, s, s.getAmount()));
+			leftOver.values().forEach(s -> BAG.addItem(viewer, s));
 			viewer.sendMessage(ColorUtils.chat(Alert.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다."));
 		}
 

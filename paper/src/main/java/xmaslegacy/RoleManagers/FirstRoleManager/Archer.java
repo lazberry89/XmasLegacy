@@ -17,6 +17,7 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.Utils.ItemBuilder;
+import xmaslegacy.Utils.KeyUtils;
 
 @Roles
 public class Archer extends AbstractFirstRole {
@@ -87,7 +88,7 @@ public class Archer extends AbstractFirstRole {
 		Arrow arrow = p.launchProjectile(Arrow.class);
 		arrow.setVelocity(p.getLocation().getDirection().multiply(this.first_skill_arrow_speed));
 		arrow.setShooter(p);
-		arrow.getPersistentDataContainer().set(getPlugin().getNamespacedKey("skill"), PersistentDataType.STRING, "archer_arrow");
+		arrow.getPersistentDataContainer().set(KeyUtils.get("skill"), PersistentDataType.STRING, "archer_arrow");
 		arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
 
 		new BukkitRunnable() {

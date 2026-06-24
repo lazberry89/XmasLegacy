@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.ColorUtils;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.KeyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public enum EnchantManager {
     );
 
     EnchantManager() {
-        this.key = XmasLegacy.getInstance().getNamespacedKey("enchant");
+        this.key = KeyUtils.get("enchant");
     }
 
     @Range(from = 1, to = 10)

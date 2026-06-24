@@ -26,29 +26,29 @@ public class PartyCommandMember implements SubCommand {
         if (args.length == 1) {
             var party = pm.getParty(player.getUniqueId());
             if (party == null) {
-                InfoUtils.infoMsg(InfoLevel.WARN, player, "소속되어있는 파티가 없습니다.");
+                InfoUtils.warn(player, "소속되어있는 파티가 없습니다.");
                 return;
             }
             player.sendMessage(memberShowcase(party));
         } else if (args.length >= 2) {
             Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "플레이어를 찾을 수 없습니다.");
+                InfoUtils.error(player, "플레이어를 찾을 수 없습니다.");
                 return;
             }
             User targetUser = um.getUser(target.getUniqueId());
             if (targetUser == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 유저의 정보가 로드되지 않았습니다.");
+                InfoUtils.error(player, "해당 유저의 정보가 로드되지 않았습니다.");
                 return;
             }
             var party = pm.getParty(target.getUniqueId());
             if (party == null) {
-                InfoUtils.infoMsg(InfoLevel.WARN, player, "파티에 소속되어있지 않은 유저입니다.");
+                InfoUtils.warn(player, "파티에 소속되어있지 않은 유저입니다.");
                 return;
             }
             player.sendMessage(memberShowcase(party));
 
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 
     private @NotNull Component memberShowcase(@NotNull Party party) {

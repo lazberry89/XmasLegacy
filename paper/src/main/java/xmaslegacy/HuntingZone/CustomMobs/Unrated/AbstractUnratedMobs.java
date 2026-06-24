@@ -4,6 +4,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import xmaslegacy.HuntingZone.CustomMobs.MobGrade;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 public abstract class AbstractUnratedMobs implements CustomMob, UnratedMob {

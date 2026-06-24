@@ -19,7 +19,7 @@ public class RegionCommandDelete implements SubCommand {
         try {
             var rm = RegionManager.INSTANCE;
             if (args.length < 2) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "사용법: /구역 <ID> 삭제/delete");
+                InfoUtils.error(player, "사용법: /구역 <ID> 삭제/delete");
                 return;
             }
 
@@ -36,7 +36,7 @@ public class RegionCommandDelete implements SubCommand {
                     rm.removeRegion(region);
                     player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.Id()));
                 } else
-                    InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+                    InfoUtils.error(player, "유효하지 않은 명령어입니다.");
             } else player.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
         } catch (Exception e) {
             log.error("Exception occurred while executing Region Deleting Command.", e);

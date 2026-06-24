@@ -40,6 +40,6 @@ public class LogCommandRegions implements SubCommand {
                 return;
             }
             rm.sendRegionFormat(player, regions);
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

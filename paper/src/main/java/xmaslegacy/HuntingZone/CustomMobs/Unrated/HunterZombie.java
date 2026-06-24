@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
+import xmaslegacy.Utils.KeyUtils;
 
 @SuppressWarnings("unused")
 public class HunterZombie extends AbstractUnratedMobs implements CustomMob, UnratedMob {

@@ -39,7 +39,7 @@ public class ChatPrefixListener implements Listener {
 		String msg;
 		if (rm.checkBadWords(rawMsg)) {
 			msg = rm.hideBadWords(rawMsg);
-			InfoUtils.infoMsg(InfoLevel.ERROR, p, "욕설이 포함된 메시지는 제재를 받을 수 있습니다.");
+			InfoUtils.error(p, "욕설이 포함된 메시지는 제재를 받을 수 있습니다.");
 		} else {
 			msg = rawMsg;
 		}

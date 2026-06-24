@@ -35,9 +35,9 @@ public class PartyCommandLeave implements SubCommand {
                     .filter(Player::isValid)
                     .toList();
             if (pm.leaveParty(user)) {
-                targets.forEach(t -> InfoUtils.infoMsg(InfoLevel.INFO, t, "&6" + player.getName() + "&f님이 파티를 나갔습니다."));
-                InfoUtils.infoMsg(InfoLevel.INFO, player, "파티에서 나갔습니다.");
-            } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "파티에서 나가지 못했습니다. 파티에 소속되어있는지 확인해주세요.");
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+                targets.forEach(t -> InfoUtils.info(t, "&6" + player.getName() + "&f님이 파티를 나갔습니다."));
+                InfoUtils.info(player, "파티에서 나갔습니다.");
+            } else InfoUtils.error(player, "파티에서 나가지 못했습니다. 파티에 소속되어있는지 확인해주세요.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

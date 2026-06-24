@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.Party;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 
@@ -38,7 +39,6 @@ public enum PartyManager {
 		}
 	}
 
-	@SuppressWarnings("UnusedReturnValue")
     public boolean leaveParty(@NotNull User user) {
 		if (partyMap.containsKey(user)) {
 			Party party = partyMap.get(user);
@@ -46,7 +46,10 @@ public enum PartyManager {
 				partyMap.remove(user);
 				party.leaveParty(user);
 
-				if (party.getMembers().isEmpty()) party.clearMembers();
+				if (party.getMembers().isEmpty()) {
+					party.clearMembers();
+					party = null;
+				}
 				return true;
 			}
 		}
@@ -68,27 +71,27 @@ public enum PartyManager {
 		return true;
 	}
 
-    public Party getParty(UUID p) {
-		User u = um.getUser(p);
+    public @Nullable Party getParty(@NotNull UUID uuid) {
+		User u = um.getUser(uuid);
         return partyMap.get(u);
     }
 
-    public boolean isInParty(UUID p) {
-		User u = um.getUser(p);
+    public boolean isInParty(@NotNull UUID uuid) {
+		User u = um.getUser(uuid);
         return partyMap.containsKey(u);
     }
 
-    public boolean isLeader(UUID p) {
-        Party party = getParty(p);
+    public boolean isLeader(@NotNull UUID uuid) {
+        Party party = getParty(uuid);
 	    if (party == null) return false;
-        return party.getLeader().getUUID().equals(p);
+        return party.getLeader().getUUID().equals(uuid);
     }
 
-    public boolean isParty(UUID p1, UUID p2) {
-        Party party = getParty(p1);
+    public boolean isParty(@NotNull UUID uuid1, @NotNull UUID uuid2) {
+        Party party = getParty(uuid1);
         if (party == null) return false;
 
         return party.getMembers().stream()
-                .anyMatch(user -> user.getUUID().equals(p2));
+                .anyMatch(user -> user.getUUID().equals(uuid2));
     }
 }

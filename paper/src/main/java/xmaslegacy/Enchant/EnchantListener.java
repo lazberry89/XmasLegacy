@@ -29,6 +29,8 @@ import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.SkillEffectManager;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 import java.util.*;
@@ -67,11 +69,11 @@ public class EnchantListener implements Listener {
 			if (slot == 22) {
 				ItemStack item = topInv.getItem(13);
 				if (item == null || item.getType() == Material.AIR) {
-					InfoUtils.infoMsg(InfoLevel.ERROR, p, "강화할 아이템을 먼저 올려주세요.");
+					InfoUtils.error(p, "강화할 아이템을 먼저 올려주세요.");
 					return;
 				}
 				if (!ecm.isEnchantable(item)) {
-					InfoUtils.infoMsg(InfoLevel.ERROR, p, "강화 가능한 아이템이 아니에요!");
+					InfoUtils.error(p, "강화 가능한 아이템이 아니에요!");
 					return;
 				}
 
@@ -161,7 +163,7 @@ public class EnchantListener implements Listener {
 		if (item != null && item.getType() != Material.AIR) {
 			HashMap<Integer, ItemStack> remain = p.getInventory().addItem(item);
 			if (!remain.isEmpty()) {
-				remain.values().forEach(i -> bm.addItem(p, i, i.getAmount()));
+				remain.values().forEach(i -> bm.addItem(p, i));
 				p.sendMessage(ColorUtils.chat(Alert.GREEN + " 나머지는 가방에 보관되었어요."));
 			}
 

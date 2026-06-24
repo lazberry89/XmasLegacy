@@ -7,27 +7,28 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;
 
 @Commands(command = "clearpdc")
 public class PdcClearCommand implements CommandExecutor {
-
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		var plugin = XmasLegacy.getInstance();
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) {
-			InfoUtils.infoMsg(InfoLevel.ERROR, p, "관리자용 명령어에요!");
+			InfoUtils.error(p, "관리자용 명령어에요!");
 			return true;
 		}
 		if (args.length == 1) {
 			var key = KeyUtils.get(args[0]);
 			if (p.getPersistentDataContainer().has(key)) {
 				p.getPersistentDataContainer().remove(key);
-				InfoUtils.infoMsg(InfoLevel.INFO, p, "제거하였습니다.");
+				InfoUtils.info(p, "제거하였습니다.");
 			} else {
-				InfoUtils.infoMsg(InfoLevel.ERROR, p, "키를 소유하고 있지 않습니다.");
+				InfoUtils.error(p, "키를 소유하고 있지 않습니다.");
 			}
 		}
 		return true;

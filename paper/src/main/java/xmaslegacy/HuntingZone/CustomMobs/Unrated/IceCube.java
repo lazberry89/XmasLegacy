@@ -7,8 +7,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import xmaslegacy.Utils.GlowUtils;
+import xmaslegacy.Utils.KeyUtils;
 
-@SuppressWarnings("unused")
 public class IceCube extends AbstractUnratedMobs implements CustomMob, UnratedMob {
     private final @NotNull MobKey key;
 

@@ -25,6 +25,7 @@ import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.UsingEnergy;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
 @Roles
@@ -109,7 +110,7 @@ public class Warrior extends AbstractFirstRole implements UsingEnergy {
 			warriorEffect(p);
 			p.setCooldown(tool, getCooldown1() * 20);
 		} else {
-			getPlugin().infoMsg(InfoLevel.ERROR, p, "체력수치가 조건 이상입니다.");
+			InfoUtils.error(p, "체력수치가 조건 이상입니다.");
 		}
 
 	}

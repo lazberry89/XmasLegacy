@@ -64,11 +64,11 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 
 			SubCommand sub = this.commands.get(args[1].toLowerCase());
 			if (sub == null) {
-				InfoUtils.infoMsg(InfoLevel.ERROR, p, "유효하지 않은 명령어입니다.");
+				InfoUtils.error(p, "유효하지 않은 명령어입니다.");
 				return true;
 			}
 			if (sub instanceof RegionCommandSetting && args.length < 3) {
-				InfoUtils.infoMsg(InfoLevel.ERROR, p, "사용법: /구역 <ID> <설정> <값>");
+				InfoUtils.error(p, "사용법: /구역 <ID> <설정> <값>");
 				return true;
 			}
 
@@ -76,7 +76,7 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 			return true;
 		} catch (Exception e) {
 			log.error("Error occurred while executing command {}", label, e);
-			InfoUtils.infoMsg(InfoLevel.ERROR, p, "명령어 사용 중 내부 예외가 발생했습니다.");
+			InfoUtils.error(p, "명령어 사용 중 내부 예외가 발생했습니다.");
 			return true;
 		}
 	}

@@ -1,30 +1,33 @@
 package xmaslegacy.PluginUtils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import xmaslegacy.Env.ConsumableManager;
 import xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import xmaslegacy.HuntingZone.HuntingZoneManager;
 import xmaslegacy.HuntingZone.MobSpawnManager;
+import xmaslegacy.PartyScoreBoard.UserPartyScoreBoard;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleSelection.RoleViewDesign;
 import xmaslegacy.TransferPortal.PortalManager;
 import xmaslegacy.XmasLegacy;
 
+@Slf4j
 public class MainInitializer implements ServerInitializer {
 
 	@Override
 	public void setup(@NotNull XmasLegacy plugin) {
-		plugin.getSLF4JLogger().warn("Main 모드로 시작합니다.");
-		plugin.getSLF4JLogger().warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요.");
+		log.warn("Main 모드로 시작합니다.");
+		log.warn("server-type = \"main\" 일치하지 않을 시에 config.yml을 수정하세요.");
 		RoleViewDesign.INSTANCE.init();
+
+		UserPartyScoreBoard.INSTANCE.startTask();
 
 		RegionManager.INSTANCE.startGlobalIndicatorTask();
 
 		ConsumableManager.INSTANCE.runCookieTimer(plugin);
 		BagManager.INSTANCE.loadAllBags();
-
-		RoleViewDesign.INSTANCE.init();
 
 		MobRepository.INSTANCE.init();
 

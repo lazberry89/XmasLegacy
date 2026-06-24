@@ -5,10 +5,10 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.KeyUtils;
 
 public class BerserkerSpeedManager {
-    private static final NamespacedKey SPEED_KEY = XmasLegacy.getInstance().getNamespacedKey("berserker_speed");
+    private static final NamespacedKey SPEED_KEY = KeyUtils.get("berserker_speed");
 
     public static void applyFlatSpeed(Player p) {
         AttributeInstance attribute = p.getAttribute(Attribute.MOVEMENT_SPEED);

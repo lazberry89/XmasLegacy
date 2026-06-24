@@ -12,21 +12,18 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Skill;
-import xmaslegacy.XmasLegacy;
+import xmaslegacy.Utils.KeyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("DuplicatedCode, unused")
 public class Emblem {
 	private final @NotNull ItemStack TargetEmblem;
 	private final @NotNull ItemStack RangeEmblem;
 	private final @NotNull Role role;
-	private final XmasLegacy plugin;
 
 	public Emblem(@NotNull Role role) {
 		this.role = role;
-		this.plugin = XmasLegacy.getInstance();
 		TargetEmblem = targetEmblem();
 		RangeEmblem = rangeEmblem();
 	}

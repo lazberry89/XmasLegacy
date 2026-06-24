@@ -16,10 +16,10 @@ public class ZoneCommandAlive implements SubCommand {
             var zone = hzm.getZone(args[1]);
 
             if (zone == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
+                InfoUtils.error(player, "해당 사냥터가 설정되지 않았거나 적절하지 않습니다.");
                 return;
             }
-            InfoUtils.infoMsg(InfoLevel.WARN, player, String.format("현재 사냥터 몹 수(최대 마릿수 초과시 검사필요): %d/%d", zone.getAliveMobCount(), zone.getMaxSpawn()));
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+            InfoUtils.warn(player, String.format("현재 사냥터 몹 수(최대 마릿수 초과시 검사필요): %d/%d", zone.getAliveMobCount(), zone.getMaxSpawn()));
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

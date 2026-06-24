@@ -15,25 +15,21 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.Enchant.EnchantUserInterface;
-import xmaslegacy.Icing.IcingSystem;
 import xmaslegacy.RoleSelection.RoleSelectInterface;
 import xmaslegacy.RoleSelection.RoleSelectionInterface;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 
 import java.util.List;
 
 @Listeners
 public class GlobalListeners implements Listener {
-    private final @NotNull XmasLegacy plugin;
     private final @NotNull NamespacedKey key;
 	private final @NotNull NamespacedKey key2;
 
     public GlobalListeners() {
-        this.plugin = XmasLegacy.getInstance();
         this.key = KeyUtils.get("role_id");
 		this.key2 = KeyUtils.get("emblem_type");
     }
@@ -41,7 +37,7 @@ public class GlobalListeners implements Listener {
     private boolean isCombatItem(@Nullable ItemStack item) {
         if (item == null || item.getType().isAir()) return false;
 		var meta = item.getItemMeta();
-		if (meta == null) return false;
+		if (meta == null) return false;;
 		var container = meta.getPersistentDataContainer();
 	    return container.has(key) || container.has(key2);
     }
@@ -55,7 +51,7 @@ public class GlobalListeners implements Listener {
         if (remain.isEmpty()) return;
 
         remain.removeIf(this::isCombatItem);
-        InfoUtils.infoMsg(InfoLevel.WARN, victim, "직업관련 아이템은 소멸합니다.");
+        InfoUtils.warn(victim, "직업관련 아이템은 소멸합니다.");
     }
 
     @EventHandler
@@ -65,7 +61,7 @@ public class GlobalListeners implements Listener {
 
         if (isCombatItem(item)) {
             e.setCancelled(true);
-            InfoUtils.infoMsg(InfoLevel.WARN, p, "직업 아이템은 버릴 수 없습니다.");
+            InfoUtils.warn(p, "직업 아이템은 버릴 수 없습니다.");
         }
     }
 
@@ -76,7 +72,7 @@ public class GlobalListeners implements Listener {
 
         if (isCombatItem(item)) {
             e.setCancelled(true);
-            InfoUtils.infoMsg(InfoLevel.WARN, p, "꼼수 ㄴㄴ");
+            InfoUtils.warn(p, "꼼수 ㄴㄴ");
         }
     }
 
@@ -95,7 +91,7 @@ public class GlobalListeners implements Listener {
         if (e.getClickedInventory() == e.getView().getBottomInventory()) {
             if (e.getClick().isShiftClick() && isCombatItem(current)) {
                 e.setCancelled(true);
-                InfoUtils.infoMsg(InfoLevel.WARN, p, "직업 아이템은 다른 보관함에 넣을 수 없습니다.");
+                InfoUtils.warn(p, "직업 아이템은 다른 보관함에 넣을 수 없습니다.");
             }
             return;
         }
@@ -103,14 +99,14 @@ public class GlobalListeners implements Listener {
         if (e.getClickedInventory() == topInv) {
             if (isCombatItem(cursor)) {
                 e.setCancelled(true);
-                InfoUtils.infoMsg(InfoLevel.WARN, p, "직업 item은 다른 보관함에 넣을 수 없습니다.");
+                InfoUtils.warn(p, "직업 item은 다른 보관함에 넣을 수 없습니다.");
                 return;
             }
             if (e.getClick() == org.bukkit.event.inventory.ClickType.NUMBER_KEY) {
                 org.bukkit.inventory.ItemStack hotbarItem = p.getInventory().getItem(e.getHotbarButton());
                 if (isCombatItem(hotbarItem)) {
                     e.setCancelled(true);
-                    InfoUtils.infoMsg(InfoLevel.WARN, p, "직업 아이템은 다른 보관함에 넣을 수 없습니다.");
+                    InfoUtils.warn(p, "직업 아이템은 다른 보관함에 넣을 수 없습니다.");
                 }
             }
         }
@@ -128,7 +124,7 @@ public class GlobalListeners implements Listener {
         for (int rawSlot : e.getRawSlots()) {
             if (rawSlot < topInv.getSize()) {
                 e.setCancelled(true);
-                InfoUtils.infoMsg(InfoLevel.WARN, (Player) e.getWhoClicked(), "꼼수 ㄴㄴ");
+                InfoUtils.warn((Player) e.getWhoClicked(), "꼼수 ㄴㄴ");
                 return;
             }
         }
@@ -150,7 +146,7 @@ public class GlobalListeners implements Listener {
 
             topInv.remove(item);
             p.getInventory().addItem(item);
-            InfoUtils.infoMsg(InfoLevel.WARN, p, "보관함에 남겨진 직업 아이템을 강제 회수했습니다.");
+            InfoUtils.warn(p, "보관함에 남겨진 직업 아이템을 강제 회수했습니다.");
         }
     }
 }

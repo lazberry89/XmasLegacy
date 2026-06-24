@@ -48,7 +48,7 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
         if (args.length == 0) return true;
         var subCommand = sub.get(args[0].toLowerCase());
         if (subCommand == null) {
-            InfoUtils.infoMsg(InfoLevel.ERROR, p, "유효한 명령어 사용법이 아닙니다.");
+            InfoUtils.error(p, "유효한 명령어 사용법이 아닙니다.");
             return true;
         }
         subCommand.execute(p, args);

@@ -48,7 +48,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 					case "high_end" -> p.getInventory().addItem(gm.HighEndBundle());
 					case "chromatic_bundle" -> p.getInventory().addItem(gm.ChromaticBundle());
 					case "chromatic_box" -> p.getInventory().addItem(gm.ChromaticBox());
-					default -> InfoUtils.infoMsg(InfoLevel.ERROR, p, "번들 종류는 bundle, high_end, chromatic_bundle, chromatic_box 중 하나여야 합니다! (예시: /gacha bundle bundle)");
+					default -> InfoUtils.error(p, "번들 종류는 bundle, high_end, chromatic_bundle, chromatic_box 중 하나여야 합니다! (예시: /gacha bundle bundle)");
 				}
 			}
 		}

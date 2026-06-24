@@ -1,5 +1,6 @@
 package xmaslegacy.Utils;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -10,78 +11,91 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public final class BoardUtils {
-    private final @NotNull @Getter Scoreboard scoreboard;
-    private final @NotNull Objective objective;
-    private final @NotNull @Getter Player player;
-    private final @NotNull Map<Integer, Team> lines = new HashMap<>(20);
+	private static final @NotNull Map<UUID, BoardUtils> CACHE = new ConcurrentHashMap<>();
 
-    public static @NotNull BoardUtils create(@NotNull Player player, @NotNull Component title, @NotNull Consumer<BoardUtils> setup) {
-        BoardUtils board = new BoardUtils(player, title);
-        setup.accept(board);
-        return board;
-    }
+	private final @NotNull @Getter Scoreboard scoreboard;
+	private final @NotNull Objective objective;
+	private final @NotNull @Getter Player player;
+	private final @NotNull Map<Integer, Team> lines = new HashMap<>(20);
 
-    public void edit(@NotNull Consumer<BoardUtils> action) {
-        action.accept(this);
-    }
+	/**
+	 * 💡 기존 create를 대체하는 스마트한 메서드입니다.
+	 * 이미 보드가 있으면 기존 보드를 수정(업데이트)하고, 없으면 새로 만듭니다.
+	 */
+	@CanIgnoreReturnValue
+	public static @NotNull BoardUtils getOrCreate(@NotNull Player player, @NotNull Component title, @NotNull Consumer<BoardUtils> setup) {
+		UUID uuid = player.getUniqueId();
 
-    /**
-     * 새로운 스코어보드를 생성하고 플레이어에게 적용합니다.
-     * @param player 스코어보드를 띄울 유저
-     * @param title 최상단 제목 (Component)
-     */
-    @ApiStatus.Internal
-    private BoardUtils(@NotNull Player player, @NotNull Component title) {
-        this.player = player;
-        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.objective = scoreboard.registerNewObjective("party_board", Criteria.DUMMY, title);
-        this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		if (CACHE.containsKey(uuid)) {
+			BoardUtils board = CACHE.get(uuid);
+			board.updateTitle(title);
+			board.edit(setup);
+			return board;
+		}
 
-        for (int i = 0; i < 15; i++) {
-            Team team = scoreboard.registerNewTeam("line_" + i);
-            String invisibleEntry = getInvisibleEntry(i);
-            team.addEntry(invisibleEntry);
-            this.lines.put(i, team);
-        }
+		BoardUtils board = new BoardUtils(player, title);
+		setup.accept(board);
+		CACHE.put(uuid, board);
+		return board;
+	}
 
-        player.setScoreboard(this.scoreboard);
-    }
+	/**
+	 * 💡 [중요] 플레이어가 서버를 나갈 때 반드시 호출해 주어야 합니다. (메모리 누수 방지)
+	 */
+	public static void removeBoard(@NotNull Player player) {
+		CACHE.remove(player.getUniqueId());
+		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+	}
 
-    public void updateTitle(@NotNull Component title) {
-        this.objective.displayName(title);
-    }
+	public void edit(@NotNull Consumer<BoardUtils> action) {
+		action.accept(this);
+	}
 
-    /**
-     * 특정 줄(0~14)의 내용을 Component로 업데이트합니다.
-     * @param line 줄 번호 (0이 맨 위쪽)
-     * @param text 들어갈 텍스트 (Component)
-     */
-    public void setLine(int line, @NotNull Component text) {
-        if (line < 0 || line > 14) return;
+	@ApiStatus.Internal
+	private BoardUtils(@NotNull Player player, @NotNull Component title) {
+		this.player = player;
+		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		this.objective = scoreboard.registerNewObjective("party_board", Criteria.DUMMY, title);
+		this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        Team team = lines.get(line);
-        if (team != null) {
-            team.prefix(text);
+		for (int i = 0; i < 15; i++) {
+			Team team = scoreboard.registerNewTeam("line_" + i);
+			String invisibleEntry = getInvisibleEntry(i);
+			team.addEntry(invisibleEntry);
+			this.lines.put(i, team);
+		}
 
-            String invisibleEntry = getInvisibleEntry(line);
-            this.objective.getScore(invisibleEntry).setScore(15 - line);
-        }
-    }
+		player.setScoreboard(this.scoreboard);
+	}
 
-    /**
-     * 특정 줄을 화면에서 지웁니다.
-     * line 1 ~ 14
-     */
-    public void removeLine(int line) {
-        if (line < 0 || line > 14) return;
-        String invisibleEntry = getInvisibleEntry(line);
-        this.scoreboard.resetScores(invisibleEntry);
-    }
+	public void updateTitle(@NotNull Component title) {
+		this.objective.displayName(title);
+	}
 
-    private @NotNull String getInvisibleEntry(int line) {
-        return "§" + Integer.toHexString(line) + "§r";
-    }
+	public void setLine(int line, @NotNull Component text) {
+		if (line < 0 || line > 14) return;
+
+		Team team = lines.get(line);
+		if (team != null) {
+			team.prefix(text);
+
+			String invisibleEntry = getInvisibleEntry(line);
+			this.objective.getScore(invisibleEntry).setScore(15 - line);
+		}
+	}
+
+	public void removeLine(int line) {
+		if (line < 0 || line > 14) return;
+		String invisibleEntry = getInvisibleEntry(line);
+		this.scoreboard.resetScores(invisibleEntry);
+	}
+
+	private @NotNull String getInvisibleEntry(int line) {
+		return "§" + Integer.toHexString(line) + "§r";
+	}
 }

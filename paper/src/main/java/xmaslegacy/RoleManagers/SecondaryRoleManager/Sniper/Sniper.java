@@ -25,8 +25,9 @@ import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import xmaslegacy.SkillEffectManager;
-import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ItemBuilder;
+import xmaslegacy.Utils.KeyUtils;
 
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class Sniper extends AbstractSecondRole {
         ItemStack tool = p.getInventory().getItemInMainHand();
         UUID uuid = p.getUniqueId();
         if (isReloading.contains(uuid)) {
-            getPlugin().infoMsg(InfoLevel.WARN, p, "이미 장전중입니다!");
+            InfoUtils.warn(p, "이미 장전중입니다!");
             return;
         }
         if (!consumeEnergy(p, 3)) return;
@@ -86,11 +87,11 @@ public class Sniper extends AbstractSecondRole {
 
         UUID uuid = p.getUniqueId();
         if (magicalBullet.contains(uuid)) {
-            getPlugin().infoMsg(InfoLevel.ERROR, p, "이미 장전되어 있습니다.");
+            InfoUtils.error(p, "이미 장전되어 있습니다.");
             return;
         }
         if (isReloading.contains(p.getUniqueId())) {
-            getPlugin().infoMsg(InfoLevel.WARN, p, "이미 장전중입니다!");
+	        InfoUtils.warn(p, "이미 장전중입니다!");
             return;
         }
         if (!consumeEnergy(p, 3)) return;
@@ -122,7 +123,7 @@ public class Sniper extends AbstractSecondRole {
             if (meta == null) continue;
 
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            NamespacedKey roleKey = getPlugin().getNamespacedKey("role_id");
+            NamespacedKey roleKey = KeyUtils.get("role_id");
 
             if (!container.has(roleKey, PersistentDataType.STRING)) continue;
             String key = container.get(roleKey, PersistentDataType.STRING);

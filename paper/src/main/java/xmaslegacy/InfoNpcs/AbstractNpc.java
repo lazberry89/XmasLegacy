@@ -84,7 +84,7 @@ public abstract class AbstractNpc {
 			if (!remain.isEmpty()) {
 				remain.values().forEach(i ->
 						BagManager.INSTANCE.addItem(player, i));
-				InfoUtils.infoMsg(InfoLevel.WARN, player, "인벤토리가 가득 찼습니다. 가방을 확인하세요.");
+				InfoUtils.warn(player, "인벤토리가 가득 찼습니다. 가방을 확인하세요.");
 			}
 		}
 	}
@@ -92,7 +92,7 @@ public abstract class AbstractNpc {
 	private void provideMoney(@NotNull Player player) {
 		if (catchKey(player, checkKey)) {
 			player.getInventory().addItem(CurrencyManager.currency(5));
-			InfoUtils.infoMsg(InfoLevel.INFO, player, "재화를 클릭하여 현금 입금을 해보세요!");
+			InfoUtils.info(player, "재화를 클릭하여 현금 입금을 해보세요!");
 		}
 	}
 
@@ -101,8 +101,8 @@ public abstract class AbstractNpc {
 			ItemStack item = AgeableCrops.SunFlowerBread();
 			item.setAmount(5);
 			player.getInventory().addItem(item);
-			InfoUtils.infoMsg(InfoLevel.INFO, player, "태양초 음식이 제공되었습니다.");
-			InfoUtils.infoMsg(InfoLevel.WARN, player, "관련 서적도 같이 제공되었습니다. 필히 열람하십시오.");
+			InfoUtils.info(player, "태양초 음식이 제공되었습니다.");
+			InfoUtils.warn(player, "관련 서적도 같이 제공되었습니다. 필히 열람하십시오.");
 			player.getInventory().addItem(Documents.IcingDocument());
 		}
 	}

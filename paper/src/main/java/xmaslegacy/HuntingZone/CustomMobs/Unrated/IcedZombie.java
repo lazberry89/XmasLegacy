@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import xmaslegacy.Utils.GlowUtils;
 import xmaslegacy.Utils.ItemBuilder;
+import xmaslegacy.Utils.KeyUtils;
 
 public class IcedZombie extends AbstractUnratedMobs implements CustomMob, UnratedMob {
     private final @NotNull MobKey key;

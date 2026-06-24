@@ -22,7 +22,7 @@ public class LobbyCommandReload implements SubCommand {
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         if (args.length == 1) {
-            InfoUtils.infoMsg(InfoLevel.WARN, player, "&7위치정보 불러오는중..");
+            InfoUtils.warn(player, "&7위치정보 불러오는중..");
             lbm.reload().thenAccept(success ->
                     Bukkit.getScheduler().runTask(XmasLegacy.getInstance(), () -> {
                         if (success) {
@@ -33,6 +33,6 @@ public class LobbyCommandReload implements SubCommand {
                             player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
                         }
                     }));
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 }

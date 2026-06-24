@@ -18,7 +18,7 @@ public class RegionCommandSetting implements SubCommand {
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         try {
             if (args.length < 3) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "사용법: /구역 <ID> <설정> <값>");
+                InfoUtils.error(player, "사용법: /구역 <ID> <설정> <값>");
                 return;
             }
 
@@ -46,7 +46,7 @@ public class RegionCommandSetting implements SubCommand {
                     } else if (isDeny) {
                         region.blockInteraction();
                         player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 상호작용을 차단했습니다."));
-                    } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 값입니다.");
+                    } else InfoUtils.error(player, "유효하지 않은 값입니다.");
                 }
                 case "entry", "입장" -> {
                     if (isAllow) {
@@ -55,9 +55,9 @@ public class RegionCommandSetting implements SubCommand {
                     } else if (isDeny) {
                         region.blockEntry();
                         player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 입장을 차단했습니다."));
-                    } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 값입니다.");
+                    } else InfoUtils.error(player, "유효하지 않은 값입니다.");
                 }
-                default -> InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 설정 종류입니다. (상호작용/입장)");
+                default -> InfoUtils.error(player, "유효하지 않은 설정 종류입니다. (상호작용/입장)");
             }
         } catch (Exception e) {
             log.error("Exception occurred while executing Region Setting Command.", e);

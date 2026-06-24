@@ -97,20 +97,20 @@ public class GachaListener implements Listener {
             this.Random(p, grade);
         } catch (IllegalArgumentException err) {
             plugin.getSLF4JLogger().error("Bundle type setting error : {}", value, err);
-            InfoUtils.infoMsg(InfoLevel.ERROR, p, "문제가 발생했습니다. 관리자에게 문의하세요.");
+            InfoUtils.error(p, "문제가 발생했습니다. 관리자에게 문의하세요.");
         }
     }
     @Contract(pure = true)
     private void Random(@NotNull Player p, @NotNull BundleType type) {
         Gacha gacha = GM.getRandomItem(type);
         if (gacha == null) {
-            InfoUtils.infoMsg(InfoLevel.ERROR, p, "현재 등록된 아이템이 없어요! 관리자에게 문의하세요.");
+            InfoUtils.error(p, "현재 등록된 아이템이 없어요! 관리자에게 문의하세요.");
             return;
         }
         GachaGrade grade = gacha.getGrade();
         p.getInventory().addItem(gacha.getItem());
         switch (grade) {
-            case NORMAL, RARE -> InfoUtils.infoMsg(InfoLevel.INFO, p, "아이템을 획득하였습니다! " + grade.getColor() + grade.name() + "[" + gacha.getKey() + "]");
+            case NORMAL, RARE -> InfoUtils.info(p, "아이템을 획득하였습니다! " + grade.getColor() + grade.name() + "[" + gacha.getKey() + "]");
             case MYTHIC -> {
                 p.sendMessage(" ");
                 p.sendMessage(ColorUtils.chat("  &4&l[!] &e&l신화급 아이템을 발견했습니다."));

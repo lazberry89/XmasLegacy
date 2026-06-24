@@ -20,6 +20,7 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ItemBuilder;
 
 import java.util.*;
@@ -48,7 +49,7 @@ public class Guardian extends AbstractSecondRole {
 
         targetMap.put(p, target);
         String div = target instanceof Player targetP && pm.isParty(p.getUniqueId(), targetP.getUniqueId()) ? "&a아군&f" : "&c적군&f";
-        getPlugin().infoMsg(InfoLevel.INFO, p, div + " 타겟과 연결됨");
+        InfoUtils.info(p, div + " 타겟과 연결됨");
         p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
 
         new BukkitRunnable() {
@@ -110,7 +111,7 @@ public class Guardian extends AbstractSecondRole {
         ItemStack tool = p.getInventory().getItemInMainHand();
         LivingEntity target = targetMap.get(p);
         if (target == null) {
-            getPlugin().infoMsg(InfoLevel.ERROR, p, "연결된 타겟이 없습니다!");
+            InfoUtils.error(p, "연결된 타겟이 없습니다!");
             return;
         }
         if (activeSkill.contains(p.getUniqueId())) {
@@ -163,7 +164,7 @@ public class Guardian extends AbstractSecondRole {
                     if (!consumeEnergy(p, 2)) {
                         activeSkill.remove(p.getUniqueId());
                         this.cancel();
-                        getPlugin().infoMsg(InfoLevel.ERROR, p, "에너지가 모두 소모되었습니다.");
+	                    InfoUtils.error(p, "에너지가 모두 소모되었습니다.");
                         p.sendActionBar(ColorUtils.chat("&c스킬 비활성화"));
                         p.setCooldown(tool, 60);
                         return;
@@ -189,7 +190,7 @@ public class Guardian extends AbstractSecondRole {
 
         LivingEntity target = targetMap.get(p);
         if (target == null) {
-            getPlugin().infoMsg(InfoLevel.ERROR, p, "연결된 타겟이 없습니다!");
+	        InfoUtils.error(p, "연결된 타겟이 없습니다!");
             return;
         }
         if (!consumeEnergy(p, 4)) return;

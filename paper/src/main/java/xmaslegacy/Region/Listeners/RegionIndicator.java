@@ -1,6 +1,5 @@
 package xmaslegacy.Region.Listeners;
 
-import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.Chunk;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -10,29 +9,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.User.UserManager;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.Region.Events.RegionDeleteEvent;
 import xmaslegacy.Region.Events.RegionGenerateEvent;
 import xmaslegacy.Region.Gui.RegionCreateInterface;
 import xmaslegacy.Region.Gui.RegionSettingInterface;
 import xmaslegacy.Region.RegionManager;
+import xmaslegacy.Utils.InfoUtils;
+import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.Utils.ServerTransfer;
-import xmaslegacy.XmasLegacy;
 
 @Listeners
-@UsedByReflection
 public class RegionIndicator implements Listener {
-	private final RegionManager rm;
-	private final UserManager um;
-	private final XmasLegacy plugin;
+	private final @NotNull RegionManager rm;
+	private final @NotNull UserManager um;
 
 	public RegionIndicator() {
 		this.rm = RegionManager.INSTANCE;
 		this.um = UserManager.INSTANCE;
-		this.plugin = XmasLegacy.getInstance();
 	}
 
 	@EventHandler
@@ -49,7 +46,7 @@ public class RegionIndicator implements Listener {
 		}
 		if (rm.hasRegion(loc)) {
 			e.setCancelled(true);
-			InfoUtils.infoMsg(InfoLevel.ERROR, p, "이미 누군가의 구역입니다!");
+			InfoUtils.error(p, "이미 누군가의 구역입니다!");
 			return;
 		}
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);

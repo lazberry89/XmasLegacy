@@ -6,6 +6,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.geysermc.cumulus.form.SimpleForm;
+import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.Party;
@@ -13,7 +15,6 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ServerTransfer;
 import xmaslegacy.Utils.SubCommand;
@@ -42,26 +43,26 @@ public class PartyCommandInvite implements SubCommand {
         if (args.length >= 2) {
             Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "플레이어를 찾을 수 없습니다.");
+                InfoUtils.error(player, "플레이어를 찾을 수 없습니다.");
                 return;
             }
             User targetUser = um.getUser(target.getUniqueId());
             if (targetUser == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 유저의 정보가 로드되지 않았습니다.");
+                InfoUtils.error(player, "해당 유저의 정보가 로드되지 않았습니다.");
                 return;
             }
             var party = pm.getParty(target.getUniqueId());
             var current = pm.getParty(uuid);
             if (current == null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "소속되어있는 파티가 없습니다. 먼저 파티를 생성하세요.");
+                InfoUtils.error(player, "소속되어있는 파티가 없습니다. 먼저 파티를 생성하세요.");
                 return;
             }
             if (party != null) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "해당 플레이어는 이미 다른 파티에 소속되어 있습니다.");
+                InfoUtils.error(player, "해당 플레이어는 이미 다른 파티에 소속되어 있습니다.");
                 return;
             }
             if (current.isFull()) {
-                InfoUtils.infoMsg(InfoLevel.ERROR, player, "파티가 가득 찼습니다.");
+                InfoUtils.error(player, "파티가 가득 찼습니다.");
                 return;
             }
             var plugin = XmasLegacy.getInstance();
@@ -73,8 +74,8 @@ public class PartyCommandInvite implements SubCommand {
                     }
                 }, 5L);
             else Bukkit.getScheduler().runTaskLater(plugin, () -> target.sendMessage(inviteComp(current)), 2L);
-            InfoUtils.infoMsg(InfoLevel.INFO, player, "파티 초대 요청을 보냈습니다.");
-        } else InfoUtils.infoMsg(InfoLevel.ERROR, player, "유효하지 않은 명령어입니다.");
+            InfoUtils.info(player, "파티 초대 요청을 보냈습니다.");
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }
 
     private @NotNull Component inviteComp(@NotNull Party party) {
@@ -91,14 +92,14 @@ public class PartyCommandInvite implements SubCommand {
                             return;
                         }
                         if (pm.joinParty(party.getLeader(), user)) {
-                            InfoUtils.infoMsg(InfoLevel.INFO, p, "파티에 참가했습니다.");
+                            InfoUtils.info(p, "파티에 참가했습니다.");
                             party.getMembers().stream().map(m -> Bukkit.getPlayer(m.getUUID()))
                                     .filter(Objects::nonNull)
                                     .filter(Player::isOnline)
                                     .filter(Player::isValid)
-                                    .forEach(t -> InfoUtils.infoMsg(InfoLevel.INFO, t, "&6" + p.getName() + "&f님이 파티에 참가했습니다."));
+                                    .forEach(t -> InfoUtils.info(t, "&6" + p.getName() + "&f님이 파티에 참가했습니다."));
                         }
-                        else InfoUtils.infoMsg(InfoLevel.ERROR, p, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
+                        else InfoUtils.error(p, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
                     }
                 }, options));
         return ColorUtils.chat(Alert.XmasLegacy + " 파티참가 요청이 왔습니다. (초대자 : &6" + party.getLeader().getName() + "&f) ").append(accept);
@@ -123,18 +124,18 @@ public class PartyCommandInvite implements SubCommand {
                         }
 
                         if (pm.joinParty(party.getLeader(), user)) {
-                            InfoUtils.infoMsg(InfoLevel.INFO, player, "파티에 참가했습니다.");
+                            InfoUtils.info(player, "파티에 참가했습니다.");
                             party.getMembers().stream()
                                     .map(m -> Bukkit.getPlayer(m.getUUID()))
                                     .filter(Objects::nonNull)
                                     .filter(Player::isOnline)
                                     .filter(Player::isValid)
-                                    .forEach(t -> InfoUtils.infoMsg(InfoLevel.INFO, t, "&6" + player.getName() + "&f님이 파티에 참가했습니다."));
+                                    .forEach(t -> InfoUtils.info(t, "&6" + player.getName() + "&f님이 파티에 참가했습니다."));
                         }
-                        else InfoUtils.infoMsg(InfoLevel.ERROR, player, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
-                    } else InfoUtils.infoMsg(InfoLevel.WARN, player, "파티 참가 제안이 거절되었습니다.");
+                        else InfoUtils.error(player, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
+                    } else InfoUtils.warn(player, "파티 참가 제안이 거절되었습니다.");
                 })
-                .closedResultHandler(() -> InfoUtils.infoMsg(InfoLevel.WARN, player, "파티 참가 제안이 취소되었습니다."))
+                .closedResultHandler(() -> InfoUtils.warn(player, "파티 참가 제안이 취소되었습니다."))
                 .build();
     }
 }

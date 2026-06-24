@@ -159,6 +159,7 @@ public enum UserManager {
 		props.setProperty("mastery", user.getMastery().name());
 		props.setProperty("isImmuneToIcing", String.valueOf(user.isImmuneToIcing()));
 		props.setProperty("icingState", String.valueOf(user.getIcingState()));
+		props.setProperty("showBoard", String.valueOf(user.isShowBoard()));
 
 		try (FileOutputStream out = new FileOutputStream(dumpFile)) {
 			props.store(out, "Emergency Backup for " + user.getName());
@@ -200,6 +201,7 @@ public enum UserManager {
 			recoveredUser.setMastery(RoleMastery.valueOf(props.getProperty("mastery", "BEGINNER")));
 			recoveredUser.setImmuneToIcing(Boolean.parseBoolean(props.getProperty("isImmuneToIcing", "false")));
 			recoveredUser.setIcingState(Integer.parseInt(props.getProperty("icingState", "100")));
+			recoveredUser.setShowBoard(Boolean.parseBoolean(props.getProperty("showBoard", "true")));
 
 			return recoveredUser;
 		} catch (Exception e) {
