@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.User;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.*;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
@@ -10,10 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.UUID;
 
+@Slf4j
 public enum SqlUserRepository implements UserRepository {
 	INSTANCE;
-
-	private static final Logger logger = LoggerFactory.getLogger(SqlUserRepository.class);
 
 	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
 	private final String user = "root";
@@ -50,7 +50,7 @@ public enum SqlUserRepository implements UserRepository {
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
 			 stmt.execute();
 		} catch (SQLException e) {
-			logger.error("Error occurred while Creating Table Task -> {}", e.getMessage(), e);
+			log.error("Error occurred while Creating Table Task -> {}", e.getMessage(), e);
 		}
 	}
 
@@ -69,7 +69,7 @@ public enum SqlUserRepository implements UserRepository {
 					try {
 						return HiddenRoles.valueOf(roleName);
 					} catch (IllegalArgumentException exc) {
-						logger.warn("알 수 없는 직업명이 DB에서 발견되어 기본값으로 로드합니다: {}", roleName);
+						log.warn("알 수 없는 직업명이 DB에서 발견되어 기본값으로 로드합니다: {}", roleName);
 						return BasicRoles.USER;
 					}
 				}
@@ -112,7 +112,7 @@ public enum SqlUserRepository implements UserRepository {
 				return loadedUser;
 			}
 		} catch (SQLException e) {
-			logger.error("Sql error while loading User '{}' -> {}", uuid, e.getMessage(), e);
+			log.error("Sql error while loading User '{}' -> {}", uuid, e.getMessage(), e);
 		}
 		return null;
 	}
@@ -174,7 +174,7 @@ public enum SqlUserRepository implements UserRepository {
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
-			logger.error("sql error while saving User -> {}", e.getMessage(), e);
+			log.error("sql error while saving User -> {}", e.getMessage(), e);
 		}
 	}
 
@@ -196,9 +196,9 @@ public enum SqlUserRepository implements UserRepository {
 				}
 			}
 		} catch (SQLException e) {
-			logger.error("Error while finding user Rank (UUID: {}) -> {}", uuid, e.getMessage());
+			log.error("Error while finding user Rank (UUID: {}) -> {}", uuid, e.getMessage());
 		}
-		return -1; // 유저를 찾지 못했거나 에러 발생 시
+		return -1;
 	}
 
 	@Override
@@ -210,7 +210,7 @@ public enum SqlUserRepository implements UserRepository {
 			ResultSet rs = pstmt.executeQuery();
 			return rs.next();
 		} catch (SQLException e) {
-			logger.error("Sql error during exist -> {}", e.getMessage(), e);
+			log.error("Sql error during exist -> {}", e.getMessage(), e);
 			return false;
 		}
 	}

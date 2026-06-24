@@ -1,15 +1,14 @@
 package org.lazberry.xmaslegacy.User;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.Tier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,13 +17,13 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public enum UserManager {
 	INSTANCE;
 
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final @NotNull UserRepository repository = SqlUserRepository.INSTANCE;
 	private @NotNull File rootDataFolder = new File("plugins/XmasLegacy");
-	private static final @NotNull Logger logger = LoggerFactory.getLogger(UserManager.class);
 
 	UserManager() {}
 
@@ -92,7 +91,7 @@ public enum UserManager {
 
 			if (loaded != null) {
 				restoredFromDump = true;
-				logger.info("User {} recovered from emergency dump!", uuid);
+				log.info("User {} recovered from emergency dump!", uuid);
 			} else {
 				loaded = repository.loadUser(uuid);
 			}
@@ -110,7 +109,7 @@ public enum UserManager {
 					repository.saveUser(loaded);
 					deleteLocalEmergencyFile(uuid);
 				} catch (Exception e) {
-					logger.error("Failed to sync restored user {} back to DB.", uuid, e);
+					log.error("Failed to sync restored user {} back to DB.", uuid, e);
 				}
 			}
 			this.addUser(loaded);
@@ -127,9 +126,9 @@ public enum UserManager {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				repository.saveUser(u);
-				logger.info("User {} saved.", uuid);
+				log.info("User {} saved.", uuid);
 			} catch (Exception e) {
-				logger.error("CRITICAL | User {} failed saving.", uuid, e);
+				log.error("CRITICAL | User {} failed saving.", uuid, e);
 				threadDump(u);
 			}
 		});
@@ -139,7 +138,7 @@ public enum UserManager {
 		File dumpDir = new File(rootDataFolder, "emergency_dumps");
 		if (!dumpDir.exists())
 			if (!dumpDir.mkdirs()) {
-				logger.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUUID());
+				log.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUUID());
 				return;
 			}
 		File dumpFile = new File(dumpDir, user.getUUID() + ".properties");
@@ -163,9 +162,9 @@ public enum UserManager {
 
 		try (FileOutputStream out = new FileOutputStream(dumpFile)) {
 			props.store(out, "Emergency Backup for " + user.getName());
-			logger.warn("User {}'s info got backUp. (Thread Dump via Properties)", user.getUUID());
+			log.warn("User {}'s info got backUp. (Thread Dump via Properties)", user.getUUID());
 		} catch (Exception e) {
-			logger.error("Local backUp failed. Info may got lost.", e);
+			log.error("Local backUp failed. Info may got lost.", e);
 		}
 	}
 
@@ -183,7 +182,7 @@ public enum UserManager {
 				role = Role.valueOf(props.getProperty("role", "USER"));
 			} catch (IllegalArgumentException e) {
 				role = BasicRoles.USER;
-				logger.warn("No valid role name of {}, replaced to Roles.USER.", name);
+				log.warn("No valid role name of {}, replaced to Roles.USER.", name);
 			}
 
 			User recoveredUser = new User(uuid, role, name);
@@ -204,7 +203,7 @@ public enum UserManager {
 
 			return recoveredUser;
 		} catch (Exception e) {
-			logger.error("Failed to load emergency dump for {}", uuid, e);
+			log.error("Failed to load emergency dump for {}", uuid, e);
 			return null;
 		}
 	}
@@ -212,7 +211,7 @@ public enum UserManager {
 	private void deleteLocalEmergencyFile(UUID uuid) {
 		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid.toString() + ".properties");
 		if (dumpFile.exists() && dumpFile.delete()) {
-			logger.info("Cleaned up emergency dump for User {}", uuid);
+			log.info("Cleaned up emergency dump for User {}", uuid);
 		}
 	}
 
