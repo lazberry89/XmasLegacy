@@ -53,6 +53,9 @@ public final class DestinationCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase(Locale.ENGLISH)) {
             case "set" -> new DestinationCommandSet(value).execute(p, args);
             case "move" -> new DestinationCommandMove(value).execute(p, args);
+			case "reset" -> new DestinationCommandReset(value).execute(p, args);
+			case "reload" -> new DestinationCommandReload(value).execute(p, args);
+			case "location", "loc" -> new DestinationCommandLocation(value).execute(p, args);
         }
         return true;
     }
