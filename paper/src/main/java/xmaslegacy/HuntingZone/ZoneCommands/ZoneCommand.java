@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.HuntingZone.ZoneType;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.SubCommand;
 

@@ -1,6 +1,7 @@
 package xmaslegacy.Utils;
 
 import org.bukkit.Sound;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.Alert;
 
 public enum InfoLevel {
@@ -8,18 +9,18 @@ public enum InfoLevel {
     WARN(Alert.YELLOW, Sound.BLOCK_NOTE_BLOCK_BASS),
     INFO(Alert.GREEN, Sound.ENTITY_ARROW_HIT_PLAYER);
 
-    private final Alert prefix;
-    private final Sound sound;
+    private final @NotNull Alert prefix;
+    private final @NotNull Sound sound;
 
-    InfoLevel(Alert prefix, Sound sound) {
+    InfoLevel(@NotNull Alert prefix, @NotNull Sound sound) {
         this.prefix = prefix;
         this.sound = sound;
     }
 
-    public Alert Prefix() {
+    public @NotNull Alert prefix() {
         return this.prefix;
     }
-    public Sound Sound() {
+    public @NotNull Sound sound() {
         return this.sound;
     }
 }

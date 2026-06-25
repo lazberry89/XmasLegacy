@@ -16,7 +16,6 @@ import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ServerTransfer;
 

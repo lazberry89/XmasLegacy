@@ -15,7 +15,6 @@ import xmaslegacy.Annotation.Commands;
 import xmaslegacy.Region.Gui.RegionSettingInterface;
 import xmaslegacy.Region.Region;
 import xmaslegacy.Region.RegionManager;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.SubCommand;
 

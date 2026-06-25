@@ -1,5 +1,6 @@
 package xmaslegacy.Utils;
 
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -7,14 +8,10 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+@UtilityClass
 public final class BookUtils {
 
-    @ApiStatus.Internal
-    private BookUtils() {
-        throw new UnsupportedOperationException("Utility class");
-    }
-
-    public static @NotNull ItemStack create(Component author, Component title, Component... pages) {
+    public @NotNull ItemStack create(@NotNull Component author, @NotNull Component title, @NotNull Component... pages) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta meta = (BookMeta) book.getItemMeta();
         if (meta != null) {

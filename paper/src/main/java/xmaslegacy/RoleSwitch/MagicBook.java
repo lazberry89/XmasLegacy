@@ -21,7 +21,6 @@ import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.RoleSelection.RoleSelectInterface;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.KeyUtils;

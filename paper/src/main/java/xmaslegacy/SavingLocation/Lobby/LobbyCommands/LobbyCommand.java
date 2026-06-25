@@ -1,4 +1,4 @@
-package xmaslegacy.Lobby.LobbyCommands;
+package xmaslegacy.SavingLocation.Lobby.LobbyCommands;
 
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -9,13 +9,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmaslegacy.Lobby.LobbyManager;
+import xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import xmaslegacy.PluginUtils.ServerInitializer;
 import xmaslegacy.PluginUtils.ServerType;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.SubCommand;
-import xmaslegacy.XmasLegacy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

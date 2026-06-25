@@ -3,7 +3,6 @@ package xmaslegacy.HuntingZone.ZoneCommands;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xmaslegacy.HuntingZone.HuntingZoneManager;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.SubCommand;
 

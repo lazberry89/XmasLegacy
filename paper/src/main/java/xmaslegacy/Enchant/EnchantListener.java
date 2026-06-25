@@ -25,7 +25,6 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.SkillEffectManager;

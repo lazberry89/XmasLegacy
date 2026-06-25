@@ -24,7 +24,6 @@ import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.RoleManagers.UsingEnergy;
 import xmaslegacy.Utils.GlowUtils;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ItemBuilder;
 

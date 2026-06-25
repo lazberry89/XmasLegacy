@@ -1,47 +1,60 @@
 package xmaslegacy.Utils;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Utility;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
 
+@Slf4j
 @UtilityClass
 public final class InfoUtils {
 
-    public void error(@NotNull Player p, @NotNull String msg) {
-        sendMessage(InfoLevel.ERROR, p, msg);
+    public @Utility void info(@NotNull Player p, @NotNull String message) {
+        sendMessage(InfoLevel.INFO, p, message);
     }
-    public void error(@NotNull Player p, @NotNull Component msg) {
-        sendMessage(InfoLevel.ERROR, p, msg);
+    public @Utility void warn(@NotNull Player p, @NotNull String message) {
+        sendMessage(InfoLevel.WARN, p, message);
     }
-    public void warn(@NotNull Player p, @NotNull String msg) {
-        sendMessage(InfoLevel.WARN, p, msg);
+    public @Utility void error(@NotNull Player p, @NotNull String message) {
+        sendMessage(InfoLevel.ERROR, p, message);
     }
-    public void warn(@NotNull Player p, @NotNull Component msg) {
-        sendMessage(InfoLevel.WARN, p, msg);
+    public @Utility void error(@NotNull Player p, @NotNull String message, @NotNull Throwable e) {
+        sendMessage(InfoLevel.ERROR, p, message);
+        traceException(e);
     }
-    public void info(@NotNull Player p, @NotNull String msg) {
-        sendMessage(InfoLevel.INFO, p, msg);
+    public @Utility void info(@NotNull Player p, @NotNull Component component) {
+        sendMessage(InfoLevel.INFO, p, component);
     }
-    public void info(@NotNull Player p, @NotNull Component msg) {
-        sendMessage(InfoLevel.INFO, p, msg);
+    public @Utility void warn(@NotNull Player p, @NotNull Component component) {
+        sendMessage(InfoLevel.WARN, p, component);
+    }
+    public @Utility void error(@NotNull Player p, @NotNull Component component) {
+        sendMessage(InfoLevel.ERROR, p, component);
+    }
+    public @Utility void error(@NotNull Player p, @NotNull Component component, @NotNull Throwable e) {
+        sendMessage(InfoLevel.ERROR, p, component);
+        traceException(e);
+    }
+
+    public void traceException(@NotNull Throwable e) {
+        log.error("Cause : {}\n\n Full Message : {}", e.getCause(), e.getMessage());
     }
 
     private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull Component message) {
-        Component txt = ColorUtils.chat(level.Prefix() + "").appendSpace().append(message);
+        Component txt = level.prefix().comp().appendSpace().append(message);
         p.sendMessage(txt);
-        p.playSound(p, level.Sound(), 1.0f, 1.0f);
+        p.playSound(p, level.sound(), 1.0f, 1.0f);
         mobileProcess(p, txt);
     }
 
     private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull String message) {
-        Component txt = ColorUtils.chat(level.Prefix() + " " + message);
+        Component txt = ColorUtils.chat(level.prefix() + " " + message);
         p.sendMessage(txt);
-        p.playSound(p, level.Sound(), 1.0f, 1.0f);
+        p.playSound(p, level.sound(), 1.0f, 1.0f);
         mobileProcess(p, txt);
     }
 

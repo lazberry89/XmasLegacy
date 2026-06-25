@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryStatus;
 import xmaslegacy.Annotation.Commands;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 
 @Commands(command = "이동문의")

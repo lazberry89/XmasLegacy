@@ -2,18 +2,25 @@ package xmaslegacy.Utils;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Party.PartyManager;
@@ -22,48 +29,76 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.ServerPrefix.UserTagManager;
 import xmaslegacy.PluginUtils.ServerType;
+import xmaslegacy.SkillEffectManager;
 import xmaslegacy.XmasLegacy;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
+@UtilityClass
 public final class ServerTransfer {
-	private static final @NotNull FloodgateApi instance = FloodgateApi.getInstance();
+	private final @NotNull FloodgateApi instance = FloodgateApi.getInstance();
 
-	@ApiStatus.Internal
-	private ServerTransfer() {
-		throw new UnsupportedOperationException("Utility class");
-	}
-
-	private static @NotNull XmasLegacy plugin() {
+	private @NotNull XmasLegacy plugin() {
 		return XmasLegacy.getInstance();
 	}
 
+	public void dramaticTeleport(@NotNull Player player, @NotNull Location to) {
+		dramaticTeleport(player, to, 40L);
+	}
+
+	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, long duration) {
+		var uuid = player.getUniqueId();
+		var sem = SkillEffectManager.INSTANCE;
+		var user = UserManager.INSTANCE.getUser(uuid);
+		if (user == null) {
+			sendReloadNotice(player);
+			log.error("Failed to move {} to port.(User info not loaded)", player.getName());
+			return;
+		}
+
+		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) duration, 2, true, false, false));
+		sem.StunEntity(uuid);
+		Bukkit.getScheduler().runTaskLater(plugin(), () -> {
+			if (player.isOnline() && player.isValid()) {
+				player.teleport(to);
+				player.playSound(player, Sound.BLOCK_END_PORTAL_SPAWN, 1.0f, 0.7f);
+				player.playSound(player, Sound.ENTITY_WARDEN_HEARTBEAT, 0.4f, 1.0f);
+				InfoUtils.warn(player, "&7지연 이동중..");
+			} else {
+				log.error("Failed to teleport {} to Port.", player.getName());
+			}
+		}, duration / 2);
+		Bukkit.getScheduler().runTaskLater(plugin(), () -> sem.deStun(uuid), duration);
+	}
+
     @CheckReturnValue
-    public static boolean isFloodgate(@NotNull Player player) {
+    public boolean isFloodgate(@NotNull Player player) {
         return Bukkit.getPluginManager().isPluginEnabled("floodgate")
                 && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
     }
 
 	@CheckReturnValue
-	public static boolean isFloodgate(@NotNull UUID uuid) {
+	public boolean isFloodgate(@NotNull UUID uuid) {
 		return Bukkit.getPluginManager().isPluginEnabled("floodgate")
 				&& FloodgateApi.getInstance().isFloodgatePlayer(uuid);
 	}
 
-    private static @NotNull ClickCallback.Options option() {
+    private @NotNull ClickCallback.Options option() {
         return ClickCallback.Options.builder()
                 .uses(1)
                 .lifetime(java.time.Duration.ofMinutes(3))
                 .build();
     }
 
-	public static void sendReloadNotice(@NotNull Player player) {
+	public void sendReloadNotice(@NotNull Player player) {
 		if (player.isOnline())
 			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보가 로드되지 않았습니다.").append(reloadComponent()));
 	}
 
-	private static @NotNull Component reloadComponent() {
+	private @NotNull Component reloadComponent() {
 		return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
 				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
 				.clickEvent(ClickEvent.callback(audience -> {
@@ -73,7 +108,7 @@ public final class ServerTransfer {
 				}, option()));
 	}
 
-    private static void sendMsg(@NotNull Player player, @NotNull User user) {
+    private void sendMsg(@NotNull Player player, @NotNull User user) {
         Bukkit.getScheduler().runTask(plugin(), () -> {
             if (!player.isOnline()) return;
 
@@ -97,7 +132,7 @@ public final class ServerTransfer {
         });
     }
 
-	private static void sendError(@NotNull Player player, Throwable throwable) {
+	private void sendError(@NotNull Player player, Throwable throwable) {
 		Bukkit.getScheduler().runTask(plugin(), () -> {
 			if (!player.isOnline()) return;
 			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다.").append(reloadComponent()));
@@ -105,7 +140,7 @@ public final class ServerTransfer {
 		});
 	}
 
-	public static void loadUser(@NotNull Player player, boolean msg) {
+	public void loadUser(@NotNull Player player, boolean msg) {
 		@NotNull var um = UserManager.INSTANCE;
 		um.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
 			if (throwable != null || user == null) {
@@ -116,11 +151,11 @@ public final class ServerTransfer {
 		});
 	}
 
-    public static boolean transfer(@NotNull ServerType toServer, @NotNull Player... players) {
+    public boolean transfer(@NotNull ServerType toServer, @NotNull Player... players) {
         return Arrays.stream(players).allMatch(p -> sendBungeePacket(toServer, p));
     }
 
-    public static boolean transfer(@NotNull ServerType toServer, @NotNull Player player, boolean force, boolean hide) {
+    public boolean transfer(@NotNull ServerType toServer, @NotNull Player player, boolean force, boolean hide) {
         if (!force) {
 			boolean isFloodgate = instance.isFloodgatePlayer(player.getUniqueId());
             player.sendMessage(askComponent(toServer, hide, player, isFloodgate));
@@ -131,7 +166,7 @@ public final class ServerTransfer {
     }
 
     @CheckReturnValue
-    public static boolean transfer(@NotNull ServerType toServer, @NotNull Player player) {
+    public boolean transfer(@NotNull ServerType toServer, @NotNull Player player) {
         @NotNull var pm = PartyManager.INSTANCE;
         @NotNull var um = UserManager.INSTANCE;
         UUID uuid = player.getUniqueId();
@@ -160,7 +195,7 @@ public final class ServerTransfer {
         return sendBungeePacket(toServer, player);
     }
 
-    private static boolean sendBungeePacket(@NotNull ServerType toServer, @NotNull Player player) {
+    private boolean sendBungeePacket(@NotNull ServerType toServer, @NotNull Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
         out.writeUTF(toServer.str());
@@ -174,7 +209,7 @@ public final class ServerTransfer {
         }
     }
 
-	private static @NotNull Component askComponent(@NotNull ServerType type, boolean hide, @NotNull Player p, boolean isFloodgate) {
+	private @NotNull Component askComponent(@NotNull ServerType type, boolean hide, @NotNull Player p, boolean isFloodgate) {
 		if (isFloodgate) {
 			var floodgatePlayer = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(p.getUniqueId());
 

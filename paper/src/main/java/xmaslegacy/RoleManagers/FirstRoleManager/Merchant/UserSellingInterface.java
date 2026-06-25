@@ -18,7 +18,6 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Economy.Currency.CurrencyManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.KeyUtils;
 import xmaslegacy.XmasLegacy;

@@ -20,7 +20,6 @@ import org.lazberry.xmaslegacy.Roles.Unpromotable;
 import xmaslegacy.Annotation.Roles;
 import xmaslegacy.Emblems.EmblemType;
 import xmaslegacy.SkillEffectManager;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ItemBuilder;
 

@@ -17,7 +17,6 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.XmasLegacy;

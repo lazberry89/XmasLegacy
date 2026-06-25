@@ -2,9 +2,8 @@ package xmaslegacy.PluginUtils;
 
 import org.bukkit.command.PluginCommand;
 import org.jetbrains.annotations.NotNull;
-import xmaslegacy.Lobby.LobbyCommands.LobbyCommand;
-import xmaslegacy.Lobby.LobbyListener;
-import xmaslegacy.Lobby.LobbyManager;
+import xmaslegacy.SavingLocation.Lobby.LobbyCommands.LobbyCommand;
+import xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import xmaslegacy.XmasLegacy;
 
 public class LobbyInitializer implements ServerInitializer {
@@ -14,8 +13,6 @@ public class LobbyInitializer implements ServerInitializer {
 		plugin.getLogger().warning("Lobby 모드로 시작합니다.");
 		plugin.getSLF4JLogger().warn("server-type = \"lobby\" 일치하지 않을 시에 config.yml을 수정하세요.");
 		var lobbyManager = new LobbyManager();
-
-		plugin.getServer().getPluginManager().registerEvents(new LobbyListener(lobbyManager), plugin);
 
 		var lobbyCommand = new LobbyCommand(lobbyManager);
 		PluginCommand lobby = plugin.getCommand("lobby");

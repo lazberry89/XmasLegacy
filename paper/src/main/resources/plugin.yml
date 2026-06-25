@@ -1,5 +1,5 @@
 name: XmasLegacy
-version: '12.25.0.5.dev'
+version: '12.25.0.6.dev'
 
 main: xmaslegacy.XmasLegacy
 api-version: '1.21.11'
@@ -70,25 +70,55 @@ commands:
     usage: /pt <create | invite | leave | expel> <Player>
     description: 파티를 관리합니다.
 
-  role: #0
+  location:
+    description: 위치를 설치하고 저장, 불러오기, 유저 이동을 담당한다.
 
-  gacha: #0
+  role:
+    description: 직업을 강제로 변경합니다.
 
-  head: #0
+  gacha:
+    description: 가챠 시스템 명령어
 
-  test: #0
-  potion: #0
-  system: #0
-  shop: #0
-  book: #0
-  delstand: #0
+  head:
+    description: 손의 아이템을 머리에 씌운다.
 
-  0947345: #0
-  second: #0
-  강화: #0
-  zone: #0
+  test:
+    description: 1차직업 무기, 책 아이템 꺼내기용 명령어
+
+  potion:
+    description: 성직자의 포션을 꺼낸다.
+
+  system:
+    description: 테스트용 상점 명령어. 적극 수정 필요
+
+  shop:
+    description: 상점을 연다.
+
+  book:
+    description: 직업 선택 책 아이템 디스플레이를 생성한다.
+
+  delstand:
+    description: 스폰되어있는 책을 삭제한다.
+
+  0947345:
+    description: 강제로 내 유저정보를 불러오는 오직 테스트용 명령어
+
+  second:
+    description: 2차직업 아이템 꺼내기용 테스트 명령어다.
+
+  강화:
+    description: 테스트용 강화 GUI 오픈 명령어다.
+
+  zone:
+    description: 사냥터 구역 설정 명령어다.
+
   guide:
+    description: npc의 가이드 대사를 출력한다.
+
   icing:
+    description: 빙결수치 스케쥴러를 조정한다.
+
   clearpdc:
+    description: 유저의 PersistentDataContainer의 값을 지운다.
 
 

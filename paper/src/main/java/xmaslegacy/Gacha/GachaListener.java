@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmaslegacy.Utils.InfoLevel;
 import xmaslegacy.Annotation.Listeners;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.KeyUtils;

@@ -40,18 +40,18 @@ import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
 @Listeners
 public class SecondaryRoleListener implements Listener {
-    private final XmasLegacy plugin;
-    private final UserManager um;
-    private final PartyManager pm;
-	private final RoleManager rlm;
-	private final SkillEffectManager sem;
-	private final SecondRoleManager srm;
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull UserManager um;
+    private final @NotNull PartyManager pm;
+	private final @NotNull RoleManager rlm;
+	private final @NotNull SkillEffectManager sem;
+	private final @NotNull SecondRoleManager srm;
 
     public SecondaryRoleListener() {
         this.plugin = XmasLegacy.getInstance();
         this.um = UserManager.INSTANCE;
         this.pm = PartyManager.INSTANCE;
-		this.rlm = RoleManager.getInstance();
+		this.rlm = RoleManager.INSTANCE;
 		this.sem = SkillEffectManager.INSTANCE;
 		this.srm = SecondRoleManager.INSTANCE;
     }

@@ -1,9 +1,8 @@
-package xmaslegacy.Lobby.LobbyCommands;
+package xmaslegacy.SavingLocation.Lobby.LobbyCommands;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import xmaslegacy.Lobby.LobbyManager;
-import xmaslegacy.Utils.InfoLevel;
+import xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.SubCommand;
 
