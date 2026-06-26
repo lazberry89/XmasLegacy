@@ -23,6 +23,10 @@ public enum SpawnRepository {
         }
     }
 
+    public @NotNull DestinationType[] availableTypes() {
+        return spawnMap.keySet().toArray(DestinationType[]::new);
+    }
+
     @SuppressWarnings("unchecked")
     public <S extends SavedLocation> @NotNull S get(@NotNull DestinationType type) {
         var value = this.spawnMap.get(type);

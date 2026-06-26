@@ -34,13 +34,13 @@ public enum UserManager {
 	}
 
 	public void addUser(@NotNull User user) {
-        users.put(user.getUUID(), user);
+        users.put(user.getUniqueId(), user);
     }
     public void removeUser(UUID uuid) {users.remove(uuid);}
     public @Nullable User getUser(@NotNull UUID uuid) {
 	    return users.get(uuid);
     }
-	public List<User> getAllUsers() {
+	public @NotNull List<User> getUsers() {
 		return new ArrayList<>(users.values());
 	}
     public boolean withdraw(UUID uuid, int amount) {
@@ -52,8 +52,8 @@ public enum UserManager {
         return false;
     }
 
-    public void deposit(UUID p, int amount) {
-        User user = getUser(p);
+    public void deposit(UUID uuid, int amount) {
+        User user = getUser(uuid);
         if (user != null) {
             user.setDollars(user.getDollars() + amount);
         }
@@ -72,7 +72,7 @@ public enum UserManager {
 	 * @return User 불러온 유저, 없으면 새로 생성하여 반환
 	 */
 	@Blocking
-	public User load(UUID uuid, String name) {
+	public User load(@NotNull UUID uuid, @NotNull String name) {
 		User loaded = repository.loadUser(uuid);
 		if (loaded == null) {
 			loaded = new User(uuid, BasicRoles.USER, name);
@@ -84,7 +84,7 @@ public enum UserManager {
 	}
 
 	@NonBlocking
-	public CompletableFuture<User> onJoinAsync(UUID uuid, String name, boolean isFloodgate) {
+	public CompletableFuture<User> onJoinAsync(@NotNull UUID uuid, @NotNull String name, boolean isFloodgate) {
 		return CompletableFuture.supplyAsync(() -> {
 			User loaded = checkLocalEmergencyFile(uuid);
 			boolean restoredFromDump = false;
@@ -119,7 +119,7 @@ public enum UserManager {
 	}
 
 	@NonBlocking
-	public CompletableFuture<Void> onQuitAsync(UUID uuid) {
+	public CompletableFuture<Void> onQuitAsync(@NotNull UUID uuid) {
 		User u = users.remove(uuid);
 		if (u == null) return CompletableFuture.completedFuture(null);
 
@@ -138,13 +138,13 @@ public enum UserManager {
 		File dumpDir = new File(rootDataFolder, "emergency_dumps");
 		if (!dumpDir.exists())
 			if (!dumpDir.mkdirs()) {
-				log.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUUID());
+				log.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUniqueId());
 				return;
 			}
-		File dumpFile = new File(dumpDir, user.getUUID() + ".properties");
+		File dumpFile = new File(dumpDir, user.getUniqueId() + ".properties");
 
 		Properties props = new Properties();
-		props.setProperty("uuid", user.getUUID().toString());
+		props.setProperty("uuid", user.getUniqueId().toString());
 		props.setProperty("name", user.getName());
 		props.setProperty("role", user.getRole().name());
 		props.setProperty("dollars", String.valueOf(user.getDollars()));
@@ -163,13 +163,13 @@ public enum UserManager {
 
 		try (FileOutputStream out = new FileOutputStream(dumpFile)) {
 			props.store(out, "Emergency Backup for " + user.getName());
-			log.warn("User {}'s info got backUp. (Thread Dump via Properties)", user.getUUID());
+			log.warn("User {}'s info got backUp. (Thread Dump via Properties)", user.getUniqueId());
 		} catch (Exception e) {
 			log.error("Local backUp failed. Info may got lost.", e);
 		}
 	}
 
-	private User checkLocalEmergencyFile(UUID uuid) {
+	private @Nullable User checkLocalEmergencyFile(@NotNull UUID uuid) {
 		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid.toString() + ".properties");
 		if (!dumpFile.exists()) return null;
 
@@ -210,14 +210,14 @@ public enum UserManager {
 		}
 	}
 
-	private void deleteLocalEmergencyFile(UUID uuid) {
+	private void deleteLocalEmergencyFile(@NotNull UUID uuid) {
 		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid.toString() + ".properties");
 		if (dumpFile.exists() && dumpFile.delete()) {
 			log.info("Cleaned up emergency dump for User {}", uuid);
 		}
 	}
 
-	public boolean startRole(UUID uuid, BasicRoles role) {
+	public boolean startRole(@NotNull UUID uuid, @NotNull BasicRoles role) {
 		User user = getUser(uuid);
 		if (user == null) return false;
 

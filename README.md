@@ -3,6 +3,7 @@
 Developer: Lazberry89
 
 TITLE 大白夜, and Last Flame
+
 DESCRIPTION :
 고대 과학자들에 의해 파괴된 세계를 배경으로 한 멀티플레이어 서바이벌 RPG 서버입니다.
 플레이어는 폐허가 된 세계에서 생존하며, 다른 생존자들과 협력하고, 다양한 직업(Job/Role)을 통해 역할을 수행하며 새로운 문명을 재건하는 여정을 경험합니다.

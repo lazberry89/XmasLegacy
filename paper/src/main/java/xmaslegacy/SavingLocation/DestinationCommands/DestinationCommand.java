@@ -6,9 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xmaslegacy.Annotation.Commands;
 import xmaslegacy.SavingLocation.DestinationType;
+import xmaslegacy.SavingLocation.SpawnRepository;
 import xmaslegacy.Utils.InfoUtils;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ public final class DestinationCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-
+            new DestinationCommandList().execute(p, args);
             return true;
         }
         if (args.length < 2) {
@@ -61,9 +61,11 @@ public final class DestinationCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        return List.of();
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (args.length == 1) return List.of("list", "set", "move", "reset", "reload", "save", "location", "loc");
+        return Arrays.stream(SpawnRepository.INSTANCE.availableTypes())
+                .map(Objects::toString)
+                .map(String::toLowerCase)
+                .toList();
     }
 }
-
-

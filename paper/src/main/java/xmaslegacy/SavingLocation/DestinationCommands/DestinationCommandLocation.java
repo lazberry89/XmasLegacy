@@ -20,7 +20,6 @@ public record DestinationCommandLocation(@NotNull DestinationType type) implemen
 			return;
 		}
 
-		InfoUtils.info(player, String.format("world : %s, x: %.1f, y: %.1f, z: %.1f, yaw: %.1f, pitch: %.1f",
-				loc.getWorld(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch()));
+		InfoUtils.info(player, value.formattedLocation());
 	}
 }

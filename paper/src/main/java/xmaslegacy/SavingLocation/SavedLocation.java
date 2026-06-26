@@ -94,4 +94,11 @@ public abstract class SavedLocation {
             return true;
         }
     }
+
+    public @NotNull String formattedLocation() {
+        if (this.spawn == null) return "";
+        return String.format("world : %s, x: %.1f, y: %.1f, z: %.1f, yaw: %.1f, pitch: %.1f",
+                this.spawn.getWorld(), this.spawn.getX(), this.spawn.getY(),
+                this.spawn.getZ(), this.spawn.getYaw(), this.spawn.getPitch());
+    }
 }
