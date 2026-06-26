@@ -121,4 +121,8 @@ commands:
   clearpdc:
     description: 유저의 PersistentDataContainer의 값을 지운다.
 
+  rank:
+    usage: /rank <self | task | name> <RankType> <Value>
+    description: ranking command
+
 
