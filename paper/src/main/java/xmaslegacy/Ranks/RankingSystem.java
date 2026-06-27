@@ -1,11 +1,13 @@
 package xmaslegacy.Ranks;
 
 import lombok.extern.slf4j.Slf4j;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
