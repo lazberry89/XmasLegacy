@@ -12,7 +12,8 @@ public interface ServerInitializer {
 	}
 	static void initiate(@NotNull XmasLegacy plugin) {
 		plugin.saveDefaultConfig();
-		ServerType serverType = ServerType.getServerType(plugin.getConfig().getString("server-type", ServerType.MAIN.str()));
+		ServerType serverType = ServerType.getServerType(
+				plugin.getConfig().getString("server-type", ServerType.MAIN.str()));
 		switch (serverType) {
 			case MAIN -> {
 				serverType.getInitializer().setup(plugin);

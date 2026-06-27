@@ -17,6 +17,8 @@ import xmaslegacy.PartyScoreBoard.UserPartyScoreBoard;
 import xmaslegacy.PlayerUtils.BagManager;
 import xmaslegacy.PluginUtils.ReflectionManager;
 import xmaslegacy.PluginUtils.ServerInitializer;
+import xmaslegacy.Ranks.RankBoardSystem;
+import xmaslegacy.Ranks.RankingSystem;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
 import xmaslegacy.RoleManagers.FirstRoleManager.Miner.SpecialOre;
@@ -40,6 +42,12 @@ public final class XmasLegacy extends JavaPlugin {
 	public void onEnable() {
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:main");
 		UserManager.INSTANCE.initDataFolder(this.getDataFolder());
+
+		RankingSystem.INSTANCE.startRankTask();
+
+		//랭크시스템 시작
+		RankBoardSystem.INSTANCE.resetBoards();
+		RankBoardSystem.INSTANCE.startBoardTask(this);
 
 		//빙결시스템 시작
 		registerIcingSystem();
@@ -89,8 +97,12 @@ public final class XmasLegacy extends JavaPlugin {
 	public void onDisable() {
 		RegionManager.INSTANCE.saveAll();
 
+		RankingSystem.INSTANCE.stopRankTask();
+		RankBoardSystem.INSTANCE.stopBoardTask();
+		RankBoardSystem.INSTANCE.resetBoards();
+
 		UserPartyScoreBoard.INSTANCE.stopTask();
-		UserManager.INSTANCE.getAllUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
+		UserManager.INSTANCE.getUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
 		log.info("User info is automatically saved!");
 
 		IcingSystem.INSTANCE.stopTask();

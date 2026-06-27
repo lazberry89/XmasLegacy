@@ -1,49 +1,71 @@
 package xmaslegacy.Ranks;
 
-import net.kyori.adventure.text.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.RankType;
-import org.lazberry.xmaslegacy.User.User;
-import xmaslegacy.Utils.KeyUtils;
+import xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+@Slf4j
 public enum RankBoardSystem {
 	INSTANCE;
 
-	private final @NotNull RankingSystem ranks;
-	private final @NotNull Map<String, TextDisplay> board = new HashMap<>();
+	private final @NotNull Map<String, RankBoard> board = new HashMap<>();
+	private @Nullable BukkitTask task;
 
-	RankBoardSystem() {
-		this.ranks = RankingSystem.INSTANCE;
+	RankBoardSystem() {}
+
+	public @NotNull RankBoard spawn(@NotNull String name, @NotNull RankType type, int amount, @NotNull Location loc) {
+		if (this.board.containsKey(name)) return this.board.get(name);
+
+		RankBoard rankBoard = new RankBoard(name, type, amount);
+		rankBoard.spawn(loc);
+		this.board.put(name, rankBoard);
+
+		log.info("Rank board {} spawned.", name);
+		return rankBoard;
 	}
 
-	public void update(@NotNull String name) {
+	public boolean remove(@NotNull String name) {
+		RankBoard rb = this.board.get(name);
+		if (rb == null) return false;
 
-	}
-
-	public void spawn(@NotNull RankType type, @NotNull String name, @NotNull Location loc) {
-		loc.getWorld().spawn(loc, TextDisplay.class, t -> {
-			this.board.put(name, t);
-			t.setBillboard(Display.Billboard.FIXED);
-			t.text(this.rankComponent(type, 10));
-			t.setAlignment(TextDisplay.TextAlignment.CENTER);
-			t.setBrightness(new Display.Brightness(15, 15));
-			t.setRotation(loc.getYaw(), loc.getPitch());
-		});
+		TextDisplay td = rb.getDisplay();
+		if (td != null) td.remove();
+		this.board.remove(name);
+		return true;
 	}
 
 	public void resetBoards() {
 		this.board.values().stream()
-				.filter(Entity::isValid)
+				.map(RankBoard::getDisplay)
+				.filter(Objects::nonNull)
 				.forEach(Entity::remove);
 		this.board.clear();
+	}
+
+	public void startBoardTask(@NotNull XmasLegacy plugin) {
+		if (this.task != null) return;
+		log.warn("Board task started. {} board enabled.", board.size());
+		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () ->
+			this.board.values().stream()
+					.filter(r -> r.getDisplay() != null)
+					.filter(r -> r.getDisplay().isValid())
+					.forEach(RankBoard::update), 0L, 30L);
+	}
+
+	public void stopBoardTask() {
+		if (this.task == null) return;
+		this.task.cancel();
+		this.task = null;
 	}
 }
