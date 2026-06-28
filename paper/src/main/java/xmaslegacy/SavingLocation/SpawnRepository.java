@@ -1,9 +1,10 @@
 package xmaslegacy.SavingLocation;
 
 import org.jetbrains.annotations.NotNull;
-import xmaslegacy.PluginUtils.ServerInitializer;
+import xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import xmaslegacy.PluginUtils.ServerType;
 import xmaslegacy.SavingLocation.Lobby.LobbyManager;
+import xmaslegacy.XmasLegacy;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ public enum SpawnRepository {
     private final @NotNull Map<DestinationType, SavedLocation> spawnMap = new EnumMap<>(DestinationType.class);
 
     SpawnRepository() {
-        if (ServerInitializer.getServerType().equals(ServerType.LOBBY))
+        if (ServerInitializer.getServerType(XmasLegacy.getInstance()).equals(ServerType.LOBBY))
             this.spawnMap.put(DestinationType.LOBBY, new LobbyManager());
         else {
             this.spawnMap.put(DestinationType.FROZEN_PORT, new PortVillageManager());

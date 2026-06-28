@@ -19,8 +19,9 @@ import java.util.UUID;
 public class User {
     @EqualsAndHashCode.Include
     private final @NotNull UUID uniqueId;
+	private final @NotNull String lock;
 	private @NotNull String name;
-    private @NotNull Role role = BasicRoles.USER;
+    private @NotNull Role role;
 	private int dollars = 0;
 	private int inquireCount = 0;
 	private int playTime = 0;
@@ -40,6 +41,7 @@ public class User {
 
     public User(@NotNull UUID uuid, @NotNull Role role, @NotNull String name) {
         this.uniqueId = uuid;
+		this.lock = uuid.toString().intern();
 		this.role = role;
 		this.name = name;
     }

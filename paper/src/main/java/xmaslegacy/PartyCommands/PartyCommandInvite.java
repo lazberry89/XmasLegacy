@@ -93,7 +93,7 @@ public class PartyCommandInvite implements SubCommand {
                         }
                         if (pm.joinParty(party.getLeader(), user)) {
                             InfoUtils.info(p, "파티에 참가했습니다.");
-                            party.getMembers().stream().map(m -> Bukkit.getPlayer(m.getUUID()))
+                            party.getMembers().stream().map(m -> Bukkit.getPlayer(m.getUniqueId()))
                                     .filter(Objects::nonNull)
                                     .filter(Player::isOnline)
                                     .filter(Player::isValid)
@@ -126,7 +126,7 @@ public class PartyCommandInvite implements SubCommand {
                         if (pm.joinParty(party.getLeader(), user)) {
                             InfoUtils.info(player, "파티에 참가했습니다.");
                             party.getMembers().stream()
-                                    .map(m -> Bukkit.getPlayer(m.getUUID()))
+                                    .map(m -> Bukkit.getPlayer(m.getUniqueId()))
                                     .filter(Objects::nonNull)
                                     .filter(Player::isOnline)
                                     .filter(Player::isValid)

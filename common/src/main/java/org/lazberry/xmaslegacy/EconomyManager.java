@@ -39,8 +39,8 @@ public enum EconomyManager {
         if (target == null || sender == null) return false;
         if (sender.equals(target)) return false;
         if (amount <= 0) return false;
-        if (withdraw(sender.getUUID(), amount)) {
-            deposit(target.getUUID(), amount * (100- Constants.TAX_RATE)/100);
+        if (withdraw(sender.getUniqueId(), amount)) {
+            deposit(target.getUniqueId(), amount * (100- Constants.TAX_RATE)/100);
             return true;
         }
         return false;
@@ -60,7 +60,11 @@ public enum EconomyManager {
 
     public boolean hasEnough(UUID uuid, int amount) {
         if (amount <= 0) return false;
-        int userMoney = um.getUser(uuid).getDollars();
+
+		var user = um.getUser(uuid);
+		if (user == null) return false;
+
+        int userMoney = user.getDollars();
         return userMoney >= amount;
     }
 

@@ -10,10 +10,11 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import xmaslegacy.SavingLocation.Lobby.LobbyManager;
-import xmaslegacy.PluginUtils.ServerInitializer;
+import xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import xmaslegacy.PluginUtils.ServerType;
 import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.SubCommand;
+import xmaslegacy.XmasLegacy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,8 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             return true;
         }
-        if (!ServerInitializer.getServerType().equals(ServerType.LOBBY)) {
+		var plugin = XmasLegacy.getInstance();
+        if (!ServerInitializer.getServerType(plugin).equals(ServerType.LOBBY)) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 서버에서는 사용할 수 없는 명령어에요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             return true;

@@ -1,11 +1,12 @@
 package org.lazberry.xmaslegacy;
 
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.Range;
 
 import java.util.List;
 
 public class Constants {
+	public static long USER_SAVE_TASK_DURATION = 20 * 60 * 5;
+
 	//Consumable
 	public static int COOKIE_COUNT = 16;
 	public static long COOKIE_TIMER_MINUTE = 60L;

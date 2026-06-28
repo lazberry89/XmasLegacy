@@ -82,11 +82,11 @@ public enum UserPartyScoreBoard {
 
 				for (User member : partyUsers) {
 					if (line > 14) break;
-					Player memberPlayer = Bukkit.getPlayer(member.getUUID());
+					Player memberPlayer = Bukkit.getPlayer(member.getUniqueId());
 					String nameStr = (memberPlayer != null) ? memberPlayer.getName() : member.getName();
 
 					String leaderPrefix = "";
-					if (pm.isLeader(member.getUUID())) leaderPrefix = "&7&l[&6★&7]";
+					if (pm.isLeader(member.getUniqueId())) leaderPrefix = "&7&l[&6★&7]";
 					b.setLine(line++, ColorUtils.chat(leaderPrefix + "&e" + nameStr));
 
 					if (memberPlayer != null && memberPlayer.isOnline()) b.setLine(line++, healthBar(memberPlayer));

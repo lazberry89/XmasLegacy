@@ -84,7 +84,7 @@ public enum PartyManager {
     public boolean isLeader(@NotNull UUID uuid) {
         Party party = getParty(uuid);
 	    if (party == null) return false;
-        return party.getLeader().getUUID().equals(uuid);
+        return party.getLeader().getUniqueId().equals(uuid);
     }
 
     public boolean isParty(@NotNull UUID uuid1, @NotNull UUID uuid2) {
@@ -92,6 +92,6 @@ public enum PartyManager {
         if (party == null) return false;
 
         return party.getMembers().stream()
-                .anyMatch(user -> user.getUUID().equals(uuid2));
+                .anyMatch(user -> user.getUniqueId().equals(uuid2));
     }
 }

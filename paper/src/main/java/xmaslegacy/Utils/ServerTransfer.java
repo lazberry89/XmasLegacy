@@ -192,7 +192,7 @@ public final class ServerTransfer {
     private boolean sendBungeePacket(@NotNull ServerType toServer, @NotNull Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
-        out.writeUTF(toServer.str());
+        out.writeUTF(toServer.configValue());
 
         try {
             player.sendPluginMessage(plugin(), "bungeecord:main", out.toByteArray());

@@ -27,7 +27,7 @@ public class PartyCommandLeave implements SubCommand {
             if (party == null) return;
 
             List<Player> targets = party.getMembers().stream()
-                    .map(m -> Bukkit.getPlayer(m.getUUID()))
+                    .map(m -> Bukkit.getPlayer(m.getUniqueId()))
                     .filter(Objects::nonNull)
                     .filter(p -> !p.getUniqueId().equals(player.getUniqueId())) // 본인 제외
                     .filter(Player::isOnline)

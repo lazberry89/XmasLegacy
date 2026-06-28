@@ -28,9 +28,21 @@ public enum UserManager {
 	UserManager() {}
 
 	public void initDataFolder(@Nullable File dataFolder) {
-		if (dataFolder != null) {
+		if (dataFolder != null)
 			this.rootDataFolder = dataFolder;
-		}
+	}
+
+	public void saveAll() {
+		getUsers().forEach(user -> {
+			synchronized (user.getLock()) {
+				try {
+					repository.saveUser(user);
+				} catch (Exception e) {
+					log.error("Failed to save user {}", user.getUniqueId(), e);
+					threadDump(user);
+				}
+			}
+		});
 	}
 
 	public void addUser(@NotNull User user) {
@@ -106,14 +118,15 @@ public enum UserManager {
 				repository.saveUser(loaded);
 			} else if (restoredFromDump) {
 				try {
-					repository.saveUser(loaded);
-					deleteLocalEmergencyFile(uuid);
+					synchronized (loaded.getLock()) {
+						repository.saveUser(loaded);
+						deleteLocalEmergencyFile(uuid);
+					}
 				} catch (Exception e) {
 					log.error("Failed to sync restored user {} back to DB.", uuid, e);
 				}
 			}
 			this.addUser(loaded);
-			//users.put(uuid, loaded);
 			return loaded;
 		});
 	}
@@ -125,8 +138,10 @@ public enum UserManager {
 
 		return CompletableFuture.runAsync(() -> {
 			try {
-				repository.saveUser(u);
-				log.info("User {} saved.", uuid);
+				synchronized (u.getLock()) {
+					repository.saveUser(u);
+					log.info("User {} saved.", uuid);
+				}
 			} catch (Exception e) {
 				log.error("CRITICAL | User {} failed saving.", uuid, e);
 				threadDump(u);

@@ -1,4 +1,4 @@
-package xmaslegacy.PluginUtils;
+package xmaslegacy.PluginUtils.Initializer;
 
 import com.google.common.reflect.ClassPath;
 import org.bukkit.Bukkit;
