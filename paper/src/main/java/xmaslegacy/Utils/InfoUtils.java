@@ -8,22 +8,23 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.slf4j.helpers.MessageFormatter;
 
 @Slf4j
 @UtilityClass
 public final class InfoUtils {
 
-    public @Utility void info(@NotNull Player p, @NotNull String message) {
-        sendMessage(InfoLevel.INFO, p, message);
+    public @Utility void info(@NotNull Player p, @NotNull String message, Object... args) {
+        sendMessage(InfoLevel.INFO, p, message, args);
     }
-    public @Utility void warn(@NotNull Player p, @NotNull String message) {
-        sendMessage(InfoLevel.WARN, p, message);
+    public @Utility void warn(@NotNull Player p, @NotNull String message, Object... args) {
+        sendMessage(InfoLevel.WARN, p, message, args);
     }
-    public @Utility void error(@NotNull Player p, @NotNull String message) {
-        sendMessage(InfoLevel.ERROR, p, message);
+    public @Utility void error(@NotNull Player p, @NotNull String message, Object... args) {
+        sendMessage(InfoLevel.ERROR, p, message, args);
     }
-    public @Utility void error(@NotNull Player p, @NotNull String message, @NotNull Throwable e) {
-        sendMessage(InfoLevel.ERROR, p, message);
+    public @Utility void error(@NotNull Player p, @NotNull String message, @NotNull Throwable e, Object... args) {
+        sendMessage(InfoLevel.ERROR, p, message, args);
         traceException(e);
     }
     public @Utility void info(@NotNull Player p, @NotNull Component component) {
@@ -51,8 +52,14 @@ public final class InfoUtils {
         mobileProcess(p, txt);
     }
 
-    private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull String message) {
-        Component txt = ColorUtils.chat(level.prefix() + " " + message);
+    private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull String message, Object... args) {
+        String formattedMessage = MessageFormatter.arrayFormat(message, args).getMessage();
+        switch (level) {
+            case INFO -> log.info(message, args);
+            case WARN -> log.warn(message, args);
+            case ERROR -> log.error(message, args);
+        }
+        Component txt = ColorUtils.chat(level.prefix() + " " + formattedMessage);
         p.sendMessage(txt);
         p.playSound(p, level.sound(), 1.0f, 1.0f);
         mobileProcess(p, txt);

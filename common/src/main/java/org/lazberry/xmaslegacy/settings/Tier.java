@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 
 public enum Tier implements ServerPrefix {
@@ -14,13 +15,13 @@ public enum Tier implements ServerPrefix {
     OVERLORD("&#FFC522[ &#FAA11CO&#F88F19V&#F57D16E&#F36B13R&#F05A0FL&#EE480CO&#EB3609R&#E92406D &#E40000]"),
     ETERNAL("&#49D6F1[ &#51BCE5E&#55AFDFT&#59A2D9E&#5D95D4R&#6188CEN&#657BC8A&#696EC2L &#7154B6]");
 
-    private final String prefix;
+    private final @NotNull String prefix;
 
-    Tier(String prefix) {
+    Tier(@NotNull String prefix) {
         this.prefix = prefix;
     }
 
-    public Component prefix() {
+    public @NotNull Component prefix() {
         return ColorUtils.chat(this.prefix);
     }
 }

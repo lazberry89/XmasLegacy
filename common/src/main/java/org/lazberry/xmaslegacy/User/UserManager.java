@@ -27,7 +27,7 @@ public enum UserManager {
 
 	UserManager() {}
 
-	public void initDataFolder(File dataFolder) {
+	public void initDataFolder(@Nullable File dataFolder) {
 		if (dataFolder != null) {
 			this.rootDataFolder = dataFolder;
 		}
@@ -36,14 +36,14 @@ public enum UserManager {
 	public void addUser(@NotNull User user) {
         users.put(user.getUniqueId(), user);
     }
-    public void removeUser(UUID uuid) {users.remove(uuid);}
+    public void removeUser(@NotNull UUID uuid) {users.remove(uuid);}
     public @Nullable User getUser(@NotNull UUID uuid) {
 	    return users.get(uuid);
     }
 	public @NotNull List<User> getUsers() {
 		return new ArrayList<>(users.values());
 	}
-    public boolean withdraw(UUID uuid, int amount) {
+    public boolean withdraw(@NotNull UUID uuid, int amount) {
         User user = getUser(uuid);
         if (user != null && user.getDollars() >= amount) {
             user.setDollars(user.getDollars() - amount);
@@ -52,13 +52,13 @@ public enum UserManager {
         return false;
     }
 
-    public void deposit(UUID uuid, int amount) {
+    public void deposit(@NotNull UUID uuid, int amount) {
         User user = getUser(uuid);
         if (user != null) {
             user.setDollars(user.getDollars() + amount);
         }
     }
-	public Role getRole(UUID uuid) {
+	public Role getRole(@NotNull UUID uuid) {
 		if (users.containsKey(uuid)) {
 			return users.get(uuid).getRole();
 		}

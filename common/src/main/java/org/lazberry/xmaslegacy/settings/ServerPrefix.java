@@ -1,9 +1,10 @@
 package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 public interface ServerPrefix {
-	Component prefix();
+	@NotNull Component prefix();
 	int ordinal();
-	String name();
+	@NotNull String name();
 }

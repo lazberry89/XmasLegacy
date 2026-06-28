@@ -12,28 +12,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.geysermc.floodgate.api.FloodgateApi;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import xmaslegacy.ServerPrefix.UserTagManager;
 import xmaslegacy.PluginUtils.ServerType;
+import xmaslegacy.ServerPrefix.PrefixManager;
 import xmaslegacy.SkillEffectManager;
 import xmaslegacy.XmasLegacy;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -69,6 +65,7 @@ public final class ServerTransfer {
 				InfoUtils.warn(player, "&7지연 이동중..");
 			} else {
 				log.error("Failed to teleport {} to Port.", player.getName());
+				InfoUtils.error(player, "서버 이동에 실패하였습니다. 재시도 해주세요.");
 			}
 		}, duration / 2);
 		Bukkit.getScheduler().runTaskLater(plugin(), () -> sem.deStun(uuid), duration);
@@ -120,14 +117,10 @@ public final class ServerTransfer {
                 if (isFloodgate(player)) {
                     user.addDollars(Constants.BASIC_MONEY_MOBILE);
                     player.sendMessage(ColorUtils.chat(Alert.GREEN + " 모바일 접속 보너스가 지급되었습니다."));
-                } else {
-                    user.addDollars(Constants.BASIC_MONEY_NORMAL);
-                }
-            } else {
-                Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님이 접속했어요!", player.getName())));
-            }
-            UserTagManager.createHoverTag(player, user);
-            UserTagManager.updateHoverTag(player, user);
+                } else user.addDollars(Constants.BASIC_MONEY_NORMAL);
+            } else Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님이 접속했어요!", player.getName())));
+            //UserTagManager.createHoverTag(player, user);
+            //UserTagManager.updateHoverTag(player, user);
             user.setNewUser(false);
         });
     }
@@ -147,6 +140,7 @@ public final class ServerTransfer {
 				if (msg) sendError(player, throwable);
 				return;
 			}
+			PrefixManager.INSTANCE.removePrefixIfNotValid(user);
 			if (msg) sendMsg(player, user);
 		});
 	}
@@ -180,7 +174,7 @@ public final class ServerTransfer {
             if (party == null) return sendBungeePacket(toServer, player);
 
             party.getMembers().stream()
-                    .map(u -> Bukkit.getPlayer(u.getUUID()))
+                    .map(u -> Bukkit.getPlayer(u.getUniqueId()))
                     .filter(p -> p != null && p.isOnline())
                     .forEach(p -> {
                         if (!p.equals(player)) p.sendMessage(ColorUtils.chat(Alert.GREEN + " 방장을 따라 서버를 이동합니다!"));
@@ -211,37 +205,38 @@ public final class ServerTransfer {
 
 	private @NotNull Component askComponent(@NotNull ServerType type, boolean hide, @NotNull Player p, boolean isFloodgate) {
 		if (isFloodgate) {
-			var floodgatePlayer = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(p.getUniqueId());
+			var floodgatePlayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());
 
 			if (floodgatePlayer != null) {
-				var form = org.geysermc.cumulus.form.SimpleForm.builder()
-						.title("§6§l서버 이동 제안")
-						.content("파티장으로부터 서버 이동 제안이 왔습니다.\n" +
-								"§e" + (hide ? "???" : type.name()) + "§r 서버로 이동하시겠습니까?")
-						.button("§a§l[ 수락 ]")
-						.button("§c§l[ 거절 ]")
-						.validResultHandler(response -> {
-							if (response.clickedButtonId() == 0) {
-								p.sendMessage(ColorUtils.chat("&a서버 이동을 시작합니다..."));
-								transfer(type, p);
-							} else {
-								p.sendMessage(ColorUtils.chat("&c서버 이동 제안을 거절했습니다."));
-							}
-						})
-						.closedResultHandler(() -> {
-							p.sendMessage(ColorUtils.chat("&c서버 이동 제안이 취소되었습니다."));
-						})
-						.build();
+				Bukkit.getScheduler().runTask(plugin(), () -> {
+					var form = org.geysermc.cumulus.form.SimpleForm.builder()
+							.title("§6§l서버 이동 제안")
+							.content("파티장으로부터 서버 이동 제안이 왔습니다.\n" +
+									"§e" + (hide ? "???" : type.name()) + "§r 서버로 이동하시겠습니까?")
+							.button("§a§l[ 수락 ]")
+							.button("§c§l[ 거절 ]")
+							.validResultHandler(response -> {
+								if (response.clickedButtonId() == 0) {
+									p.sendMessage(ColorUtils.chat("&a서버 이동을 시작합니다..."));
+									if (transfer(type, p)) log.info("User {} Transfer to {}", p.getName(), type);
+									else {
+										log.error("Failed to transfer {} to {}", p.getName(), type);
+										InfoUtils.error(p, "서버 이동에 실패하였습니다. 관리자를 호출해주세요.");
+									}
+								} else {
+									p.sendMessage(ColorUtils.chat("&c서버 이동 제안을 거절했습니다."));
+								}
+							})
+							.closedResultHandler(() ->
+									p.sendMessage(ColorUtils.chat("&c서버 이동 제안이 취소되었습니다."))
+							).build();
 
-				// 베드락 유저 화면에 팝업 딲!
-				floodgatePlayer.sendForm(form);
+					floodgatePlayer.sendForm(form);
+				});
 			}
-
-			// 폼을 띄웠으니 채팅창에는 가벼운 안내 멘트만 컴포넌트로 리턴
 			return ColorUtils.chat(Alert.XmasLegacy + " &6서버이동&f 제안이 왔습니다. 화면의 팝업창을 확인해주세요!");
 		}
 
-		// 💻 2. 자바 에디션 유저용 기존 클릭 콜백 로직
 		var options = ClickCallback.Options.builder()
 				.uses(1)
 				.lifetime(java.time.Duration.ofMinutes(3))

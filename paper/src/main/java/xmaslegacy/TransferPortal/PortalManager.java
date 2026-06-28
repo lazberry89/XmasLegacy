@@ -1,5 +1,6 @@
 package xmaslegacy.TransferPortal;
 
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,6 +13,7 @@ import org.lazberry.xmaslegacy.Party.Party;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Utils.InfoUtils;
 import xmaslegacy.Utils.ServerTransfer;
 import xmaslegacy.PluginUtils.ServerType;
 import xmaslegacy.XmasLegacy;
@@ -19,6 +21,7 @@ import xmaslegacy.XmasLegacy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public enum PortalManager {
 	INSTANCE;
 
@@ -60,7 +63,7 @@ public enum PortalManager {
 
     private void sendPartyMessage(@NotNull Party party, @NotNull Component message) {
         party.getMembers().stream()
-                .map(u -> Bukkit.getPlayer(u.getUUID()))
+                .map(u -> Bukkit.getPlayer(u.getUniqueId()))
                 .filter(Objects::nonNull)
                 .filter(Entity::isValid)
                 .filter(Player::isOnline)
@@ -83,8 +86,8 @@ public enum PortalManager {
                         continue;
                     }
 
-                    UUID leaderUUID = party.getLeader().getUUID();
-                    for (User member : party.getMembers()) processedPlayers.add(member.getUUID());
+                    UUID leaderUUID = party.getLeader().getUniqueId();
+                    for (User member : party.getMembers()) processedPlayers.add(member.getUniqueId());
 
                     Portal currentPortal = getPortal(player.getLocation());
                     if (currentPortal == null) {
@@ -97,7 +100,7 @@ public enum PortalManager {
                     List<Player> onlinePartyPlayers = new ArrayList<>();
 
                     for (User member : party.getMembers()) {
-                        Player mPlayer = Bukkit.getPlayer(member.getUUID());
+                        Player mPlayer = Bukkit.getPlayer(member.getUniqueId());
                         if (mPlayer == null || !currentPortal.isStepping(mPlayer)) {
                             allOnSamePortal = false;
                             break;
@@ -120,7 +123,14 @@ public enum PortalManager {
                         sendPartyMessage(party, ColorUtils.chat(Alert.XmasLegacy + " 모든 파티원이 준비되었습니다. 서버를 이동합니다.."));
 
                         for (Player mPlayer : onlinePartyPlayers)
-                            ServerTransfer.transfer(currentPortal.getDestination(), mPlayer, true, false);
+                            if (ServerTransfer.transfer(currentPortal.getDestination(), mPlayer, true, false)) {
+                                InfoUtils.warn(mPlayer, "이동 작업 시작중..");
+                                log.info("Server transfer initiated via Portal [{}] for player [{}] (Destination: {})",
+                                        currentPortal.key(), player.getName(), currentPortal.getDestination());
+                            } else {
+                                InfoUtils.error(mPlayer, "서버 이동중 문제가 발생했습니다. 관리자를 호출해주세요.");
+                                log.error("Error occurred while transferring player using Portal Manager.");
+                            }
                     } else {
                         sendPartyMessage(party, ColorUtils.chat(Alert.GREEN + " 모든 파티원이 입장했습니다. &6" + secondsLeft + "&f초 후 이동합니다."));
                         activeCountdowns.put(leaderUUID, secondsLeft - 1);

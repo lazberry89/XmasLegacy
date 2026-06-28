@@ -78,7 +78,7 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                 if (prefix == null) return true;
                 switch (args[0].toLowerCase()) {
                     case "grant" -> {
-                        if (pfm.addPrefix(target, prefix)) {
+                        if (pfm.add(target, prefix)) {
                             InfoUtils.info(p, String.format("%s님에게 칭호 '%s'를 추가했습니다", target.getName(), prefix.name()));
                             InfoUtils.info(target, "칭호 '" + prefix.name() + "'가 부여되었습니다.");
                         } else {
@@ -86,21 +86,21 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                         }
                     }
                     case "deprive" -> {
-                        if (pfm.removePrefix(target, prefix)) {
+                        if (pfm.remove(target, prefix)) {
                             InfoUtils.info(p, String.format("%s님에게서 칭호 '%s'를 제거했습니다", target.getName(), prefix.name()));
                         } else {
                             InfoUtils.warn(p, "해당 칭호를 보유하고 있지 않아요!");
                         }
                     }
                     case "equip" -> {
-                        if (pfm.equipPrefix(target, prefix)) {
+                        if (pfm.equip(target, prefix)) {
                             InfoUtils.info(p, String.format("칭호 '%s'를 %s님에게 장착했습니다.", prefix.name(), target.getName()));
                         } else {
                             InfoUtils.warn(p, "유저가 해당 칭호를 보유하고 있지 않습니다.");
                         }
                     }
                     case "unequip" -> {
-                        if (pfm.unequipPrefix(target)) {
+                        if (pfm.unequip(target)) {
                             InfoUtils.warn(p, "유저의 칭호를 해제했습니다.");
                         } else {
                             InfoUtils.warn(p, "유저가 칭호를 장착하고 있지 않습니다.");

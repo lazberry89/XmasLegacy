@@ -1,4 +1,4 @@
-package xmaslegacy.ServerPrefix;
+package xmaslegacy.PlayerUtils;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

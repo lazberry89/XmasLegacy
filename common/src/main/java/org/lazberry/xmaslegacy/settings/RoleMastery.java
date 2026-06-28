@@ -15,9 +15,9 @@ public enum RoleMastery implements ServerPrefix {
     IMMORTAL("&4⪔ IMMORTAL"),
     INFINITE("&#C822FF⨝ &#9C36F9I&#8540F6N&#6F4AF3F&#5954F0I&#435EEDN&#2C68EAI&#1672E7T&#007CE4E");
 
-    private final String prefix;
+    private final @NotNull String prefix;
 
-    RoleMastery(String prefix) {
+    RoleMastery(@NotNull String prefix) {
         this.prefix = prefix;
     }
 

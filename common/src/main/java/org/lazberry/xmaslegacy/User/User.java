@@ -32,15 +32,15 @@ public class User {
     private boolean isMobile = false;
 	private boolean isNewUser = false;
 	private boolean wantsCookie = true;
-	private final @NotNull List<ServerPrefix> availablePrefix = new ArrayList<>(List.of(Tier.VISITOR));
+	private final @NotNull List<ServerPrefix> availablePrefix = new ArrayList<>(List.of(Tier.VISITOR, Tier.USER));
 	private @Nullable ServerPrefix equipPrefix = Tier.VISITOR;
-	private boolean combatMode = false;
     private boolean isImmuneToIcing = false;
 	private int icingState = 100;
 	private boolean showBoard = true;
 
-    public User(@NotNull UUID uuid, @Nullable Role role, @NotNull String name) {
+    public User(@NotNull UUID uuid, @NotNull Role role, @NotNull String name) {
         this.uniqueId = uuid;
+		this.role = role;
 		this.name = name;
     }
 
@@ -50,8 +50,6 @@ public class User {
 	public void setIcingState(int icingState) {
 		this.icingState = Math.clamp(icingState, 0, 100);
 	}
-    public @NotNull Role getRole() {return this.role;}
-    public void setRole(@NotNull Role role) {this.role = role;}
     public void addDollars(int dollars) {
 		this.dollars += dollars;
 		if (this.dollars < 0) this.dollars = 0;
@@ -60,7 +58,6 @@ public class User {
     public void addPlayTime(int playTime) {this.playTime += playTime;}
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
     public boolean ifWantsCookie() {return this.wantsCookie;}
-	public @NotNull String getName() {return this.name;}
 	public void setName(@NotNull String name) {this.name = name;}
     public void addExp(double amount) {this.exp += amount;}
     public boolean hasRole() {return !BasicRoles.USER.equals(this.role);}
@@ -81,5 +78,4 @@ public class User {
 		this.equipPrefix = null;
 		return true;
 	}
-	public boolean getCombatValue() {return this.combatMode;}
 }

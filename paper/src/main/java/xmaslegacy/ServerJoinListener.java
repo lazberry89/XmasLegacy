@@ -17,7 +17,8 @@ import xmaslegacy.SavingLocation.DestinationType;
 import xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import xmaslegacy.SavingLocation.MainSpawnManager;
 import xmaslegacy.SavingLocation.SpawnRepository;
-import xmaslegacy.ServerPrefix.UserTagManager;
+import xmaslegacy.PlayerUtils.UserTagManager;
+import xmaslegacy.ServerPrefix.PrefixManager;
 import xmaslegacy.Utils.ServerTransfer;
 
 public final class ServerJoinListener implements Listener {

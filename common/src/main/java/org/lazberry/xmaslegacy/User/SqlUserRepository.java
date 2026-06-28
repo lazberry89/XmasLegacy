@@ -82,7 +82,6 @@ public enum SqlUserRepository implements UserRepository {
 	public User loadUser(UUID uuid) {
 		String sql = "SELECT * FROM users WHERE uuid = ?";
 
-		// try-with-resources: conn과 pstmt를 다 쓰면 자동으로 닫아줍니다 (메모리 누수 방지)
 		try (Connection conn = getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -158,7 +157,7 @@ public enum SqlUserRepository implements UserRepository {
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			pstmt.setString(1, user.getUUID().toString());
+			pstmt.setString(1, user.getUniqueId().toString());
 			pstmt.setString(2, user.getName());
 			pstmt.setString(3, user.getRole().name());
 			pstmt.setInt(4, user.getDollars());

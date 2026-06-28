@@ -6,9 +6,11 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -39,9 +41,7 @@ public class ChatPrefixListener implements Listener {
 		if (rm.checkBadWords(rawMsg)) {
 			msg = rm.hideBadWords(rawMsg);
 			InfoUtils.error(p, "욕설이 포함된 메시지는 제재를 받을 수 있습니다.");
-		} else {
-			msg = rawMsg;
-		}
+		} else msg = rawMsg;
 		e.renderer((source, sourceDisplayName, message, viewer) -> {
 			User user = um.getUser(source.getUniqueId());
 			if (user == null) return Component.text()
@@ -49,11 +49,11 @@ public class ChatPrefixListener implements Listener {
 					.append(Component.text(" : "))
 					.append(Component.text(msg))
 					.build();
+			pfm.removePrefixIfNotValid(user); //청소
 			ServerPrefix prefix = user.getEquipPrefix();
-			Component equipP = prefix == null ? ColorUtils.chat("") : prefix.prefix();
+			Component equipP = prefix == null ? ColorUtils.chat("") : prefix.prefix().appendSpace();
 			return Component.text()
 					.append(equipP)
-					.append(Component.text(" "))
 					.append(sourceDisplayName)
 					.append(Component.text(" : "))
 					.append(Component.text(msg))
@@ -83,12 +83,9 @@ public class ChatPrefixListener implements Listener {
 			default -> {
 				ServerPrefix prefix = pif.getPrefix(slot);
 				if (prefix == null) return;
-				if (!prefix.equals(user.getEquipPrefix())) {
-					pfm.unequipPrefix(p);
-					pfm.equipPrefix(p, prefix);
-				} else {
-					pfm.unequipPrefix(p);
-				}
+				if (!prefix.equals(user.getEquipPrefix())) pfm.equip(p, prefix);
+				else pfm.unequip(p);
+
 				pif.update(p);
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			}
