@@ -13,6 +13,9 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import xmaslegacy.Annotation.Task;
+import xmaslegacy.PluginUtils.ServerType;
+import xmaslegacy.PluginUtils.Tasks;
 import xmaslegacy.Utils.BoardUtils;
 import xmaslegacy.Utils.ServerTransfer;
 import xmaslegacy.XmasLegacy;
@@ -21,7 +24,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public enum UserPartyScoreBoard {
+@Task(type = ServerType.GLOBAL)
+public enum UserPartyScoreBoard implements Tasks {
 	INSTANCE;
 
 	private final @NotNull PartyManager pm;
@@ -33,9 +37,10 @@ public enum UserPartyScoreBoard {
 		this.um = UserManager.INSTANCE;
 	}
 
-	public void startTask() {
+	@Override
+	public void startTask(@NotNull XmasLegacy plugin) {
 		if (this.task != null) return;
-		this.task = Bukkit.getScheduler().runTaskTimer(XmasLegacy.getInstance(), () ->
+		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () ->
 			Bukkit.getOnlinePlayers().stream()
 					.filter(Objects::nonNull)
 					.filter(Entity::isValid)
@@ -46,6 +51,7 @@ public enum UserPartyScoreBoard {
 			}), 0L, 10L);
 	}
 
+	@Override
 	public void stopTask() {
 		if (this.task == null) return;
 		this.task.cancel();

@@ -5,38 +5,42 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import xmaslegacy.Env.ConsumableManager;
-import xmaslegacy.HuntingZone.MobSpawnManager;
 import xmaslegacy.Icing.IcingListener;
 import xmaslegacy.Icing.IcingSystem;
-import xmaslegacy.*;
+import xmaslegacy.InquireTeleportCommand;
+import xmaslegacy.InquiryCommandManager;
 import xmaslegacy.LogCommands.LogCommand;
 import xmaslegacy.PartyScoreBoard.UserPartyScoreBoard;
 import xmaslegacy.PlayerUtils.BagManager;
-import xmaslegacy.Ranks.RankBoardSystem;
-import xmaslegacy.Ranks.RankingSystem;
 import xmaslegacy.Region.RegionManager;
 import xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
 import xmaslegacy.RoleManagers.FirstRoleManager.Miner.SpecialOre;
-import xmaslegacy.RoleSelection.RoleViewDesign;
 import xmaslegacy.RuleCommands.RuleCommand;
+import xmaslegacy.ServerJoinListener;
 import xmaslegacy.ServerPrefix.ChatPrefixListener;
+import xmaslegacy.XmasLegacy;
 
 @Slf4j
 public class GlobalInitializer implements ServerInitializer {
 
+	/**
+	 * BungeeCord plugin messenger registered in this method.
+	 * @param plugin Plugin instance
+	 */
 	@Override
 	public void enable(@NotNull XmasLegacy plugin) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
 		UserManager.INSTANCE.initDataFolder(plugin.getDataFolder());
+		//UserSaveManager.startTask(plugin);
 
-		RankingSystem.INSTANCE.startRankTask();
+		//RankingSystem.INSTANCE.startRankTask();
 
-		RankBoardSystem.INSTANCE.resetBoards();
-		RankBoardSystem.INSTANCE.startBoardTask(plugin);
+		//RankBoardSystem.INSTANCE.startBoardTask(plugin);
 
-		registerIcingSystem(plugin);
+		//IcingSystem.INSTANCE.startTask(plugin);
 
-		ServerInitializer.initiate(plugin);
+		UserPartyScoreBoard.INSTANCE.startTask();
+		ConsumableManager.INSTANCE.runCookieTimer(plugin);
 
 		if (AgeableCrops.RegisterRecipe(plugin)) log.info("Recipe Registered!");
 		else log.error("Recipe Not Registered!");
@@ -46,16 +50,12 @@ public class GlobalInitializer implements ServerInitializer {
 
 		plugin.getServer().getPluginManager().registerEvents(new ServerJoinListener(), plugin);
 		plugin.getServer().getPluginManager().registerEvents(new ChatPrefixListener(), plugin);
+		plugin.getServer().getPluginManager().registerEvents(new IcingListener(), plugin);
 
 		registerGlobalCommand(plugin);
 
 		log.info("XmasLegacy Plugin Enabled!");
 		log.warn("This Christmas will be Perfect!");
-	}
-
-	private void registerIcingSystem(@NotNull XmasLegacy plugin) {
-		IcingSystem.INSTANCE.startTask(plugin);
-		plugin.getServer().getPluginManager().registerEvents(new IcingListener(), plugin);
 	}
 
 	private void registerGlobalCommand(@NotNull XmasLegacy plugin) {
@@ -79,27 +79,22 @@ public class GlobalInitializer implements ServerInitializer {
 
 	@Override
 	public void disable(@NotNull XmasLegacy plugin) {
-		UserSaveManager.stopTask();
+		//UserSaveManager.stopTask();
 		RegionManager.INSTANCE.saveAll();
 
-		RankingSystem.INSTANCE.stopRankTask();
-		RankBoardSystem.INSTANCE.stopBoardTask();
-		RankBoardSystem.INSTANCE.resetBoards();
+		//RankingSystem.INSTANCE.stopRankTask();
+		//RankBoardSystem.INSTANCE.stopBoardTask();
+
+		//IcingSystem.INSTANCE.stopTask();
 
 		UserPartyScoreBoard.INSTANCE.stopTask();
+
 		UserManager.INSTANCE.getUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
 		log.info("User info is automatically saved!");
 
-		IcingSystem.INSTANCE.stopTask();
-
 		ConsumableManager.INSTANCE.stopCookieTimer();
-		RoleViewDesign.INSTANCE.stopVisualLoop();
 		BagManager.INSTANCE.saveAllBags();
 		log.info("Bag data is automatically saved!");
-
 		log.info("Stopping Hunting Zone spawning.");
-		MobSpawnManager.INSTANCE.stopTask();
-
-		//UserTagManager.stopTask();
 	}
 }

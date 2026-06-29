@@ -29,15 +29,20 @@ public final class XmasLegacy extends JavaPlugin {
 		ServerInitializer.initiate(this);
 	}
 
+	/**
+	 * Seperated into ServerInitializers. Check classes.
+	 */
 	@Override
 	public void onDisable() {
 		ServerInitializer.shutdown(this);
 	}
 
+	public void registerGlobalReflection() {}
+
 	/**
 	 * only called by ServerInitializer. EVER DON'T CALL ILLEGALLY
 	 */
-	public void registerReflection() {
+	public void registerMainReflection() {
 		try {
 			var classPath = ClassPath.from(this.getClassLoader());
 			ReflectionManager.registerListeners(classPath);

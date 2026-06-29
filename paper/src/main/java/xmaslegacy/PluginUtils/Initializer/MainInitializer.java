@@ -25,7 +25,6 @@ public class MainInitializer implements ServerInitializer {
 		RoleViewDesign.INSTANCE.init();
 
 		UserPartyScoreBoard.INSTANCE.startTask();
-		UserSaveManager.startTask(plugin);
 
 		RegionManager.INSTANCE.startGlobalIndicatorTask();
 
@@ -38,7 +37,7 @@ public class MainInitializer implements ServerInitializer {
 		MobSpawnManager.INSTANCE.startTask();
 		PortalManager.INSTANCE.startPortalScheduler();
 
-		plugin.registerReflection();
+		plugin.registerMainReflection();
 
 		//UserTagManager.runTask();
 	}
@@ -46,7 +45,6 @@ public class MainInitializer implements ServerInitializer {
 	@Override
 	public void disable(@NotNull XmasLegacy plugin) {
 		UserPartyScoreBoard.INSTANCE.stopTask();
-		UserSaveManager.stopTask();
 		ConsumableManager.INSTANCE.stopCookieTimer();
 		BagManager.INSTANCE.saveAllBags();
 		MobSpawnManager.INSTANCE.stopTask();

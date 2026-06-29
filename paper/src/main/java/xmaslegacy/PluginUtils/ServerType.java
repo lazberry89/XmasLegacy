@@ -22,6 +22,10 @@ public enum ServerType {
 		this.requiresGlobalInitializer = global;
     }
 
+	/**
+	 * This value is same as Saved Config value.
+	 * @return String of server name.
+	 */
     public @NotNull String configValue() {
         return this.name;
     }
@@ -38,7 +42,7 @@ public enum ServerType {
 
 	/**
 	 *
-	 * @return Generic cast Initializer return.But not recommended in cast instance.
+	 * @return Generic cast Initializer returned. But not recommended in cast instance.
 	 * @param <I> ServerInitializer instance.
 	 */
 	@SuppressWarnings("unchecked")

@@ -1,35 +1,39 @@
 package xmaslegacy.Ranks;
 
 import lombok.extern.slf4j.Slf4j;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import xmaslegacy.Annotation.Task;
+import xmaslegacy.PluginUtils.ServerType;
+import xmaslegacy.PluginUtils.Tasks;
 import xmaslegacy.XmasLegacy;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public enum RankingSystem {
-    INSTANCE;
+@Task(type = ServerType.GLOBAL)
+public enum RankingSystem implements Tasks {
+	INSTANCE;
 
-	private final @NotNull XmasLegacy plugin;
     private final @NotNull UserManager um;
 	private @NotNull volatile List<User> dollarRank = List.of();
 	private @NotNull volatile List<User> expRank = List.of();
 	private @NotNull volatile List<User> roleExpRank = List.of();
 	private @NotNull volatile List<User> playtimeRank = List.of();
-	private final @NotNull Map<RankType, BukkitTask> tasks = new HashMap<>();
+	private final @NotNull Map<RankType, BukkitTask> tasks = new ConcurrentHashMap<>();
 
     RankingSystem() {
-		this.plugin = XmasLegacy.getInstance();
         this.um = UserManager.INSTANCE;
     }
 
@@ -70,7 +74,7 @@ public enum RankingSystem {
 		return cache.isEmpty() ? null : cache.getLast();
 	}
 
-	private @NotNull BukkitTask rankTask(@NotNull RankType type) {
+	private @NotNull BukkitTask rankTask(@NotNull XmasLegacy plugin, @NotNull RankType type) {
 		var task = tasks.get(type);
 		if (task != null) return task;
 
@@ -93,16 +97,24 @@ public enum RankingSystem {
 		return newTask;
 	}
 
-	public void startRankTask(@NotNull RankType type) {
-		var task = rankTask(type);
-		this.tasks.put(type, task);
-	}
 
-	public void startRankTask() {
+	@Override
+	public void startTask(@NotNull XmasLegacy plugin) {
 		Arrays.stream(RankType.values()).forEach(r -> {
-			var task = this.rankTask(r);
+			var task = this.rankTask(plugin, r);
 			this.tasks.put(r, task);
 		});
+	}
+
+	@Override
+	public void stopTask() {
+		this.tasks.keySet().forEach(this::stopRankTask);
+		log.warn("Stopping all rank task.");
+	}
+
+	public void startRankTask(@NotNull XmasLegacy plugin, @NotNull RankType type) {
+		var task = rankTask(plugin, type);
+		this.tasks.put(type, task);
 	}
 
 	public void stopRankTask(@NotNull RankType type) {
@@ -111,10 +123,6 @@ public enum RankingSystem {
 		tasks.remove(type);
 	}
 
-	public void stopRankTask() {
-		this.tasks.keySet().forEach(this::stopRankTask);
-		log.warn("Stopping all rank task.");
-	}
 
 
     /**

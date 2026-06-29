@@ -9,6 +9,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.RankType;
+import xmaslegacy.Annotation.Task;
+import xmaslegacy.PluginUtils.ServerType;
+import xmaslegacy.PluginUtils.Tasks;
 import xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;
@@ -16,7 +19,8 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-public enum RankBoardSystem {
+@Task(type = ServerType.GLOBAL)
+public enum RankBoardSystem implements Tasks {
 	INSTANCE;
 
 	private final @NotNull Map<String, RankBoard> board = new HashMap<>();
@@ -53,7 +57,9 @@ public enum RankBoardSystem {
 		this.board.clear();
 	}
 
-	public void startBoardTask(@NotNull XmasLegacy plugin) {
+	@Override
+	public void startTask(@NotNull XmasLegacy plugin) {
+		this.resetBoards();
 		if (this.task != null) return;
 		log.warn("Board task started. {} board enabled.", board.size());
 		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () ->
@@ -63,9 +69,12 @@ public enum RankBoardSystem {
 					.forEach(RankBoard::update), 0L, 30L);
 	}
 
-	public void stopBoardTask() {
+	@Override
+	public void stopTask() {
 		if (this.task == null) return;
 		this.task.cancel();
 		this.task = null;
+
+		this.resetBoards();
 	}
 }
