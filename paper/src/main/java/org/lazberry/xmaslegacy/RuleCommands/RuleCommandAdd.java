@@ -1,0 +1,32 @@
+package org.lazberry.xmaslegacy.RuleCommands;
+
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.RuleManager;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.SubCommand;
+
+public class RuleCommandAdd implements SubCommand {
+    private final @NotNull RuleManager rm;
+
+    public RuleCommandAdd() {
+        this.rm = RuleManager.INSTANCE;
+    }
+
+    @Override
+    public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
+        if (args.length >= 2) {
+            if (rm.getBadWordList().contains(args[1])) {
+                player.sendMessage(ColorUtils.chat(Alert.RED + " 이미 존재하는 항목입니다."));
+                player.playSound(player, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
+            } else {
+                rm.addBadWordList(args[1]);
+                player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 추가되었습니다. /filter list로 확인"));
+                player.playSound(player, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
+            }
+        } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
+    }
+}

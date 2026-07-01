@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.Roles;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.settings.Skill;
+import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ public interface Role {
     @Nullable Role parent();
     int getTier();
     @NotNull List<Role> next();
-    Skill bindTarget();
-    List<Skill> bindRange();
+    SkillSet bindTarget();
+    List<SkillSet> bindRange();
     int getDashCount();
 
     static Role valueOf(@NotNull String name) throws IllegalArgumentException {

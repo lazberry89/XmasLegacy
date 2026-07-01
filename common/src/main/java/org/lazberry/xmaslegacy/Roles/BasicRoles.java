@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.Roles;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
-import org.lazberry.xmaslegacy.settings.Skill;
+import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,12 +62,12 @@ public enum BasicRoles implements Role {
     }
 
     @Override
-    public Skill bindTarget() {
+    public SkillSet bindTarget() {
         return this.getFirstSkill();
     }
 
     @Override
-    public List<Skill> bindRange() {
+    public List<SkillSet> bindRange() {
         return List.of(this.getSecondSkill());
     }
 

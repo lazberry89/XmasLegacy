@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.settings;
 
-public enum BasicSkills implements Skill {
+public enum BasicSkills implements SkillSet {
 	SHOCK_DART("충격화살"),
 	BACK_DASH("백대시"),
 
