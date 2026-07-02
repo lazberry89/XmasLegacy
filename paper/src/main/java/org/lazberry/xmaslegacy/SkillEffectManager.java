@@ -19,10 +19,10 @@ import java.util.*;
 public enum SkillEffectManager {
 	INSTANCE;
 
-    private final XmasLegacy plugin;
-    private final Map<UUID, Long> stun = new HashMap<>();
-    private final Set<UUID> activeStunTimers = new HashSet<>();
-    private final Set<LivingEntity> hideMap = new HashSet<>();
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull Map<UUID, Long> stun = new HashMap<>();
+    private final @NotNull Set<UUID> activeStunTimers = new HashSet<>();
+    private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();
 
     SkillEffectManager() {
         this.plugin = XmasLegacy.getInstance();
@@ -241,7 +241,7 @@ public enum SkillEffectManager {
     public void followParticle(Player p, Particle particle, double duration) {
         new BukkitRunnable() {
             double elapsed = 0;
-            final double maxTicks = duration * 20;
+            final double maxTicks = duration;
 
             @Override
             public void run() {
@@ -259,7 +259,7 @@ public enum SkillEffectManager {
     public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
         new BukkitRunnable() {
             double elapsed = 0;
-            final double maxTicks = duration * 20;
+            final double maxTicks = duration;
 
             @Override
             public void run() {

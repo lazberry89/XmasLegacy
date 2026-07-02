@@ -22,13 +22,13 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Annotation.Roles;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
-import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 
 @Roles
-public class Warrior extends AbstractFirstRole implements UsingEnergy {
+public class Warrior extends AbstractFirstRole implements RoleClass {
 	private Material weapon_item;
 	private Material armor_item;
 	private double first_skill_usable_rate;

@@ -18,8 +18,6 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 public class Archer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
-	private int first_skill_hunger_cost;
-	private int second_skill_hunger_cost;
 	private Container container;
 
 	private final @NotNull ShockDart shockDart = new ShockDart();
@@ -56,10 +54,10 @@ public class Archer extends AbstractFirstRole {
 		config.addDefault("tool.role_weapon", "BOW");
 		config.addDefault("tool.role_armor", "LEATHER_HELMET");
 
-		this.first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
+		int first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
 		double first_skill_arrow_speed = config.getDouble("stats.first_skill_arrow_speed", 2.5);
 		int first_skill_arrow_timeout = config.getInt("stats.first_skill_arrow_timeout", 1200);
-		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 4);
+		int second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 4);
 		float second_skill_explosion_power = (float) config.getDouble("stats.second_skill_explosion_power", 2.0);
 		double second_skill_backdash_multiplier = config.getDouble("stats.second_skill_backdash_multiplier", -2.0);
 		double second_skill_backdash_y = config.getDouble("stats.second_skill_backdash_y", 0.3);
@@ -81,10 +79,10 @@ public class Archer extends AbstractFirstRole {
 		}
 		this.armor_item = armor;
 		this.container = new Container(
-			this.first_skill_hunger_cost,
+				first_skill_hunger_cost,
 				first_skill_arrow_speed,
 				first_skill_arrow_timeout,
-			this.second_skill_hunger_cost,
+				second_skill_hunger_cost,
 				second_skill_explosion_power,
 				second_skill_backdash_multiplier,
 				second_skill_backdash_y,
@@ -98,7 +96,6 @@ public class Archer extends AbstractFirstRole {
 		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
 		ItemStack emblem = p.getInventory().getItemInMainHand(); //TODO 특수탄 장전으로 엠뷸럼과 활의 기능 분리가 필요해보임
 		if (p.getCooldown(emblem) > 0) return;
-		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		this.shockDart.execute(p, this.container);
 		p.setCooldown(emblem, getCooldown1() * 20);
 	}
@@ -107,7 +104,6 @@ public class Archer extends AbstractFirstRole {
 	public void useSecondSkill(@NotNull Player p) {
 		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
 		this.backDash.execute(p, this.container);
 		p.setCooldown(tool, getCooldown2() * 20);
 	}

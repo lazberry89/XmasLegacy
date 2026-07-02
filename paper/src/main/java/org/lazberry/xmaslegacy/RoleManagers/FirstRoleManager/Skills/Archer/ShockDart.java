@@ -9,16 +9,18 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
+import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
-public class ShockDart implements Skills<Archer.Container> {
+public class ShockDart implements Skills<Archer.Container>, UsingEnergy {
 
 	@Override
 	public void execute(@NotNull Player p, @NotNull Archer.Container container) {
+		if (!consumeEnergy(p, container.first_skill_hunger_cost())) return;
 		p.getWorld().playSound(p.getLocation(), org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.0f, 0.6f);
 
 		Arrow arrow = p.launchProjectile(Arrow.class);

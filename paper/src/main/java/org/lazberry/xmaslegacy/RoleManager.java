@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
-import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 
 @SuppressWarnings("unchecked")
 public enum RoleManager {
@@ -34,7 +34,7 @@ public enum RoleManager {
 		return (S) result;
 	}
 
-	public @NotNull <R extends UsingEnergy> R getRoleInstance(@NotNull Role role) throws IllegalArgumentException {
+	public @NotNull <R extends RoleClass> R getRoleInstance(@NotNull Role role) throws IllegalArgumentException {
 		return (R) switch (role) {
 			case BasicRoles b -> getRoleInstance(b);
 			case SecondaryRoles s -> getRoleInstance(s);

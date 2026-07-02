@@ -1,20 +1,9 @@
 package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Crafter;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
@@ -24,11 +13,6 @@ import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
-import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Roles
 public class Crafter extends AbstractFirstRole {
@@ -56,9 +40,6 @@ public class Crafter extends AbstractFirstRole {
 
 	public record Container(
 		ItemStack item,
-		Item item_entity,
-		Damageable damageable,
-		int current_damage,
 		int first_skill_raytrace_range,
 		int first_skill_hunger_cost,
 		double first_skill_repair_percent,
@@ -99,7 +80,6 @@ public class Crafter extends AbstractFirstRole {
 		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 5);
 		this.second_skill_cooldown_ticks = config.getInt("stats.second_skill_cooldown_ticks", 200);
 
-		// 3. 재질 에러 검증 및 캐싱
 		Material weapon;
 		try {
 			weapon = Material.valueOf(config.getString("tool.role_weapon"));
@@ -122,34 +102,8 @@ public class Crafter extends AbstractFirstRole {
 		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
 
-		Entity target = p.getTargetEntity(this.first_skill_raytrace_range, false);
-		if (target == null) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 대상이 없습니다!"));
-			return;
-		}
-		if (!(target instanceof Item itemEntity)) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 아이템(드롭된 아이템)을 조준해주세요!"));
-			return;
-		}
-		ItemStack itemStack = itemEntity.getItemStack();
-		ItemMeta meta = itemStack.getItemMeta();
-
-		if (!(meta instanceof org.bukkit.inventory.meta.Damageable damageable)) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 수리할 수 없는 아이템입니다!"));
-			return;
-		}
-
-		int currentDamage = damageable.getDamage();
-		if (currentDamage <= 0) {
-			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 이미 새 아이템입니다!"));
-			return;
-		}
-
 		this.container = new Container(
-				itemStack,
-				itemEntity,
-				damageable,
-				currentDamage,
+				tool,
 				first_skill_raytrace_range,
 				first_skill_hunger_cost,
 				first_skill_repair_percent,
@@ -160,8 +114,6 @@ public class Crafter extends AbstractFirstRole {
 				second_skill_hunger_cost,
 				second_skill_cooldown_ticks
 		);
-
-		if (!consumeEnergy(p, this.first_skill_hunger_cost)) return;
 		fix.execute(p, container);
 		p.setCooldown(tool, this.first_skill_cooldown_ticks);
 	}
@@ -170,29 +122,8 @@ public class Crafter extends AbstractFirstRole {
 	public void useSecondSkill(Player p) {
 		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
 		ItemStack tool = p.getInventory().getItemInMainHand();
-
-		Entity target = p.getTargetEntity(this.second_skill_raytrace_range, false);
-		if (!(target instanceof Item itemEntity)) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 아이템(드롭된 아이템)을 조준해주세요!"));
-			return;
-		}
-
-		ItemStack itemStack = itemEntity.getItemStack();
-		ItemMeta meta = itemStack.getItemMeta();
-		if (meta == null) return;
-
-		// 3. 중복 강화 확인 (PDC 사용)
-		NamespacedKey buffKey = KeyUtils.get("crafter_buff");
-		if (meta.getPersistentDataContainer().has(buffKey, PersistentDataType.BYTE)) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 장인의 가호가 깃든 아이템입니다!"));
-			return;
-		}
-
 		this.container = new Container(
-				itemStack,
-				itemEntity,
-				null,
-				0,
+				tool,
 				first_skill_raytrace_range,
 				first_skill_hunger_cost,
 				first_skill_repair_percent,
@@ -203,49 +134,8 @@ public class Crafter extends AbstractFirstRole {
 				second_skill_hunger_cost,
 				second_skill_cooldown_ticks
 		);
-
-		// 4. 아이템 종류 판별 및 속성 부여
-		String materialName = itemStack.getType().name();
-		boolean isApplied = false;
-
-		if (materialName.endsWith("_PICKAXE") || materialName.endsWith("_AXE") || materialName.endsWith("_SHOVEL") || materialName.endsWith("_HOE")) {
-			AttributeModifier speedMod = new AttributeModifier(
-					buffKey, this.second_skill_mining_efficiency_buff, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND);
-			meta.addAttributeModifier(Attribute.MINING_EFFICIENCY, speedMod);
-
-			updateLore(meta, "&6[장인의 가호: 채굴 속도 증가]");
-			isApplied = true;
-
-		} else if (materialName.endsWith("_SWORD") || materialName.equals("TRIDENT")) {
-			AttributeModifier damageMod = new AttributeModifier(
-					buffKey, this.second_skill_attack_damage_buff, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.MAINHAND);
-			meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, damageMod);
-
-			updateLore(meta, "&c[장인의 가호: 공격력 증가]");
-			isApplied = true;
-		}
-
-		if (!isApplied) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 수 있는 장비(무기/도구)가 아닙니다!"));
-			return;
-		}
-		if (!consumeEnergy(p, this.second_skill_hunger_cost)) return;
-
-		meta.getPersistentDataContainer().set(buffKey, PersistentDataType.BYTE, (byte) 1);
-		itemStack.setItemMeta(meta);
-		itemEntity.setItemStack(itemStack);
-
-		p.sendMessage(ColorUtils.chat(Alert.GREEN + " 장비에 임시 강화를 부여했습니다!"));
-		p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1.0f, 1.5f);
+		tempBuff.execute(p, container);
 		p.setCooldown(tool.getType(), this.second_skill_cooldown_ticks);
-	}
-
-	private void updateLore(@NotNull ItemMeta meta, String text) {
-		List<Component> lore = meta.hasLore() ? meta.lore() : new ArrayList<>();
-		if (lore == null) return;
-		lore.add(ColorUtils.chat(""));
-		lore.add(ColorUtils.chat(text));
-		meta.lore(lore);
 	}
 
 	@Override
@@ -285,9 +175,10 @@ public class Crafter extends AbstractFirstRole {
 		String page1 = """
           &0&l[ &8&l장인 가이드 &0&l ]&r
           
-          &0도적은 그림자 속에 숨어들어
-          &0적의 빈틈을 노리는 &b&l민첩함&r&0과
-          &0기술이 핵심인 암살자입니다.
+          &0장인은 뛰어난 대장 기술과
+          &0장비 가공 능력을 바탕으로 동료의
+          &0무기를 &6&l강화&r&0하고 장비를 수리하는
+          &0서포트형 전문가입니다.
           
           &7&m-----------------
           &0&l[ &1&l전직 계보 &0&l ]&r

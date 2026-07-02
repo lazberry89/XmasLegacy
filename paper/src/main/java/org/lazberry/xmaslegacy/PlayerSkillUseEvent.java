@@ -8,27 +8,27 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Emblems.Emblem;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
-import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 
 public class PlayerSkillUseEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     @Getter
     private final @NotNull Player player;
-    private final @NotNull UsingEnergy usingEnergy;
+    private final @NotNull RoleClass roleClass;
     private final @NotNull Emblem emblem;
     private final @NotNull EmblemType type;
     private boolean cancelled = false;
 
-    public PlayerSkillUseEvent(@NotNull Player player, @NotNull UsingEnergy usingEnergy, @NotNull Emblem emblem, @NotNull EmblemType type) {
+    public PlayerSkillUseEvent(@NotNull Player player, @NotNull RoleClass roleClass, @NotNull Emblem emblem, @NotNull EmblemType type) {
         this.player = player;
-        this.usingEnergy = usingEnergy;
+        this.roleClass = roleClass;
         this.emblem = emblem;
         this.type = type;
     }
 
-    public UsingEnergy getRoleInstance() {
-        return this.usingEnergy;
+    public RoleClass getRoleInstance() {
+        return this.roleClass;
     }
     public @NotNull Emblem getEmblem() {
         return this.emblem;

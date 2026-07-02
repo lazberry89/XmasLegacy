@@ -17,13 +17,13 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Emblems.Emblem;
-import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.io.File;
 import java.io.IOException;
 
-public abstract class AbstractFirstRole implements UsingEnergy {
+public abstract class AbstractFirstRole implements RoleClass {
 	private final @NotNull BasicRoles role;
     private final @NotNull @Getter XmasLegacy plugin;
 	protected final @NotNull @Getter Emblem emblem;

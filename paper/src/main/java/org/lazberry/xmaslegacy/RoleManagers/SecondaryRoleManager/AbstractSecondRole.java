@@ -5,10 +5,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Emblems.Emblem;
-import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
-public abstract class AbstractSecondRole implements UsingEnergy {
+public abstract class AbstractSecondRole implements RoleClass {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull SecondaryRoles role;
 	protected final @NotNull Emblem emblem;
