@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -23,6 +24,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import java.io.File;
 import java.io.IOException;
 
+@Slf4j
 public abstract class AbstractFirstRole implements RoleClass {
 	private final @NotNull BasicRoles role;
     private final @NotNull @Getter XmasLegacy plugin;
@@ -43,18 +45,25 @@ public abstract class AbstractFirstRole implements RoleClass {
 	public abstract void useSecondSkill(Player p);
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();
-	public abstract @NotNull ItemStack TargetEmblem();
-	public abstract @NotNull ItemStack RangeEmblem();
 	public abstract @NotNull ItemStack roleBook();
+	public @NotNull ItemStack TargetEmblem() {
+		return this.emblem.getTargetEmblem();
+	}
+	public @NotNull ItemStack RangeEmblem() {
+		return this.emblem.getRangeEmblem();
+	}
 
-    protected abstract void loadCustomStats(FileConfiguration config);
+    protected abstract void loadCustomStats(@NotNull FileConfiguration config);
 
-	public void loadRoleData(String path) {
+	public void loadRoleData(@NotNull String path) {
 		File roleFolder = new File(plugin.getDataFolder(), "roles");
 		if (!roleFolder.exists()) {
 			boolean mkdir = roleFolder.mkdirs();
-			if (!mkdir) plugin.getSLF4JLogger().error("Making Role folder Failed. Disabling plugin.");
-			plugin.getServer().getPluginManager().disablePlugin(plugin);
+			if (!mkdir) {
+				log.error("Making Role folder Failed. Disabling plugin.");
+				plugin.getServer().getPluginManager().disablePlugin(plugin);
+			}
+			log.warn("Successfully created Role folder.");
 		}
 
 		File roleFile = new File(roleFolder, path + ".yml");
@@ -69,7 +78,7 @@ public abstract class AbstractFirstRole implements RoleClass {
 		try {
 			config.save(roleFile);
 		} catch (IOException e) {
-			plugin.getSLF4JLogger().error("\uD83D\uDEA8 {}.yml 파일을 저장하는 중 오류가 발생했습니다.", path);
+			log.error("\uD83D\uDEA8 {}.yml 파일을 저장하는 중 오류가 발생했습니다.", path);
 		}
 
 		this.cooldown1 = config.getInt("cooldown.skill1");

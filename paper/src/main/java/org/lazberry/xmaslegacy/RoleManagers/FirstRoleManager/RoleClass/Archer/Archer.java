@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Archer;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Archer;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -41,7 +41,7 @@ public class Archer extends AbstractFirstRole {
 	) implements RoleContainer {}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.first_skill_hunger_cost", 3);
 		config.addDefault("stats.first_skill_arrow_speed", 2.5);
 		config.addDefault("stats.first_skill_arrow_timeout", 1200); // 60 * 20

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Knight;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Knight;
 
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -54,7 +54,7 @@ public class Knight extends AbstractFirstRole {
 	) implements RoleContainer {}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.weapon_damage", 5.0);
 		config.addDefault("stats.armor_state_value", 7.0);
 

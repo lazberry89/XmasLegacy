@@ -47,7 +47,7 @@ public class Warrior extends AbstractFirstRole implements RoleClass {
 	}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.first_skill_usable_higher_rate", 0.25);
 		config.addDefault("stats.first_skill_usable_rate", 0.5);
 		config.addDefault("stats.first_skill_hunger_cost", 3);

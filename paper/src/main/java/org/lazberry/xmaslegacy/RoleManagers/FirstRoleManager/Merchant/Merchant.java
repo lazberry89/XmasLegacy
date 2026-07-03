@@ -28,7 +28,7 @@ public class Merchant extends AbstractFirstRole {
 	}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("tool.role_weapon", "ENDER_CHEST");
 		config.addDefault("tool.role_armor", "IRON_HELMET");
 

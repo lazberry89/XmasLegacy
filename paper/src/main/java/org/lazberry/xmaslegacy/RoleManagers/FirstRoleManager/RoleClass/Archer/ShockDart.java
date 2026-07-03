@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Archer;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Archer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;

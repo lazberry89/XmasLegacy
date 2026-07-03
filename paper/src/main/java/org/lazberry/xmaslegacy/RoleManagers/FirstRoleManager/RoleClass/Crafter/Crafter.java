@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Crafter;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Crafter;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,7 +52,7 @@ public class Crafter extends AbstractFirstRole {
 	) implements RoleContainer {}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		// 1. 장인 전용 YAML 스탯 기본값 주입
 		config.addDefault("stats.first_skill_raytrace_range", 5);
 		config.addDefault("stats.first_skill_hunger_cost", 3);

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Crafter;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Crafter;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;

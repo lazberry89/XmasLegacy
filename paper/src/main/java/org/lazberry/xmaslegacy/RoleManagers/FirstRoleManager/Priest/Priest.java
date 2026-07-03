@@ -50,7 +50,7 @@ public class Priest extends AbstractFirstRole {
 	}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.weapon_attack_damage", 5.0);
 		config.addDefault("stats.armor_state_value", 5.0);
 		config.addDefault("stats.armor_toughness_value", 5.0);

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Knight;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Knight;
 
 import org.bukkit.Particle;
 import org.bukkit.Sound;

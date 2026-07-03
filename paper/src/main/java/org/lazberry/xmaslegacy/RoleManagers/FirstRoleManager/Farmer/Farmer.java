@@ -43,7 +43,7 @@ public class Farmer extends AbstractFirstRole {
 	}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.armor_state_value", 5.0);
 
 		config.addDefault("stats.first_skill_hunger_cost", 3);

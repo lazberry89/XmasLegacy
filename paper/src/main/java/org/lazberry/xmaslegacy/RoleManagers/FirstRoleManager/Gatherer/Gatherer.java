@@ -46,7 +46,7 @@ public class Gatherer extends AbstractFirstRole {
 	}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.weapon_movement_speed", 0.01);
 		config.addDefault("stats.armor_movement_speed", 0.01);
 

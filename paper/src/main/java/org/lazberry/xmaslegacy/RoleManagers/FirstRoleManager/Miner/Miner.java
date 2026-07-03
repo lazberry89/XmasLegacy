@@ -42,7 +42,7 @@ public class Miner extends AbstractFirstRole {
 	}
 
 	@Override
-	protected void loadCustomStats(FileConfiguration config) {
+	protected void loadCustomStats(@NotNull FileConfiguration config) {
 		config.addDefault("stats.first_skill_hunger_cost", 3);
 		config.addDefault("stats.first_skill_target_range", 7);
 		config.addDefault("stats.first_skill_ore_chain_loop", 5);

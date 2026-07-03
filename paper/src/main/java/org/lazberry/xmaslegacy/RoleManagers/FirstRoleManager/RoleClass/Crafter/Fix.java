@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Skills.Crafter;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Crafter;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
