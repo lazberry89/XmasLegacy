@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Rogue;
 
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -14,19 +15,20 @@ import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 @Roles
 public class Rogue extends AbstractFirstRole {
-	private Material weapon_item;
-	private Material armor_item;
+	private @Getter Material weapon_item;
+	private @Getter Material armor_item;
 
 	private Container container;
 
-	private final DaggerRush rush = new DaggerRush();
-	private final Smoke smoke = new Smoke();
+	private final @NotNull DaggerRush rush = new DaggerRush();
+	private final @NotNull Smoke smoke = new Smoke();
 
 	public record Container(
 		XmasLegacy plugin,
@@ -49,46 +51,35 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		config.addDefault("stats.first_skill_hunger_cost", 3);
-		config.addDefault("stats.first_skill_range", 10);
-		config.addDefault("stats.first_skill_speed", 2.5);
-		config.addDefault("stats.first_skill_y_velocity", 0.2);
-		config.addDefault("stats.first_skill_hit_range", 2.0);
-		config.addDefault("stats.first_skill_timeout_ticks", 20);
-		config.addDefault("stats.dagger_rush_hits", 5);
-		config.addDefault("stats.dagger_rush_damage", 2.0);
-		config.addDefault("stats.second_skill_hunger_cost", 3);
-		config.addDefault("stats.second_skill_duration", 100);
-
-		config.addDefault("tool.role_weapon", "IRON_SWORD");
-		config.addDefault("tool.role_armor", "IRON_BOOTS");
-
-		int first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
-		int first_skill_range = config.getInt("stats.first_skill_range", 10);
-		double first_skill_speed = config.getDouble("stats.first_skill_speed", 2.5);
-		double first_skill_y_velocity = config.getDouble("stats.first_skill_y_velocity", 0.2);
-		double first_skill_hit_range = config.getDouble("stats.first_skill_hit_range", 2.0);
-		int first_skill_timeout_ticks = config.getInt("stats.first_skill_timeout_ticks", 20);
-		int dagger_rush_hits = config.getInt("stats.dagger_rush_hits", 5);
-		double dagger_rush_damage = config.getDouble("stats.dagger_rush_damage", 2.0);
-		int second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 3);
-		long second_skill_duration = config.getLong("stats.second_skill_duration", 100L);
+		Config.of(config)
+				.setDefault("stats.first_skill_hunger_cost", 3)
+				.setDefault("stats.first_skill_range", 10)
+				.setDefault("stats.first_skill_speed", 2.5)
+				.setDefault("stats.first_skill_y_velocity", 0.2)
+				.setDefault("stats.first_skill_hit_range", 2.0)
+				.setDefault("stats.first_skill_timeout_ticks", 20)
+				.setDefault("stats.dagger_rush_hits", 5)
+				.setDefault("stats.dagger_rush_damage", 2.0)
+				.setDefault("stats.second_skill_hunger_cost", 3)
+				.setDefault("stats.second_skill_duration", 100)
+				.setDefault("tool.role_weapon", "IRON_SWORD")
+				.setDefault("tool.role_armor", "IRON_BOOTS");
 
 		this.weapon_item = ParseItem.parse(config.getString("tool.role_weapon"), Material.IRON_SWORD);
 		this.armor_item = ParseItem.parse(config.getString("tool.role_armor"), Material.IRON_BOOTS);
 
 		this.container = new Container(
-			getPlugin(),
-				first_skill_hunger_cost,
-				first_skill_range,
-				first_skill_speed,
-				first_skill_y_velocity,
-				first_skill_hit_range,
-				first_skill_timeout_ticks,
-				dagger_rush_hits,
-				dagger_rush_damage,
-				second_skill_hunger_cost,
-				second_skill_duration
+				getPlugin(),
+				config.getInt("stats.first_skill_hunger_cost", 3),
+				config.getInt("stats.first_skill_range", 10),
+				config.getDouble("stats.first_skill_speed", 2.5),
+				config.getDouble("stats.first_skill_y_velocity", 0.2),
+				config.getDouble("stats.first_skill_hit_range", 2.0),
+				config.getInt("stats.first_skill_timeout_ticks", 20),
+				config.getInt("stats.dagger_rush_hits", 5),
+				config.getDouble("stats.dagger_rush_damage", 2.0),
+				config.getInt("stats.second_skill_hunger_cost", 3),
+				config.getLong("stats.second_skill_duration", 100L)
 		);
 	}
 

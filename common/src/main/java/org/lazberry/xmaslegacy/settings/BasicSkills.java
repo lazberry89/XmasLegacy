@@ -12,8 +12,8 @@ public enum BasicSkills implements SkillSet {
 	DAGGER_RUSH("돌진기"),
 	SMOKE("연막탄"),
 
-	TOMAHAWK("토마호크"),
 	BLOOD_FRENZY("프렌지"),
+	TOMAHAWK("토마호크"),
 
     COMPACT_POINT("극점"),
     GRAVITY("중력장"),
