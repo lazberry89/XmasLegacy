@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 public final class GlowUtils {
 
@@ -14,7 +15,16 @@ public final class GlowUtils {
 		throw new UnsupportedOperationException("Utility class");
 	}
 
-	public static void setGlowColor(Entity entity, NamedTextColor color) {
+	/**
+	 * This method glows target entity with param2 color.
+	 * Also apply team to entity to change color.
+	 * <pre>{@code
+	 * GlowUtils.glow(target, NamedTextColor.YELLOW);
+	 * }</pre>
+	 * @param entity Target entity to give glow.
+	 * @param color target color to glow.
+	 */
+	public static void glow(@NotNull Entity entity, @NotNull NamedTextColor color) {
 		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
 		String teamName = "glow_" + color.toString();
@@ -28,7 +38,15 @@ public final class GlowUtils {
 		team.addEntity(entity);
 		entity.setGlowing(true);
 	}
-    public static void clearGlow(Entity entity) {
+
+	/**
+	 * Remove target entity's glowing.Also remove team entry for memory cleaning.
+	 * <pre>{@code
+	 * GlowUtils.clearGlow(target);
+	 * }</pre>
+	 * @param entity target entity.
+	 */
+    public static void clearGlow(@NotNull Entity entity) {
         entity.setGlowing(false);
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();

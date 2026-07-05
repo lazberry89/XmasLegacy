@@ -22,22 +22,23 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 public class DaggerRush implements Skills<Rogue.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, Rogue.@NotNull Container container) {
+	public boolean execute(@NotNull Player caster, Rogue.@NotNull Container container) {
 		Entity target = caster.getTargetEntity(container.first_skill_range(), false);
 		if (target == null) {
 			caster.sendMessage(ColorUtils.chat(Alert.RED + " 타겟이 없습니다!"));
-			return;
+			return false;
 		}
 		if (!(target instanceof LivingEntity le)) {
 			caster.sendMessage(ColorUtils.chat(Alert.RED + " 유효한 타겟이 아닙니다!"));
-			return;
+			return false;
 		}
-		if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return;
+		if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return false;
 
 		Vector vector = caster.getLocation().getDirection().normalize();
 		caster.setVelocity(vector.multiply(container.first_skill_speed()).setY(container.first_skill_y_velocity()));
 		SkillEffectManager.INSTANCE.followParticle(caster, Particle.DUST, 0.5, new Particle.DustOptions(Color.GRAY, 1.5f));
 		dashScheduler(caster, le, container);
+		return true;
 	}
 
 	private void dashScheduler(@NotNull Player caster, @NotNull LivingEntity le, Rogue.@NotNull Container container) {

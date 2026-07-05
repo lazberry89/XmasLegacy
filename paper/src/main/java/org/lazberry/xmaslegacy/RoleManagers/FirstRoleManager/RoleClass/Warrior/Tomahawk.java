@@ -24,14 +24,15 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 public class Tomahawk implements Skills<Warrior.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, Warrior.@NotNull Container container) {
-		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player caster, Warrior.@NotNull Container container) {
+		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return false;
 		Location startLoc = caster.getEyeLocation();
 		final Vector direction = startLoc.getDirection().clone().normalize().multiply(1.0);
 		final float playerYaw = caster.getLocation().getYaw();
 
 		ArmorStand axeStand = spawnAxe(caster, startLoc, playerYaw, container);
 		startScheduler(caster, axeStand, direction, container);
+		return true;
 	}
 
 	private void startScheduler(@NotNull Player caster, @NotNull ArmorStand axeStand, @NotNull Vector direction, @NotNull Warrior.@NotNull Container container) {
@@ -100,7 +101,7 @@ public class Tomahawk implements Skills<Warrior.Container>, UsingEnergy {
 			stand.setArms(true);
 			stand.setBasePlate(false);
 			stand.setMarker(true);
-			GlowUtils.setGlowColor(stand, NamedTextColor.RED);
+			GlowUtils.glow(stand, NamedTextColor.RED);
 
 			Location loc = stand.getLocation();
 			loc.setYaw(playerYaw);

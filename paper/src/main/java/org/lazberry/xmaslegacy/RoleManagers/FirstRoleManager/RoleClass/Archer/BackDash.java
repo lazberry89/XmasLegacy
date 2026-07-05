@@ -14,8 +14,8 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 public class BackDash implements Skills<Archer.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, @NotNull Archer.Container container) {
-		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player caster, @NotNull Archer.Container container) {
+		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return false;
 		caster.setInvulnerable(true);
 		caster.getWorld().createExplosion(caster.getLocation(), container.second_skill_explosion_power(), false, false);
 		Vector vector = caster.getLocation().getDirection();
@@ -25,6 +25,7 @@ public class BackDash implements Skills<Archer.Container>, UsingEnergy {
 				caster.setInvulnerable(false);
 			}
 		}, container.second_skill_invulnerable_duration());
+		return true;
 	}
 
 	@Override

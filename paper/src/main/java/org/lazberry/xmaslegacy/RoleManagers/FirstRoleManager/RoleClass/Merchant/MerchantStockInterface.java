@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -122,19 +122,19 @@ public enum MerchantStockInterface {
 		this.minerInv.setItem(3, diamond);
 	}
 
-	public void OpenStock(Player view) {
+	public void openStock(@NotNull Player view) {
 		view.openInventory(this.inv);
 		view.updateInventory();
 		view.playSound(view, Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 	}
 
-	public void OpenFarmer(Player view) {
+	public void openFarmer(@NotNull Player view) {
 		view.openInventory(this.farmInv);
 		view.updateInventory();
 		view.playSound(view, Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
 	}
 
-	public void OpenMiner(Player view) {
+	public void openMiner(@NotNull Player view) {
 		view.openInventory(this.minerInv);
 		view.updateInventory();
 		view.playSound(view, Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);

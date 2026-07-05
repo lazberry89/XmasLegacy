@@ -19,7 +19,7 @@ public enum BasicSkills implements SkillSet {
     GRAVITY("중력장"),
 
 	COMPACT_HEAL("컴팩트 힐"),
-	STEROID("불꽃의 가호"),
+	STEROID("스테로이드"),
 
 	RADIUS_HARVEST("풍요의 손길"),
 	SPEED_GROWER("시간의 축복"),

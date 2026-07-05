@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
 import org.bukkit.Sound;
 import org.bukkit.command.Command;

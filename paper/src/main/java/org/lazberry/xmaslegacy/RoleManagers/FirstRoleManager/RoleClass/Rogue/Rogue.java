@@ -51,8 +51,8 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		Config.of(config)
-				.setDefault("stats.first_skill_hunger_cost", 3)
+		var configs = Config.of(config);
+		configs.setDefault("stats.first_skill_hunger_cost", 3)
 				.setDefault("stats.first_skill_range", 10)
 				.setDefault("stats.first_skill_speed", 2.5)
 				.setDefault("stats.first_skill_y_velocity", 0.2)
@@ -70,33 +70,27 @@ public class Rogue extends AbstractFirstRole {
 
 		this.container = new Container(
 				getPlugin(),
-				config.getInt("stats.first_skill_hunger_cost", 3),
-				config.getInt("stats.first_skill_range", 10),
-				config.getDouble("stats.first_skill_speed", 2.5),
-				config.getDouble("stats.first_skill_y_velocity", 0.2),
-				config.getDouble("stats.first_skill_hit_range", 2.0),
-				config.getInt("stats.first_skill_timeout_ticks", 20),
-				config.getInt("stats.dagger_rush_hits", 5),
-				config.getDouble("stats.dagger_rush_damage", 2.0),
-				config.getInt("stats.second_skill_hunger_cost", 3),
-				config.getLong("stats.second_skill_duration", 100L)
+				configs.getValue("stats.first_skill_hunger_cost", 3),
+				configs.getValue("stats.first_skill_range", 10),
+				configs.getValue("stats.first_skill_speed", 2.5),
+				configs.getValue("stats.first_skill_y_velocity", 0.2),
+				configs.getValue("stats.first_skill_hit_range", 2.0),
+				configs.getValue("stats.first_skill_timeout_ticks", 20),
+				configs.getValue("stats.dagger_rush_hits", 5),
+				configs.getValue("stats.dagger_rush_damage", 2.0),
+				configs.getValue("stats.second_skill_hunger_cost", 3),
+				configs.getValue("stats.second_skill_duration", 100L)
 		);
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		rush.execute(p, container);
-		p.setCooldown(tool, this.getCooldown1() * 20);
+		handleSkill(p, emblem, EmblemType.TARGET, rush, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		smoke.execute(p, container);
-		p.setCooldown(tool, this.getCooldown2() * 20);
+		handleSkill(p, emblem, EmblemType.RANGE, smoke, container, getCooldown2());
 	}
 
 	@Override

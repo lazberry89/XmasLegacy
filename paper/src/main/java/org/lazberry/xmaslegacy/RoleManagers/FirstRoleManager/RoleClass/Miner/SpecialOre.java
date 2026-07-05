@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Miner;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

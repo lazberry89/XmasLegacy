@@ -26,7 +26,7 @@ public class Warrior extends AbstractFirstRole implements RoleClass {
 	private Material armor_item;
 
 	private final @NotNull Tomahawk tomahawk = new Tomahawk();
-	private final @NotNull BloodFrenzy frenzy;
+	private final @NotNull BloodFrenzy frenzy = new BloodFrenzy();
 
 	private Container container;
 
@@ -47,13 +47,12 @@ public class Warrior extends AbstractFirstRole implements RoleClass {
 	public Warrior() {
 		super(BasicRoles.WARRIOR);
 		this.loadRoleData(getRole().name().toLowerCase());
-		this.frenzy = new BloodFrenzy(getCooldown1());
 	}
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		Config.of(config)
-				.setDefault("stats.first_skill_usable_higher_rate", 0.25)
+		var configs = Config.of(config);
+		configs.setDefault("stats.first_skill_usable_higher_rate", 0.25)
 				.setDefault("stats.first_skill_usable_rate", 0.5)
 				.setDefault("stats.first_skill_hunger_cost", 3)
 				.setDefault("stats.first_skill_duration", 60)
@@ -70,31 +69,27 @@ public class Warrior extends AbstractFirstRole implements RoleClass {
 
 		this.container = new Container(
 				getPlugin(),
-				config.getDouble("stats.first_skill_usable_higher_rate", 0.25),
-				config.getDouble("stats.first_skill_usable_rate", 0.5),
-				config.getInt("stats.first_skill_hunger_cost", 3),
-				config.getInt("stats.first_skill_duration", 60),
-				config.getInt("stats.first_skill_strength_amplifier2", 2),
-				config.getInt("stats.first_skill_strength_amplifier", 1),
-				config.getInt("stats.first_skill_speed_amplifier", 1),
-				config.getInt("stats.second_skill_hunger_cost", 3),
-				config.getDouble("stats.second_skill_damage", 6.0),
+				configs.getValue("stats.first_skill_usable_higher_rate", 0.25),
+				configs.getValue("stats.first_skill_usable_rate", 0.5),
+				configs.getValue("stats.first_skill_hunger_cost", 3),
+				configs.getValue("stats.first_skill_duration", 60),
+				configs.getValue("stats.first_skill_strength_amplifier2", 2),
+				configs.getValue("stats.first_skill_strength_amplifier", 1),
+				configs.getValue("stats.first_skill_speed_amplifier", 1),
+				configs.getValue("stats.second_skill_hunger_cost", 3),
+				configs.getValue("stats.second_skill_damage", 6.0),
 				this.weapon_item
 		);
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
-		this.frenzy.execute(p, container);
+		handleSkill(p, emblem, EmblemType.TARGET, frenzy, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		tomahawk.execute(p, container);
-		p.setCooldown(tool, this.getCooldown2() * 20);
+		handleSkill(p, emblem, EmblemType.RANGE, tomahawk, container, getCooldown2());
 	}
 
 	@Override

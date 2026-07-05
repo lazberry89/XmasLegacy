@@ -93,19 +93,12 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NotNull Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
-		ItemStack emblem = p.getInventory().getItemInMainHand(); //TODO 특수탄 장전으로 엠뷸럼과 활의 기능 분리가 필요해보임
-		if (p.getCooldown(emblem) > 0) return;
-		this.shockDart.execute(p, this.container);
-		p.setCooldown(emblem, getCooldown1() * 20);
+		handleSkill(p, emblem, EmblemType.TARGET, shockDart, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NotNull Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		this.backDash.execute(p, this.container);
-		p.setCooldown(tool, getCooldown2() * 20);
+		handleSkill(p, emblem, EmblemType.RANGE, backDash, container, getCooldown2());
 	}
 
 	@Override

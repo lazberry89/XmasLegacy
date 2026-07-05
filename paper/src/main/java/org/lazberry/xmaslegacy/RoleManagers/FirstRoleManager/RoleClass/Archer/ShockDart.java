@@ -19,8 +19,8 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 public class ShockDart implements Skills<Archer.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player p, @NotNull Archer.Container container) {
-		if (!consumeEnergy(p, container.first_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player p, @NotNull Archer.Container container) {
+		if (!consumeEnergy(p, container.first_skill_hunger_cost())) return false;
 		p.getWorld().playSound(p.getLocation(), org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.0f, 0.6f);
 
 		Arrow arrow = p.launchProjectile(Arrow.class);
@@ -44,6 +44,7 @@ public class ShockDart implements Skills<Archer.Container>, UsingEnergy {
 				arrow.remove();
 			}
 		}, container.first_skill_arrow_timeout());
+		return true;
 	}
 
 

@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -54,80 +55,56 @@ public class Mage extends AbstractFirstRole {
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		config.addDefault("stats.first_skill_hunger_cost", 6);
-		config.addDefault("stats.first_skill_speed", 0.4);
-		config.addDefault("stats.first_skill_max_ticks", 60);
-		config.addDefault("stats.first_skill_explosion_power", 4.0);
-		config.addDefault("stats.first_skill_slow_range_x", 1.3);
-		config.addDefault("stats.first_skill_slow_range_y", 2.0);
-		config.addDefault("stats.first_skill_slow_range_z", 1.3);
-		config.addDefault("stats.first_skill_slow_duration", 20);
-		config.addDefault("stats.first_skill_slow_amplifier", 1);
+		var configs = Config.of(config);
+		configs.setDefault("stats.first_skill_hunger_cost", 6)
+				.setDefault("stats.first_skill_speed", 0.4)
+				.setDefault("stats.first_skill_max_ticks", 60)
+				.setDefault("stats.first_skill_explosion_power", 4.0)
+				.setDefault("stats.first_skill_slow_range_x", 1.3)
+				.setDefault("stats.first_skill_slow_range_y", 2.0)
+				.setDefault("stats.first_skill_slow_range_z", 1.3)
+				.setDefault("stats.first_skill_slow_duration", 20)
+				.setDefault("stats.first_skill_slow_amplifier", 1)
+				.setDefault("stats.second_skill_hunger_cost", 8)
+				.setDefault("stats.second_skill_distance", 8.0)
+				.setDefault("stats.second_skill_max_ticks", 50)
+				.setDefault("stats.second_skill_pull_strength", 0.35)
+				.setDefault("stats.second_skill_pull_threshold", 0.6)
+				.setDefault("stats.second_skill_display_material", "PURPLE_STAINED_GLASS")
+				.setDefault("tool.role_weapon", "BREEZE_ROD")
+				.setDefault("tool.role_armor", "DIAMOND_CHESTPLATE");
 
-		config.addDefault("stats.second_skill_hunger_cost", 8);
-		config.addDefault("stats.second_skill_distance", 8.0);
-		config.addDefault("stats.second_skill_max_ticks", 50);
-		config.addDefault("stats.second_skill_pull_strength", 0.35);
-		config.addDefault("stats.second_skill_pull_threshold", 0.6);
-		config.addDefault("stats.second_skill_display_material", "PURPLE_STAINED_GLASS");
-
-		config.addDefault("tool.role_weapon", "BREEZE_ROD");
-		config.addDefault("tool.role_armor", "DIAMOND_CHESTPLATE");
-
-		int first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 6);
-		double first_skill_speed = config.getDouble("stats.first_skill_speed", 0.4);
-		int first_skill_max_ticks = config.getInt("stats.first_skill_max_ticks", 60);
-		double first_skill_explosion_power = config.getDouble("stats.first_skill_explosion_power", 4.0);
-		double first_skill_slow_range_x = config.getDouble("stats.first_skill_slow_range_x", 1.3);
-		double first_skill_slow_range_y = config.getDouble("stats.first_skill_slow_range_y", 2.0);
-		double first_skill_slow_range_z = config.getDouble("stats.first_skill_slow_range_z", 1.3);
-		int first_skill_slow_duration = config.getInt("stats.first_skill_slow_duration", 20);
-		int first_skill_slow_amplifier = config.getInt("stats.first_skill_slow_amplifier", 1);
-
-		int second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 8);
-		double second_skill_distance = config.getDouble("stats.second_skill_distance", 8.0);
-		int second_skill_max_ticks = config.getInt("stats.second_skill_max_ticks", 50);
-		double second_skill_pull_strength = config.getDouble("stats.second_skill_pull_strength", 0.35);
-		double second_skill_pull_threshold = config.getDouble("stats.second_skill_pull_threshold", 0.6);
-
-		this.weapon_item = ParseItem.parse(config.getString("tool.role_weapon"), Material.BREEZE_ROD);
-		this.armor_item = ParseItem.parse(config.getString("tool.role_armor"), Material.DIAMOND_CHESTPLATE);
-		Material second_skill_display_material = ParseItem.parse(config.getString("stats.second_skill_display_material"), Material.PURPLE_STAINED_GLASS);
+		this.weapon_item = ParseItem.parse(configs.getValue("tool.role_weapon"), Material.BREEZE_ROD);
+		this.armor_item = ParseItem.parse(configs.getValue("tool.role_armor"), Material.DIAMOND_CHESTPLATE);
 
 		this.container = new Container(
 				getPlugin(),
-				first_skill_hunger_cost,
-				first_skill_speed,
-				first_skill_max_ticks,
-				first_skill_explosion_power,
-				first_skill_slow_range_x,
-				first_skill_slow_range_y,
-				first_skill_slow_range_z,
-				first_skill_slow_duration,
-				first_skill_slow_amplifier,
-				second_skill_hunger_cost,
-				second_skill_distance,
-				second_skill_display_material,
-				second_skill_max_ticks,
-				second_skill_pull_strength,
-				second_skill_pull_threshold
+				configs.getValue("stats.first_skill_hunger_cost", 6),
+				configs.getValue("stats.first_skill_speed", 0.4),
+				configs.getValue("stats.first_skill_max_ticks", 60),
+				configs.getValue("stats.first_skill_explosion_power", 4.0),
+				configs.getValue("stats.first_skill_slow_range_x", 1.3),
+				configs.getValue("stats.first_skill_slow_range_y", 2.0),
+				configs.getValue("stats.first_skill_slow_range_z", 1.3),
+				configs.getValue("stats.first_skill_slow_duration", 20),
+				configs.getValue("stats.first_skill_slow_amplifier", 1),
+				configs.getValue("stats.second_skill_hunger_cost", 8),
+				configs.getValue("stats.second_skill_distance", 8.0),
+				ParseItem.parse(configs.getValue("stats.second_skill_display_material"), Material.PURPLE_STAINED_GLASS),
+				configs.getValue("stats.second_skill_max_ticks", 50),
+				configs.getValue("stats.second_skill_pull_strength", 0.35),
+				configs.getValue("stats.second_skill_pull_threshold", 0.6)
 		);
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		point.execute(p, container);
-		p.setCooldown(tool, getCooldown1() * 20);
+		handleSkill(p, emblem, EmblemType.TARGET, point, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		gravity.execute(p, container);
-		p.setCooldown(tool, getCooldown2() * 20);
+		handleSkill(p, emblem, EmblemType.RANGE, gravity, container, getCooldown2());
 	}
 
 	@Override

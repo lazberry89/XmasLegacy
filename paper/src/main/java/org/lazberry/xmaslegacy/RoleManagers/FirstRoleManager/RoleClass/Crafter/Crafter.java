@@ -12,21 +12,14 @@ import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
+import org.lazberry.xmaslegacy.Utils.ParseItem;
 
 @Roles
 public class Crafter extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
-	private int first_skill_raytrace_range;
-	private int first_skill_hunger_cost;
-	private double first_skill_repair_percent;
-	private int first_skill_cooldown_ticks;
-	private int second_skill_raytrace_range;
-	private double second_skill_mining_efficiency_buff;
-	private double second_skill_attack_damage_buff;
-	private int second_skill_hunger_cost;
-	private int second_skill_cooldown_ticks;
 
 	private Container container;
 
@@ -39,7 +32,6 @@ public class Crafter extends AbstractFirstRole {
 	}
 
 	public record Container(
-		ItemStack item,
 		int first_skill_raytrace_range,
 		int first_skill_hunger_cost,
 		double first_skill_repair_percent,
@@ -53,89 +45,42 @@ public class Crafter extends AbstractFirstRole {
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		// 1. 장인 전용 YAML 스탯 기본값 주입
-		config.addDefault("stats.first_skill_raytrace_range", 5);
-		config.addDefault("stats.first_skill_hunger_cost", 3);
-		config.addDefault("stats.first_skill_repair_percent", 0.21);
-		config.addDefault("stats.first_skill_cooldown_ticks", 100);
+		var configs = Config.of(config);
+		configs.setDefault("stats.first_skill_raytrace_range", 5)
+				.setDefault("stats.first_skill_hunger_cost", 3)
+				.setDefault("stats.first_skill_repair_percent", 0.21)
+				.setDefault("stats.first_skill_cooldown_ticks", 100)
+				.setDefault("stats.second_skill_raytrace_range", 5)
+				.setDefault("stats.second_skill_mining_efficiency_buff", 2.0)
+				.setDefault("stats.second_skill_attack_damage_buff", 2.0)
+				.setDefault("stats.second_skill_hunger_cost", 5)
+				.setDefault("stats.second_skill_cooldown_ticks", 200)
+				.setDefault("tool.role_weapon", "ANVIL")
+				.setDefault("tool.role_armor", "IRON_CHESTPLATE");
 
-		config.addDefault("stats.second_skill_raytrace_range", 5);
-		config.addDefault("stats.second_skill_mining_efficiency_buff", 2.0);
-		config.addDefault("stats.second_skill_attack_damage_buff", 2.0);
-		config.addDefault("stats.second_skill_hunger_cost", 5);
-		config.addDefault("stats.second_skill_cooldown_ticks", 200);
-
-		config.addDefault("tool.role_weapon", "ANVIL");
-		config.addDefault("tool.role_armor", "IRON_CHESTPLATE");
-
-		// 2. 파일 변수 바인딩 수립
-		this.first_skill_raytrace_range = config.getInt("stats.first_skill_raytrace_range", 5);
-		this.first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
-		this.first_skill_repair_percent = config.getDouble("stats.first_skill_repair_percent", 0.21);
-		this.first_skill_cooldown_ticks = config.getInt("stats.first_skill_cooldown_ticks", 100);
-
-		this.second_skill_raytrace_range = config.getInt("stats.second_skill_raytrace_range", 5);
-		this.second_skill_mining_efficiency_buff = config.getDouble("stats.second_skill_mining_efficiency_buff", 2.0);
-		this.second_skill_attack_damage_buff = config.getDouble("stats.second_skill_attack_damage_buff", 2.0);
-		this.second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 5);
-		this.second_skill_cooldown_ticks = config.getInt("stats.second_skill_cooldown_ticks", 200);
-
-		Material weapon;
-		try {
-			weapon = Material.valueOf(config.getString("tool.role_weapon"));
-		} catch (IllegalArgumentException e) {
-			weapon = Material.ANVIL;
-		}
-		this.weapon_item = weapon;
-
-		Material armor;
-		try {
-			armor = Material.valueOf(config.getString("tool.role_armor"));
-		} catch (IllegalArgumentException e) {
-			armor = Material.IRON_CHESTPLATE;
-		}
-		this.armor_item = armor;
+		this.container = new Container(
+				configs.getValue("stats.first_skill_raytrace_range", 5),
+				configs.getValue("stats.first_skill_hunger_cost", 3),
+				configs.getValue("stats.first_skill_repair_percent", 0.21),
+				configs.getValue("stats.first_skill_cooldown_ticks", 100),
+				configs.getValue("stats.second_skill_raytrace_range", 5),
+				configs.getValue("stats.second_skill_mining_efficiency_buff", 2.0),
+				configs.getValue("stats.second_skill_attack_damage_buff", 2.0),
+				configs.getValue("stats.second_skill_hunger_cost", 5),
+				configs.getValue("stats.second_skill_cooldown_ticks", 200)
+		);
+		this.weapon_item = ParseItem.parse(configs.getValue("tool.role_weapon"), Material.ANVIL);
+		this.armor_item = ParseItem.parse(configs.getValue("tool.role_armor"), Material.IRON_CHESTPLATE);
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-
-		this.container = new Container(
-				tool,
-				first_skill_raytrace_range,
-				first_skill_hunger_cost,
-				first_skill_repair_percent,
-				first_skill_cooldown_ticks,
-				second_skill_raytrace_range,
-				second_skill_mining_efficiency_buff,
-				second_skill_attack_damage_buff,
-				second_skill_hunger_cost,
-				second_skill_cooldown_ticks
-		);
-		fix.execute(p, container);
-		p.setCooldown(tool, this.first_skill_cooldown_ticks);
+		handleSkill(p, emblem, EmblemType.TARGET, fix, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		this.container = new Container(
-				tool,
-				first_skill_raytrace_range,
-				first_skill_hunger_cost,
-				first_skill_repair_percent,
-				first_skill_cooldown_ticks,
-				second_skill_raytrace_range,
-				second_skill_mining_efficiency_buff,
-				second_skill_attack_damage_buff,
-				second_skill_hunger_cost,
-				second_skill_cooldown_ticks
-		);
-		tempBuff.execute(p, container);
-		p.setCooldown(tool.getType(), this.second_skill_cooldown_ticks);
+		handleSkill(p, emblem, EmblemType.RANGE, tempBuff, container, getCooldown2());
 	}
 
 	@Override
@@ -198,8 +143,6 @@ public class Crafter extends AbstractFirstRole {
           &0일정 버프가 붙는다.
           &7&m-----------------
           """, getCooldown1(), getCooldown2());
-
-		// 부모 클래스의 메서드 활용 (2페이지 구성)
 		return createGuideBook("장인", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", page1, page2);
 	}
 }

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;

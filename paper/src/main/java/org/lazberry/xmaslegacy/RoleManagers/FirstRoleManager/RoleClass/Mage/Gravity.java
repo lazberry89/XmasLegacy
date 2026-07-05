@@ -31,14 +31,14 @@ public class Gravity implements Skills<Mage.Container>, UsingEnergy {
 	}
 
 	@Override
-	public void execute(@NotNull Player caster, Mage.@NotNull Container container) {
-		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player caster, Mage.@NotNull Container container) {
+		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return false;
 		final @NotNull Location center = caster.getEyeLocation()
 				.add(caster.getLocation().getDirection().multiply(container.second_skill_distance()));
 
 		if (center.getBlock().getType().isSolid()) {
 			caster.sendMessage(ColorUtils.chat(Alert.RED + " 해당 위치에 스킬을 사용할 수 없습니다!"));
-			return;
+			return false;
 		}
 		List<BlockDisplay> cores = new ArrayList<>();
 		for (int i = 0; i < 3; i++)
@@ -48,6 +48,7 @@ public class Gravity implements Skills<Mage.Container>, UsingEnergy {
 
 		caster.getWorld().playSound(center, Sound.ENTITY_ZOMBIE_VILLAGER_CONVERTED, 1.0f, 0.7f);
 		startEffectTask(caster, cores, center, container);
+		return true;
 	}
 
 	private void particleEffect(@NotNull Location center) {

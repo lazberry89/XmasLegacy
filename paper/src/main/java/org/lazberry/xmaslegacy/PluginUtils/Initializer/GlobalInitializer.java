@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.LogCommands.LogCommand;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Miner.SpecialOre;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
 import org.lazberry.xmaslegacy.RuleCommands.RuleCommand;
 import org.lazberry.xmaslegacy.ServerJoinListener;
 import org.lazberry.xmaslegacy.ServerPrefix.ChatPrefixListener;

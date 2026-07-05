@@ -17,8 +17,8 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 public class Smoke implements Skills<Rogue.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, Rogue.@NotNull Container container) {
-		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player caster, Rogue.@NotNull Container container) {
+		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return false;
 
 		ItemStack[] armorContents = caster.getInventory().getArmorContents().clone();
 		Particle.DustOptions dust = new Particle.DustOptions(Color.GRAY, 5.0f);
@@ -35,6 +35,7 @@ public class Smoke implements Skills<Rogue.Container>, UsingEnergy {
 					caster.getInventory().setArmorContents(armorContents);
 			}
 		}, container.second_skill_duration());
+		return true;
 	}
 
 	@Override

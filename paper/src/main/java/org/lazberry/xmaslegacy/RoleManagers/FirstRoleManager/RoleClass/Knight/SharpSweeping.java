@@ -26,8 +26,8 @@ import java.util.UUID;
 public class SharpSweeping implements Skills<Knight.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, Knight.@NotNull Container container) {
-		if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player caster, Knight.@NotNull Container container) {
+		if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return false;
 		Vector direction = caster.getLocation().getDirection().normalize();
 		caster.setVelocity(direction.multiply(container.first_skill_speed()).setY(container.first_skill_y_velocity()));
 
@@ -70,6 +70,7 @@ public class SharpSweeping implements Skills<Knight.Container>, UsingEnergy {
 				ticks++;
 			}
 		}.runTaskTimer(XmasLegacy.getInstance(), 0L, 1L);
+		return true;
 	}
 
 	@Override

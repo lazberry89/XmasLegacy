@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Gatherer;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Gatherer;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.CompassMeta;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Roles;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
@@ -47,23 +48,21 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		config.addDefault("stats.weapon_movement_speed", 0.01);
-		config.addDefault("stats.armor_movement_speed", 0.01);
-
-		config.addDefault("stats.first_skill_hunger_cost", 3);
-		config.addDefault("stats.first_skill_target_range", 7);
-		config.addDefault("stats.first_skill_particle_count", 15);
-		config.addDefault("stats.first_skill_particle_offset", 0.5);
-		config.addDefault("stats.first_skill_particle_speed", 0.01);
-		config.addDefault("stats.first_skill_particle_size", 1.5);
-
-		config.addDefault("stats.second_skill_hunger_cost", 8);
-		config.addDefault("stats.second_skill_entity_range", 12);
-		config.addDefault("stats.second_skill_container_range", 8);
-		config.addDefault("stats.second_skill_glow_duration", 40L);
-
-		config.addDefault("tool.role_weapon", "COMPASS");
-		config.addDefault("tool.role_armor", "GOLDEN_BOOTS");
+		var configs = Config.of(config);
+		configs.setDefault("stats.weapon_movement_speed", 0.01)
+				.setDefault("stats.armor_movement_speed", 0.01)
+				.setDefault("stats.first_skill_hunger_cost", 3)
+				.setDefault("stats.first_skill_target_range", 7)
+				.setDefault("stats.first_skill_particle_count", 15)
+				.setDefault("stats.first_skill_particle_offset", 0.5)
+				.setDefault("stats.first_skill_particle_speed", 0.01)
+				.setDefault("stats.first_skill_particle_size", 1.5)
+				.setDefault("stats.second_skill_hunger_cost", 8)
+				.setDefault("stats.second_skill_entity_range", 12)
+				.setDefault("stats.second_skill_container_range", 8)
+				.setDefault("stats.second_skill_glow_duration", 40L)
+				.setDefault("tool.role_weapon", "COMPASS")
+				.setDefault("tool.role_armor", "GOLDEN_BOOTS");
 
 		this.weapon_movement_speed = config.getDouble("stats.weapon_movement_speed", 0.01);
 		this.armor_movement_speed = config.getDouble("stats.armor_movement_speed", 0.01);

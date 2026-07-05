@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

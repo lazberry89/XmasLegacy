@@ -29,22 +29,22 @@ import java.util.List;
 public class TempBuff implements Skills<Crafter.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, Crafter.@NotNull Container container) {
+	public boolean execute(@NotNull Player caster, Crafter.@NotNull Container container) {
 		Entity target = caster.getTargetEntity(container.second_skill_raytrace_range(), false);
 		if (!(target instanceof Item itemEntity)) {
 			caster.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 아이템(드롭된 아이템)을 조준해주세요!"));
-			return;
+			return false;
 		}
 
 		ItemStack itemStack = itemEntity.getItemStack();
 		ItemMeta meta = itemStack.getItemMeta();
-		if (meta == null) return;
+		if (meta == null) return false;
 
 
 		NamespacedKey buffKey = KeyUtils.get("crafter_buff");
 		if (meta.getPersistentDataContainer().has(buffKey, PersistentDataType.BYTE)) {
 			caster.sendMessage(ColorUtils.chat(Alert.RED + " 이미 장인의 가호가 깃든 아이템입니다!"));
-			return;
+			return false;
 		}
 
 		String materialName = itemStack.getType().name();
@@ -69,9 +69,9 @@ public class TempBuff implements Skills<Crafter.Container>, UsingEnergy {
 
 		if (!isApplied) {
 			caster.sendMessage(ColorUtils.chat(Alert.RED + " 강화할 수 있는 장비(무기/도구)가 아닙니다!"));
-			return;
+			return false;
 		}
-		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return;
+		if (!consumeEnergy(caster, container.second_skill_hunger_cost())) return false;
 
 		meta.getPersistentDataContainer().set(buffKey, PersistentDataType.BYTE, (byte) 1);
 		itemStack.setItemMeta(meta);
@@ -79,6 +79,7 @@ public class TempBuff implements Skills<Crafter.Container>, UsingEnergy {
 
 		caster.sendMessage(ColorUtils.chat(Alert.GREEN + " 장비에 임시 강화를 부여했습니다!"));
 		caster.playSound(caster.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1.0f, 1.5f);
+		return true;
 	}
 
 	private void updateLore(@NotNull ItemMeta meta, String text) {

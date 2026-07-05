@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Priest;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Priest;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

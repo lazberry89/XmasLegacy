@@ -1,5 +1,6 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -22,10 +23,11 @@ public enum PriceManager {
 	private final @NotNull Inventory purchaseInv;
 	private @Nullable Inventory shopInv;
 	private final @NotNull Map<Integer, Product> shopItem = new HashMap<>();
+	@Getter
 	private Integer selectedSlot;
 	private @Nullable Product purchaseItem;
 	private @Nullable UUID owner;
-	ItemStack bg = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.GRAY_STAINED_GLASS_PANE)
+	final ItemStack bg = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.GRAY_STAINED_GLASS_PANE)
 			.setName(ColorUtils.chat(""))
 			.setLore(ColorUtils.chat(""))
 			.hideAllFlags()
@@ -53,10 +55,6 @@ public enum PriceManager {
 		return shopItem.get(slot);
 	}
 
-	public Integer getSelectedSlot() {
-		return this.selectedSlot;
-	}
-
 	public void setSlot(Integer selectedSlot) {
 		this.selectedSlot = selectedSlot;
 	}
@@ -72,22 +70,22 @@ public enum PriceManager {
 	public Inventory PriceSet() {
 		if (selectedSlot == null) return MerchantShop();
 		Product prd =  getProduct(getSelectedSlot());
-		ItemStack priceUp = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.RED_STAINED_GLASS_PANE)
+		ItemStack priceUp = ItemBuilder.of(XmasLegacy.getInstance(), Material.RED_STAINED_GLASS_PANE)
 				.setName(ColorUtils.chat("&c&l가격 올리기"))
 				.setLore(ColorUtils.chat("&7상품의 가격에서 &6+500&7을 추가합니다."), ColorUtils.chat(String.format("현재가격: &6&l%s", prd == null ? "-" :  prd.getPrice())))
 				.hideAllFlags()
 				.build().clone();
-		ItemStack priceDown = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.BLUE_STAINED_GLASS_PANE)
+		ItemStack priceDown = ItemBuilder.of(XmasLegacy.getInstance(), Material.BLUE_STAINED_GLASS_PANE)
 				.setName(ColorUtils.chat("&9&l가격 내리기"))
 				.setLore(ColorUtils.chat("&7상품의 가격에서 &6500&7을 차감합니다."), ColorUtils.chat(String.format("현재가격: &6&l%s", prd == null ? "-" : prd.getPrice())))
 				.hideAllFlags()
 				.build().clone();
-		ItemStack done = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.LIME_STAINED_GLASS_PANE)
+		ItemStack done = ItemBuilder.of(XmasLegacy.getInstance(), Material.LIME_STAINED_GLASS_PANE)
 				.setName(ColorUtils.chat("&a&l등록하기"))
 				.setLore(ColorUtils.chat("&7상품을 등록합니다."), ColorUtils.chat(String.format("&7판매가격: %s", prd == null ? "-" : prd.getPrice())))
 				.hideAllFlags()
 				.build().clone();
-		ItemStack back = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.BARRIER)
+		ItemStack back = ItemBuilder.of(XmasLegacy.getInstance(), Material.BARRIER)
 				.setName(ColorUtils.chat("&c&l뒤로가기"))
 				.setLore(ColorUtils.chat("&7클릭하여 상점메뉴로 돌아갑니다."))
 				.hideAllFlags()
@@ -107,17 +105,17 @@ public enum PriceManager {
 	public void reloadIcons() {
 		if (selectedSlot == null) return;
 		Product prd =  getProduct(getSelectedSlot());
-		ItemStack priceUp = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.RED_STAINED_GLASS_PANE)
+		ItemStack priceUp = ItemBuilder.of(XmasLegacy.getInstance(), Material.RED_STAINED_GLASS_PANE)
 				.setName(ColorUtils.chat("&c&l가격 올리기"))
 				.setLore(ColorUtils.chat("&7상품의 가격에서 &6+500&7을 추가합니다."), ColorUtils.chat(String.format("현재가격: &6&l%s", prd == null ? "-" :  prd.getPrice())))
 				.hideAllFlags()
 				.build().clone();
-		ItemStack priceDown = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.BLUE_STAINED_GLASS_PANE)
+		ItemStack priceDown = ItemBuilder.of(XmasLegacy.getInstance(), Material.BLUE_STAINED_GLASS_PANE)
 				.setName(ColorUtils.chat("&9&l가격 내리기"))
 				.setLore(ColorUtils.chat("&7상품의 가격에서 &6500&7을 차감합니다."), ColorUtils.chat(String.format("현재가격: &6&l%s", prd == null ? "-" : prd.getPrice())))
 				.hideAllFlags()
 				.build().clone();
-		ItemStack done = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.LIME_STAINED_GLASS_PANE)
+		ItemStack done = ItemBuilder.of(XmasLegacy.getInstance(), Material.LIME_STAINED_GLASS_PANE)
 				.setName(ColorUtils.chat("&a&l등록하기"))
 				.setLore(ColorUtils.chat("&7상품을 등록합니다."), ColorUtils.chat(String.format("&7판매가격: %s", prd == null ? "-" : prd.getPrice())))
 				.hideAllFlags()
@@ -127,10 +125,10 @@ public enum PriceManager {
 		this.priceInv.setItem(8, done);
 	}
 
-	public Inventory MerchantShop() {
+	public @NotNull Inventory MerchantShop() {
 		if (this.shopInv == null) {
 			this.shopInv = Bukkit.createInventory(null, 54, Constants.SHOP_TITLE);
-			ItemStack noProduct = ItemBuilder.of(JavaPlugin.getPlugin(XmasLegacy.class), Material.BARRIER)
+			ItemStack noProduct = ItemBuilder.of(XmasLegacy.getInstance(), Material.BARRIER)
 					.setName(ColorUtils.chat("&c&l등록된 상품이 없습니다!"))
 					.setLore(ColorUtils.chat("&7상점 주인장이 좋은걸 언젠간 올려 주겠죠?"))
 					.hideAllFlags()

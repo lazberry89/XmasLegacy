@@ -64,8 +64,8 @@ public interface RoleClass {
 	}
 
 	@CheckReturnValue
-	default boolean isSkillCancelled(@NotNull Player p, @NotNull RoleClass roleClass, @NotNull Emblem emblem, @NotNull EmblemType emblemType) {
-		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, roleClass, emblem, emblemType);
+	default boolean isSkillCancelled(@NotNull Player p, @NotNull Emblem emblem, @NotNull EmblemType emblemType) {
+		PlayerSkillUseEvent skillUse = new PlayerSkillUseEvent(p, this, emblem, emblemType);
 		Bukkit.getPluginManager().callEvent(skillUse);
 
 		ItemStack tool = p.getInventory().getItemInMainHand();
@@ -76,5 +76,18 @@ public interface RoleClass {
 			return true;
 		}
 		return skillUse.isCancelled();
+	}
+
+	default <R extends RoleContainer> void handleSkill(
+			@NotNull Player caster,
+			@NotNull Emblem emblem,
+			@NotNull EmblemType emblemType,
+			@NotNull Skills<R> skill,
+			R container,
+			int tick) {
+		if (isSkillCancelled(caster, emblem, emblemType)) return;
+		ItemStack tool = caster.getInventory().getItemInMainHand();
+		if (skill.execute(caster, container))
+			caster.setCooldown(tool, tick * 20);
 	}
 }

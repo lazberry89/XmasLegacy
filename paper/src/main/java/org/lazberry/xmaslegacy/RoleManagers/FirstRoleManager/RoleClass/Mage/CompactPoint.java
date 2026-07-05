@@ -22,8 +22,8 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 public class CompactPoint implements Skills<Mage.Container>, UsingEnergy {
 
 	@Override
-	public void execute(@NotNull Player caster, Mage.@NotNull Container container) {
-		if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return;
+	public boolean execute(@NotNull Player caster, Mage.@NotNull Container container) {
+		if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return false;
 		Location startLoc = caster.getEyeLocation();
 		Vector dir = startLoc.getDirection().normalize().multiply(container.first_skill_speed());
 
@@ -59,6 +59,7 @@ public class CompactPoint implements Skills<Mage.Container>, UsingEnergy {
 				ticks++;
 			}
 		}.runTaskTimer(container.plugin(), 0, 1);
+		return true;
 	}
 
 	private void explode(Location loc, Player source, Mage.@NotNull Container container) {

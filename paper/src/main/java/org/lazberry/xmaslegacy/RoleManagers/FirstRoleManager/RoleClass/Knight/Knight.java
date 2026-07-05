@@ -14,7 +14,9 @@ import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
+import org.lazberry.xmaslegacy.Utils.ParseItem;
 
 @Roles
 public class Knight extends AbstractFirstRole {
@@ -33,7 +35,6 @@ public class Knight extends AbstractFirstRole {
 	}
 
 	public record Container(
-			double armor_state_value,
 			int first_skill_hunger_cost,
 			double first_skill_speed,
 			double first_skill_y_velocity,
@@ -55,105 +56,64 @@ public class Knight extends AbstractFirstRole {
 
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		config.addDefault("stats.weapon_damage", 5.0);
-		config.addDefault("stats.armor_state_value", 7.0);
+		var configs = Config.of(config);
+		configs.setDefault("stats.weapon_damage", 5.0)
+				.setDefault("stats.armor_state_value", 7.0)
+				.setDefault("stats.first_skill_hunger_cost", 3)
+				.setDefault("stats.first_skill_speed", 1.5)
+				.setDefault("stats.first_skill_y_velocity", 0.2)
+				.setDefault("stats.first_skill_max_ticks", 10)
+				.setDefault("stats.first_skill_range", 1.5)
+				.setDefault("stats.first_skill_tick_y_add", 0.05)
+				.setDefault("stats.first_skill_damage", 5.0)
+				.setDefault("stats.first_skill_slow_duration", 20)
+				.setDefault("stats.first_skill_slow_amplifier", 2)
+				.setDefault("stats.first_skill_knockback_multiplier", 0.5)
+				.setDefault("stats.first_skill_knockback_y", 0.2)
+				.setDefault("stats.second_skill_hunger_cost", 3)
+				.setDefault("stats.second_skill_range", 10.0)
+				.setDefault("stats.second_skill_duration", 100L)
+				.setDefault("stats.second_skill_knockback", -1.5)
+				.setDefault("stats.second_skill_knockback_y", 0.15)
+				.setDefault("stats.second_skill_ai_restore_delay", 3L)
+				.setDefault("tool.role_weapon", "IRON_SWORD")
+				.setDefault("tool.role_armor", "IRON_CHESTPLATE");
 
-		config.addDefault("stats.first_skill_hunger_cost", 3);
-		config.addDefault("stats.first_skill_speed", 1.5);
-		config.addDefault("stats.first_skill_y_velocity", 0.2);
-		config.addDefault("stats.first_skill_max_ticks", 10);
-		config.addDefault("stats.first_skill_range", 1.5);
-		config.addDefault("stats.first_skill_tick_y_add", 0.05);
-		config.addDefault("stats.first_skill_damage", 5.0);
-		config.addDefault("stats.first_skill_slow_duration", 20);
-		config.addDefault("stats.first_skill_slow_amplifier", 2);
-		config.addDefault("stats.first_skill_knockback_multiplier", 0.5);
-		config.addDefault("stats.first_skill_knockback_y", 0.2);
+		this.damage = configs.getFloat("stats.weapon_damage", 5.0f);
+		this.armor_state_value = configs.getValue("stats.armor_state_value", 7.0);
 
-		config.addDefault("stats.second_skill_hunger_cost", 3);
-		config.addDefault("stats.second_skill_range", 10.0);
-		config.addDefault("stats.second_skill_duration", 100L);
-		config.addDefault("stats.second_skill_knockback", -1.5);
-		config.addDefault("stats.second_skill_knockback_y", 0.15);
-		config.addDefault("stats.second_skill_ai_restore_delay", 3L);
-
-		config.addDefault("tool.role_weapon", "IRON_SWORD");
-		config.addDefault("tool.role_armor", "IRON_CHESTPLATE");
-
-		this.damage = (float) config.getDouble("stats.weapon_damage", 5.0);
-		this.armor_state_value = config.getDouble("stats.armor_state_value", 7.0);
-
-		int first_skill_hunger_cost = config.getInt("stats.first_skill_hunger_cost", 3);
-		double first_skill_speed = config.getDouble("stats.first_skill_speed", 1.5);
-		double first_skill_y_velocity = config.getDouble("stats.first_skill_y_velocity", 0.2);
-		int first_skill_max_ticks = config.getInt("stats.first_skill_max_ticks", 10);
-		double first_skill_range = config.getDouble("stats.first_skill_range", 1.5);
-		double first_skill_tick_y_add = config.getDouble("stats.first_skill_tick_y_add", 0.05);
-		double first_skill_damage = config.getDouble("stats.first_skill_damage", 5.0);
-		int first_skill_slow_duration = config.getInt("stats.first_skill_slow_duration", 20);
-		int first_skill_slow_amplifier = config.getInt("stats.first_skill_slow_amplifier", 2);
-		double first_skill_knockback_multiplier = config.getDouble("stats.first_skill_knockback_multiplier", 0.5);
-		double first_skill_knockback_y = config.getDouble("stats.first_skill_knockback_y", 0.2);
-
-		int second_skill_hunger_cost = config.getInt("stats.second_skill_hunger_cost", 3);
-		double second_skill_range = config.getDouble("stats.second_skill_range", 10.0);
-		long second_skill_duration = config.getLong("stats.second_skill_duration", 100L);
-		double second_skill_knockback = config.getDouble("stats.second_skill_knockback", -1.5);
-		double second_skill_knockback_y = config.getDouble("stats.second_skill_knockback_y", 0.15);
-		long second_skill_ai_restore_delay = config.getLong("stats.second_skill_ai_restore_delay", 3L);
-
-		Material weapon;
-		try {
-			weapon = Material.valueOf(config.getString("tool.role_weapon"));
-		} catch (IllegalArgumentException e) {
-			weapon = Material.IRON_SWORD;
-		}
-		this.weapon_item = weapon;
-
-		Material armor;
-		try {
-			armor = Material.valueOf(config.getString("tool.role_armor"));
-		} catch (IllegalArgumentException e) {
-			armor = Material.IRON_CHESTPLATE;
-		}
-		this.armor_item = armor;
+		this.weapon_item = ParseItem.parse(configs.getValue("tool.role_weapon"), Material.IRON_SWORD);
+		this.armor_item = ParseItem.parse(configs.getValue("tool.role_armor"), Material.IRON_CHESTPLATE);
 
 		this.container = new Container(
-				armor_state_value,
-				first_skill_hunger_cost,
-				first_skill_speed,
-				first_skill_y_velocity,
-				first_skill_max_ticks,
-				first_skill_range,
-				first_skill_tick_y_add,
-				first_skill_damage,
-				first_skill_slow_duration,
-				first_skill_slow_amplifier,
-				first_skill_knockback_multiplier,
-				first_skill_knockback_y,
-				second_skill_hunger_cost,
-				second_skill_range,
-				second_skill_duration,
-				second_skill_knockback,
-				second_skill_knockback_y,
-				second_skill_ai_restore_delay
+				configs.getValue("stats.first_skill_hunger_cost", 3),
+				configs.getValue("stats.first_skill_speed", 1.5),
+				configs.getValue("stats.first_skill_y_velocity", 0.2),
+				configs.getValue("stats.first_skill_max_ticks", 10),
+				configs.getValue("stats.first_skill_range", 1.5),
+				configs.getValue("stats.first_skill_tick_y_add", 0.05),
+				configs.getValue("stats.first_skill_damage", 5.0),
+				configs.getValue("stats.first_skill_slow_duration", 20),
+				configs.getValue("stats.first_skill_slow_amplifier", 2),
+				configs.getValue("stats.first_skill_knockback_multiplier", 0.5),
+				configs.getValue("stats.first_skill_knockback_y", 0.2),
+				configs.getValue("stats.second_skill_hunger_cost", 3),
+				configs.getValue("stats.second_skill_range", 10.0),
+				configs.getValue("stats.second_skill_duration", 100L),
+				configs.getValue("stats.second_skill_knockback", -1.5),
+				configs.getValue("stats.second_skill_knockback_y", 0.15),
+				configs.getValue("stats.second_skill_ai_restore_delay", 3L)
 		);
 	}
 
 	@Override
-	public void useFirstSkill(Player player) {
-		if (isSkillCancelled(player, this , emblem, EmblemType.TARGET)) return;
-		ItemStack tool = player.getInventory().getItemInMainHand();
-		sharpSweeping.execute(player, container);
-		player.setCooldown(tool, this.getCooldown1() * 20);
+	public void useFirstSkill(Player p) {
+		handleSkill(p, emblem, EmblemType.TARGET, sharpSweeping, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		taunt.execute(p, container);
-		p.setCooldown(tool, this.getCooldown2() * 20);
+		handleSkill(p, emblem, EmblemType.RANGE, taunt, container, getCooldown2());
 	}
 
 	@Override
@@ -182,16 +142,6 @@ public class Knight extends AbstractFirstRole {
 				.addAttribute(Attribute.ARMOR, this.armor_state_value, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
 				.build()
 				.clone();
-	}
-
-	@Override
-	public @NotNull ItemStack TargetEmblem() {
-		return getEmblem().getTargetEmblem();
-	}
-
-	@Override
-	public @NotNull ItemStack RangeEmblem() {
-		return getEmblem().getRangeEmblem();
 	}
 
 	@Override

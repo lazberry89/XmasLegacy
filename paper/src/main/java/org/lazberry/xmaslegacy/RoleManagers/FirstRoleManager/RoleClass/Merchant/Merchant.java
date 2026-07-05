@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Merchant;
+package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -7,62 +7,60 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.OpenStocks;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.SellItems;
+import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Annotation.Roles;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
+import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
+import org.lazberry.xmaslegacy.Utils.ParseItem;
 
 @Roles
 public class Merchant extends AbstractFirstRole {
-	private final @NotNull PriceManager prc;
-	private final @NotNull MerchantStockInterface msi;
 	private Material weapon_item;
 	private Material armor_item;
 
+	private Container container;
+
+	private final @NotNull OpenStocks open = new OpenStocks();
+	private final @NotNull SellItems sell = new SellItems();
+
 	public Merchant() {
 		super(BasicRoles.MERCHANT);
-		this.prc = PriceManager.INSTANCE;
-		this.msi = MerchantStockInterface.INSTANCE;
 		this.loadRoleData(getRole().name().toLowerCase());
 	}
 
+	public record Container(
+			PriceManager priceManager,
+			MerchantStockInterface stockInterface
+	) implements RoleContainer {}
+
 	@Override
 	protected void loadCustomStats(@NotNull FileConfiguration config) {
-		config.addDefault("tool.role_weapon", "ENDER_CHEST");
-		config.addDefault("tool.role_armor", "IRON_HELMET");
+		var configs = Config.of(config);
+		configs.setDefault("tool.role_weapon", "ENDER_CHEST")
+				.setDefault("tool.role_armor", "IRON_HELMET");
 
-		Material weapon;
-		try {
-			weapon = Material.valueOf(config.getString("tool.role_weapon"));
-		} catch (IllegalArgumentException e) {
-			weapon = Material.ENDER_CHEST;
-		}
-		this.weapon_item = weapon;
+		this.weapon_item = ParseItem.parse(configs.getValue("tool.role_weapon"), Material.ENDER_CHEST);
+		this.armor_item = ParseItem.parse(configs.getValue("tool.role_armor"), Material.IRON_HELMET);
 
-		Material armor;
-		try {
-			armor = Material.valueOf(config.getString("tool.role_armor"));
-		} catch (IllegalArgumentException e) {
-			armor = Material.IRON_HELMET;
-		}
-		this.armor_item = armor;
+		this.container = new Container(
+				PriceManager.INSTANCE,
+				MerchantStockInterface.INSTANCE
+		);
 	}
 
 	@Override
 	public void useFirstSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.TARGET)) return;
-		msi.setOwner(p);
-		msi.OpenStock(p);
-		p.playSound(p, Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, 1.0f, 1.0f);
+		handleSkill(p, emblem, EmblemType.TARGET, open, container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(Player p) {
-		if (isSkillCancelled(p, this , emblem, EmblemType.RANGE)) return;
-		p.openInventory(prc.MerchantShop());
-		prc.setOwner(p.getUniqueId());
-		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+		handleSkill(p, emblem, EmblemType.RANGE, sell, container, getCooldown2());
 	}
 
 	@Override
@@ -83,16 +81,6 @@ public class Merchant extends AbstractFirstRole {
 				.hideAllFlags()
 				.setTag("role_id", "merchant")
 				.build().clone();
-	}
-
-	@Override
-	public @NotNull ItemStack TargetEmblem() {
-		return getEmblem().getTargetEmblem();
-	}
-
-	@Override
-	public @NotNull ItemStack RangeEmblem() {
-		return getEmblem().getRangeEmblem();
 	}
 
 	@Override
