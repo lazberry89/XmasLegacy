@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager;
+package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Fighter;
 
 import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.*;
@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Roles.Unpromotable;
 import org.lazberry.xmaslegacy.Annotation.Roles;

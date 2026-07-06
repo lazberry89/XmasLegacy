@@ -79,7 +79,7 @@ public class Knight extends AbstractFirstRole {
 				.setDefault("tool.role_weapon", "IRON_SWORD")
 				.setDefault("tool.role_armor", "IRON_CHESTPLATE");
 
-		this.damage = configs.getFloat("stats.weapon_damage", 5.0f);
+		this.damage = configs.getValue("stats.weapon_damage", 5.0f);
 		this.armor_state_value = configs.getValue("stats.armor_state_value", 7.0);
 
 		this.weapon_item = ParseItem.parse(configs.getValue("tool.role_weapon"), Material.IRON_SWORD);

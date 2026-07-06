@@ -11,18 +11,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Skill(type = PlayerSkills.SHARP_SWEEPING)
 public class SharpSweeping implements Skills<Knight.Container>, UsingEnergy {
 
 	@Override

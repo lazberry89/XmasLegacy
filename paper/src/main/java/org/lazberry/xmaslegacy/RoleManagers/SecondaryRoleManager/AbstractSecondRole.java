@@ -32,6 +32,10 @@ public abstract class AbstractSecondRole implements RoleClass {
 	}
 	public abstract @NotNull ItemStack roleWeapon();
 	public abstract @NotNull ItemStack roleArmor();
-	public abstract @NotNull ItemStack TargetEmblem();
-	public abstract @NotNull ItemStack RangeEmblem();
+	public @NotNull ItemStack targetEmblem() {
+		return this.emblem.getTargetEmblem();
+	}
+	public @NotNull ItemStack rangeEmblem() {
+		return this.emblem.getRangeEmblem();
+	}
 }

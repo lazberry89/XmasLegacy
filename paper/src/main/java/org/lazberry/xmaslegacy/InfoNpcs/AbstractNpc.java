@@ -18,7 +18,7 @@ import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import xmaslegacy.Utils.*;
 import org.lazberry.xmaslegacy.Economy.Currency.CurrencyManager;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;

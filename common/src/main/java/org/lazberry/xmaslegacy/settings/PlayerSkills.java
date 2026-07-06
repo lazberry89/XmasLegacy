@@ -1,0 +1,52 @@
+package org.lazberry.xmaslegacy.settings;
+
+import org.jetbrains.annotations.NotNull;
+
+public enum PlayerSkills {
+    SHOCK_DART(BasicSkills.SHOCK_DART),
+    BACK_DASH(BasicSkills.BACK_DASH),
+    SHARP_SWEEPING(BasicSkills.SHARP_SWEEPING),
+    TAUNT(BasicSkills.TAUNT),
+    DAGGER_RUSH(BasicSkills.DAGGER_RUSH),
+    SMOKE(BasicSkills.SMOKE),
+    BLOOD_FRENZY(BasicSkills.BLOOD_FRENZY),
+    TOMAHAWK(BasicSkills.TOMAHAWK),
+    COMPACT_POINT(BasicSkills.COMPACT_POINT),
+    GRAVITY(BasicSkills.GRAVITY),
+    COMPACT_HEAL(BasicSkills.COMPACT_HEAL),
+    STEROID(BasicSkills.STEROID),
+    RADIUS_HARVEST(BasicSkills.RADIUS_HARVEST),
+    SPEED_GROWER(BasicSkills.SPEED_GROWER),
+    CHAIN_MINING(BasicSkills.CHAIN_MINING),
+    ORE_EYE(BasicSkills.ORE_EYE),
+    ETERNAL_POSE(BasicSkills.ETERNAL_POSE),
+    TRUTH_EYE(BasicSkills.TRUTH_EYE),
+    OPEN_STOCKS(BasicSkills.OPEN_STOCKS),
+    SELL_ITEMS(BasicSkills.SELL_ITEMS),
+    FIX(BasicSkills.FIX),
+    TEMP_BUFF(BasicSkills.TEMP_BUFF),
+
+    MAGNETIC_FIELD(SecondarySkillSet.MAGNETIC_FIELD),
+    KARMA(SecondarySkillSet.KARMA),
+    TARGET_GUARD(SecondarySkillSet.TARGET_GUARD),
+    OVERCHARGE_PRISM(SecondarySkillSet.OVERCHARGE_PRISM),
+    MADNESS(SecondarySkillSet.MADNESS),
+    TRIPLE_TOMAHAWK(SecondarySkillSet.TRIPLE_TOMAHAWK),
+    COUNTER(SecondarySkillSet.COUNTER),
+    FINISHER(SecondarySkillSet.FINISHER),
+    SNIPE(SecondarySkillSet.SNIPE),
+    MAGIC_BULLET(SecondarySkillSet.MAGIC_BULLET),
+    FIRE_BULLET(SecondarySkillSet.FIRE_BULLET),
+    PRISM_LASER(SecondarySkillSet.PRISM_LASER),
+    CHAINING(SecondarySkillSet.CHAINING);
+
+    private final @NotNull SkillSet origin;
+
+    PlayerSkills(@NotNull SkillSet origin) {
+        this.origin = origin;
+    }
+
+    public @NotNull SkillSet origin() {
+        return this.origin;
+    }
+}

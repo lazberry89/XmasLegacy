@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.Env;
 
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -23,6 +24,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.Map;
 
+@Slf4j
 @Task(type = ServerType.MAIN)
 public enum ConsumableManager implements Tasks {
 	INSTANCE;
@@ -70,6 +72,7 @@ public enum ConsumableManager implements Tasks {
 					leftOver.values().forEach(item -> bm.addItem(p, item));
 				}
             }
+            log.info("Cookies are given to every users. DURATION: {}m", Constants.COOKIE_TIMER_MINUTE);
         }, 20 * 60 * Constants.COOKIE_TIMER_MINUTE, 20 * 60 * Constants.COOKIE_TIMER_MINUTE);
     }
 

@@ -39,6 +39,7 @@ public record Config(FileConfiguration file) {
 	 * <pre>{@code
 	 * Integer a = config.getValue("a.a", 1);
 	 * String b = config.getValue("b.b", "B");
+	 * int c = config.getValue("c.c", 10);
 	 * }</pre>
 	 * @param key Key of value
 	 * @param def default value
@@ -50,45 +51,20 @@ public record Config(FileConfiguration file) {
 		Object value = this.file.get(key);
 		if (value == null) return def;
 
+		if (value instanceof Number num) {
+            switch (def) {
+                case Float ignored -> {return (T) Float.valueOf(num.floatValue());}
+                case Long ignored -> {return (T) Long.valueOf(num.longValue());}
+                case Integer ignored -> {return (T) Integer.valueOf(num.intValue());}
+                case Double ignored -> {return (T) Double.valueOf(num.doubleValue());}
+                default -> {}
+            }
+        }
 		try {
 			return (T) value;
 		} catch (ClassCastException e) {
 			return def;
 		}
-	}
-
-	/**
-	 * This method is only for getting float value.
-	 * <pre>{@code
-	 * config.getFloat("a,a", 1.5f);
-	 * }</pre>
-	 * @param key key to target value
-	 * @param def float value to use as default.
-	 * @return float value of key. Always cast value to float if value is number whatever the value was.
-	 */
-	public float getFloat(String key, float def) {
-		Object value = this.file.get(key);
-		if (value instanceof Number num) {
-			return num.floatValue();
-		}
-		return def;
-	}
-
-	/**
-	 * This method is only for getting long value.
-	 * <pre>{@code
-	 * config.getLong("b.b", 100L);
-	 * }</pre>
-	 * @param key key to target value
-	 * @param def long value to use as default.
-	 * @return long value of key. Always cast value to long if value is number whatever the value was.
-	 */
-	public long getLong(String key, long def) {
-		Object value = this.file.get(key);
-		if (value instanceof Number num) {
-			return num.longValue(); // 💡 Integer -> long 완벽 변환
-		}
-		return def;
 	}
 
 	/**

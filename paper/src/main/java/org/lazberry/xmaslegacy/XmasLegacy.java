@@ -20,7 +20,7 @@ public final class XmasLegacy extends JavaPlugin {
 	}
 
 	/**
-	 * all of enable logics are Seperated to Initializers.
+	 * all of enable logics are Separated to Initializers.
 	 * Check ServerInitializer.
 	 */
 	@Override
@@ -29,7 +29,7 @@ public final class XmasLegacy extends JavaPlugin {
 	}
 
 	/**
-	 * Seperated into ServerInitializers. Check classes.
+	 * Separated into ServerInitializers. Check classes.
 	 */
 	@Override
 	public void onDisable() {

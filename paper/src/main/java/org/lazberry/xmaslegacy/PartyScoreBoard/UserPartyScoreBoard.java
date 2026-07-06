@@ -100,7 +100,7 @@ public enum UserPartyScoreBoard implements Tasks {
 
 					if (line <= 14) b.setLine(line++, ColorUtils.chat(" "));
 				}
-				for (int i = line; i < 15; i++) {
+				for (int i = line; i <= 14; i++) {
 					b.removeLine(i);
 				}
 			});
@@ -116,19 +116,19 @@ public enum UserPartyScoreBoard implements Tasks {
 		var maxHealthAttribute = player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);
 		double maxHealth = (maxHealthAttribute != null) ? maxHealthAttribute.getValue() : 20.0;
 
-		int filledCount = Math.max(0, Math.min(10, (int) ((health / maxHealth) * 10)));
+		int filledCount = Math.clamp((int) ((health / maxHealth) * 10), 0, 10);
 		int emptyCount = 10 - filledCount;
 
 		StringBuilder bar = new StringBuilder("&7&l[&r");
 
 		if (filledCount > 0) {
 			bar.append("&c");
-			bar.append("█".repeat(filledCount));
+			bar.repeat("█", filledCount);
 		}
 
 		if (emptyCount > 0) {
 			bar.append("&f");
-			bar.append("█".repeat(emptyCount));
+			bar.repeat("█", emptyCount);
 		}
 		bar.append("&7&l]");
 		return ColorUtils.chat(bar.toString());
@@ -137,19 +137,19 @@ public enum UserPartyScoreBoard implements Tasks {
 	private @NotNull Component iceStateBar(@NotNull User user) {
 		int icing = user.getIcingState();
 
-		int filledCount = Math.max(0, Math.min(10, icing / 10));
+		int filledCount = Math.clamp(icing / 10, 0, 10);
 		int emptyCount = 10 - filledCount;
 
 		StringBuilder bar = new StringBuilder("&7&l[&r");
 
 		if (filledCount > 0) {
 			bar.append("&b");
-			bar.append("█".repeat(filledCount));
+			bar.repeat("█", filledCount);
 		}
 
 		if (emptyCount > 0) {
 			bar.append("&f");
-			bar.append("█".repeat(emptyCount));
+			bar.repeat("█", emptyCount);
 		}
 		bar.append("&7&l]");
 		return ColorUtils.chat(bar.toString());

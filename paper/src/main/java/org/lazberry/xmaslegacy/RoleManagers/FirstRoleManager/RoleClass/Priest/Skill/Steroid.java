@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Skill;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Priest.Priest;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
@@ -18,8 +19,10 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
+@Skill(type = PlayerSkills.STEROID)
 public class Steroid implements Skills<Priest.Container>, UsingEnergy {
 
 	@Override

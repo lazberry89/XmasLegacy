@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.Emblems;
 
 import io.th0rgal.oraxen.api.OraxenItems;
+import lombok.EqualsAndHashCode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,15 +18,17 @@ import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Emblem {
-	private final @NotNull ItemStack TargetEmblem;
-	private final @NotNull ItemStack RangeEmblem;
+	private final @NotNull ItemStack targetEmblem;
+	private final @NotNull ItemStack rangeEmblem;
+	@EqualsAndHashCode.Include
 	private final @NotNull Role role;
 
 	public Emblem(@NotNull Role role) {
 		this.role = role;
-		TargetEmblem = targetEmblem();
-		RangeEmblem = rangeEmblem();
+		targetEmblem = targetEmblem();
+		rangeEmblem = rangeEmblem();
 	}
 
 	private @NotNull ItemStack targetEmblem() {
@@ -39,7 +42,6 @@ public class Emblem {
 			meta.lore(lore);
 			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_type"), PersistentDataType.STRING, "target");
 			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_role"), PersistentDataType.STRING, role.name());
-			meta.setRarity(ItemRarity.EPIC);
 		});
 		return target;
 	}
@@ -58,21 +60,20 @@ public class Emblem {
 			meta.lore(lore);
 			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_type"), PersistentDataType.STRING, "range");
 			meta.getPersistentDataContainer().set(KeyUtils.get("emblem_role"), PersistentDataType.STRING, role.name());
-			meta.setRarity(ItemRarity.EPIC);
 		});
 		return target;
 	}
 
 	public void give(@NotNull Player p) {
-		p.getInventory().addItem(this.TargetEmblem);
-		p.getInventory().addItem(this.RangeEmblem);
+		p.getInventory().addItem(this.targetEmblem);
+		p.getInventory().addItem(this.rangeEmblem);
 	}
 
 	public @NotNull ItemStack getTargetEmblem() {
-		return this.TargetEmblem;
+		return this.targetEmblem;
 	}
 	public @NotNull ItemStack getRangeEmblem() {
-		return this.RangeEmblem;
+		return this.rangeEmblem;
 	}
 	public @NotNull Role getRole() {
 		return this.role;

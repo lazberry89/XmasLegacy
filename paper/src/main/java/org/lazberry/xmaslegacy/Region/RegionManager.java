@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Region;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,14 +12,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
+import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
+import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.Region.Events.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.Region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
@@ -29,7 +34,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public enum RegionManager {
+@Slf4j
+@Task(type = ServerType.GLOBAL)
+public enum RegionManager implements Tasks {
 	INSTANCE;
 
 	private final @NotNull XmasLegacy plugin;
@@ -38,6 +45,7 @@ public enum RegionManager {
 	private float globalAngle = 0.0f;
 	private @NotNull File file;
 	private @NotNull FileConfiguration config;
+	private @Nullable BukkitTask task;
 
 	RegionManager() {
 		this.plugin = XmasLegacy.getInstance();
@@ -45,8 +53,9 @@ public enum RegionManager {
 		loadAll();
 	}
 
-	public void startGlobalIndicatorTask() {
-		new BukkitRunnable() {
+	@Override
+	public void startTask(@NotNull XmasLegacy plugin) {
+		this.task = new BukkitRunnable() {
 			int checkDelay = 0;
 
 			@Override
@@ -66,13 +75,14 @@ public enum RegionManager {
 
 							if (entity instanceof BlockDisplay bd) {
 								region.setIndicator(bd);
+								log.info("[Region] 인디케이터가 연결되었습니다. ID: {}", region.Id());
 							} else {
 								var chunk = region.getChunk();
 								if (chunk != null && chunk.isLoaded()) {
 									Bukkit.getScheduler().runTask(plugin, () -> {
 										region.setIndicator(indicatorDisplay(region));
 										saveAll();
-										plugin.getSLF4JLogger().warn("[Region] 구역 {}의 인디케이터가 유실되어 자동 재생성되었습니다.", region.Id());
+										log.warn("[Region] 구역 {}의 인디케이터가 유실되어 자동 재생성되었습니다.", region.Id());
 									});
 								}
 							}
@@ -82,7 +92,14 @@ public enum RegionManager {
 				}
 				if (checkDelay >= 20) checkDelay = 0;
 			}
-		}.runTaskTimer(plugin, 0L, 1L);
+		}.runTaskTimer(plugin, 0L, 3L);
+	}
+
+	@Override
+	public void stopTask() {
+		if (this.task == null) return;
+		this.task.cancel();
+		this.task = null;
 	}
 
 	private void setTrans(@NotNull Region region, @NotNull Quaternionf leftRotation) {
@@ -106,15 +123,20 @@ public enum RegionManager {
 	@CheckReturnValue
 	public @Nullable BlockDisplay indicatorDisplay(@NotNull Region region) {
 		var chunk = region.getChunk();
-		return chunk == null ? null : region.getWorld().spawn(region.getTrueCenter(chunk).clone().add(-0.25, 0.5, -0.25), BlockDisplay.class, b -> {
+		if (chunk == null) return null;
+
+		Location centerLoc = region.getTrueCenter(chunk).clone().add(0, 0.5, 0);
+
+		return region.getWorld().spawn(centerLoc, BlockDisplay.class, b -> {
 			b.setBlock(Material.BEACON.createBlockData());
 			b.setGravity(false);
 			b.setGlowColorOverride(Color.AQUA);
 			b.customName(ColorUtils.chat("&b구역 : " + region.Id()));
 			b.setCustomNameVisible(true);
 			Transformation trans = b.getTransformation();
-			trans.getScale().set(0.5f);
-			trans.getTranslation().set(-0.25f, 0.0f, -0.25f);
+			float scale = 0.5f;
+			trans.getScale().set(scale);
+			trans.getTranslation().set(-scale / 2f, -scale / 2f, -scale / 2f);
 			b.setTransformation(trans);
 			b.getPersistentDataContainer().set(KeyUtils.get(Constants.regionKey), PersistentDataType.STRING, "indicator");
 		});
@@ -309,7 +331,7 @@ public enum RegionManager {
 		for (Region region : regions) {
 			p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
 			p.sendMessage(ColorUtils.chat("&6&lRegion ID : &f" + region.Id()));
-			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.Id()));
+			p.sendMessage(ColorUtils.chat("&eOwner : &f" + region.getOwner()));
 
 			int x = region.getChunkX();
 			int z = region.getChunkZ();

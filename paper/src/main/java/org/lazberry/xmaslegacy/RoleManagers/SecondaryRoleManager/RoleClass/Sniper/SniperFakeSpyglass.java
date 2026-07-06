@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.Sniper;
+package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper;
 
 import org.bukkit.entity.Player;
 

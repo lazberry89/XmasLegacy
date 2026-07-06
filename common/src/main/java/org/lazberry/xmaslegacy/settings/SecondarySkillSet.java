@@ -22,6 +22,7 @@ public enum SecondarySkillSet implements SkillSet {
 	//Sniper
 	SNIPE("저격"),
 	MAGIC_BULLET("특수 탄환"),
+	FIRE_BULLET("발사"),
 
 	//Ranger
 	PRISM_LASER("프리즘 광선"),

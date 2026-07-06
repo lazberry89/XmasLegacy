@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.InquiryCommandManager;
 import org.lazberry.xmaslegacy.LogCommands.LogCommand;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Region.RegionManager;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.Farmer.AgeableCrops;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
 import org.lazberry.xmaslegacy.RuleCommands.RuleCommand;
 import org.lazberry.xmaslegacy.ServerJoinListener;
@@ -30,7 +30,7 @@ public class GlobalInitializer implements ServerInitializer {
 		UserManager.INSTANCE.initDataFolder(plugin.getDataFolder());
 		plugin.registerReflection();
 
-		if (AgeableCrops.RegisterRecipe(plugin)) log.info("Recipe Registered!");
+		if (AgeableCrops.RegisterRecipe()) log.info("Recipe Registered!");
 		else log.error("Recipe Not Registered!");
 
 		if (SpecialOre.RegisterRecipe()) log.info("Recipe Registered!");

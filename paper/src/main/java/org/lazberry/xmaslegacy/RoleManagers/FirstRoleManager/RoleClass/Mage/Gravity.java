@@ -10,6 +10,7 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
+import org.lazberry.xmaslegacy.Annotation.Skill;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
@@ -18,11 +19,13 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Skill(type = PlayerSkills.GRAVITY)
 public class Gravity implements Skills<Mage.Container>, UsingEnergy {
 	private final @NotNull SkillEffectManager sem;
 

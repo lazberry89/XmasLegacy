@@ -14,7 +14,10 @@ import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
+import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
+import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.PlayerSkills;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -114,7 +117,35 @@ public class Reflections {
 	}
 
 	@Reflection(type = InitializeType.REGISTER)
-	public static void registerAllRoles(@NotNull ClassPath classPath) {
+	public static void registerSkills(@NotNull ClassPath classPath) {
+		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+			try {
+				Class<?> clazz = classInfo.load();
+				if (!Skills.class.isAssignableFrom(clazz)) continue;
+				if (!clazz.isAnnotationPresent(Skill.class)) continue;
+
+				Skill skillAnnotation = clazz.getAnnotation(Skill.class);
+				PlayerSkills name = skillAnnotation.type();
+
+				Object instance;
+				try {
+					instance = clazz.getDeclaredConstructor().newInstance();
+				} catch (NoSuchMethodException e) {
+					log.warn("Failed to create instance of skill {}. Passing..", clazz.getSimpleName());
+					continue;
+				}
+				if (instance instanceof Skills<?> skill) {
+					SkillManager.INSTANCE.register(name, skill);
+					log.info("Registered skill {}.", name.name());
+				}
+			} catch (Exception e) {
+				log.error("Error occurred while registering all skills.", e);
+			}
+		}
+	}
+
+	@Reflection(type = InitializeType.REGISTER)
+	public static void registerRoles(@NotNull ClassPath classPath) {
 		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
 			try {
 				Class<?> clazz = classInfo.load();
@@ -171,7 +202,7 @@ public class Reflections {
 				if (!clazz.isAnnotationPresent(Task.class)) continue;
 				if (!Tasks.class.isAssignableFrom(clazz)) continue;
 				Task taskAnnotation = clazz.getAnnotation(Task.class);
-				ServerType type = taskAnnotation.type();
+				ServerType[] type = taskAnnotation.type();
 
 				Tasks instance;
 				if (clazz.isEnum()) {
@@ -184,8 +215,7 @@ public class Reflections {
 					instance = (Tasks) constructor.newInstance();
 					log.info("Successfully created instance of Task {}", clazz.getSimpleName());
 				}
-
-				if (ServerInitializer.getServerType(plugin()) == type) {
+				if (Arrays.asList(type).contains(ServerInitializer.getServerType(plugin()))) {
 					if (enable) {
 						instance.startTask(plugin());
 						log.info("Task {} started successfully.", clazz.getSimpleName());
@@ -194,7 +224,8 @@ public class Reflections {
 						log.info("Task {} stopped successfully.", clazz.getSimpleName());
 					}
 				} else {
-					log.info("Task {} skipped due to Invalid ServerType. EXPECTED: {}, ACTUAL: {}", clazz.getSimpleName(), type, ServerInitializer.getServerType(plugin()));
+					log.info("Task {} skipped due to Invalid ServerType. EXPECTED: {}, ACTUAL: {}",
+							clazz.getSimpleName(), Arrays.toString(type), ServerInitializer.getServerType(plugin()));
 				}
 			} catch (Exception e) {
 				log.error("Error occurred while starting task {}, Passing process.", classInfo.getName(), e);
