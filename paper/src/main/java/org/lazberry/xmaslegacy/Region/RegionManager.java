@@ -33,6 +33,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Task(type = ServerType.GLOBAL)
@@ -43,14 +44,14 @@ public enum RegionManager implements Tasks {
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
 	private float globalAngle = 0.0f;
-	private @NotNull File file;
-	private @NotNull FileConfiguration config;
+	private File file;
+	private FileConfiguration config;
 	private @Nullable BukkitTask task;
 
 	RegionManager() {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
-		loadAll();
+		saveAsync();
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public enum RegionManager implements Tasks {
 								if (chunk != null && chunk.isLoaded()) {
 									Bukkit.getScheduler().runTask(plugin, () -> {
 										region.setIndicator(indicatorDisplay(region));
-										saveAll();
+										saveAsync();
 										log.warn("[Region] 구역 {}의 인디케이터가 유실되어 자동 재생성되었습니다.", region.Id());
 									});
 								}
@@ -162,6 +163,37 @@ public enum RegionManager implements Tasks {
 		return value != null && value.equals("beacon");
 	}
 
+	public void saveAsync() {
+		List<Region> snapshot = new ArrayList<>(regions.values());
+
+		CompletableFuture.runAsync(() -> {
+			synchronized (this) {
+				try {
+					FileConfiguration localConfig = new YamlConfiguration();
+
+					for (Region region : snapshot) {
+						String path = "regions." + region.Id();
+						localConfig.set(path + ".owner", region.getOwner().toString());
+						localConfig.set(path + ".id", region.Id());
+						localConfig.set(path + ".world", region.getWorld().getName());
+						localConfig.set(path + ".key", region.key());
+						localConfig.set(path + ".allowEntry", region.isEntryAllowed());
+						localConfig.set(path + ".allowInteract", region.isInteractionAllowed());
+						if (region.getIndicatorUid() != null) {
+							localConfig.set(path + ".indicatorUuid", region.getIndicatorUid().toString());
+						}
+					}
+
+					localConfig.save(file);
+					this.config = localConfig;
+
+				} catch (IOException e) {
+					plugin.getSLF4JLogger().error("구역 데이터를 비동기 저장하는 중 오류 발생: {}", e.getMessage(), e);
+				}
+			}
+		});
+	}
+
 	private void setupFile() {
 		if (!plugin.getDataFolder().exists()) {
 			if (plugin.getDataFolder().mkdir()) {
@@ -183,29 +215,6 @@ public enum RegionManager implements Tasks {
 			}
 		}
 		config = YamlConfiguration.loadConfiguration(file);
-	}
-
-	public void saveAll() {
-		config.set("regions", null);
-
-		for (Region region : regions.values()) {
-			String path = "regions." + region.Id();
-			config.set(path + ".owner", region.getOwner().toString());
-			config.set(path + ".id", region.Id());
-			config.set(path + ".world", region.getWorld().getName());
-			config.set(path + ".key", region.key());
-			config.set(path + ".allowEntry", region.isEntryAllowed());
-			config.set(path + ".allowInteract", region.isInteractionAllowed());
-			if (region.getIndicatorUid() != null) {
-				config.set(path + ".indicatorUuid", region.getIndicatorUid().toString());
-			}
-		}
-
-		try {
-			config.save(file);
-		} catch (IOException e) {
-			plugin.getSLF4JLogger().error("구역 데이터를 저장하는 중 오류 발생: {}", e.getMessage(), e);
-		}
 	}
 
 	public void loadAll() {
@@ -249,7 +258,7 @@ public enum RegionManager implements Tasks {
 
 		regions.put(region.key(), region);
 		userRegionsMap.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);
-		saveAll();
+		saveAsync();
 	}
 
 	public void removeRegion(Region region) {
@@ -273,7 +282,7 @@ public enum RegionManager implements Tasks {
 				if (userRegions.isEmpty()) {
 					userRegionsMap.remove(ownerUUID);
 				}
-				saveAll();
+				saveAsync();
 				plugin.getSLF4JLogger().info("구역이 삭제되었습니다. ID: {}", region.Id());
 			}
 		}
@@ -288,7 +297,7 @@ public enum RegionManager implements Tasks {
 				}
 				regions.remove(region.key());
 			});
-			saveAll();
+			saveAsync();
 		}
 	}
 

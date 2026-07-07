@@ -6,11 +6,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.Party;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
@@ -22,17 +25,16 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public enum PortalManager {
+@Task(type = ServerType.GLOBAL)
+public enum PortalManager implements Tasks {
 	INSTANCE;
 
     private final @NotNull Map<String, Portal> portalMap = new HashMap<>();
     private final @NotNull Set<Portal> portalSet = new HashSet<>();
-    private final @NotNull XmasLegacy plugin;
     private final @NotNull Map<UUID, Integer> activeCountdowns = new ConcurrentHashMap<>();
+    private @Nullable BukkitTask task;
 
-    PortalManager() {
-        this.plugin = XmasLegacy.getInstance();
-    }
+    PortalManager() {}
 
     public void addPortal(@NotNull String key, @NotNull Location loc, @NotNull ServerType destination) {
         Portal portal = new Portal(key, loc, destination);
@@ -70,8 +72,9 @@ public enum PortalManager {
                 .forEach(p -> p.sendMessage(message));
     }
 
-    public void startPortalScheduler() {
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+    @Override
+    public void startTask(@NotNull XmasLegacy plugin) {
+        this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             @NotNull Set<UUID> processedPlayers = new HashSet<>();
             var pm = PartyManager.INSTANCE;
 
@@ -139,6 +142,13 @@ public enum PortalManager {
                 } else handleSoloLogic(player, pUUID, processedPlayers);
             }
         }, 0L, 20L);
+    }
+
+    @Override
+    public void stopTask() {
+        if (this.task == null) return;
+        this.task.cancel();
+        this.task = null;
     }
 
     /**

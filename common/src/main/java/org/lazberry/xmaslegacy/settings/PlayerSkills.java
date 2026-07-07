@@ -26,11 +26,11 @@ public enum PlayerSkills {
     FIX(BasicSkills.FIX),
     TEMP_BUFF(BasicSkills.TEMP_BUFF),
 
-    MAGNETIC_FIELD(SecondarySkillSet.MAGNETIC_FIELD),
+    SOUL_STEAL(SecondarySkillSet.SOUL_STEAL),
     KARMA(SecondarySkillSet.KARMA),
     TARGET_GUARD(SecondarySkillSet.TARGET_GUARD),
     OVERCHARGE_PRISM(SecondarySkillSet.OVERCHARGE_PRISM),
-    MADNESS(SecondarySkillSet.MADNESS),
+    CHAIN_GRAB(SecondarySkillSet.CHAIN_GRAB),
     TRIPLE_TOMAHAWK(SecondarySkillSet.TRIPLE_TOMAHAWK),
     COUNTER(SecondarySkillSet.COUNTER),
     FINISHER(SecondarySkillSet.FINISHER),

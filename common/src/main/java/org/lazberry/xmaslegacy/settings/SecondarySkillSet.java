@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum SecondarySkillSet implements SkillSet {
 	//Defender
-	MAGNETIC_FIELD("자기장 영역"),
+	SOUL_STEAL("영혼 수확"),
 	KARMA("카르마"),
 
 	//Guardian
@@ -12,7 +12,7 @@ public enum SecondarySkillSet implements SkillSet {
 	OVERCHARGE_PRISM("과충전 프리즘"),
 
 	//Berserker
-	MADNESS("광기"),
+	CHAIN_GRAB("사슬 그랩"),
 	TRIPLE_TOMAHAWK("트리플 토마호크"),
 
 	//Fighter

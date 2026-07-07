@@ -88,6 +88,6 @@ public interface RoleClass {
 		if (isSkillCancelled(caster, emblem, emblemType)) return;
 		ItemStack tool = caster.getInventory().getItemInMainHand();
 		if (skill.execute(caster, container))
-			caster.setCooldown(tool, tick * 20);
+			caster.setCooldown(tool, tick);
 	}
 }

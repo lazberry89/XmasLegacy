@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.TransferPortal;
 
-import com.google.common.base.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -9,11 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Portal {
+    @EqualsAndHashCode.Include
     private final @NotNull String key;
-    private final @NotNull Location center;
-    private final @NotNull ServerType destination;
-    private final @Nullable ItemDisplay flame;
+    private final @NotNull @Getter Location center;
+    private final @NotNull @Getter ServerType destination;
+    private final @Nullable @Getter ItemDisplay flame;
 
     public Portal(@NotNull String key, @NotNull Location center, @NotNull ServerType type) {
         this.key = key;
@@ -43,28 +46,9 @@ public class Portal {
 
         return dx <= 2.5 && dz <= 2.5 && dy <= 3.0;
     }
-    public @Nullable ItemDisplay getFlame() {
-        return this.flame;
-    }
+
     public @NotNull String key() {
         return this.key;
-    }
-    public @NotNull Location getCenter() {
-        return this.center;
-    }
-    public @NotNull ServerType getDestination() {
-        return this.destination;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Portal p)) return false;
-        return Objects.equal(p.key(), this.key);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this.key);
     }
 
 }

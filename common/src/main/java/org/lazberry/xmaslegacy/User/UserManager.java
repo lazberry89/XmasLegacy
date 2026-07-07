@@ -112,9 +112,7 @@ public enum UserManager {
 				loaded = new User(uuid, BasicRoles.USER, name);
 				loaded.setNewUser(true);
 
-				if (isFloodgate) {
-					loaded.setDollars(loaded.getDollars() + 5000);
-				}
+				if (isFloodgate) loaded.addDollars(5000);
 				repository.saveUser(loaded);
 			} else if (restoredFromDump) {
 				try {
@@ -185,7 +183,7 @@ public enum UserManager {
 	}
 
 	private @Nullable User checkLocalEmergencyFile(@NotNull UUID uuid) {
-		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid.toString() + ".properties");
+		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid + ".properties");
 		if (!dumpFile.exists()) return null;
 
 		Properties props = new Properties();
@@ -226,7 +224,7 @@ public enum UserManager {
 	}
 
 	private void deleteLocalEmergencyFile(@NotNull UUID uuid) {
-		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid.toString() + ".properties");
+		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid + ".properties");
 		if (dumpFile.exists() && dumpFile.delete()) {
 			log.info("Cleaned up emergency dump for User {}", uuid);
 		}

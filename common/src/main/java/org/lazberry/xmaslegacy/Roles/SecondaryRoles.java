@@ -11,9 +11,9 @@ import java.util.List;
 
 public enum SecondaryRoles implements Role {
 	GUARDIAN("가디언" , BasicRoles.KNIGHT, SecondarySkillSet.TARGET_GUARD, new SkillSet[]{SecondarySkillSet.OVERCHARGE_PRISM}, ThirdRoles.PALADIN), //기사 2차전직 가디언
-	DEFENDER("디펜더" , BasicRoles.KNIGHT, SecondarySkillSet.MAGNETIC_FIELD, new SkillSet[]{SecondarySkillSet.KARMA}, ThirdRoles.PALADIN), //기사 2차전직 디펜더
+	DEFENDER("디펜더" , BasicRoles.KNIGHT, SecondarySkillSet.SOUL_STEAL, new SkillSet[]{SecondarySkillSet.KARMA}, ThirdRoles.PALADIN), //기사 2차전직 디펜더
 
-	BERSERKER("버서커" , BasicRoles.WARRIOR, SecondarySkillSet.MADNESS, new SkillSet[]{SecondarySkillSet.TRIPLE_TOMAHAWK}), //전사 2차전직 버서커(탱커)
+	BERSERKER("버서커" , BasicRoles.WARRIOR, SecondarySkillSet.CHAIN_GRAB, new SkillSet[]{SecondarySkillSet.TRIPLE_TOMAHAWK}), //전사 2차전직 버서커(탱커)
 	FIGHTER("격투가" , BasicRoles.WARRIOR, SecondarySkillSet.COUNTER, new SkillSet[]{SecondarySkillSet.FINISHER}), //전사 2차전직 격투가
 
 	SNIPER("저격수" , BasicRoles.ARCHER, SecondarySkillSet.SNIPE, new SkillSet[]{SecondarySkillSet.MAGIC_BULLET}, ThirdRoles.WIND_WALKER), //궁수 2차전직 저격수

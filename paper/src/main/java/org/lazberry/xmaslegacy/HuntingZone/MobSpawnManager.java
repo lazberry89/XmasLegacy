@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.HuntingZone;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -7,8 +8,11 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
+import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -16,7 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public enum MobSpawnManager {
+@Slf4j
+@Task(type = ServerType.HUNTING)
+public enum MobSpawnManager implements Tasks {
 	INSTANCE;
 
 	private final @NotNull XmasLegacy plugin;
@@ -30,7 +36,7 @@ public enum MobSpawnManager {
 		this.mr = MobRepository.INSTANCE;
 	}
 
-	public @NotNull Location getRandomLocationInChunk(Chunk chunk) {
+	public @NotNull Location getRandomLocationInChunk(@NotNull Chunk chunk) {
 		World world = chunk.getWorld();
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 
@@ -44,7 +50,7 @@ public enum MobSpawnManager {
 		return new Location(world, finalX + 0.5, finalY, finalZ + 0.5);
 	}
 
-	private @NotNull List<CustomMob> getRandomMobs(ZoneType type, int count) {
+	private @NotNull List<CustomMob> getRandomMobs(@NotNull ZoneType type, int count) {
 		CustomMob[] availableMobs = this.mr.getMobInstance(type);
 		if (availableMobs == null || availableMobs.length == 0) return Collections.emptyList();
 
@@ -58,7 +64,7 @@ public enum MobSpawnManager {
 		return result;
 	}
 
-	public void spawn(ZoneType type) {
+	public void spawn(@NotNull ZoneType type) {
 		HuntingZone zone = this.hzm.getZone(type);
 		if (!zone.isEnabled()) return;
 
@@ -88,15 +94,17 @@ public enum MobSpawnManager {
 		}
 	}
 
-	public void startTask() {
+	@Override
+	public void startTask(@NotNull XmasLegacy plugin) {
 		if (this.task != null) return;
-		this.task = Bukkit.getScheduler().runTaskTimer(this.plugin, () ->
+		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () ->
 			hzm.getZones().stream()
 					.filter(HuntingZone::isEnabled)
 					.forEach(z -> spawn(z.getType()))
 		, 0L, 20 * 60L);
 	}
 
+	@Override
 	public void stopTask() {
 		if (this.task != null) {
 			this.task.cancel();

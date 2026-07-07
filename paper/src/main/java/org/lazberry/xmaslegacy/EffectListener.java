@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.BerserkerSpeedManager;
 
 import java.util.UUID;
 

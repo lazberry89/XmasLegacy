@@ -68,7 +68,7 @@ public class GlobalInitializer implements ServerInitializer {
 	@Override
 	public void disable(@NotNull XmasLegacy plugin) {
 		plugin.unregisterReflection();
-		RegionManager.INSTANCE.saveAll();
+		RegionManager.INSTANCE.saveAsync();
 
 		UserManager.INSTANCE.getUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
 		log.info("User info is automatically saved!");
