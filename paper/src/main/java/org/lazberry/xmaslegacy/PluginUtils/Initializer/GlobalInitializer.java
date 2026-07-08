@@ -27,6 +27,7 @@ public class GlobalInitializer implements ServerInitializer {
 	@Override
 	public void enable(@NotNull XmasLegacy plugin) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
+		SqlUserRepository.INSTANCE.init();
 		UserManager.INSTANCE.initDataFolder(plugin.getDataFolder());
 		plugin.registerReflection();
 

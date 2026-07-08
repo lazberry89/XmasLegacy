@@ -71,6 +71,10 @@ public enum IcingSystem implements Tasks {
 		}
 	}
 
+	public boolean isTaskRunning() {
+		return this.task != null;
+	}
+
 	/**
 	 * Only called when Server is closing.
 	 * Icing scheduler is built never to be stopped.

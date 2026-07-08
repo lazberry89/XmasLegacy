@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.RoleManagers;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
@@ -8,7 +8,6 @@ import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
-import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 
 @SuppressWarnings("unchecked")
 public enum RoleManager {

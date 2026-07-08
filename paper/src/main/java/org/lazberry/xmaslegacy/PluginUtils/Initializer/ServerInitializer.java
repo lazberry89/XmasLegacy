@@ -27,7 +27,7 @@ public interface ServerInitializer {
 
 		plugin.getSLF4JLogger().info("Initializing {}", serverType.name());
 		serverType.getInitializer().enable(plugin);
-		if (serverType.isRequiresGlobalInitializer()) ServerType.GLOBAL.getInitializer().enable(plugin);
+		if (serverType.isRequiresGlobalInitializer()) ServerType.GLOBAL.getInitializer(GlobalInitializer.class).enable(plugin);
 	}
 
 	/**
@@ -39,6 +39,6 @@ public interface ServerInitializer {
 
 		plugin.getSLF4JLogger().info("Shutting down {}", serverType.name());
 		serverType.getInitializer().disable(plugin);
-		if (serverType.isRequiresGlobalInitializer()) ServerType.GLOBAL.getInitializer().disable(plugin);
+		if (serverType.isRequiresGlobalInitializer()) ServerType.GLOBAL.getInitializer(GlobalInitializer.class).disable(plugin);
 	}
 }

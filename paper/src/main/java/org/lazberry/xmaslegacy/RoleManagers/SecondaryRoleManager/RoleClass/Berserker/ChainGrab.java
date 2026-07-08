@@ -26,7 +26,7 @@ public class ChainGrab implements Skills<Berserker.Container>, UsingEnergy {
 
     @Override
     public boolean execute(@NotNull Player caster, @NotNull Berserker.@NotNull Container container) {
-        if (!(consumeEnergy(caster, 30))) return false;
+        if (!(consumeEnergy(caster, 3))) return false;
         caster.playSound(caster, Sound.BLOCK_CHAIN_PLACE, 1.0f, 1.0f);
         new BloodChainEffect(container.plugin()).playEffect(caster, target -> {
             Location casterLoc = caster.getLocation();

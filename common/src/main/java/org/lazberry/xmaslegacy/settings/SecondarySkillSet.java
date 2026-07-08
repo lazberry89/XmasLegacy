@@ -25,8 +25,8 @@ public enum SecondarySkillSet implements SkillSet {
 	FIRE_BULLET("발사"),
 
 	//Ranger
-	PRISM_LASER("프리즘 광선"),
-	CHAINING("체이닝");
+	CHAINING("체이닝"),
+	PRISM_LASER("프리즘 광선");
 
 	private final @NotNull String kor;
 

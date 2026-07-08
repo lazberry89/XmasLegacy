@@ -76,7 +76,6 @@ public class EffectListener implements Listener {
         Player p = e.getPlayer();
         p.setPose(Pose.STANDING, true);
         sem.getHiddenEntity().forEach(h -> p.hideEntity(plugin, h));
-        BerserkerSpeedManager.removeFlatSpeed(p);
     }
 
     @EventHandler

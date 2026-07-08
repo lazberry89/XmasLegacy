@@ -16,23 +16,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
+import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Berserker.Berserker;
+import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Guardian.Guardian;
+import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper.Sniper;
+import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Annotation.Listeners;
-import org.lazberry.xmaslegacy.RoleManager;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Berserker.Berserker;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Guardian.Guardian;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper.BulletType;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper.Sniper;
-import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
@@ -191,24 +188,9 @@ public class SecondaryRoleListener implements Listener {
 
 		if (!(item.getType() == Material.CROSSBOW)) return;
 
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return;
-
-		Sniper sniper = srm.getRoleInstance(SNIPER);
-		if (sniper == null) return;
-
-		PersistentDataContainer container = meta.getPersistentDataContainer();
-		String key = container.get(KeyUtils.get("role_id"), PersistentDataType.STRING);
-		if (key == null || !key.equalsIgnoreCase(SecondaryRoles.SNIPER.name())) return;
-		var bullet = sniper.getReloaded(p.getUniqueId());
-
-		Entity target = sniper.shoot(p);
-		if (BulletType.SNEAKY.equals(bullet))
-			if (target instanceof LivingEntity le)
-				le.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 1));
-
-
-		p.setCooldown(item, 20);
+		Sniper sniper = RoleManager.INSTANCE.getRoleInstance(SNIPER);
+		if (!KeyUtils.hasKey(item, KeyUtils.get("role_id"), PersistentDataType.STRING, SNIPER.name())) return;
+		sniper.fire(p);
 	}
 
 	@EventHandler

@@ -16,7 +16,6 @@ import org.lazberry.xmaslegacy.Utils.Documents;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
-import xmaslegacy.Utils.*;
 import org.lazberry.xmaslegacy.Economy.Currency.CurrencyManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -106,7 +105,7 @@ public abstract class AbstractNpc {
 			item.setAmount(5);
 			player.getInventory().addItem(item);
 			InfoUtils.info(player, "태양초 음식이 제공되었습니다.");
-			InfoUtils.warn(player, "관련 서적도 같이 제공되었습니다. 필히 열람하십시오.");
+			InfoUtils.warn(player, "관련 서적도 제공되었습니다. 필히 열람하십시오.");
 			player.getInventory().addItem(Documents.IcingDocument());
 		}
 	}

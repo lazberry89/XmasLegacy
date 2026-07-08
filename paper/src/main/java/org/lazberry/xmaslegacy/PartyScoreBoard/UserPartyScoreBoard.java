@@ -8,14 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.User.User;
-import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.BoardUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -67,17 +66,21 @@ public enum UserPartyScoreBoard implements Tasks {
 		}
 		var party = pm.getParty(player.getUniqueId());
 		if (party == null) {
-			BoardUtils.getOrCreate(player, ColorUtils.chat(Alert.XmasLegacy + "&6&l" + player.getName()), b -> {
-				b.setLine(1, ColorUtils.chat("&6소지금&f " + user.getDollars() + "&6$"));
-				b.setLine(2, ColorUtils.chat("&6경험치&f " + user.getExp() + "&6Ex"));
+			BoardUtils.getOrCreate(player, ColorUtils.chat("&6&l" + player.getName()), b -> {
+				b.setLine(1, ColorUtils.chat("&6&l소지금&f " + user.getDollars() + " &6$"));
+				b.setLine(2, ColorUtils.chat(""));
+				b.setLine(3, ColorUtils.chat("&6&l경험치&f " + user.getExp() + " &6Ex"));
+				b.setLine(4, ColorUtils.chat(""));
 				var role = user.getRole();
-				b.setLine(3, ColorUtils.chat("&6직업&f " + role.getKor() + ", &c" + role.getTier()));
-				b.setLine(4, ColorUtils.chat("&6직업수치&f " + user.getRoleExp() + "&6Rxp"));
-				b.setLine(5, IceLogo().appendSpace().append(ColorUtils.chat("&b빙결수치")));
-				b.setLine(6, IceLogo().appendSpace().append(iceStateBar(user)));
-				b.setLine(7, ColorUtils.chat("&7&l-------------------"));
+				b.setLine(5, ColorUtils.chat("&6&l직업&f " + role.getKor() + ", &c" + role.getTier() + " TIER"));
+				b.setLine(6, ColorUtils.chat(""));
+				b.setLine(7, ColorUtils.chat("&6&l직업수치&f " + user.getRoleExp() + " &6Rxp"));
+				b.setLine(8, ColorUtils.chat(""));
+				b.setLine(9, IceLogo().appendSpace().append(ColorUtils.chat("&b빙결수치")));
+				b.setLine(10, IceLogo().appendSpace().append(iceStateBar(user)));
+				b.setLine(11, ColorUtils.chat("&7&l------------"));
 
-				for (int i = 8; i < 15; i++) {
+				for (int i = 12; i < 15; i++) {
 					b.removeLine(i);
 				}
 			});
@@ -92,7 +95,7 @@ public enum UserPartyScoreBoard implements Tasks {
 					String nameStr = (memberPlayer != null) ? memberPlayer.getName() : member.getName();
 
 					String leaderPrefix = "";
-					if (pm.isLeader(member.getUniqueId())) leaderPrefix = "&7&l[&6★&7]";
+					if (pm.isLeader(member.getUniqueId())) leaderPrefix = "&7&l[&6★&7&l]";
 					b.setLine(line++, ColorUtils.chat(leaderPrefix + "&e" + nameStr));
 
 					if (memberPlayer != null && memberPlayer.isOnline()) b.setLine(line++, healthBar(memberPlayer));
@@ -108,7 +111,10 @@ public enum UserPartyScoreBoard implements Tasks {
 	}
 
 	private @NotNull Component IceLogo() {
-		return ColorUtils.chat("&7&l[&b❄&7]");
+		return ColorUtils.chat("&7&l[&b❄&7&l]");
+	}
+	private @NotNull Component HealthLogo() {
+		return ColorUtils.chat("&7&l[&c♥&7&l]");
 	}
 
 	private @NotNull Component healthBar(@NotNull Player player) {
@@ -123,12 +129,12 @@ public enum UserPartyScoreBoard implements Tasks {
 
 		if (filledCount > 0) {
 			bar.append("&c");
-			bar.repeat("█", filledCount);
+			bar.repeat("■", filledCount);
 		}
 
 		if (emptyCount > 0) {
-			bar.append("&f");
-			bar.repeat("█", emptyCount);
+			bar.append("&7");
+			bar.repeat("■", emptyCount);
 		}
 		bar.append("&7&l]");
 		return ColorUtils.chat(bar.toString());
@@ -144,12 +150,12 @@ public enum UserPartyScoreBoard implements Tasks {
 
 		if (filledCount > 0) {
 			bar.append("&b");
-			bar.repeat("█", filledCount);
+			bar.repeat("■", filledCount);
 		}
 
 		if (emptyCount > 0) {
-			bar.append("&f");
-			bar.repeat("█", emptyCount);
+			bar.append("&7");
+			bar.repeat("■", emptyCount);
 		}
 		bar.append("&7&l]");
 		return ColorUtils.chat(bar.toString());

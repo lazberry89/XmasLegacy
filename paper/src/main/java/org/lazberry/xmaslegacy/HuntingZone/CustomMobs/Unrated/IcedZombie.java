@@ -49,7 +49,7 @@ public class IcedZombie extends AbstractUnratedMobs implements CustomMob, Unrate
     @Override
     public @NotNull LivingEntity spawn(@NotNull Location loc) {
         return loc.getWorld().spawn(loc, Zombie.class, z -> {
-            GlowUtils.setGlowColor(z, getGrade().color());
+            GlowUtils.glow(z, getGrade().color());
             z.customName(ColorUtils.chat("&b&l얼음 좀비"));
             z.setCustomNameVisible(true);
             z.setDespawnInPeacefulOverride(TriState.FALSE);

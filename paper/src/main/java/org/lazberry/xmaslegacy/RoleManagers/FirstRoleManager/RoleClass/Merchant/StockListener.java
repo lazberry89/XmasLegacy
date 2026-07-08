@@ -31,12 +31,12 @@ public class StockListener implements Listener {
 		int slot = e.getRawSlot();
 		if (title.equals(msi.getTitle())) {
 			switch (slot) {
-				case 2 -> msi.OpenFarmer(p);
-				case 6 -> msi.OpenMiner(p);
+				case 2 -> msi.openFarmer(p);
+				case 6 -> msi.openMiner(p);
 			}
 		} else if (title.equals(msi.getTitleFarm())) {
 			switch (slot) {
-				case 8 -> msi.OpenStock(p);
+				case 8 -> msi.openStock(p);
 				case 0 -> {
 					if (msi.getStock(Material.WHEAT) > 0) {
 						msi.Submit(Material.WHEAT);
@@ -59,7 +59,7 @@ public class StockListener implements Listener {
 			}
 		} else if (title.equals(msi.getTitleMiner())) {
 			switch (slot) {
-				case 8 -> msi.OpenStock(p);
+				case 8 -> msi.openStock(p);
 				case 0 -> {
 					if (msi.getStock(Material.COAL) > 0) {
 						msi.Submit(Material.COAL);

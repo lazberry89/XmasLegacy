@@ -1,6 +1,5 @@
 package org.lazberry.xmaslegacy.User;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.*;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.UUID;
 
-@Slf4j
 public enum SqlUserRepository implements UserRepository {
 	INSTANCE;
 
@@ -19,7 +17,11 @@ public enum SqlUserRepository implements UserRepository {
 	private final String user = "root";
 	private final String password = "your_password"; //TODO need I/O process
 
-	SqlUserRepository() {
+	private static final Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
+
+	SqlUserRepository() {}
+
+	public void init() {
 		createTable();
 	}
 
@@ -41,10 +43,10 @@ public enum SqlUserRepository implements UserRepository {
 				"isNewUser BOOLEAN, " +
 				"wantsCookie BOOLEAN, " +
 				"tier VARCHAR(20), " +
-				"mastery VARCHAR(20)," +
-				"isImmuneToIcing BOOLEAN," +
-				"icingState INT," +
-				"showBoard BOOLEAN," +
+				"mastery VARCHAR(20), " +
+				"isImmuneToIcing BOOLEAN, " +
+				"icingState INT, " +
+				"showBoard BOOLEAN" +
 				");";
 
 		try (Connection conn = getConnection();

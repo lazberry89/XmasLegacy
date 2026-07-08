@@ -5,5 +5,4 @@ public enum RankType {
     PLAYTIME,
     EXP,
     ROLE_EXP,
-
 }

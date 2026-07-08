@@ -42,7 +42,7 @@ public class HunterZombie extends AbstractUnratedMobs implements CustomMob, Unra
     @Override
     public @NotNull LivingEntity spawn(@NotNull Location loc) {
         return loc.getWorld().spawn(loc, Husk.class, h -> {
-            GlowUtils.setGlowColor(h, getGrade().color());
+            GlowUtils.glow(h, getGrade().color());
             h.getEquipment().setHelmet(null);
             h.getEquipment().setLeggings(null);
             h.getEquipment().setBoots(null);

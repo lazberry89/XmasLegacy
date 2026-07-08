@@ -25,7 +25,7 @@ public class IceCube extends AbstractUnratedMobs implements CustomMob, UnratedMo
     @Override
     public @NotNull LivingEntity spawn(@NotNull Location loc) {
         return loc.getWorld().spawn(loc, MagmaCube.class, m -> {
-            GlowUtils.setGlowColor(m, getGrade().color());
+            GlowUtils.glow(m, getGrade().color());
             m.setWander(false);
             m.setSize(2);
             m.getPersistentDataContainer().set(KeyUtils.get("custom_mobs"), PersistentDataType.STRING, this.key.name());

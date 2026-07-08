@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
-import xmaslegacy.RoleManagers.SecondaryRoleManager.*;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
@@ -34,38 +33,38 @@ public class SecondTestCommand implements CommandExecutor {
 				case "berserker" -> {
 					p.getInventory().addItem(berserker.roleWeapon());
 					p.getInventory().addItem(berserker.roleArmor());
-					p.getInventory().addItem(berserker.TargetEmblem());
-					p.getInventory().addItem(berserker.RangeEmblem());
+					p.getInventory().addItem(berserker.targetEmblem());
+					p.getInventory().addItem(berserker.rangeEmblem());
 				}
 				case "defender" -> {
 					p.getInventory().addItem(defender.roleWeapon());
 					p.getInventory().addItem(defender.roleArmor());
-					p.getInventory().addItem(defender.TargetEmblem());
-					p.getInventory().addItem(defender.RangeEmblem());
+					p.getInventory().addItem(defender.targetEmblem());
+					p.getInventory().addItem(defender.rangeEmblem());
 				}
 				case "guardian" -> {
 					p.getInventory().addItem(guardian.roleWeapon());
 					p.getInventory().addItem(guardian.roleArmor());
-					p.getInventory().addItem(guardian.TargetEmblem());
-					p.getInventory().addItem(guardian.RangeEmblem());
+					p.getInventory().addItem(guardian.targetEmblem());
+					p.getInventory().addItem(guardian.rangeEmblem());
 				}
 				case "fighter" -> {
 					p.getInventory().addItem(fighter.roleWeapon());
 					p.getInventory().addItem(fighter.roleArmor());
-					p.getInventory().addItem(fighter.TargetEmblem());
-					p.getInventory().addItem(fighter.RangeEmblem());
+					p.getInventory().addItem(fighter.targetEmblem());
+					p.getInventory().addItem(fighter.rangeEmblem());
 				}
 				case "sniper" -> {
 					p.getInventory().addItem(sniper.roleWeapon());
 					p.getInventory().addItem(sniper.roleArmor());
-					p.getInventory().addItem(sniper.TargetEmblem());
-					p.getInventory().addItem(sniper.RangeEmblem());
+					p.getInventory().addItem(sniper.targetEmblem());
+					p.getInventory().addItem(sniper.rangeEmblem());
 				}
 				case "ranger" -> {
 					p.getInventory().addItem(ranger.roleWeapon());
 					p.getInventory().addItem(ranger.roleArmor());
-					p.getInventory().addItem(ranger.TargetEmblem());
-					p.getInventory().addItem(ranger.RangeEmblem());
+					p.getInventory().addItem(ranger.targetEmblem());
+					p.getInventory().addItem(ranger.rangeEmblem());
 				}
 			}
 		}

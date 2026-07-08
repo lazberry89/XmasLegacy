@@ -1,6 +1,5 @@
 package org.lazberry.xmaslegacy.User;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +8,8 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.Tier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,13 +18,13 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Slf4j
 public enum UserManager {
 	INSTANCE;
 
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final @NotNull UserRepository repository = SqlUserRepository.INSTANCE;
 	private @NotNull File rootDataFolder = new File("plugins/XmasLegacy");
+	private static final Logger log = LoggerFactory.getLogger(UserManager.class);
 
 	UserManager() {}
 

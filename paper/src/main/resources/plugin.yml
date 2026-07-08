@@ -70,7 +70,7 @@ commands:
     usage: /pt <create | invite | leave | expel> <Player>
     description: 파티를 관리합니다.
 
-  location:
+  destination:
     description: 위치를 설치하고 저장, 불러오기, 유저 이동을 담당한다.
 
   role:

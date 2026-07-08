@@ -1,0 +1,73 @@
+package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Ranger;
+
+import org.bukkit.*;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
+import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
+import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
+import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
+import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.Annotation.Roles;
+import org.lazberry.xmaslegacy.Emblems.EmblemType;
+import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.Utils.ItemBuilder;
+import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
+
+import java.util.*;
+
+@Roles(grade = 2)
+public class Ranger extends AbstractSecondRole {
+	private Container container;
+
+	public record Container(
+			XmasLegacy plugin
+	) implements RoleContainer {}
+
+    public Ranger() {
+        super(SecondaryRoles.RANGER);
+		this.container = new Container(getPlugin());
+    }
+
+    @Override
+    public void useFirstSkill(@NotNull Player p) {
+        handleSkill(p, emblem, EmblemType.TARGET, SkillManager.INSTANCE.get(SecondarySkillSet.CHAINING), container, 30);
+    }
+
+    @Override
+    public void useSecondSkill(@NotNull Player p) {
+		handleSkill(p, emblem, EmblemType.RANGE, SkillManager.INSTANCE.get(SecondarySkillSet.PRISM_LASER), container, 30);
+    }
+
+    @Override
+    public void usePassive(@NotNull Player p) {}
+
+    @Override
+    public @NotNull ItemStack roleWeapon() {
+        return ItemBuilder.of(getPlugin(), Material.IRON_HOE)
+		        .setRoleDefault(SecondaryRoles.RANGER)
+		        .setName(ColorUtils.chat("&e&l프리즘 슬라이서"))
+		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+		        .hideAllFlags()
+		        .build();
+    }
+
+    @Override
+    public @NotNull ItemStack roleArmor() {
+        return ItemBuilder.of(getPlugin(), Material.GOLDEN_BOOTS)
+		        .setRoleDefault(SecondaryRoles.RANGER)
+		        .setName(ColorUtils.chat("&e&l프리즘 부츠"))
+		        .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+		        .hideAllFlags()
+		        .build();
+    }
+}

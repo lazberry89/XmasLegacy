@@ -52,8 +52,12 @@ public enum ServerType {
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated(forRemoval = true, since = "1.21.11")
-	public <I extends ServerInitializer> @NotNull I getInitializer() {
+	public <I extends ServerInitializer> @NotNull I getInitializer(boolean flag) {
 		return (I) this.initializer;
+	}
+
+	public @NotNull ServerInitializer getInitializer() {
+		return this.initializer;
 	}
 
 	/**

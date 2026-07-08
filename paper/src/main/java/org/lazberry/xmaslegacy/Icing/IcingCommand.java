@@ -3,19 +3,18 @@ package org.lazberry.xmaslegacy.Icing;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
-import java.util.List;
+@Commands(command = "icing")
+public class IcingCommand implements CommandExecutor {
+	private final @NotNull IcingSystem system;
 
-public record IcingCommand(@NotNull IcingSystem system) implements CommandExecutor, TabCompleter {
-
-	public IcingCommand(IcingSystem system) {
-		this.system = system;
+	public IcingCommand() {
+		this.system = IcingSystem.INSTANCE;
 	}
 
 	@Override
@@ -38,10 +37,5 @@ public record IcingCommand(@NotNull IcingSystem system) implements CommandExecut
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-		return List.of();
 	}
 }

@@ -26,7 +26,7 @@ import java.util.List;
 
 @Slf4j
 public class Reflections {
-	private static final @NotNull String packageName = "org/lazberry/xmaslegacy";
+	private static final @NotNull String packageName = "org.lazberry.xmaslegacy";
 	
 	private static @NotNull XmasLegacy plugin() {
 		return XmasLegacy.getInstance();
@@ -215,7 +215,9 @@ public class Reflections {
 					instance = (Tasks) constructor.newInstance();
 					log.info("Successfully created instance of Task {}", clazz.getSimpleName());
 				}
-				if (Arrays.asList(type).contains(ServerInitializer.getServerType(plugin()))) {
+				List<ServerType> typeList = Arrays.asList(type);
+				ServerType current = ServerInitializer.getServerType(plugin());
+				if (typeList.contains(current) || current.isRequiresGlobalInitializer() && typeList.contains(ServerType.GLOBAL)) {
 					if (enable) {
 						instance.startTask(plugin());
 						log.info("Task {} started successfully.", clazz.getSimpleName());
