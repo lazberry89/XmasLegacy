@@ -9,6 +9,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
+import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -24,9 +26,9 @@ public class RoleSelectionInterface implements InventoryHolder {
     18 19 20 21 22 23 24 25 26
     */
 
-    public RoleSelectionInterface(BasicRoles basicRoles) {
+    public RoleSelectionInterface(@NotNull BasicRoles basicRoles) {
         var plugin = XmasLegacy.getInstance();
-        var rlm = FirstRoleManager.INSTANCE;
+        var rlm = RoleManager.INSTANCE;
         this.selectedRole = basicRoles;
         this.title = ColorUtils.chat(String.format("&c&l[ %s ]", basicRoles.getKor()));
         this.inv = Bukkit.createInventory(this, 36, title);
@@ -34,8 +36,7 @@ public class RoleSelectionInterface implements InventoryHolder {
                 .setName(ColorUtils.chat("")).setLore(ColorUtils.chat("")).hideAllFlags().build().clone();
         for (int i = 0; i < 9; i++) this.inv.setItem(i, bg);
 
-        var selInst = rlm.getRoleInstance(selectedRole);
-        if (selInst == null) return;
+        AbstractFirstRole selInst = rlm.getRoleInstance(selectedRole);
 
         ItemStack tool1 = selInst.roleWeapon();
         ItemStack tool2 = selInst.roleArmor();
