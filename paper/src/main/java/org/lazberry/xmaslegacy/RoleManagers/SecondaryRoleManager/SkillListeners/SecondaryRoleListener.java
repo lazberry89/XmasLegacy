@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SkillListeners;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -23,7 +24,6 @@ import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Berserker.Berserker;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Guardian.Guardian;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper.Sniper;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
@@ -31,26 +31,22 @@ import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.XmasLegacy;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
+@Slf4j
 @Listeners
 public class SecondaryRoleListener implements Listener {
-    private final @NotNull XmasLegacy plugin;
     private final @NotNull UserManager um;
     private final @NotNull PartyManager pm;
 	private final @NotNull RoleManager rlm;
 	private final @NotNull SkillEffectManager sem;
-	private final @NotNull SecondRoleManager srm;
 
     public SecondaryRoleListener() {
-        this.plugin = XmasLegacy.getInstance();
         this.um = UserManager.INSTANCE;
         this.pm = PartyManager.INSTANCE;
 		this.rlm = RoleManager.INSTANCE;
 		this.sem = SkillEffectManager.INSTANCE;
-		this.srm = SecondRoleManager.INSTANCE;
     }
 
     @EventHandler
@@ -79,8 +75,8 @@ public class SecondaryRoleListener implements Listener {
     @EventHandler
     public void guardianPassive(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof LivingEntity victim)) return;
-		Guardian guardian = srm.getRoleInstance(GUARDIAN);
-		if (guardian == null) return;
+		Guardian guardian = rlm.getRoleInstance(GUARDIAN);
+
         for (Player guardians : Bukkit.getOnlinePlayers()) {
             User user = um.getUser(guardians.getUniqueId());
             if (user == null) continue;
@@ -116,16 +112,9 @@ public class SecondaryRoleListener implements Listener {
 		ItemStack item = p.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;
 
-		Berserker berserker = srm.getRoleInstance(BERSERKER);
-		if (berserker == null) return;
+		Berserker berserker = rlm.getRoleInstance(BERSERKER);
 
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null) return;
-
-		PersistentDataContainer pdc = meta.getPersistentDataContainer();
-		String type = pdc.get(KeyUtils.get("role_id"), PersistentDataType.STRING);
-		if (type == null) return;
-		if (!type.equalsIgnoreCase(SecondaryRoles.BERSERKER.name())) return;
+		if (!KeyUtils.hasKey(item, KeyUtils.get("role_id"), PersistentDataType.STRING, BERSERKER.name())) return;
 		if (berserker.used(p)) {
 			berserker.setAvailable(p);
 			return;
@@ -146,8 +135,7 @@ public class SecondaryRoleListener implements Listener {
 		ItemStack item = p.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;
 
-		Guardian guardian = srm.getRoleInstance(GUARDIAN);
-		if (guardian == null) return;
+		Guardian guardian = rlm.getRoleInstance(GUARDIAN);
 
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) return;
@@ -191,41 +179,5 @@ public class SecondaryRoleListener implements Listener {
 		Sniper sniper = RoleManager.INSTANCE.getRoleInstance(SNIPER);
 		if (!KeyUtils.hasKey(item, KeyUtils.get("role_id"), PersistentDataType.STRING, SNIPER.name())) return;
 		sniper.fire(p);
-	}
-
-	@EventHandler
-	public void skillUse(PlayerInteractEvent e) {
-		Player p = e.getPlayer();
-		ItemStack tool = p.getInventory().getItemInMainHand();
-		if (tool.getType().isAir()) return;
-		PersistentDataContainer container = tool.getItemMeta().getPersistentDataContainer();
-		String type = container.get(KeyUtils.get("emblem_type"), PersistentDataType.STRING);
-		String roleS = container.get(KeyUtils.get("emblem_role"), PersistentDataType.STRING);
-		if (type == null || roleS == null) return;
-		Role role;
-		try {
-			role = Role.valueOf(roleS);
-		} catch (IllegalArgumentException ex) {
-			plugin.getSLF4JLogger().error("Role method 'valueOf(String name)' invoked error. -> \"{}\"", roleS);
-			role = null;
-		}
-		if (role == null) return;
-		switch (type) {
-			case "range" -> {
-				if (role instanceof BasicRoles fr) rlm.getRoleInstance(fr).useSecondSkill(p);
-				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useSecondSkill(p);
-				else logger(role.name());
-			}
-			case "target" -> {
-				if (role instanceof BasicRoles fr) rlm.getRoleInstance(fr).useFirstSkill(p);
-				else if (role instanceof SecondaryRoles sr) rlm.getRoleInstance(sr).useFirstSkill(p);
-				else logger(role.name());
-			}
-			default -> plugin.getSLF4JLogger().error("Emblem type mismatch. Type: {}", type);
-		}
-	}
-
-	private void logger(@NotNull String role) {
-		plugin.getSLF4JLogger().error("Role type mismatch. Role: {}", role);
 	}
 }

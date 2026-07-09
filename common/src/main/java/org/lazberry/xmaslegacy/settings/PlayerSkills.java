@@ -30,7 +30,7 @@ public enum PlayerSkills {
     KARMA(SecondarySkillSet.KARMA),
     TARGET_GUARD(SecondarySkillSet.TARGET_GUARD),
     OVERCHARGE_PRISM(SecondarySkillSet.OVERCHARGE_PRISM),
-    CHAIN_GRAB(SecondarySkillSet.CHAIN_GRAB),
+    ULTRA_MADNESS(SecondarySkillSet.ULTRA_MADNESS),
     TRIPLE_TOMAHAWK(SecondarySkillSet.TRIPLE_TOMAHAWK),
     COUNTER(SecondarySkillSet.COUNTER),
     FINISHER(SecondarySkillSet.FINISHER),
@@ -38,7 +38,9 @@ public enum PlayerSkills {
     MAGIC_BULLET(SecondarySkillSet.MAGIC_BULLET),
     FIRE_BULLET(SecondarySkillSet.FIRE_BULLET),
     PRISM_LASER(SecondarySkillSet.PRISM_LASER),
-    CHAINING(SecondarySkillSet.CHAINING);
+    CHAINING(SecondarySkillSet.CHAINING),
+    SHOTGUN(SecondarySkillSet.SHOTGUN),
+    CHAIN_GRAB(SecondarySkillSet.CHAIN_GRAB);
 
     private final @NotNull SkillSet origin;
 

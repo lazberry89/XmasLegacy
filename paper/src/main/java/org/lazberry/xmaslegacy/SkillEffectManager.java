@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
@@ -21,11 +22,52 @@ public enum SkillEffectManager {
 
     private final @NotNull XmasLegacy plugin;
     private final @NotNull Map<UUID, Long> stun = new HashMap<>();
+    private final @NotNull Set<UUID> immuneToKnockback = new HashSet<>();
+    private final @NotNull Set<UUID> immuneToDebuff = new HashSet<>();
     private final @NotNull Set<UUID> activeStunTimers = new HashSet<>();
     private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();
 
     SkillEffectManager() {
         this.plugin = XmasLegacy.getInstance();
+    }
+
+    public void setImmuneToKnockback(@NotNull UUID uuid, boolean flag) {
+        if (flag) this.immuneToKnockback.add(uuid);
+        else this.immuneToKnockback.remove(uuid);
+    }
+
+    public boolean isImmuneToKnockback(@NotNull UUID uuid) {
+        return this.immuneToKnockback.contains(uuid);
+    }
+
+    public void setImmuneToDebuff(@NotNull UUID uuid, boolean flag) {
+        if (flag) this.immuneToDebuff.add(uuid);
+        else this.immuneToDebuff.remove(uuid);
+    }
+
+    public boolean isImmuneToDebuff(@NotNull UUID uuid) {
+        return this.immuneToDebuff.contains(uuid);
+    }
+
+    private static final Set<PotionEffectType> DEBUFFS = Set.of(
+            PotionEffectType.POISON,
+            PotionEffectType.WITHER,
+            PotionEffectType.BLINDNESS,
+            PotionEffectType.SLOWNESS,
+            PotionEffectType.WEAKNESS,
+            PotionEffectType.NAUSEA,
+            PotionEffectType.MINING_FATIGUE,
+            PotionEffectType.HUNGER,
+            PotionEffectType.LEVITATION,
+            PotionEffectType.BAD_OMEN,
+            PotionEffectType.DARKNESS
+    );
+
+    public static void clearDebuffs(@NotNull Player p) {
+        for (PotionEffectType debuffType : DEBUFFS) {
+            if (p.hasPotionEffect(debuffType))
+                p.removePotionEffect(debuffType);
+        }
     }
 
     public void hideEntity(LivingEntity le) {

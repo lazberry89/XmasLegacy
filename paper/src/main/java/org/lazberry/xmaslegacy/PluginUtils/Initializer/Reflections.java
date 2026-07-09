@@ -11,9 +11,9 @@ import org.lazberry.xmaslegacy.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
+import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class Reflections {
+public final class Reflections {
 	private static final @NotNull String packageName = "org.lazberry.xmaslegacy";
 	
 	private static @NotNull XmasLegacy plugin() {
@@ -150,9 +150,10 @@ public class Reflections {
 			try {
 				Class<?> clazz = classInfo.load();
 				if (!clazz.isAnnotationPresent(Roles.class)) continue;
-
-				Roles rolesAnnotation = clazz.getAnnotation(Roles.class);
-				int grade = rolesAnnotation.grade();
+				if (!RoleClass.class.isAssignableFrom(clazz)) {
+					log.error("Clazz {} is not implementing RoleClass.class but Using @Roles annotation.", clazz.getSimpleName());
+					continue;
+				}
 
 				Object instance;
 				try {
@@ -161,24 +162,12 @@ public class Reflections {
 					log.warn("Class {} don't have default Constructor. Passing process", clazz.getSimpleName());
 					continue;
 				}
-
-				switch (grade) {
-					case 1 -> {
-						if (instance instanceof AbstractFirstRole firstRole) {
-							FirstRoleManager.INSTANCE.register(firstRole);
-							log.info("FirstRole {} class registered.", clazz.getSimpleName());
-						} else log.error("Class {} is not extending AbstractFirstRole.", clazz.getSimpleName());
-
-					}
-					case 2 -> {
-						if (instance instanceof AbstractSecondRole secondRole) {
-							SecondRoleManager.INSTANCE.register(secondRole);
-							log.info("SecondaryRole {} class registered.", clazz.getSimpleName());
-						} else log.error("Class {} is not extending AbstractSecondRole.", clazz.getSimpleName());
-					}
-					default ->log.error("Class {} have wrong value = {}", clazz.getSimpleName(), grade);
+				if (!(instance instanceof RoleClass roleClass)) {
+					log.error("Filtered instance \"{}\" is not Valid.", instance);
+					continue;
 				}
-
+				RoleManager.INSTANCE.register(roleClass);
+				log.info("Successfully registered role {}", clazz.getSimpleName());
 			} catch (Exception e) {
 				log.error("Error occurred while registering class {}", classInfo.getName(), e);
 			}

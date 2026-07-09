@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Berserker;
+package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Trapper;
 
 import org.bukkit.Color;
 import org.bukkit.Location;

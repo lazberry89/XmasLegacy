@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy;
 
+import io.papermc.paper.event.entity.EntityKnockbackEvent;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -9,23 +10,41 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.lazberry.xmaslegacy.settings.Alert;
+import org.bukkit.event.player.*;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
+import org.lazberry.xmaslegacy.Utils.GlowUtils;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.UUID;
 
 @Listeners
 public class EffectListener implements Listener {
-    private final SkillEffectManager sem;
-    private final XmasLegacy plugin;
+    private final @NotNull SkillEffectManager sem;
+    private final @NotNull XmasLegacy plugin;
 
     public EffectListener() {
         this.plugin = XmasLegacy.getInstance();
         this.sem = SkillEffectManager.INSTANCE;
+    }
+
+    @EventHandler
+    public void removeDebuffIfImmune(PlayerMoveEvent e) {
+        if (!e.hasChangedPosition()) return;
+        var player = e.getPlayer();
+        if (sem.isImmuneToDebuff(player.getUniqueId())) SkillEffectManager.clearDebuffs(player);
+    }
+
+    @EventHandler
+    public void ImmuneToKnockback(EntityKnockbackEvent e) {
+        UUID uuid = e.getEntity().getUniqueId();
+        if (sem.isImmuneToKnockback(uuid)) e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void immuneVelocity(PlayerVelocityEvent e) {
+        UUID uuid = e.getPlayer().getUniqueId();
+        if (sem.isImmuneToKnockback(uuid)) e.setCancelled(true);
     }
 
     @EventHandler
@@ -63,12 +82,13 @@ public class EffectListener implements Listener {
 	@EventHandler
 	public void deStunWhenDead(EntityDeathEvent e) {
 		LivingEntity victim = e.getEntity();
-		if (sem.isStunned(victim)) sem.deStun(victim.getUniqueId());
+		if (sem.isStunned(victim.getUniqueId())) sem.deStun(victim.getUniqueId());
 	}
 
 	@EventHandler
 	public void deStunWhenPlayerDead(PlayerDeathEvent e) {
-
+        Player victim = e.getPlayer();
+        if (sem.isStunned(victim.getUniqueId())) sem.deStun(victim.getUniqueId());
 	}
 
     @EventHandler
@@ -80,7 +100,10 @@ public class EffectListener implements Listener {
 
     @EventHandler
     public void removeHidePlayer(PlayerQuitEvent e) {
-        sem.showEntity(e.getPlayer());
+        Player p = e.getPlayer();
+        sem.showEntity(p);
+        if (sem.isStunned(p)) sem.deStun(p.getUniqueId());
+        GlowUtils.clearGlow(p);
     }
 
     @EventHandler

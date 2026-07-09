@@ -13,7 +13,7 @@ public enum SecondaryRoles implements Role {
 	GUARDIAN("가디언" , BasicRoles.KNIGHT, SecondarySkillSet.TARGET_GUARD, new SkillSet[]{SecondarySkillSet.OVERCHARGE_PRISM}, ThirdRoles.PALADIN), //기사 2차전직 가디언
 	DEFENDER("디펜더" , BasicRoles.KNIGHT, SecondarySkillSet.SOUL_STEAL, new SkillSet[]{SecondarySkillSet.KARMA}, ThirdRoles.PALADIN), //기사 2차전직 디펜더
 
-	BERSERKER("버서커" , BasicRoles.WARRIOR, SecondarySkillSet.CHAIN_GRAB, new SkillSet[]{SecondarySkillSet.TRIPLE_TOMAHAWK}), //전사 2차전직 버서커(탱커)
+	BERSERKER("버서커" , BasicRoles.WARRIOR, SecondarySkillSet.ULTRA_MADNESS, new SkillSet[]{SecondarySkillSet.TRIPLE_TOMAHAWK}), //전사 2차전직 버서커(탱커)
 	FIGHTER("격투가" , BasicRoles.WARRIOR, SecondarySkillSet.COUNTER, new SkillSet[]{SecondarySkillSet.FINISHER}), //전사 2차전직 격투가
 
 	SNIPER("저격수" , BasicRoles.ARCHER, SecondarySkillSet.SNIPE, new SkillSet[]{SecondarySkillSet.MAGIC_BULLET}, ThirdRoles.WIND_WALKER), //궁수 2차전직 저격수
@@ -33,13 +33,13 @@ public enum SecondaryRoles implements Role {
 	SMITH("대장장이" , BasicRoles.CRAFTER), //장인 2차전직 대장장이
 	ALCHEMIST("연금술사" , BasicRoles.CRAFTER); //장인 2차전직 연금술사
 
-	private final BasicRoles parent;
-	private final List<Role> next;
-	private final String kor;
-	private final SkillSet skillSet1;
-	private final List<SkillSet> skillSet2;
+	private final @NotNull BasicRoles parent;
+	private final @NotNull List<Role> next;
+	private final @NotNull String kor;
+	private final @NotNull SkillSet skillSet1;
+	private final @NotNull List<SkillSet> skillSet2;
 
-	SecondaryRoles(String kor, @NotNull BasicRoles parent, @Nullable Role... next) {
+	SecondaryRoles(@NotNull String kor, @NotNull BasicRoles parent, @Nullable Role... next) {
 		this.parent = parent;
 		this.next = Arrays.asList(next);
 		this.kor = kor;
@@ -47,7 +47,7 @@ public enum SecondaryRoles implements Role {
 		this.skillSet2 = new ArrayList<>();
 	}
 
-	SecondaryRoles(String kor, @NotNull BasicRoles parent, SkillSet skillSet1, SkillSet[] skillSet2, @Nullable Role... next) {
+	SecondaryRoles(@NotNull String kor, @NotNull BasicRoles parent, @NotNull SkillSet skillSet1, SkillSet[] skillSet2, @Nullable Role... next) {
 		this.parent = parent;
 		this.next = Arrays.asList(next);
 		this.kor = kor;
@@ -56,7 +56,7 @@ public enum SecondaryRoles implements Role {
 	}
 
 	@Override
-	public @Nullable Role parent() {
+	public @NotNull Role parent() {
 		return this.parent;
 	}
 	public @NotNull List<Role> next() {
@@ -64,12 +64,12 @@ public enum SecondaryRoles implements Role {
 	}
 
 	@Override
-	public SkillSet bindTarget() {
+	public @NotNull SkillSet bindTarget() {
 		return this.skillSet1;
 	}
 
 	@Override
-	public List<SkillSet> bindRange() {
+	public @NotNull List<SkillSet> bindRange() {
 		return this.skillSet2;
 	}
 
@@ -79,7 +79,7 @@ public enum SecondaryRoles implements Role {
 	}
 
 	@Override
-	public String getKor() {
+	public @NotNull String getKor() {
 		return this.kor;
 	}
 

@@ -10,7 +10,6 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lazberry.xmaslegacy.Annotation.Skill;
@@ -18,6 +17,7 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -31,39 +31,42 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 
 	@Override
 	public boolean execute(@NotNull Player caster, Ranger.@NotNull Container container) {
-		if (!consumeEnergy(caster, 4)) return false;
-
 		Location startLoc = caster.getEyeLocation();
 		Vector direction = startLoc.getDirection().normalize();
 		double maxDistance = 60.0;
 
-		RayTraceResult ray = caster.getWorld().rayTrace(
-				startLoc, direction, maxDistance,
-				FluidCollisionMode.NEVER, true, 0.5,
-				entity -> entity instanceof LivingEntity && !entity.equals(caster)
+		RayTraceResult ray = caster.getWorld().rayTraceEntities(
+				startLoc, direction, maxDistance, 0.5,
+				entity -> entity instanceof LivingEntity
+						&& !entity.equals(caster)
+						&& !PartyManager.INSTANCE.isParty(caster.getUniqueId(), entity.getUniqueId())
 		);
 
-		double actualDistance = maxDistance;
-		LivingEntity hitEntity = null;
-
-		if (ray != null) {
-			if (ray.getHitPosition() != null) {
-				actualDistance = startLoc.distance(ray.getHitPosition().toLocation(caster.getWorld()));
-			}
-			if (ray.getHitEntity() instanceof LivingEntity le) {
-				hitEntity = le;
-			}
+		if (ray == null || !(ray.getHitEntity() instanceof LivingEntity hitEntity)) {
+			InfoUtils.error(caster, "타겟이 없습니다!");
+			return false;
 		}
 
-		if (actualDistance <= 20.0) {
-			executeShortRange(caster, startLoc, direction, actualDistance, hitEntity);
-		} else {
-			executeLongRange(caster, container, startLoc, direction, actualDistance);
-		}
+		if (!consumeEnergy(caster, 4)) return false;
+
+		double actualDistance = startLoc.distance(hitEntity.getEyeLocation()) + 1.5;
+
+		if (actualDistance <= 15.0) executeShortRange(caster, startLoc, direction, actualDistance, hitEntity);
+		else executeLongRange(caster, container, startLoc, direction, actualDistance);
 		return true;
 	}
 
-	private void executeShortRange(@NotNull Player caster, @NotNull Location start, @NotNull Vector dir, double distance, @Nullable LivingEntity hitEntity) {
+	@Override
+	public @NotNull SkillSet type() {
+		return PRISM_LASER;
+	}
+
+	@Override
+	public @NotNull Role role() {
+		return RANGER;
+	}
+
+	private void executeShortRange(@NotNull Player caster, @NotNull Location start, @NotNull Vector dir, double distance, @NotNull LivingEntity hitEntity) {
 		World world = start.getWorld();
 		Particle.DustOptions thickDust = new Particle.DustOptions(Color.fromRGB(255, 230, 0), 1.5f);
 		Particle.DustOptions waveDust = new Particle.DustOptions(Color.fromRGB(255, 255, 140), 1.0f);
@@ -81,7 +84,6 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 
 		for (double d = 0.8; d < distance; d += 2.5) {
 			Location centerPoint = start.clone().add(dir.clone().multiply(d));
-
 			for (int i = 0; i < circlePoints; i++) {
 				double angle = (2 * Math.PI * i) / circlePoints;
 				Vector offset = axisX.clone().multiply(Math.cos(angle) * waveRadius)
@@ -93,15 +95,14 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 		}
 
 		world.playSound(start, Sound.ENTITY_WARDEN_SONIC_BOOM, 0.8f, 1.8f);
-		if (hitEntity != null && !PartyManager.INSTANCE.isParty(caster.getUniqueId(), hitEntity.getUniqueId())) {
-			hitEntity.damage(6.0, caster);
-			hitEntity.setFireTicks(60);
 
-			Vector knockback = dir.clone().setY(0.35).normalize().multiply(1.6);
-			hitEntity.setVelocity(knockback);
+		hitEntity.damage(6.0, caster);
+		hitEntity.setFireTicks(60);
 
-			hitEntity.getWorld().playSound(hitEntity.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_3, 1.0f, 1.2f);
-		}
+		Vector knockback = dir.clone().setY(0.35).normalize().multiply(1.6);
+		hitEntity.setVelocity(knockback);
+
+		hitEntity.getWorld().playSound(hitEntity.getLocation(), Sound.ITEM_TRIDENT_RIPTIDE_3, 1.0f, 1.2f);
 	}
 
 	private void executeLongRange(@NotNull Player caster, Ranger.@NotNull Container container, @NotNull Location start, @NotNull Vector dir, double distance) {
@@ -120,6 +121,7 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 				display.setBlock(Bukkit.createBlockData(Material.YELLOW_STAINED_GLASS));
 
 				Vector3f scale = new Vector3f(0.3f, 0.3f, 1.0f);
+				// 중심을 잡기 위한 Translation (크기의 절반의 음수값)
 				Vector3f translation = new Vector3f(-0.15f, -0.15f, -0.5f);
 
 				display.setTransformation(new Transformation(translation, new Quaternionf(), scale, new Quaternionf()));
@@ -142,11 +144,14 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 				}
 
 				angle += 36.0f;
+				Quaternionf leftRot = new Quaternionf().rotateAxis((float) Math.toRadians(angle), new Vector3f(0, 0, 1));
+				Vector3f pivotOffset = new Vector3f(-0.15f, -0.15f, -0.5f);
+				Vector3f newTranslation = new Vector3f();
+				leftRot.transform(pivotOffset, newTranslation);
 
 				for (BlockDisplay bd : displays) {
 					Transformation current = bd.getTransformation();
-					Quaternionf leftRot = new Quaternionf().rotateAxis((float) Math.toRadians(angle), new Vector3f(0, 0, 1));
-					bd.setTransformation(new Transformation(current.getTranslation(), leftRot, current.getScale(), current.getRightRotation()));
+					bd.setTransformation(new Transformation(newTranslation, leftRot, current.getScale(), current.getRightRotation()));
 				}
 
 				Vector axisX = (Math.abs(dir.getY()) > 0.9) ? new Vector(1, 0, 0) : new Vector(-dir.getZ(), 0, dir.getX()).normalize();
@@ -165,9 +170,11 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 					}
 				}
 
-				for (double d = 0; d < distance; d += 2.0) {
+				// 4. 대미지 씹힘 문제 해결 (Step과 Radius 간격 조정)
+				for (double d = 0; d <= distance; d += 1.5) { // < 에서 <= 로 변경하여 끝자락까지 확실히 체크
 					Location checkLoc = start.clone().add(dir.clone().multiply(d));
-					for (Entity e : world.getNearbyEntities(checkLoc, 1.2, 1.2, 1.2)) {
+					// 간격을 2.0 -> 1.5로 줄이고, 체크 반경을 1.2 -> 1.5로 늘려 사각지대(Gap) 제거
+					for (Entity e : world.getNearbyEntities(checkLoc, 1.5, 1.5, 1.5)) {
 						if (e instanceof LivingEntity le && !le.equals(caster) && !hitEntities.contains(le.getUniqueId())) {
 							if (!PartyManager.INSTANCE.isParty(caster.getUniqueId(), le.getUniqueId())) {
 
@@ -187,15 +194,5 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 				ticksLived++;
 			}
 		}.runTaskTimer(container.plugin(), 0L, 1L);
-	}
-
-	@Override
-	public @NotNull SkillSet type() {
-		return PRISM_LASER;
-	}
-
-	@Override
-	public @NotNull Role role() {
-		return RANGER;
 	}
 }

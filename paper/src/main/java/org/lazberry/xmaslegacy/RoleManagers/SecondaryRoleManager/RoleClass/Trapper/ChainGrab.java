@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Berserker;
+package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Trapper;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 @Skill(type = PlayerSkills.CHAIN_GRAB)
-public class ChainGrab implements Skills<Berserker.Container>, UsingEnergy {
+public class ChainGrab implements Skills<Trapper.Container>, UsingEnergy {
     private final @NotNull Particle.DustTransition trans;
 
     public ChainGrab() {
@@ -25,7 +25,7 @@ public class ChainGrab implements Skills<Berserker.Container>, UsingEnergy {
     }
 
     @Override
-    public boolean execute(@NotNull Player caster, @NotNull Berserker.@NotNull Container container) {
+    public boolean execute(@NotNull Player caster, @NotNull Trapper.@NotNull Container container) {
         if (!(consumeEnergy(caster, 3))) return false;
         caster.playSound(caster, Sound.BLOCK_CHAIN_PLACE, 1.0f, 1.0f);
         new BloodChainEffect(container.plugin()).playEffect(caster, target -> {
@@ -41,7 +41,7 @@ public class ChainGrab implements Skills<Berserker.Container>, UsingEnergy {
 
             Vector pullVector = casterLoc.toVector().subtract(targetLoc.toVector());
 
-            double horizontalPower = 1.3;
+            double horizontalPower = 1.8;
             pullVector.setY(0);
             pullVector.normalize().multiply(horizontalPower);
 

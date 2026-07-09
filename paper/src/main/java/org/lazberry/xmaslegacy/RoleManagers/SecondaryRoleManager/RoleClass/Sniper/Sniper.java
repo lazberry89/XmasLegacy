@@ -17,6 +17,7 @@ import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
+import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
@@ -27,7 +28,7 @@ import java.util.*;
 
 @Roles(grade = 2)
 public class Sniper extends AbstractSecondRole {
-    private final @NotNull Container container = new Container();
+    private final @NotNull Container container;
 
     public static class Container implements RoleContainer {
         public final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
@@ -35,6 +36,12 @@ public class Sniper extends AbstractSecondRole {
         public final @NotNull Set<UUID> isReloading = new HashSet<>();
         public final @NotNull Set<UUID> magicalBullet = new HashSet<>();
         public final @NotNull Map<UUID, BulletType> lastHitRecord = new HashMap<>();
+        private final @NotNull Role role;
+
+        Container(@NotNull SecondaryRoles role) {
+            this.role = role;
+        }
+
         public @Nullable BulletType getLastHitType(@NotNull Entity entity) {
             return lastHitRecord.get(entity.getUniqueId());
         }
@@ -42,7 +49,7 @@ public class Sniper extends AbstractSecondRole {
             return ItemBuilder.of(plugin, Material.CROSSBOW)
                     .setName(ColorUtils.chat("&4&l인터셉터"))
                     .setLore(ColorUtils.chat(p == null || reloaded.get(p.getUniqueId()) == null ? "&7장전되지 않음" : "&6장전됨( " + reloaded.get(p.getUniqueId()).name() + " )"))
-                    .setTag("role_id", "sniper")
+                    .setTag("role_id", role.name())
                     .setUnbreakable()
                     .build().clone();
         }
@@ -78,6 +85,7 @@ public class Sniper extends AbstractSecondRole {
 
     public Sniper() {
         super(SecondaryRoles.SNIPER);
+        this.container = new Container(getRole());
     }
 
     @Override

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Annotation.Commands;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 

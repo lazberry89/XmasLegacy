@@ -1,43 +1,56 @@
 package org.lazberry.xmaslegacy.RoleManagers;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
-import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.FirstRoleManager;
+import org.lazberry.xmaslegacy.RoleManagers.HiddenRoleManager.AbstractHiddenRole;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.SecondRoleManager;
+import org.lazberry.xmaslegacy.RoleManagers.ThirdRoleManager.AbstractThirdRole;
+import org.lazberry.xmaslegacy.Roles.*;
 
-@SuppressWarnings("unchecked")
+import java.util.EnumMap;
+import java.util.Map;
+
 public enum RoleManager {
 	INSTANCE;
 
-	private final @NotNull FirstRoleManager frm;
-	private final @NotNull SecondRoleManager srm;
+	private final @NotNull Map<BasicRoles, AbstractFirstRole> firstRoleMap = new EnumMap<>(BasicRoles.class);
+	private final @NotNull Map<SecondaryRoles, AbstractSecondRole> secondRoleMap = new EnumMap<>(SecondaryRoles.class);
+	private final @NotNull Map<ThirdRoles, AbstractThirdRole> thirdRoleMap = new EnumMap<>(ThirdRoles.class);
+	private final @NotNull Map<HiddenRoles, AbstractHiddenRole> hiddenRoleMap = new EnumMap<>(HiddenRoles.class);
 
-    RoleManager() {
-		this.frm = FirstRoleManager.INSTANCE;
-		this.srm = SecondRoleManager.INSTANCE;
-    }
+    RoleManager() {}
 
-	public @NotNull <F extends AbstractFirstRole> F getRoleInstance(@NotNull BasicRoles role) throws IllegalArgumentException {
-		var result = frm.getRoleInstance(role);
-		if (result == null) throw new IllegalArgumentException("No role found");
-		return (F) result;
+	public void register(@NotNull RoleClass instance) {
+		switch (instance) {
+			case AbstractFirstRole afr -> this.firstRoleMap.put(afr.getRole(), afr);
+			case AbstractSecondRole asr -> this.secondRoleMap.put(asr.getRole(), asr);
+			case AbstractThirdRole atr -> this.thirdRoleMap.put(atr.getRole(), atr);
+			case AbstractHiddenRole ahr -> this.hiddenRoleMap.put(ahr.getRole(), ahr);
+            default -> throw new IllegalStateException("Unexpected value: " + instance);
+        }
 	}
 
-	public @NotNull <S extends AbstractSecondRole> S getRoleInstance(@NotNull SecondaryRoles role) throws IllegalArgumentException {
-		var result = srm.getRoleInstance(role);
-		if (result == null) throw new IllegalArgumentException("No role found");
-		return (S) result;
-	}
-
-	public @NotNull <R extends RoleClass> R getRoleInstance(@NotNull Role role) throws IllegalArgumentException {
-		return (R) switch (role) {
-			case BasicRoles b -> getRoleInstance(b);
-			case SecondaryRoles s -> getRoleInstance(s);
-			default -> throw new IllegalArgumentException("지원하지 않는 직업 타입입니다: " + role.getClass().getName());
+	@SuppressWarnings("unchecked")
+	public <V extends RoleClass> @NotNull V getRoleInstance(@NotNull Role role) {
+		return (V) switch (role) {
+			case BasicRoles basic -> this.firstRoleMap.get(basic);
+			case SecondaryRoles second -> this.secondRoleMap.get(second);
+			case ThirdRoles third -> this.thirdRoleMap.get(third);
+			case HiddenRoles hidden -> this.hiddenRoleMap.get(hidden);
+			default -> throw new IllegalArgumentException("Unexpected value: " + role);
 		};
+	}
+
+	public @NotNull AbstractFirstRole getBasicInstance(@NotNull BasicRoles role) {
+		return this.firstRoleMap.get(role);
+	}
+	public @NotNull AbstractSecondRole getSecondInstance(@NotNull SecondaryRoles role) {
+		return this.secondRoleMap.get(role);
+	}
+	public @NotNull AbstractThirdRole getThirdInstance(@NotNull ThirdRoles role) {
+		return this.thirdRoleMap.get(role);
+	}
+	public @NotNull AbstractHiddenRole getHiddenInstance(@NotNull HiddenRoles role) {
+		return this.hiddenRoleMap.get(role);
 	}
 }

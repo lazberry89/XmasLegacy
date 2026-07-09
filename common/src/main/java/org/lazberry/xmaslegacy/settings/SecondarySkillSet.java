@@ -12,7 +12,7 @@ public enum SecondarySkillSet implements SkillSet {
 	OVERCHARGE_PRISM("과충전 프리즘"),
 
 	//Berserker
-	CHAIN_GRAB("사슬 그랩"),
+	ULTRA_MADNESS("광폭화"),
 	TRIPLE_TOMAHAWK("트리플 토마호크"),
 
 	//Fighter
@@ -26,7 +26,11 @@ public enum SecondarySkillSet implements SkillSet {
 
 	//Ranger
 	CHAINING("체이닝"),
-	PRISM_LASER("프리즘 광선");
+	PRISM_LASER("프리즘 광선"),
+
+	//Trapper
+	SHOTGUN("산탄총"),
+	CHAIN_GRAB("사슬 그랩");
 
 	private final @NotNull String kor;
 

@@ -15,11 +15,12 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Skill;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
+import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -27,14 +28,19 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 import java.util.UUID;
 
 @Skill(type = PlayerSkills.FIRE_BULLET)
-public class FireBullet implements Skills<Sniper.Container> {
-    private final @NotNull SkillEffectManager sem = SkillEffectManager.INSTANCE;
+public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
+    private final @NotNull SkillEffectManager sem;
+
+    public FireBullet() {
+        this.sem = SkillEffectManager.INSTANCE;
+    }
 
     @Override
     public boolean execute(@NotNull Player caster, @NotNull Sniper.@NotNull Container container) {
         UUID uuid = caster.getUniqueId();
 
         if (!container.reloaded.containsKey(uuid) && !container.magicalBullet.contains(uuid)) {
+            InfoUtils.warn(caster, "장전되어있지 않습니다.");
             return false;
         }
 

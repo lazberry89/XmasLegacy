@@ -44,7 +44,7 @@ public class Berserker extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-        handleSkill(p, emblem, EmblemType.TARGET, SkillManager.INSTANCE.get(SecondarySkillSet.CHAIN_GRAB), container, 30);
+        handleSkill(p, emblem, EmblemType.TARGET, SkillManager.INSTANCE.get(SecondarySkillSet.ULTRA_MADNESS), container, 30);
     }
 
     @Override
