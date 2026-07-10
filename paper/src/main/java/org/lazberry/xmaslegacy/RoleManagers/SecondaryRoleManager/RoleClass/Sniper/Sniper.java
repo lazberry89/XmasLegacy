@@ -26,7 +26,7 @@ import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 import java.util.*;
 
-@Roles(grade = 2)
+@Roles
 public class Sniper extends AbstractSecondRole {
     private final @NotNull Container container;
 

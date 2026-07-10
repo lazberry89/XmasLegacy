@@ -7,23 +7,27 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.TRAPPER;
 import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.SHOTGUN;
 
+@Skill(type = PlayerSkills.SHOTGUN)
 public class ShotGun implements Skills<Trapper.Container>, UsingEnergy {
 
     @Override
     public boolean execute(@NotNull Player caster, @NotNull Trapper.@NotNull Container container) {
+		if (!consumeEnergy(caster, 3)) return false;
         Location eyeLoc = caster.getEyeLocation();
         Vector direction = eyeLoc.getDirection().normalize();
 
-        int rayCount = 10;
-        double totalSpread = 45.0;
+        int rayCount = 8;
+        double totalSpread = 55.0;
         double startAngle = -totalSpread / 2.0;
         double angleIncrement = totalSpread / (rayCount - 1);
 
@@ -31,7 +35,7 @@ public class ShotGun implements Skills<Trapper.Container>, UsingEnergy {
         double stepSize = 0.2;
         int steps = (int) (maxDistance / stepSize);
 
-        double damagePerPellet = 3.0;
+        double damagePerPellet = 2.5;
 
         for (int i = 0; i < rayCount; i++) {
             double currentAngle = startAngle + (i * angleIncrement);

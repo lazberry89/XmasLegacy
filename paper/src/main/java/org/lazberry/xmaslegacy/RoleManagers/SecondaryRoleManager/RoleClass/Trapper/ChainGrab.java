@@ -41,7 +41,7 @@ public class ChainGrab implements Skills<Trapper.Container>, UsingEnergy {
 
             Vector pullVector = casterLoc.toVector().subtract(targetLoc.toVector());
 
-            double horizontalPower = 1.8;
+            double horizontalPower = 2.5;
             pullVector.setY(0);
             pullVector.normalize().multiply(horizontalPower);
 

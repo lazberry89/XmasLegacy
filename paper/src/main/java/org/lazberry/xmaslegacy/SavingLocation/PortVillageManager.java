@@ -15,7 +15,7 @@ import java.util.Objects;
 public final class PortVillageManager extends SavedLocation {
 
     public PortVillageManager() {
-        super(DestinationType.FROZEN_PORT);
+        super(DestinationType.PORT);
     }
 
     public void move(@NotNull Player player) {

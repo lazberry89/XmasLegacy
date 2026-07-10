@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +46,7 @@ public record DestinationCommandMove(@NotNull DestinationType type) implements S
                             ServerTransfer.dramaticTeleport(player, from);
                             InfoUtils.info(player, "기존 위치로 돌아갔습니다.");
                         }, option));
-        InfoUtils.info(player, ColorUtils.chat("이동하였습니다.").appendSpace().append(back));
+	    Bukkit.getScheduler().runTaskLater(value.getPlugin(), () ->
+        InfoUtils.info(player, ColorUtils.chat("이동하였습니다.").appendSpace().append(back)), 60L);
     }
 }

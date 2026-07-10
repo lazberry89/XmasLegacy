@@ -19,7 +19,7 @@ public enum SpawnRepository {
         if (ServerInitializer.getServerType(XmasLegacy.getInstance()).equals(ServerType.LOBBY))
             this.spawnMap.put(DestinationType.LOBBY, new LobbyManager());
         else {
-            this.spawnMap.put(DestinationType.FROZEN_PORT, new PortVillageManager());
+            this.spawnMap.put(DestinationType.PORT, new PortVillageManager());
             this.spawnMap.put(DestinationType.MAIN, new MainSpawnManager());
         }
     }

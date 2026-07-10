@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
@@ -13,10 +14,10 @@ import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 @TestOnly
 @Commands(command = "test")
 public class TestCommands implements CommandExecutor {
-	private final FirstRoleManager frm;
+	private final @NotNull RoleManager frm;
 
 	public TestCommands() {
-		this.frm = FirstRoleManager.INSTANCE;
+		this.frm = RoleManager.INSTANCE;
 	}
 
 

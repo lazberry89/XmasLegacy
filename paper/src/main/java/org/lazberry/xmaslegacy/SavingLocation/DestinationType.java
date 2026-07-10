@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public enum DestinationType {
     MAIN("main"),
     LOBBY("lobby"),
-    FROZEN_PORT("port");
+    PORT("port");
 
     private final @NotNull String name;
 
