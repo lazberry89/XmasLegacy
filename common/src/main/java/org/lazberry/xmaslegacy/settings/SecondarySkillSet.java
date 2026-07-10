@@ -30,7 +30,10 @@ public enum SecondarySkillSet implements SkillSet {
 
 	//Trapper
 	SHOTGUN("산탄총"),
-	CHAIN_GRAB("사슬 그랩");
+	CHAIN_GRAB("사슬 그랩"),
+
+	MANA_ORB("마나구슬"),
+	ARCHMAGE_ZONE("아크메이지 존");
 
 	private final @NotNull String kor;
 

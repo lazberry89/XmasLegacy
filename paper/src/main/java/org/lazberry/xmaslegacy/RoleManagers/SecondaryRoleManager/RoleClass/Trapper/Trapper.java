@@ -1,13 +1,16 @@
 package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Trapper;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
@@ -34,17 +37,25 @@ public class Trapper extends AbstractSecondRole {
     }
 
     @Override
-    public void usePassive(@NotNull Player p) {
-
-    }
+    public void usePassive(@NotNull Player p) {}
 
     @Override
     public @NotNull ItemStack roleWeapon() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.COPPER_AXE)
+                .setRoleDefault(getRole())
+                .setName(ColorUtils.chat("&6&l사냥꾼의 도끼"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .hideAllFlags()
+                .build().clone();
     }
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.IRON_BOOTS)
+                .setRoleDefault(getRole())
+                .setName(ColorUtils.chat("&7&l낡은 장화"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .hideAllFlags()
+                .build().clone();
     }
 }

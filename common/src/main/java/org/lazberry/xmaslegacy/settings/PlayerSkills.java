@@ -40,7 +40,9 @@ public enum PlayerSkills {
     PRISM_LASER(SecondarySkillSet.PRISM_LASER),
     CHAINING(SecondarySkillSet.CHAINING),
     SHOTGUN(SecondarySkillSet.SHOTGUN),
-    CHAIN_GRAB(SecondarySkillSet.CHAIN_GRAB);
+    CHAIN_GRAB(SecondarySkillSet.CHAIN_GRAB),
+    MANA_ORB(SecondarySkillSet.MANA_ORB),
+    ARCHMAGE_ZONE(SecondarySkillSet.ARCHMAGE_ZONE);
 
     private final @NotNull SkillSet origin;
 

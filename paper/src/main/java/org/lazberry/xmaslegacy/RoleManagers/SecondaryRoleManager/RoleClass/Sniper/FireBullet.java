@@ -45,11 +45,6 @@ public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
         }
 
         BulletType bullet = container.magicalBullet.contains(uuid) ? BulletType.MAGICAL : container.reloaded.get(uuid);
-
-        container.magicalBullet.remove(uuid);
-        container.reloaded.remove(uuid);
-        container.replaceSnipe(caster);
-
         Entity target = shoot(caster, container, bullet);
 
         if (BulletType.SNEAKY.equals(bullet) && target instanceof LivingEntity le) {
