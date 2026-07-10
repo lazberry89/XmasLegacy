@@ -22,7 +22,7 @@ public record DestinationCommandMove(@NotNull DestinationType type) implements S
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        if (type.equals(DestinationType.FROZEN_PORT)) {
+        if (type.equals(DestinationType.PORT)) {
             PortVillageManager value = SpawnRepository.INSTANCE.get(type);
             value.move(player);
             return;
