@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Emblems.Emblem;
@@ -41,8 +42,8 @@ public abstract class AbstractFirstRole implements RoleClass {
 	public @NotNull BasicRoles getRole() {
 		return this.role;
 	}
-	public abstract void useFirstSkill(Player p);
-	public abstract void useSecondSkill(Player p);
+	public abstract void useFirstSkill(@NonNull Player p);
+	public abstract void useSecondSkill(@NonNull Player p);
 	public abstract @NotNull ItemStack roleWeapon();
     public abstract @NotNull ItemStack roleArmor();
 	public abstract @NotNull ItemStack roleBook();

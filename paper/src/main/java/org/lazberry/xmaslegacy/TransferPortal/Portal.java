@@ -22,11 +22,11 @@ public class Portal {
         this.key = key;
         this.center = center;
         this.destination = type;
-        this.flame = makeFlame();
+        this.flame = createFlame();
     }
 
     //TODO make model and apply to Oraxen.
-    private @NotNull ItemDisplay makeFlame() {
+    private @NotNull ItemDisplay createFlame() {
         return null;
     }
 

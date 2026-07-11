@@ -66,21 +66,9 @@ public class RoleListener implements Listener {
         }
         if (role == null) return;
         switch (type) {
-            case "target" -> {
-                if (role instanceof BasicRoles fr) rlm.getBasicInstance(fr).useFirstSkill(p);
-                else if (role instanceof SecondaryRoles sr) rlm.getSecondInstance(sr).useFirstSkill(p);
-                else logger(role.name());
-            }
-            case "range" -> {
-                if (role instanceof BasicRoles fr) rlm.getBasicInstance(fr).useSecondSkill(p);
-                else if (role instanceof SecondaryRoles sr) rlm.getSecondInstance(sr).useSecondSkill(p);
-                else logger(role.name());
-            }
+            case "target" -> rlm.getRoleInstance(role).useFirstSkill(p);
+            case "range" -> rlm.getRoleInstance(role).useSecondSkill(p);
             default -> log.error("Emblem type mismatch. Type: {}", type);
         }
-    }
-
-    private void logger(@NotNull String role) {
-        log.error("Role type mismatch. Role: {}", role);
     }
 }

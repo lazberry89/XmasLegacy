@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
@@ -74,12 +75,12 @@ public class Crafter extends AbstractFirstRole {
 	}
 
 	@Override
-	public void useFirstSkill(Player p) {
+	public void useFirstSkill(@NonNull Player p) {
 		handleSkill(p, emblem, EmblemType.TARGET, fix, container, getCooldown1());
 	}
 
 	@Override
-	public void useSecondSkill(Player p) {
+	public void useSecondSkill(@NonNull Player p) {
 		handleSkill(p, emblem, EmblemType.RANGE, tempBuff, container, getCooldown2());
 	}
 

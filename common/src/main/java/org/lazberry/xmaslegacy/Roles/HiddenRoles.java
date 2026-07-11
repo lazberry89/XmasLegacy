@@ -35,7 +35,7 @@ public enum HiddenRoles implements Role {
 	}
 
 	@Override
-	public String getKor() {
+	public @NotNull String getKor() {
 		return this.Kor;
 	}
 
@@ -55,12 +55,12 @@ public enum HiddenRoles implements Role {
 	}
 
 	@Override
-	public SkillSet bindTarget() {
+	public @NotNull SkillSet bindTarget() {
 		return null;
 	}
 
 	@Override
-	public List<SkillSet> bindRange() {
+	public @NotNull List<SkillSet> bindRange() {
 		return List.of();
 	}
 

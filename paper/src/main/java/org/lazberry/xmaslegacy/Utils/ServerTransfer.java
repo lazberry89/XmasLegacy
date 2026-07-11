@@ -51,7 +51,7 @@ public final class ServerTransfer {
 		var user = UserManager.INSTANCE.getUser(uuid);
 		if (user == null) {
 			sendReloadNotice(player);
-			log.error("Failed to move {} to port.(User info not loaded)", player.getName());
+			log.error("Failed to move {} to target Location.(User info not loaded)", player.getName());
 			return;
 		}
 

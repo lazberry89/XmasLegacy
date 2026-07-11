@@ -55,11 +55,11 @@ public final class InfoUtils {
     private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull String message, Object... args) {
         String formattedMessage = MessageFormatter.arrayFormat(message, args).getMessage();
         switch (level) {
-            case INFO -> log.info(message, args);
-            case WARN -> log.warn(message, args);
-            case ERROR -> log.error(message, args);
+            case INFO -> log.info(formattedMessage);
+            case WARN -> log.warn(formattedMessage);
+            case ERROR -> log.error(formattedMessage);
         }
-        Component txt = ColorUtils.chat(level.prefix() + " " + formattedMessage);
+        Component txt = level.prefix().comp().appendSpace().append(ColorUtils.chat(formattedMessage)); //Fixed
         p.sendMessage(txt);
         p.playSound(p, level.sound(), 1.0f, 1.0f);
         mobileProcess(p, txt);

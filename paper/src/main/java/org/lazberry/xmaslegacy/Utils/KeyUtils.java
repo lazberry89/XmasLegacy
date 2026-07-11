@@ -21,6 +21,14 @@ public final class KeyUtils {
         throw new UnsupportedOperationException("Utility class");
     }
 
+    /**
+     * Creates new instance of NamespacedKey with intended value.
+     * <pre>{@code
+     * NamespacedKey key = KeyUtils.get("abc");
+     * }</pre>
+     * @param value what key to create
+     * @return NamespacedKey of target value.
+     */
     @Contract("_ -> new")
     public static @NotNull NamespacedKey get(@NotNull String value) {
         var plugin = XmasLegacy.getInstance();

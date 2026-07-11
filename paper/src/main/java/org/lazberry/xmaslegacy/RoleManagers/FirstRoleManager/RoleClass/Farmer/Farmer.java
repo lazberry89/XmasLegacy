@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
@@ -72,12 +73,12 @@ public class Farmer extends AbstractFirstRole {
 	}
 
 	@Override
-	public void useFirstSkill(Player p) {
+	public void useFirstSkill(@NonNull Player p) {
 		handleSkill(p, emblem, EmblemType.TARGET, harvest, container, getCooldown1());
 	}
 
 	@Override
-	public void useSecondSkill(Player p) {
+	public void useSecondSkill(@NonNull Player p) {
 		handleSkill(p, emblem, EmblemType.RANGE, speed, container, getCooldown2());
 	}
 

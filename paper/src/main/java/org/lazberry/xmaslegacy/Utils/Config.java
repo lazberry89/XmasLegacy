@@ -39,7 +39,7 @@ public record Config(FileConfiguration file) {
 	 * <pre>{@code
 	 * Integer a = config.getValue("a.a", 1);
 	 * String b = config.getValue("b.b", "B");
-	 * int c = config.getValue("c.c", 10);
+	 * int c = config.getValue("c.c", 10); //Existing default value, the returned value NEVER be null.
 	 * }</pre>
 	 * @param key Key of value
 	 * @param def default value

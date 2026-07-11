@@ -1,11 +1,11 @@
 package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant;
 
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.OpenStocks;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.SellItems;
@@ -54,12 +54,12 @@ public class Merchant extends AbstractFirstRole {
 	}
 
 	@Override
-	public void useFirstSkill(Player p) {
+	public void useFirstSkill(@NonNull Player p) {
 		handleSkill(p, emblem, EmblemType.TARGET, open, container, getCooldown1());
 	}
 
 	@Override
-	public void useSecondSkill(Player p) {
+	public void useSecondSkill(@NonNull Player p) {
 		handleSkill(p, emblem, EmblemType.RANGE, sell, container, getCooldown2());
 	}
 

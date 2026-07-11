@@ -3,6 +3,8 @@ package org.lazberry.xmaslegacy.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 
 import java.time.Duration;
@@ -23,7 +25,7 @@ public final class TitleUtil {
      * @param fadeOut  사라지는 시간 (틱 단위)
      * @return 빌드 완료된 net.kyori.adventure.title.Title 객체
      */
-    public static Title create(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    public static @NotNull Title create(@Nullable String title, @Nullable String subtitle, int fadeIn, int stay, int fadeOut) {
         Component mainComponent = (title != null) ?
                 ColorUtils.chat(title) : Component.empty();
 
@@ -42,7 +44,7 @@ public final class TitleUtil {
     /**
      * [오버로딩] 기본 시간(나타나기 0.5초 / 유지 2초 / 사라지기 0.5초)이 내장된 Title 객체를 반환합니다.
      */
-    public static Title create(String title, String subtitle) {
+    public static @NotNull Title create(@NotNull String title, @NotNull String subtitle) {
         return create(title, subtitle, 10, 40, 10);
     }
 }

@@ -23,6 +23,9 @@ import java.util.UUID;
 public interface RoleClass {
 	@NotNull Map<UUID, Integer> dashCount = new HashMap<>();
 
+	void useFirstSkill(@NotNull Player p);
+	void useSecondSkill(@NotNull Player p);
+
 	default void useDash(@NotNull Player p, @NotNull Role role) {
 		UUID uuid = p.getUniqueId();
 
@@ -72,7 +75,7 @@ public interface RoleClass {
 		if (tool.getType().isAir()) return true;
 
 		if (p.getCooldown(tool) > 0) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
+			p.sendActionBar(ColorUtils.chat(Alert.RED + " 아직 스킬을 쓸 수 없습니다! &e" + (float) p.getCooldown(tool) / 20 + "&f초 기다리세요"));
 			return true;
 		}
 		return skillUse.isCancelled();

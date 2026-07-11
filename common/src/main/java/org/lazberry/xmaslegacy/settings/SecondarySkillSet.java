@@ -32,6 +32,7 @@ public enum SecondarySkillSet implements SkillSet {
 	SHOTGUN("산탄총"),
 	CHAIN_GRAB("사슬 그랩"),
 
+	//Wizard
 	MANA_ORB("마나구슬"),
 	ARCHMAGE_ZONE("아크메이지 존");
 

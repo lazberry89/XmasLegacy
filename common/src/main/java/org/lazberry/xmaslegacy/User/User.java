@@ -60,7 +60,6 @@ public class User {
     public void addPlayTime(int playTime) {this.playTime += playTime;}
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
     public boolean ifWantsCookie() {return this.wantsCookie;}
-	public void setName(@NotNull String name) {this.name = name;}
     public void addExp(double amount) {this.exp += amount;}
     public boolean hasRole() {return !BasicRoles.USER.equals(this.role);}
     public void addRoleExp(double amount) {this.roleExp += amount;}

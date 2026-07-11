@@ -10,22 +10,19 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
-import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public final class Reflections {
+	private static final Map<Class<?>, Tasks> ACTIVE_TASKS = new HashMap<>();
 	private static final @NotNull String packageName = "org.lazberry.xmaslegacy";
 	
 	private static @NotNull XmasLegacy plugin() {
@@ -185,41 +182,57 @@ public final class Reflections {
 	}
 
 	private static void taskReflection(@NotNull ClassPath classPath, boolean enable) {
+		ServerType current = ServerInitializer.getServerType(plugin());
+
 		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
 			try {
 				Class<?> clazz = classInfo.load();
 				if (!clazz.isAnnotationPresent(Task.class)) continue;
 				if (!Tasks.class.isAssignableFrom(clazz)) continue;
+
 				Task taskAnnotation = clazz.getAnnotation(Task.class);
-				ServerType[] type = taskAnnotation.type();
+				List<ServerType> typeList = Arrays.asList(taskAnnotation.type());
+
+				if (!typeList.contains(current) && !(current.isRequiresGlobalInitializer() && typeList.contains(ServerType.GLOBAL))) {
+					log.info("Task {} skipped due to Invalid ServerType. EXPECTED: {}, ACTUAL: {}",
+							clazz.getSimpleName(), Arrays.toString(taskAnnotation.type()), current);
+					continue;
+				}
 
 				Tasks instance;
 				if (clazz.isEnum()) {
 					var field = clazz.getField("INSTANCE");
 					instance = (Tasks) field.get(null);
-					log.info("Successfully created Enum instance of Task {}", clazz.getSimpleName());
 				} else {
-					var constructor = clazz.getDeclaredConstructor();
-					constructor.setAccessible(true);
-					instance = (Tasks) constructor.newInstance();
-					log.info("Successfully created instance of Task {}", clazz.getSimpleName());
-				}
-				List<ServerType> typeList = Arrays.asList(type);
-				ServerType current = ServerInitializer.getServerType(plugin());
-				if (typeList.contains(current) || current.isRequiresGlobalInitializer() && typeList.contains(ServerType.GLOBAL)) {
 					if (enable) {
-						instance.startTask(plugin());
-						log.info("Task {} started successfully.", clazz.getSimpleName());
+						if (ACTIVE_TASKS.containsKey(clazz)) {
+							instance = ACTIVE_TASKS.get(clazz);
+						} else {
+							var constructor = clazz.getDeclaredConstructor();
+							constructor.setAccessible(true);
+							instance = (Tasks) constructor.newInstance();
+							ACTIVE_TASKS.put(clazz, instance);
+							log.info("Successfully created and cached instance of Task {}", clazz.getSimpleName());
+						}
 					} else {
-						instance.stopTask();
-						log.info("Task {} stopped successfully.", clazz.getSimpleName());
+						instance = ACTIVE_TASKS.get(clazz);
+						if (instance == null) {
+							log.warn("Task {} instance not found for stopping. Skipping.", clazz.getSimpleName());
+							continue;
+						}
 					}
+				}
+
+				if (enable) {
+					instance.startTask(plugin());
+					log.info("Task {} started successfully.", clazz.getSimpleName());
 				} else {
-					log.info("Task {} skipped due to Invalid ServerType. EXPECTED: {}, ACTUAL: {}",
-							clazz.getSimpleName(), Arrays.toString(type), ServerInitializer.getServerType(plugin()));
+					instance.stopTask();
+					if (!clazz.isEnum()) ACTIVE_TASKS.remove(clazz);
+					log.info("Task {} stopped successfully.", clazz.getSimpleName());
 				}
 			} catch (Exception e) {
-				log.error("Error occurred while starting task {}, Passing process.", classInfo.getName(), e);
+				log.error("Error occurred while processing task {}, Passing process.", classInfo.getName(), e);
 			}
 		}
 	}

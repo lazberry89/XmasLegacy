@@ -24,7 +24,7 @@ public enum ThirdRoles implements Role {
 	public @Nullable Role parent() {return this.parent;}
 
 	@Override
-	public String getKor() {return this.kor;}
+	public @NotNull String getKor() {return this.kor;}
 
 	@Override
 	public int getTier() {return 3;}
@@ -32,12 +32,12 @@ public enum ThirdRoles implements Role {
 	public @NotNull List<Role> next() {return List.of();}
 
 	@Override
-	public SkillSet bindTarget() {
+	public @NotNull SkillSet bindTarget() {
 		return null;
 	}
 
 	@Override
-	public List<SkillSet> bindRange() {
+	public @NotNull List<SkillSet> bindRange() {
 		return List.of();
 	}
 

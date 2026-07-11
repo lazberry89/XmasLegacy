@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.settings;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public enum PlayerSkills {
@@ -50,6 +51,11 @@ public enum PlayerSkills {
         this.origin = origin;
     }
 
+    /**
+     * PlayerSkills enum only defines what skill actually exists. Not divided by Tree structure.
+     * @return origin value of skill enum which is divided by the rule of Tree Structure.
+     */
+    @Contract(pure = true)
     public @NotNull SkillSet origin() {
         return this.origin;
     }
