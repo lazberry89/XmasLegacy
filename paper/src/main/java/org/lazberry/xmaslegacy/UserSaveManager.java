@@ -2,6 +2,8 @@ package org.lazberry.xmaslegacy;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +11,10 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Task(type = ServerType.GLOBAL)
@@ -55,5 +61,15 @@ public enum UserSaveManager implements Tasks {
 			currentTask.cancel();
 			log.info("User save task Stopped.");
 		}
+	}
+
+	public void loadValidUsers() {
+		var um = UserManager.INSTANCE;
+
+		Map<UUID, String> playerData = Bukkit.getOnlinePlayers().stream()
+				.filter(Objects::nonNull)
+				.collect(Collectors.toMap(Player::getUniqueId, Player::getName));
+
+		CompletableFuture.runAsync(() -> playerData.forEach(um::load));
 	}
 }

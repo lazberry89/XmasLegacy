@@ -17,6 +17,7 @@ import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.Annotation.Task;
@@ -36,84 +37,19 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Task(type = ServerType.GLOBAL)
-public enum RegionManager implements Tasks {
+public enum RegionManager {
 	INSTANCE;
 
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
-	private float globalAngle = 0.0f;
 	private File file;
 	private FileConfiguration config;
-	private @Nullable BukkitTask task;
 
 	RegionManager() {
 		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		saveAsync();
-	}
-
-	@Override
-	public void startTask(@NotNull XmasLegacy plugin) {
-		this.task = new BukkitRunnable() {
-			int checkDelay = 0;
-
-			@Override
-			public void run() {
-				if (regions.isEmpty()) return;
-
-				checkDelay++;
-
-				globalAngle += (float) Math.toRadians(3);
-				if (globalAngle >= Math.PI * 2) globalAngle = 0.0f;
-				Quaternionf leftRotation = new Quaternionf(new AxisAngle4f(globalAngle, 0.0f, 1.0f, 0.0f));
-
-				for (Region region : regions.values()) {
-					if (region.getIndicator() == null || !region.getIndicator().isValid()) {
-						if (region.getIndicatorUid() != null && checkDelay >= 20) {
-							Entity entity = Bukkit.getEntity(region.getIndicatorUid());
-
-							if (entity instanceof BlockDisplay bd) {
-								region.setIndicator(bd);
-								log.info("[Region] 인디케이터가 연결되었습니다. ID: {}", region.Id());
-							} else {
-								var chunk = region.getChunk();
-								if (chunk != null && chunk.isLoaded()) {
-									Bukkit.getScheduler().runTask(plugin, () -> {
-										region.setIndicator(indicatorDisplay(region));
-										saveAsync();
-										log.warn("[Region] 구역 {}의 인디케이터가 유실되어 자동 재생성되었습니다.", region.Id());
-									});
-								}
-							}
-						}
-					}
-					setTrans(region, leftRotation);
-				}
-				if (checkDelay >= 20) checkDelay = 0;
-			}
-		}.runTaskTimer(plugin, 0L, 3L);
-	}
-
-	@Override
-	public void stopTask() {
-		if (this.task == null) return;
-		this.task.cancel();
-		this.task = null;
-	}
-
-	private void setTrans(@NotNull Region region, @NotNull Quaternionf leftRotation) {
-		if (region.getIndicator() != null && region.getIndicator().isValid()) {
-			Transformation transformation = region.getIndicator().getTransformation();
-			Transformation newTrans = new Transformation(
-					transformation.getTranslation(),
-					leftRotation,
-					transformation.getScale(),
-					transformation.getRightRotation()
-			);
-			region.getIndicator().setTransformation(newTrans);
-		}
 	}
 
 	/**
@@ -358,5 +294,10 @@ public enum RegionManager implements Tasks {
 	@NotNull
 	public List<Region> getRegions() {
 		return new ArrayList<>(regions.values());
+	}
+
+	@Unmodifiable
+	public @NotNull Map<Long, Region> getRegionMap() {
+		return new HashMap<>(this.regions);
 	}
 }

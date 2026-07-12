@@ -2,20 +2,17 @@ package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.*;
 import org.lazberry.xmaslegacy.Icing.IcingListener;
-import org.lazberry.xmaslegacy.InquireTeleportCommand;
-import org.lazberry.xmaslegacy.InquiryCommandManager;
 import org.lazberry.xmaslegacy.LogCommands.LogCommand;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
 import org.lazberry.xmaslegacy.RuleCommands.RuleCommand;
-import org.lazberry.xmaslegacy.ServerJoinListener;
 import org.lazberry.xmaslegacy.ServerPrefix.ChatPrefixListener;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.XmasLegacy;
 
 @Slf4j
 public class GlobalInitializer implements ServerInitializer {
@@ -42,6 +39,7 @@ public class GlobalInitializer implements ServerInitializer {
 		plugin.getServer().getPluginManager().registerEvents(new IcingListener(), plugin);
 
 		registerGlobalCommand(plugin);
+		UserSaveManager.INSTANCE.loadValidUsers();
 
 		log.info("XmasLegacy Plugin Enabled!");
 		log.warn("This Christmas will be Perfect!");

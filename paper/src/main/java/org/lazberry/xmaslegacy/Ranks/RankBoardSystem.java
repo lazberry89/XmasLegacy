@@ -8,6 +8,7 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
+@TestOnly
 @Task(type = ServerType.GLOBAL)
 public enum RankBoardSystem implements Tasks {
 	INSTANCE;

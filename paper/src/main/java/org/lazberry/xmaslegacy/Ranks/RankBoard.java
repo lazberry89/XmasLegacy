@@ -10,6 +10,7 @@ import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.User;
@@ -17,6 +18,7 @@ import org.lazberry.xmaslegacy.Utils.KeyUtils;
 
 import java.util.List;
 
+@TestOnly
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RankBoard {
 	@EqualsAndHashCode.Include

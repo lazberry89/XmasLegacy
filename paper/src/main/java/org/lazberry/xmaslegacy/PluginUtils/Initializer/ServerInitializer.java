@@ -5,7 +5,20 @@ import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 public interface ServerInitializer {
+	/*
+	  Make enable/disable logic to get plugin instance via Param to minimalize plugin field.
+	 */
+
+	/**
+	 * Enable logic of Each Initializer.
+	 * @param plugin XmasLegacy instance
+	 */
 	void enable(@NotNull XmasLegacy plugin);
+
+	/**
+	 * Disabling logic of Each Initializer.
+	 * @param plugin XmasLegacy instance
+	 */
 	default void disable(@NotNull XmasLegacy plugin) {}
 
 	/**

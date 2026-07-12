@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -16,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public final class BoardUtils {
+	/**
+	 * Using Cache logic, class saves user's scoreboard Only in runtime for line Updates {@link BoardUtils#setLine(int, Component)}
+	 */
 	private static final @NotNull Map<UUID, BoardUtils> CACHE = new ConcurrentHashMap<>();
 
 	private final @NotNull @Getter Scoreboard scoreboard;
@@ -24,9 +28,22 @@ public final class BoardUtils {
 	private final @NotNull Map<Integer, Team> lines = new HashMap<>(20);
 
 	/**
-	 * 💡 기존 create를 대체하는 스마트한 메서드입니다.
-	 * 이미 보드가 있으면 기존 보드를 수정(업데이트)하고, 없으면 새로 만듭니다.
+	 * Not only creating board, finds player's {@link BoardUtils} from {@link BoardUtils#CACHE} if exists.
+	 * <pre>{@code
+	 * BoardUtils.getOrCreate(p, title, b -> {
+	 * 	  b.setLine(1, Component.text("a"));
+	 * 	  b.setLine(2, Component.text("b"));
+	 * });
+	 * }</pre>
+	 * @param player target player
+	 * @param title title of target player's Scoreboard
+	 * @param setup Consumer that calls {@link BoardUtils#edit(Consumer)}
+	 * @return BoardUtils instance
+	 * @see Player
+	 * @see Component
+	 * @see Consumer
 	 */
+	@Contract("_, _, _ -> !null")
 	@CanIgnoreReturnValue
 	public static @NotNull BoardUtils getOrCreate(@NotNull Player player, @NotNull Component title, @NotNull Consumer<BoardUtils> setup) {
 		UUID uuid = player.getUniqueId();
@@ -45,17 +62,36 @@ public final class BoardUtils {
 	}
 
 	/**
-	 * 💡 [중요] 플레이어가 서버를 나갈 때 반드시 호출해 주어야 합니다. (메모리 누수 방지)
+	 * This method must be called when player leaves.
+	 * @param player player who leaves or intend to remove Board
 	 */
 	public static void removeBoard(@NotNull Player player) {
 		CACHE.remove(player.getUniqueId());
 		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 	}
 
+	/**
+	 * Method that can edit Board using lambda.
+	 * <pre>{@code
+	 * board.edit(b -> {
+	 *     b.updateTitle(Component.text("myTitle"));
+	 *     b.setLine(1, Component.text("c"));
+	 *     b.setLine(2, Component.text("d"));
+	 * });
+	 * }</pre>
+	 * @param action lambda expressions
+	 * @see Component
+	 */
 	public void edit(@NotNull Consumer<BoardUtils> action) {
 		action.accept(this);
 	}
 
+	/**
+	 * Constructor of Utility, only called by internal of class.
+	 * @param player target to make {@link Scoreboard} for.
+	 * @param title Component of title to show as {@link Scoreboard} title.
+	 * @see	BoardUtils#updateTitle(Component)
+	 */
 	@ApiStatus.Internal
 	private BoardUtils(@NotNull Player player, @NotNull Component title) {
 		this.player = player;
@@ -73,10 +109,19 @@ public final class BoardUtils {
 		player.setScoreboard(this.scoreboard);
 	}
 
+	/**
+	 * Change player's Scoreboard title without blinking sideEffect.
+	 * @param title {@link Component} title to change.
+	 */
 	public void updateTitle(@NotNull Component title) {
 		this.objective.displayName(title);
 	}
 
+	/**
+	 * Update or Set line of Scoreboard without blinking sideEffect by only changing inner Component in line.
+	 * @param line which line to edit or add
+	 * @param text {@link Component} text to use as target line's component
+	 */
 	public void setLine(int line, @NotNull Component text) {
 		if (line < 0 || line > 14) return;
 
@@ -89,6 +134,10 @@ public final class BoardUtils {
 		}
 	}
 
+	/**
+	 * Removing line of Scoreboard.
+	 * @param line target line to remove
+	 */
 	public void removeLine(int line) {
 		if (line < 0 || line > 14) return;
 		String invisibleEntry = getInvisibleEntry(line);
