@@ -56,7 +56,7 @@ public final class ServerTransfer {
 		}
 
 		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) duration, 2, true, false, false));
-		sem.StunEntity(uuid);
+		StunUtils.stun(uuid, "이동");
 		Bukkit.getScheduler().runTaskLater(plugin(), () -> {
 			if (player.isOnline() && player.isValid()) {
 				player.teleport(to);
@@ -68,7 +68,7 @@ public final class ServerTransfer {
 				InfoUtils.error(player, "서버 이동에 실패하였습니다. 재시도 해주세요.");
 			}
 		}, duration / 2);
-		Bukkit.getScheduler().runTaskLater(plugin(), () -> sem.deStun(uuid), duration);
+		Bukkit.getScheduler().runTaskLater(plugin(), () -> StunUtils.release(uuid), duration);
 	}
 
     @CheckReturnValue

@@ -24,13 +24,12 @@ import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Berserker.Berserker;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Guardian.Guardian;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper.Sniper;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
-import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
@@ -40,13 +39,11 @@ public class SecondaryRoleListener implements Listener {
     private final @NotNull UserManager um;
     private final @NotNull PartyManager pm;
 	private final @NotNull RoleManager rlm;
-	private final @NotNull SkillEffectManager sem;
 
     public SecondaryRoleListener() {
         this.um = UserManager.INSTANCE;
         this.pm = PartyManager.INSTANCE;
 		this.rlm = RoleManager.INSTANCE;
-		this.sem = SkillEffectManager.INSTANCE;
     }
 
     @EventHandler
@@ -159,7 +156,7 @@ public class SecondaryRoleListener implements Listener {
 		if (user == null) return;
 		if (!SecondaryRoles.FIGHTER.equals(user.getRole())) return;
 
-		if (sem.stunMap().contains(e.getEntity().getUniqueId())) {
+		if (StunUtils.isStunned(e.getEntity().getUniqueId())) {
 			e.setDamage(e.getDamage() * 2.0);
 			Particle.DustOptions option = new Particle.DustOptions(Color.RED, 0.8f);
 			le.getWorld().spawnParticle(Particle.DUST, le.getLocation(), 8, 0.5f, 0.5f, 0.5f, 0.01, option);

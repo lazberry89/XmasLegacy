@@ -24,6 +24,7 @@ import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
@@ -220,7 +221,7 @@ public class EnchantListener implements Listener {
 								if (victim.isValid()) {
 									victim.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, victim.getLocation(), 1, 0, 0, 0, 0);
 									victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-									sem.StunEntity(victim.getUniqueId(), 15);
+									StunUtils.stun(victim.getUniqueId(), 15, "강화된 검");
 								}
 							}, 15L);
 						}
@@ -251,7 +252,7 @@ public class EnchantListener implements Listener {
 
 							if (safeHeal > 0) p.heal(safeHeal);
 						}
-						case ARCHER -> sem.StunEntity(victim.getUniqueId(), 40L);
+						case ARCHER -> StunUtils.stun(victim.getUniqueId(), 40L, "아처의 강화된 무기");
 						case PRIEST -> {
 
 						}

@@ -17,6 +17,7 @@ import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -158,7 +159,7 @@ public class Chaining implements Skills<Ranger.Container>, UsingEnergy {
 				trailLoc.getWorld().getNearbyEntities(trailLoc, 1.5, 1.5, 1.5).forEach(e -> {
 					if (e instanceof LivingEntity le && !le.equals(p)) {
 						le.damage(8.0, p);
-						SkillEffectManager.INSTANCE.StunEntity(le.getUniqueId(), 20L);
+						StunUtils.stun(le.getUniqueId(), 20L, "연쇄공격");
 					}
 				});
 			}

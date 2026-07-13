@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.Utils.TitleUtil;
 
 @Slf4j
@@ -27,7 +27,7 @@ public final class MainSpawnManager extends SavedLocation {
             return;
         }
 
-        SkillEffectManager.INSTANCE.StunEntity(player.getUniqueId(), 60L);
+	    StunUtils.stun(player.getUniqueId(), 60L, "이동");
         TitleUtil.create("정보 로드중..", "", 5, 50, 5);
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 2, false, false, false));
 

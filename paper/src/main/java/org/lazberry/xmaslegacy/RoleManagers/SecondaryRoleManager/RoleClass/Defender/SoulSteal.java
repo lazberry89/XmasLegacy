@@ -14,7 +14,7 @@ import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
-import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -80,7 +80,7 @@ public class SoulSteal implements Skills<Defender.Container>, UsingEnergy {
                 if (!PartyManager.INSTANCE.isParty(caster.getUniqueId(), target.getUniqueId())) {
                     if (hitList.add(target.getUniqueId())) {
                         target.damage(5.0, caster);
-                        SkillEffectManager.INSTANCE.StunEntity(target.getUniqueId(), 30L);
+                        StunUtils.stun(target.getUniqueId(), 30L, "범위 공격");
 
                         target.getWorld().spawnParticle(Particle.SOUL, target.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.05);
                         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 1.0f, 1.3f);

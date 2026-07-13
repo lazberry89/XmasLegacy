@@ -12,6 +12,7 @@ import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -38,7 +39,7 @@ public class Counter implements Skills<Fighter.Container>, UsingEnergy {
 		caster.getWorld().playSound(caster, Sound.ENTITY_WITHER_SHOOT, 1.0f, 1.0f);
 		caster.getWorld().playSound(caster.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 
-		sem.StunEntity(target.getUniqueId(), 30L);
+		StunUtils.stun(target.getUniqueId(), 30L, "반격");
 
 		Vector vector = caster.getLocation().getDirection();
 		caster.setVelocity(vector.multiply(3.0).setY(Math.min(vector.getY(), 1.5)));

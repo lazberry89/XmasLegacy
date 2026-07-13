@@ -21,6 +21,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -114,7 +115,7 @@ public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
         });
         Particle.DustOptions option = new Particle.DustOptions(Color.PURPLE, 1.0f);
 
-        sem.StunEntity(target.getUniqueId(), 80L);
+        StunUtils.stun(target.getUniqueId(), 80L, "마법탄");
         sem.drawCircularLine(loc, Particle.DUST, 3, true, 70, option);
         target.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20, 1));
         world.playSound(loc, Sound.BLOCK_END_PORTAL_SPAWN, 1.0f, 0.5f);
@@ -269,7 +270,7 @@ public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
 
                 if (hitSomething) {
                     if (hitTarget != null) {
-                        sem.StunEntity(hitTarget.getUniqueId(), 40L);
+                        StunUtils.stun(hitTarget.getUniqueId(), 40L, "스턴탄");
                         container.lastHitRecord.put(hitTarget.getUniqueId(), BulletType.STUN);
 
                         hitTarget.damage(damage, p);
