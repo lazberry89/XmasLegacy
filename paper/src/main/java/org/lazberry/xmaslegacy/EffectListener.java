@@ -14,7 +14,9 @@ import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
+import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Lang;
 
 import java.util.UUID;
 
@@ -51,9 +53,9 @@ public class EffectListener implements Listener {
     public void EntityStunListener(EntityMoveEvent e) {
         LivingEntity le = e.getEntity();
         UUID uuid = le.getUniqueId();
-        if (sem.stunMap().contains(uuid)) {
+        if (StunUtils.isStunned(uuid)) {
             e.setCancelled(true);
-            le.sendActionBar(ColorUtils.chat(Alert.YELLOW + " 스턴상태"));
+            le.sendActionBar(StunUtils.reasonIndicator(uuid, Lang.KOREAN));
             //TODO Roped effect
         }
     }
@@ -63,7 +65,7 @@ public class EffectListener implements Listener {
         Player p = e.getPlayer();
         UUID uuid = p.getUniqueId();
 
-        if (sem.stunMap().contains(uuid)) {
+        if (StunUtils.isStunned(uuid)) {
             Location from = e.getFrom();
             Location to = e.getTo();
 
@@ -74,7 +76,7 @@ public class EffectListener implements Listener {
                 e.setTo(newTo);
             }
 
-            p.sendActionBar(ColorUtils.chat(Alert.YELLOW + " 스턴상태"));
+            p.sendActionBar(StunUtils.reasonIndicator(uuid, Lang.KOREAN));
             //TODO Roped effect
         }
     }
@@ -82,13 +84,15 @@ public class EffectListener implements Listener {
 	@EventHandler
 	public void deStunWhenDead(EntityDeathEvent e) {
 		LivingEntity victim = e.getEntity();
-		if (sem.isStunned(victim.getUniqueId())) sem.deStun(victim.getUniqueId());
+        var uuid = victim.getUniqueId();
+		if (StunUtils.isStunned(uuid)) StunUtils.release(uuid);
 	}
 
 	@EventHandler
 	public void deStunWhenPlayerDead(PlayerDeathEvent e) {
         Player victim = e.getPlayer();
-        if (sem.isStunned(victim.getUniqueId())) sem.deStun(victim.getUniqueId());
+        var uuid = victim.getUniqueId();
+        if (StunUtils.isStunned(victim.getUniqueId())) StunUtils.release(uuid);
 	}
 
     @EventHandler
@@ -101,8 +105,9 @@ public class EffectListener implements Listener {
     @EventHandler
     public void removeHidePlayer(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        var uuid = p.getUniqueId();
         sem.showEntity(p);
-        if (sem.isStunned(p)) sem.deStun(p.getUniqueId());
+        if (StunUtils.isStunned(uuid)) StunUtils.release(uuid);
         GlowUtils.clearGlow(p);
     }
 

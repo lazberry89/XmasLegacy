@@ -34,7 +34,7 @@ public enum SecondarySkillSet implements SkillSet {
 
 	//Wizard
 	MANA_ORB("마나구슬"),
-	ARCHMAGE_ZONE("아크메이지 존");
+	GLACIAL_PRISON("얼음 감옥");
 
 	private final @NotNull String kor;
 

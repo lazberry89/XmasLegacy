@@ -20,7 +20,7 @@ public enum SecondaryRoles implements Role {
 	RANGER("유격병" , BasicRoles.ARCHER, SecondarySkillSet.CHAINING, new SkillSet[]{SecondarySkillSet.PRISM_LASER}, ThirdRoles.WIND_WALKER), //궁수 2차전직 유격병
 	TRAPPER("사냥꾼" , BasicRoles.ARCHER, SecondarySkillSet.SHOTGUN, new SkillSet[]{SecondarySkillSet.CHAIN_GRAB}, ThirdRoles.WIND_WALKER), //궁수 2차전직 사냥꾼
 
-	WIZARD("위자드" , BasicRoles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 마법사(스킬변화)
+	WIZARD("위자드" , BasicRoles.MAGE, SecondarySkillSet.MANA_ORB, new SkillSet[]{SecondarySkillSet.GLACIAL_PRISON}, ThirdRoles.ARCHMAGE), //마법사 2차전직 마법사(스킬변화)
 	ELEMENTAL("엘리멘탈" , BasicRoles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 엘리멘탈(원소 마법)
 	SUMMONER("소환수" , BasicRoles.MAGE, ThirdRoles.ARCHMAGE), //마법사 2차전직 소환수
 

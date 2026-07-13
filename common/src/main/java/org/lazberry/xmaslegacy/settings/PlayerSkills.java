@@ -43,7 +43,7 @@ public enum PlayerSkills {
     SHOTGUN(SecondarySkillSet.SHOTGUN),
     CHAIN_GRAB(SecondarySkillSet.CHAIN_GRAB),
     MANA_ORB(SecondarySkillSet.MANA_ORB),
-    ARCHMAGE_ZONE(SecondarySkillSet.ARCHMAGE_ZONE);
+    GLACIAL_PRISON(SecondarySkillSet.GLACIAL_PRISON);
 
     private final @NotNull SkillSet origin;
 
@@ -55,7 +55,7 @@ public enum PlayerSkills {
      * PlayerSkills enum only defines what skill actually exists. Not divided by Tree structure.
      * @return origin value of skill enum which is divided by the rule of Tree Structure.
      */
-    @Contract(pure = true)
+    @Contract(value = "-> !null", pure = true)
     public @NotNull SkillSet origin() {
         return this.origin;
     }

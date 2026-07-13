@@ -126,7 +126,9 @@ public final class Reflections {
 
 				Object instance;
 				try {
-					instance = clazz.getDeclaredConstructor().newInstance();
+					var constructor = clazz.getDeclaredConstructor();
+					constructor.setAccessible(true);
+					instance = constructor.newInstance();
 				} catch (NoSuchMethodException e) {
 					log.warn("Failed to create instance of skill {}. Passing..", clazz.getSimpleName());
 					continue;
@@ -154,7 +156,9 @@ public final class Reflections {
 
 				Object instance;
 				try {
-					instance = clazz.getDeclaredConstructor().newInstance();
+					var constructor = clazz.getDeclaredConstructor();
+					constructor.setAccessible(true);
+					instance = constructor.newInstance();
 				} catch (NoSuchMethodException e) {
 					log.warn("Class {} don't have default Constructor. Passing process", clazz.getSimpleName());
 					continue;

@@ -4,10 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Roles;
+import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 @Roles
 public class Wizard extends AbstractSecondRole {
@@ -24,18 +26,16 @@ public class Wizard extends AbstractSecondRole {
 
     @Override
     public void useFirstSkill(@NotNull Player p) {
-
+        handleSkill(p, emblem, EmblemType.TARGET, getSkillManager().get(SecondarySkillSet.MANA_ORB), container, 30);
     }
 
     @Override
     public void useSecondSkill(@NotNull Player p) {
-
+        handleSkill(p, emblem, EmblemType.RANGE, getSkillManager().get(SecondarySkillSet.GLACIAL_PRISON), container, 30);
     }
 
     @Override
-    public void usePassive(@NotNull Player p) {
-
-    }
+    public void usePassive(@NotNull Player p) {}
 
     @Override
     public @NotNull ItemStack roleWeapon() {

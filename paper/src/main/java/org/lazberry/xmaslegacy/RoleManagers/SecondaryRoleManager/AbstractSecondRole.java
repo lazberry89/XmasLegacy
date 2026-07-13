@@ -1,8 +1,10 @@
 package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Emblems.Emblem;
 import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
@@ -11,11 +13,13 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 public abstract class AbstractSecondRole implements RoleClass {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull SecondaryRoles role;
+	private final @NotNull @Getter SkillManager skillManager;
 	protected final @NotNull Emblem emblem;
 
 	public AbstractSecondRole(@NotNull SecondaryRoles role) {
 		this.plugin = XmasLegacy.getInstance();
 		this.role = role;
+		this.skillManager = SkillManager.INSTANCE;
 		this.emblem = new Emblem(role);
 	}
 

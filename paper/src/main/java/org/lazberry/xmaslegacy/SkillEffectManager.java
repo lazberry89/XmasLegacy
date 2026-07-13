@@ -13,18 +13,17 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public enum SkillEffectManager {
 	INSTANCE;
 
     private final @NotNull XmasLegacy plugin;
-    private final @NotNull Map<UUID, Long> stun = new HashMap<>();
     private final @NotNull Set<UUID> immuneToKnockback = new HashSet<>();
     private final @NotNull Set<UUID> immuneToDebuff = new HashSet<>();
-    private final @NotNull Set<UUID> activeStunTimers = new HashSet<>();
     private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();
 
     SkillEffectManager() {
@@ -85,10 +84,10 @@ public enum SkillEffectManager {
             }
         }
     }
-    public Set<LivingEntity> getHiddenEntity() {
+    public @NotNull Set<LivingEntity> getHiddenEntity() {
         return this.hideMap;
     }
-    public void showEntity(LivingEntity le) {
+    public void showEntity(@NotNull LivingEntity le) {
         if (this.hideMap.remove(le)) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.showEntity(plugin, le);
@@ -97,54 +96,6 @@ public enum SkillEffectManager {
                 player.setInvisible(false);
             }
         }
-    }
-
-    @Unmodifiable
-    public Set<UUID> stunMap() {
-        return Collections.unmodifiableSet(this.activeStunTimers);
-    }
-
-	public boolean isStunned(@NotNull UUID uuid) {
-		return this.activeStunTimers.add(uuid);
-	}
-
-	public boolean isStunned(@NotNull LivingEntity entity) {
-		return this.activeStunTimers.add(entity.getUniqueId());
-	}
-
-	public boolean isStunned(@NotNull Player player) {
-		return this.activeStunTimers.add(player.getUniqueId());
-	}
-
-    public void deStun(UUID uuid) {
-        this.activeStunTimers.remove(uuid);
-    }
-
-    public void StunEntity(UUID uuid) {
-        this.activeStunTimers.add(uuid);
-    }
-
-    public void StunEntity(UUID uuid, long period) {
-        stun.put(uuid, stun.getOrDefault(uuid, 0L) + period);
-
-        if (activeStunTimers.contains(uuid)) return;
-        activeStunTimers.add(uuid);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Long current = stun.get(uuid);
-
-                if (current == null || current <= 0L) {
-                    stun.remove(uuid);
-                    activeStunTimers.remove(uuid);
-                    this.cancel();
-                    return;
-                }
-
-                stun.put(uuid, current - 1);
-            }
-        }.runTaskTimer(plugin, 0L, 1L);
     }
 
     public void knockbackEntity(Player player, LivingEntity target, double force, double yForce) {
@@ -379,16 +330,16 @@ public enum SkillEffectManager {
             w.setBrightness(new Display.Brightness(15, 15));
             w.setBillboard(Display.Billboard.FIXED);
 
-            w.setInterpolationDuration(6);
-            w.setInterpolationDelay(0);
-
             Transformation init = w.getTransformation();
-            init.getScale().set(1.0f, 1.0f, 1.0f);
+            init.getScale().set(0.0f, 0.0f, 0.0f);
             w.setTransformation(init);
         });
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (!display.isValid()) return;
+
+            display.setInterpolationDelay(0);
+            display.setInterpolationDuration(6);
 
             Transformation targetTrans = display.getTransformation();
             targetTrans.getScale().set(15.0f, 1.0f, 15.0f);
