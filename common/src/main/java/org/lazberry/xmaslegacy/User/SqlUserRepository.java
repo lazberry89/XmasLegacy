@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.User;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.*;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.Tier;
@@ -17,7 +18,7 @@ public enum SqlUserRepository implements UserRepository {
 	private final String user = "root";
 	private final String password = "your_password"; //TODO need I/O process
 
-	private static final Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
+	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
 
 	SqlUserRepository() {}
 
@@ -57,31 +58,8 @@ public enum SqlUserRepository implements UserRepository {
 		}
 	}
 
-	private @NotNull Role parseRole(String roleName) {
-		if (roleName == null || roleName.isEmpty()) return BasicRoles.USER;
-
-		try {
-			return BasicRoles.valueOf(roleName);
-		} catch (IllegalArgumentException e) {
-			try {
-				return SecondaryRoles.valueOf(roleName);
-			} catch (IllegalArgumentException ex) {
-				try {
-					return ThirdRoles.valueOf(roleName);
-				} catch (IllegalArgumentException exx) {
-					try {
-						return HiddenRoles.valueOf(roleName);
-					} catch (IllegalArgumentException exc) {
-						log.warn("알 수 없는 직업명이 DB에서 발견되어 기본값으로 로드합니다: {}", roleName);
-						return BasicRoles.USER;
-					}
-				}
-			}
-		}
-	}
-
 	@Override
-	public User loadUser(UUID uuid) {
+	public @Nullable User loadUser(@NotNull UUID uuid) {
 		String sql = "SELECT * FROM users WHERE uuid = ?";
 
 		try (Connection conn = getConnection();
@@ -92,7 +70,7 @@ public enum SqlUserRepository implements UserRepository {
 
 			if (rs.next()) { // 데이터가 존재한다면
 				String name = rs.getString("name");
-				Role role = parseRole(rs.getString("role"));
+				Role role = Role.parseRole(rs.getString("role"), BasicRoles.USER);
 
 				User loadedUser = new User(uuid, role, name);
 				loadedUser.setDollars(rs.getInt("dollars"));
@@ -151,7 +129,7 @@ public enum SqlUserRepository implements UserRepository {
 	}
 	*/
 	@Override
-	public void saveUser(User user) {
+	public void saveUser(@NotNull User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
 		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -206,7 +184,7 @@ public enum SqlUserRepository implements UserRepository {
 	}
 
 	@Override
-	public boolean exist(UUID uuid) {
+	public boolean exist(@NotNull UUID uuid) {
 		String sql = "SELECT 1 FROM users WHERE uuid = ? LIMIT 1";
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {

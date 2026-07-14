@@ -10,7 +10,7 @@ import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
-import org.lazberry.xmaslegacy.Utils.ParseEnum;
+import org.lazberry.xmaslegacy.ParseEnum;
 
 @TestOnly
 @Commands(command = "second")

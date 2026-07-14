@@ -1,13 +1,16 @@
 package org.lazberry.xmaslegacy.User;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.UUID;
 
 public interface UserRepository {
-	User loadUser(UUID uuid);
+	@Nullable User loadUser(@NotNull UUID uuid);
 
-	void saveUser(User user);
+	void saveUser(@NotNull User user);
 
-	int getRank(UUID uuid);
+	int getRank(@NotNull UUID uuid);
 
-	boolean exist(UUID uuid);
+	boolean exist(@NotNull UUID uuid);
 }

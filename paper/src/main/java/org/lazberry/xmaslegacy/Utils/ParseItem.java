@@ -1,11 +1,17 @@
 package org.lazberry.xmaslegacy.Utils;
 
 import org.bukkit.Material;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ParseItem {
+public final class ParseItem {
+
+	@ApiStatus.Internal
+	private ParseItem() {
+		throw new UnsupportedOperationException("Utility Class");
+	}
 
 	/**
 	 * This method parses String value to target Material instance.

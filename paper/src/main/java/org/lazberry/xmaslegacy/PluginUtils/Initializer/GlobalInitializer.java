@@ -39,7 +39,7 @@ public class GlobalInitializer implements ServerInitializer {
 		plugin.getServer().getPluginManager().registerEvents(new IcingListener(), plugin);
 
 		registerGlobalCommand(plugin);
-		UserSaveManager.INSTANCE.loadValidUsers();
+		UserSaveTask.INSTANCE.loadValidUsers();
 
 		log.info("XmasLegacy Plugin Enabled!");
 		log.warn("This Christmas will be Perfect!");

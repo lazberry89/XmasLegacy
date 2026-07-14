@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.RoleManagers;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ public interface UsingEnergy {
 	 * @param hungerCost how much cost to charge target player
 	 * @return if check and decline process successes
 	 * @see org.bukkit.event.entity.FoodLevelChangeEvent
+     * @see InfoUtils#error(Player, Component)
 	 * @see Player
 	 */
 	default boolean consumeEnergy(@NotNull Player player, int hungerCost) {

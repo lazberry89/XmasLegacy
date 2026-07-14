@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.Utils;
+package org.lazberry.xmaslegacy;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;

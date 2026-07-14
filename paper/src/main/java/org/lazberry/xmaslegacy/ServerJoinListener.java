@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,22 +10,31 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.PlayerUtils.UserTagManager;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.SavingLocation.MainSpawnManager;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
-import org.lazberry.xmaslegacy.PlayerUtils.UserTagManager;
+import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.settings.Alert;
 
+/**
+ * As not implementing Listeners annotation, this Listener should be
+ * registered by all initializer that handles player join.
+ * @see Listener
+ * @see UserSaveManager
+ * @see ServerInitializer
+ * @see ServerTransfer
+ */
+@Slf4j
 public final class ServerJoinListener implements Listener {
-	private final @NotNull UserManager um;
+	private final @NotNull UserSaveManager us;
 	private final @NotNull XmasLegacy plugin;
 
 	public ServerJoinListener() {
-		this.um = UserManager.INSTANCE;
+		this.us = UserSaveManager.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 
@@ -58,9 +68,9 @@ public final class ServerJoinListener implements Listener {
 		UserTagManager.removeHoverTag(p);
 
 		e.quitMessage(null);
-		um.onQuitAsync(p.getUniqueId()).whenComplete((u, ex) -> {
-			if (ex == null) plugin.getSLF4JLogger().info("User data saved for player: {}", p.getName());
-			else plugin.getSLF4JLogger().error("Failed to save user data for player: {}", p.getName(), ex);
+		us.onQuitAsync(p.getUniqueId()).whenComplete((u, ex) -> {
+			if (ex == null) log.info("User data saved for player: {}", p.getName());
+			else log.error("Failed to save user data for player: {}", p.getName());
 		});
 	}
 }

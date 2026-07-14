@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.HuntingZone.HuntingZoneManager;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.RoleSelection.RoleViewDesign;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 @Slf4j
@@ -23,6 +23,6 @@ public class MainInitializer implements ServerInitializer {
 	@Override
 	public void disable(@NotNull XmasLegacy plugin) {
 		BagManager.INSTANCE.saveAllBags();
-		UserManager.INSTANCE.saveAll();
+		UserSaveManager.INSTANCE.saveAll();
 	}
 }

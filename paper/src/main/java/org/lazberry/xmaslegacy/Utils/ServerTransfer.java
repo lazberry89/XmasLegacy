@@ -23,6 +23,7 @@ import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.ServerPrefix.PrefixManager;
@@ -35,8 +36,6 @@ import java.util.UUID;
 @Slf4j
 @UtilityClass
 public final class ServerTransfer {
-	private final @NotNull FloodgateApi instance = FloodgateApi.getInstance();
-
 	private @NotNull XmasLegacy plugin() {
 		return XmasLegacy.getInstance();
 	}
@@ -47,7 +46,6 @@ public final class ServerTransfer {
 
 	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, long duration) {
 		var uuid = player.getUniqueId();
-		var sem = SkillEffectManager.INSTANCE;
 		var user = UserManager.INSTANCE.getUser(uuid);
 		if (user == null) {
 			sendReloadNotice(player);
@@ -71,88 +69,13 @@ public final class ServerTransfer {
 		Bukkit.getScheduler().runTaskLater(plugin(), () -> StunUtils.release(uuid), duration);
 	}
 
-    @CheckReturnValue
-    public boolean isFloodgate(@NotNull Player player) {
-        return Bukkit.getPluginManager().isPluginEnabled("floodgate")
-                && FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
-    }
-
-	@CheckReturnValue
-	public boolean isFloodgate(@NotNull UUID uuid) {
-		return Bukkit.getPluginManager().isPluginEnabled("floodgate")
-				&& FloodgateApi.getInstance().isFloodgatePlayer(uuid);
-	}
-
-    private @NotNull ClickCallback.Options option() {
-        return ClickCallback.Options.builder()
-                .uses(1)
-                .lifetime(java.time.Duration.ofMinutes(3))
-                .build();
-    }
-
-	public void sendReloadNotice(@NotNull Player player) {
-		if (player.isOnline())
-			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보가 로드되지 않았습니다.").append(reloadComponent()));
-	}
-
-	private @NotNull Component reloadComponent() {
-		return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
-				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
-				.clickEvent(ClickEvent.callback(audience -> {
-					if (audience instanceof Player t && t.isOnline()) {
-						loadUser(t, true);
-					}
-				}, option()));
-	}
-
-    private void sendMsg(@NotNull Player player, @NotNull User user) {
-        Bukkit.getScheduler().runTask(plugin(), () -> {
-            if (!player.isOnline()) return;
-
-            if (user.isNewUser()) {
-                Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님의 첫 접속입니다. 환영해주세요!\uD83C\uDF84", player.getName())));
-                player.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
-                player.spawnParticle(Particle.SOUL_FIRE_FLAME, player.getLocation().add(0, 1, 0), 5, 0.5, 1.2, 0.5, 0.01);
-
-                if (isFloodgate(player)) {
-                    user.addDollars(Constants.BASIC_MONEY_MOBILE);
-                    player.sendMessage(ColorUtils.chat(Alert.GREEN + " 모바일 접속 보너스가 지급되었습니다."));
-                } else user.addDollars(Constants.BASIC_MONEY_NORMAL);
-            } else Bukkit.broadcast(ColorUtils.chat(String.format(Alert.XmasLegacy + "&6&l %s&f 님이 접속했어요!", player.getName())));
-            //UserTagManager.createHoverTag(player, user);
-            //UserTagManager.updateHoverTag(player, user);
-            user.setNewUser(false);
-        });
-    }
-
-	private void sendError(@NotNull Player player, Throwable throwable) {
-		Bukkit.getScheduler().runTask(plugin(), () -> {
-			if (!player.isOnline()) return;
-			player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보 로드 중 시스템 내부 예외가 발생했습니다.").append(reloadComponent()));
-			plugin().getSLF4JLogger().error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
-		});
-	}
-
-	public void loadUser(@NotNull Player player, boolean msg) {
-		@NotNull var um = UserManager.INSTANCE;
-		um.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
-			if (throwable != null || user == null) {
-				if (msg) sendError(player, throwable);
-				return;
-			}
-			PrefixManager.INSTANCE.removePrefixIfNotValid(user);
-			if (msg) sendMsg(player, user);
-		});
-	}
-
     public boolean transfer(@NotNull ServerType toServer, @NotNull Player... players) {
         return Arrays.stream(players).allMatch(p -> sendBungeePacket(toServer, p));
     }
 
     public boolean transfer(@NotNull ServerType toServer, @NotNull Player player, boolean force, boolean hide) {
         if (!force) {
-			boolean isFloodgate = instance.isFloodgatePlayer(player.getUniqueId());
-            player.sendMessage(askComponent(toServer, hide, player, isFloodgate));
+            player.sendMessage(askComponent(toServer, hide, player, isFloodgate(player)));
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             return true;
         }

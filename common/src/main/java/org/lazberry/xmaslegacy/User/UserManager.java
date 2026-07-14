@@ -1,7 +1,7 @@
 package org.lazberry.xmaslegacy.User;
 
-import org.jetbrains.annotations.Blocking;
-import org.jetbrains.annotations.NonBlocking;
+import lombok.Getter;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
@@ -15,15 +15,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum UserManager {
 	INSTANCE;
 
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
-	private final @NotNull UserRepository repository = SqlUserRepository.INSTANCE;
-	private @NotNull File rootDataFolder = new File("plugins/XmasLegacy");
+	private @NotNull @Getter File rootDataFolder = new File("plugins/XmasLegacy");
 	private static final Logger log = LoggerFactory.getLogger(UserManager.class);
 
 	UserManager() {}
@@ -33,26 +31,16 @@ public enum UserManager {
 			this.rootDataFolder = dataFolder;
 	}
 
-	public void saveAll() {
-		getUsers().forEach(user -> {
-			synchronized (user.getLock()) {
-				try {
-					repository.saveUser(user);
-				} catch (Exception e) {
-					log.error("Failed to save user {}", user.getUniqueId(), e);
-					threadDump(user);
-				}
-			}
-		});
-	}
-
 	public void addUser(@NotNull User user) {
         users.put(user.getUniqueId(), user);
     }
-    public void removeUser(@NotNull UUID uuid) {users.remove(uuid);}
+    public @Nullable User removeUser(@NotNull UUID uuid) {
+		return users.remove(uuid);
+	}
     public @Nullable User getUser(@NotNull UUID uuid) {
 	    return users.get(uuid);
     }
+	@Contract("-> new")
 	public @NotNull List<User> getUsers() {
 		return new ArrayList<>(users.values());
 	}
@@ -71,164 +59,12 @@ public enum UserManager {
             user.setDollars(user.getDollars() + amount);
         }
     }
-	public Role getRole(@NotNull UUID uuid) {
+	public @Nullable Role getRole(@NotNull UUID uuid) {
 		if (users.containsKey(uuid)) {
 			return users.get(uuid).getRole();
 		}
 
 		return null;
-	}
-
-	/**
-	 * @param uuid uuid
-	 * @param name name
-	 * @return User 불러온 유저, 없으면 새로 생성하여 반환
-	 */
-	@Blocking
-	public User load(@NotNull UUID uuid, @NotNull String name) {
-		User loaded = repository.loadUser(uuid);
-		if (loaded == null) {
-			loaded = new User(uuid, BasicRoles.USER, name);
-			loaded.setNewUser(true);
-			repository.saveUser(loaded);
-		}
-		users.put(uuid, loaded);
-		return loaded;
-	}
-
-	@NonBlocking
-	public CompletableFuture<User> onJoinAsync(@NotNull UUID uuid, @NotNull String name, boolean isFloodgate) {
-		return CompletableFuture.supplyAsync(() -> {
-			User loaded = checkLocalEmergencyFile(uuid);
-			boolean restoredFromDump = false;
-
-			if (loaded != null) {
-				restoredFromDump = true;
-				log.info("User {} recovered from emergency dump!", uuid);
-			} else {
-				loaded = repository.loadUser(uuid);
-			}
-
-			if (loaded == null) {
-				loaded = new User(uuid, BasicRoles.USER, name);
-				loaded.setNewUser(true);
-
-				if (isFloodgate) loaded.addDollars(5000);
-				repository.saveUser(loaded);
-			} else if (restoredFromDump) {
-				try {
-					synchronized (loaded.getLock()) {
-						repository.saveUser(loaded);
-						deleteLocalEmergencyFile(uuid);
-					}
-				} catch (Exception e) {
-					log.error("Failed to sync restored user {} back to DB.", uuid, e);
-				}
-			}
-			this.addUser(loaded);
-			return loaded;
-		});
-	}
-
-	@NonBlocking
-	public CompletableFuture<Void> onQuitAsync(@NotNull UUID uuid) {
-		User u = users.remove(uuid);
-		if (u == null) return CompletableFuture.completedFuture(null);
-
-		return CompletableFuture.runAsync(() -> {
-			try {
-				synchronized (u.getLock()) {
-					repository.saveUser(u);
-					log.info("User {} saved.", uuid);
-				}
-			} catch (Exception e) {
-				log.error("CRITICAL | User {} failed saving.", uuid, e);
-				threadDump(u);
-			}
-		});
-	}
-
-	private void threadDump(@NotNull User user) {
-		File dumpDir = new File(rootDataFolder, "emergency_dumps");
-		if (!dumpDir.exists())
-			if (!dumpDir.mkdirs()) {
-				log.error("Failed to create emergency dump directory. User {}'s info may got lost.", user.getUniqueId());
-				return;
-			}
-		File dumpFile = new File(dumpDir, user.getUniqueId() + ".properties");
-
-		Properties props = new Properties();
-		props.setProperty("uuid", user.getUniqueId().toString());
-		props.setProperty("name", user.getName());
-		props.setProperty("role", user.getRole().name());
-		props.setProperty("dollars", String.valueOf(user.getDollars()));
-		props.setProperty("inquireCount", String.valueOf(user.getInquireCount()));
-		props.setProperty("playTime", String.valueOf(user.getPlayTime()));
-		props.setProperty("Exp", String.valueOf(user.getExp()));
-		props.setProperty("roleExp", String.valueOf(user.getRoleExp()));
-		props.setProperty("level", String.valueOf(user.getLevel()));
-		props.setProperty("isNewUser", String.valueOf(user.isNewUser()));
-		props.setProperty("wantsCookie", String.valueOf(user.ifWantsCookie()));
-		props.setProperty("tier", user.getTier().name());
-		props.setProperty("mastery", user.getMastery().name());
-		props.setProperty("isImmuneToIcing", String.valueOf(user.isImmuneToIcing()));
-		props.setProperty("icingState", String.valueOf(user.getIcingState()));
-		props.setProperty("showBoard", String.valueOf(user.isShowBoard()));
-
-		try (FileOutputStream out = new FileOutputStream(dumpFile)) {
-			props.store(out, "Emergency Backup for " + user.getName());
-			log.warn("User {}'s info got backUp. (Thread Dump via Properties)", user.getUniqueId());
-		} catch (Exception e) {
-			log.error("Local backUp failed. Info may got lost.", e);
-		}
-	}
-
-	private @Nullable User checkLocalEmergencyFile(@NotNull UUID uuid) {
-		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid + ".properties");
-		if (!dumpFile.exists()) return null;
-
-		Properties props = new Properties();
-		try (FileInputStream in = new FileInputStream(dumpFile)) {
-			props.load(in);
-			String name = props.getProperty("name", "Unknown");
-
-			Role role;
-			try {
-				role = Role.valueOf(props.getProperty("role", "USER"));
-			} catch (IllegalArgumentException e) {
-				role = BasicRoles.USER;
-				log.warn("No valid role name of {}, replaced to Roles.USER.", name);
-			}
-
-			User recoveredUser = new User(uuid, role, name);
-
-			recoveredUser.setDollars(Integer.parseInt(props.getProperty("dollars", "0")));
-			recoveredUser.setInquireCount(Integer.parseInt(props.getProperty("inquireCount", "0")));
-			recoveredUser.setPlayTime(Integer.parseInt(props.getProperty("playTime", "0")));
-			recoveredUser.setExp(Double.parseDouble(props.getProperty("Exp", "0.0")));
-			recoveredUser.setRoleExp(Double.parseDouble(props.getProperty("roleExp", "0.0")));
-			recoveredUser.setLevel(Integer.parseInt(props.getProperty("level", "0")));
-			recoveredUser.setNewUser(Boolean.parseBoolean(props.getProperty("isNewUser", "false")));
-			recoveredUser.wantsCookie(Boolean.parseBoolean(props.getProperty("wantsCookie", "false")));
-
-			recoveredUser.setTier(Tier.valueOf(props.getProperty("tier", "BRONZE")));
-			recoveredUser.setMastery(RoleMastery.valueOf(props.getProperty("mastery", "BEGINNER")));
-			recoveredUser.setImmuneToIcing(Boolean.parseBoolean(props.getProperty("isImmuneToIcing", "false")));
-			recoveredUser.setIcingState(Integer.parseInt(props.getProperty("icingState", "100")));
-			recoveredUser.setShowBoard(Boolean.parseBoolean(props.getProperty("showBoard", "true")));
-
-			return recoveredUser;
-		} catch (Exception e) {
-			log.error("Failed to load emergency dump for {}", uuid, e);
-			return null;
-		}
-	}
-
-	private void deleteLocalEmergencyFile(@NotNull UUID uuid) {
-		File dumpFile = new File(new File(rootDataFolder, "emergency_dumps"), uuid + ".properties");
-		if (dumpFile.exists() && dumpFile.delete()) {
-			log.info("Cleaned up emergency dump for User {}", uuid);
-		}
 	}
 
 	public boolean startRole(@NotNull UUID uuid, @NotNull BasicRoles role) {

@@ -1,13 +1,16 @@
 package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Wizard;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Roles;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
@@ -39,11 +42,20 @@ public class Wizard extends AbstractSecondRole {
 
     @Override
     public @NotNull ItemStack roleWeapon() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.DIAMOND_AXE)
+                .setRoleDefault(getRole())
+                .setName(ColorUtils.chat("&b&l날카로운 도끼"))
+                .setLore(ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆"))
+                .hideAllFlags()
+                .build().clone();
     }
 
     @Override
     public @NotNull ItemStack roleArmor() {
-        return null;
+        return ItemBuilder.of(getPlugin(), Material.DIAMOND_CHESTPLATE)
+                .setRoleDefault(getRole())
+                .setName(ColorUtils.chat("&b&l단단한 갑옷"))
+                .hideAllFlags()
+                .build().clone();
     }
 }

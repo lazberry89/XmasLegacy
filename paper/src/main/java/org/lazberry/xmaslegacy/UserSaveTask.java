@@ -10,6 +10,7 @@ import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.User.UserSaveManager;
 
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Task(type = ServerType.GLOBAL)
-public enum UserSaveManager implements Tasks {
+public enum UserSaveTask implements Tasks {
 	INSTANCE;
 
 	private volatile @Nullable BukkitTask task;
@@ -32,11 +33,14 @@ public enum UserSaveManager implements Tasks {
 	public void startTask(@NotNull XmasLegacy plugin) {
 		if (task != null) return;
 		// Synchronizing with using class lock.
-		synchronized (UserSaveManager.class) {
+		synchronized (UserSaveTask.class) {
 			if (task != null) return;
 
 			this.task = Bukkit.getScheduler()
-					.runTaskTimerAsynchronously(plugin, UserManager.INSTANCE::saveAll,
+					.runTaskTimerAsynchronously(plugin, () -> {
+								UserSaveManager.INSTANCE.saveAll();
+								log.warn("User info saved automatically saved for {} tick duration.", Constants.USER_SAVE_TASK_DURATION);
+							},
 							0L, Constants.USER_SAVE_TASK_DURATION);
 			log.info("User save task started! ({} tick duration)", Constants.USER_SAVE_TASK_DURATION);
 		}
@@ -52,7 +56,7 @@ public enum UserSaveManager implements Tasks {
 		BukkitTask currentTask;
 
 		// Synchronized with current class
-		synchronized (UserSaveManager.class) {
+		synchronized (UserSaveTask.class) {
 			currentTask = task;
 			// make static field NULL first
 			task = null;
@@ -65,12 +69,12 @@ public enum UserSaveManager implements Tasks {
 	}
 
 	public void loadValidUsers() {
-		var um = UserManager.INSTANCE;
+		var us = UserSaveManager.INSTANCE;
 
 		Map<UUID, String> playerData = Bukkit.getOnlinePlayers().stream()
 				.filter(Objects::nonNull)
 				.collect(Collectors.toMap(Player::getUniqueId, Player::getName));
 
-		CompletableFuture.runAsync(() -> playerData.forEach(um::load));
+		CompletableFuture.runAsync(() -> playerData.forEach(us::load));
 	}
 }

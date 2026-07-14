@@ -16,6 +16,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
@@ -26,13 +27,16 @@ import java.util.concurrent.CompletableFuture;
 
 @Listeners
 public class SelectListener implements Listener {
-    private final RoleSelectInterface RSTI = new RoleSelectInterface();
-    private final XmasLegacy plugin;
-    private final UserManager UM;
+    private final @NotNull RoleSelectInterface ri;
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull UserManager um;
+    private final @NotNull UserSaveManager us;
 
     public SelectListener() {
+        this.ri = new RoleSelectInterface();
         this.plugin = XmasLegacy.getInstance();
-        this.UM = UserManager.INSTANCE;
+        this.um = UserManager.INSTANCE;
+        this.us = UserSaveManager.INSTANCE;
     }
 
     @EventHandler
@@ -42,7 +46,7 @@ public class SelectListener implements Listener {
 
         int slot = e.getSlot();
         e.setCancelled(true);
-        User user = UM.getUser(p.getUniqueId());
+        User user = um.getUser(p.getUniqueId());
         if (user == null) {
             sendErrorLog(p);
             return;
@@ -85,7 +89,7 @@ public class SelectListener implements Listener {
         if (!(e.getInventory().getHolder() instanceof RoleSelectionInterface holder)) return;
         BasicRoles select = holder.getSelectedRole();
 
-        var user = UM.getUser(p.getUniqueId());
+        var user = um.getUser(p.getUniqueId());
         if (user == null) {
             ClickCallback.Options options = ClickCallback.Options.builder()
                     .uses(1)
@@ -94,7 +98,7 @@ public class SelectListener implements Listener {
             Component reload = ColorUtils.chat("&c&l[ 정보 불러오기 ]").hoverEvent(HoverEvent.showText(ColorUtils.chat("&7유저정보를 다시 불러옵니다.")))
                     .clickEvent(ClickEvent.callback(audience -> {
                         if (audience instanceof Player t) {
-                            CompletableFuture.supplyAsync(() -> UM.load(t.getUniqueId(), t.getName())).whenComplete((loadUser, throwable) -> {
+                            CompletableFuture.supplyAsync(() -> us.load(t.getUniqueId(), t.getName())).whenComplete((loadUser, throwable) -> {
                                 if (throwable != null || loadUser == null) {
                                     p.sendMessage(ColorUtils.chat(Alert.RED + " 로드에 실패했어요! 관리자에게 문의해주세요. '/문의 ..'"));
                                     plugin.getSLF4JLogger().error("Error occurred while reloading User Info UUID -> {} ", t.getUniqueId(), throwable);
@@ -115,7 +119,7 @@ public class SelectListener implements Listener {
 
         switch (slot) {
             case 20 -> {
-                if (UM.startRole(p.getUniqueId(), select)) {
+                if (um.startRole(p.getUniqueId(), select)) {
                     p.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
                     p.sendMessage(ColorUtils.chat(String.format("%s 직업 &6&l%s&f를 선택하셨군요! 좋은 선택입니다.",  Alert.XmasLegacy, select)));
                     p.sendMessage(ColorUtils.chat(String.format("%s 안내인의 지시를 따라 이제 &6'%s'&f(으)로의 삶을 즐겨보세요!", Alert.YELLOW, select)));
@@ -124,7 +128,7 @@ public class SelectListener implements Listener {
             }
             case 24 -> {
                 p.closeInventory(InventoryCloseEvent.Reason.OPEN_NEW);
-                p.openInventory(RSTI.getInventory());
+                p.openInventory(ri.getInventory());
                 p.updateInventory();
                 p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
             }
