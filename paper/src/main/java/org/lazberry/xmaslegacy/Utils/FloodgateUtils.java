@@ -2,6 +2,8 @@ package org.lazberry.xmaslegacy.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
+import org.geysermc.floodgate.api.player.FloodgatePlayer;
 import org.jetbrains.annotations.*;
 
 import java.util.UUID;
@@ -67,14 +69,14 @@ public final class FloodgateUtils {
     }
 
     /**
-     * Finding {@link FloodgateApi#FloodgatePlayer} from {@link FloodgateApi}.
+     * Finding {@link FloodgatePlayer} from {@link FloodgateApi}.
      * General {@link Player} is Different withFloodgate player, so you intend to use floodgate methods,
      * Use this method to get FloodgatePlayer instance. Also, this method can convert Player to FloodgatePlayer by
      * getting {@link UUID} from Player instance.
      * @param uuid target UniqueId
      * @return FloodgatePlayer instance, null if fails.
+     * @see FloodgatePlayer
      * @see Player
-     * @see FloodgateApi#FloodgatePlayer
      */
     @CheckReturnValue
     @Contract("_ -> null")

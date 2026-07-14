@@ -33,7 +33,7 @@ import java.util.function.BiConsumer;
  * <pre>{@code
  * if (user == null) {
  *     UserHandler.loadUser(p, false);
- *     p.sendMessage("Secretely loaded your info!");
+ *     p.sendMessage("Secretly loaded your info!");
  * }
  * }</pre>
  * Second, use {@link UserHandler#sendReloadNotice(Player)} to inform player that his/her information is not valid,
@@ -54,7 +54,6 @@ public final class UserHandler {
     /**
      * Same as other utils, block the constructor to be called by others.
      * Throws Exception when someone try to open private and call this constructor.
-     * Called "OCD" rules.
      */
     @ApiStatus.Internal
     @Contract("-> fail")
@@ -104,6 +103,10 @@ public final class UserHandler {
             player.sendMessage(ColorUtils.chat(Alert.RED + " 유저 정보가 로드되지 않았습니다.").append(reloadComponent()));
     }
 
+	/**
+	 * Option that prevents player spamming reload button.
+	 * @return {@link ClickCallback.Options} of max use 1 time, lifetime 3 minutes.
+	 */
     @Contract(pure = true)
     private static @NotNull ClickCallback.Options option() {
         return ClickCallback.Options.builder()
@@ -112,6 +115,16 @@ public final class UserHandler {
                 .build();
     }
 
+	/**
+	 * Component that would be appended to inform message.
+	 * This Component contains {@link HoverEvent} and
+	 * {@link ClickEvent#callback(ClickCallback)} logic, so when player click this component,
+	 * the logic will work.
+	 * @return Component contains ClickEvent, HoverEvent.
+	 * @see Component
+	 * @see HoverEvent
+	 * @see ClickEvent
+	 */
     @Contract(pure = true)
     private static @NotNull Component reloadComponent() {
         return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
@@ -123,6 +136,11 @@ public final class UserHandler {
                 }, option()));
     }
 
+	/**
+	 * Method that handles sending message. This method contains first join message, general Join message.
+	 * @param player target player
+	 * @param user {@link User} that parsed from player
+	 */
     private static void sendMsg(@NotNull Player player, @NotNull User user) {
         Bukkit.getScheduler().runTask(plugin(), () -> {
             if (!player.isOnline()) return;
@@ -143,6 +161,11 @@ public final class UserHandler {
         });
     }
 
+	/**
+	 * Used when inner exception occurred. Logs error, and send alert to target player.
+	 * @param player target player
+	 * @param throwable e
+	 */
     private static void sendError(@NotNull Player player, Throwable throwable) {
         Bukkit.getScheduler().runTask(plugin(), () -> {
             if (!player.isOnline()) return;
@@ -150,5 +173,4 @@ public final class UserHandler {
             log.error("비동기 유저 로드 중 치명적 예외 발생 (UUID: {})", player.getUniqueId(), throwable);
         });
     }
-
 }

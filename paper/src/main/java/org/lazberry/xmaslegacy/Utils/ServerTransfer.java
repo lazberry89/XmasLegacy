@@ -10,7 +10,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -19,16 +18,11 @@ import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.User.User;
-import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.User.UserSaveManager;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.ServerType;
-import org.lazberry.xmaslegacy.ServerPrefix.PrefixManager;
-import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -48,7 +42,7 @@ public final class ServerTransfer {
 		var uuid = player.getUniqueId();
 		var user = UserManager.INSTANCE.getUser(uuid);
 		if (user == null) {
-			sendReloadNotice(player);
+			UserHandler.sendReloadNotice(player);
 			log.error("Failed to move {} to target Location.(User info not loaded)", player.getName());
 			return;
 		}
@@ -65,7 +59,7 @@ public final class ServerTransfer {
 				log.error("Failed to teleport {} to Port.", player.getName());
 				InfoUtils.error(player, "서버 이동에 실패하였습니다. 재시도 해주세요.");
 			}
-		}, duration / 2);
+		}, duration / 2 );
 		Bukkit.getScheduler().runTaskLater(plugin(), () -> StunUtils.release(uuid), duration);
 	}
 
@@ -75,7 +69,7 @@ public final class ServerTransfer {
 
     public boolean transfer(@NotNull ServerType toServer, @NotNull Player player, boolean force, boolean hide) {
         if (!force) {
-            player.sendMessage(askComponent(toServer, hide, player, isFloodgate(player)));
+            player.sendMessage(askComponent(toServer, hide, player, FloodgateUtils.isFloodgate(player)));
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             return true;
         }
