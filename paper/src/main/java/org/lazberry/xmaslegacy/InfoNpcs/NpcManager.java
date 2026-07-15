@@ -1,11 +1,13 @@
 package org.lazberry.xmaslegacy.InfoNpcs;
 
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Registry
 public enum NpcManager implements ServerManager {
     INSTANCE;
 

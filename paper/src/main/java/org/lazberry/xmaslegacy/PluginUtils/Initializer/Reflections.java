@@ -369,21 +369,28 @@ public final class Reflections {
 						if (ACTIVE_TASKS.containsKey(clazz)) {
 							instance = ACTIVE_TASKS.get(clazz);
 						} else {
-							var constructor = clazz.getDeclaredConstructor();
-							constructor.setAccessible(true);
-							instance = (Tasks) constructor.newInstance();
+							if (BEAN_CONTAINER.containsKey(clazz)) {
+								instance = (Tasks) BEAN_CONTAINER.get(clazz);
+							} else {
+								var constructor = clazz.getDeclaredConstructor();
+								constructor.setAccessible(true);
+								instance = (Tasks) constructor.newInstance();
+							}
 							ACTIVE_TASKS.put(clazz, instance);
-							log.info("Successfully created and cached instance of Task {}", clazz.getSimpleName());
+							log.info("Successfully registered and cached instance of Task {}", clazz.getSimpleName());
 						}
 					} else {
 						instance = ACTIVE_TASKS.get(clazz);
+						if (instance == null && BEAN_CONTAINER.containsKey(clazz)) {
+							instance = (Tasks) BEAN_CONTAINER.get(clazz);
+						}
+
 						if (instance == null) {
 							log.warn("Task {} instance not found for stopping. Skipping.", clazz.getSimpleName());
 							continue;
 						}
 					}
 				}
-
 				if (enable) {
 					instance.startTask(plugin());
 					log.info("Task {} started successfully.", clazz.getSimpleName());

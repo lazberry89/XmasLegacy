@@ -21,7 +21,7 @@ public enum UserSaveManager implements ServerManager {
     INSTANCE;
 
     private static final @NotNull Logger log = LoggerFactory.getLogger(UserSaveManager.class);
-    private @Manager @NotNull UserRepository repository;
+    private final @NotNull UserRepository repository = SqlUserRepository.INSTANCE;
     private @Manager @NotNull UserManager um;
     private @Manager @NotNull UserEmergencyDump dump;
 

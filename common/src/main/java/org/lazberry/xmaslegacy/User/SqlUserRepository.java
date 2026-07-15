@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.UUID;
 
-@Registry
-public enum SqlUserRepository implements UserRepository, ServerManager {
+public enum SqlUserRepository implements UserRepository {
 	INSTANCE;
 
 	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
@@ -23,10 +22,7 @@ public enum SqlUserRepository implements UserRepository, ServerManager {
 
 	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
 
-	SqlUserRepository() {}
-
-	@Override
-	public void init() {
+	SqlUserRepository() {
 		createTable();
 	}
 

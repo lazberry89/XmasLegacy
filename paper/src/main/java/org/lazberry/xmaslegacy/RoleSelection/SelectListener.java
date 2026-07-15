@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
@@ -31,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 @Listeners
 public class SelectListener implements Listener {
     private final @NotNull RoleSelectInterface ri;
-    private @Manager @NotNull XmasLegacy plugin;
+    private @Plugin @NotNull XmasLegacy plugin;
     private @Manager @NotNull UserManager um;
     private @Manager @NotNull UserSaveManager us;
 
