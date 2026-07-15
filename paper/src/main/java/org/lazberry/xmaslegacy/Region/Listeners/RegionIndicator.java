@@ -21,6 +21,7 @@ import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 @Listeners
 public class RegionIndicator implements Listener {
@@ -41,7 +42,7 @@ public class RegionIndicator implements Listener {
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
 		if (user == null) {
-			ServerTransfer.loadUser(p, false);
+			UserHandler.loadUser(p, false);
 			return;
 		}
 		if (rm.hasRegion(loc)) {

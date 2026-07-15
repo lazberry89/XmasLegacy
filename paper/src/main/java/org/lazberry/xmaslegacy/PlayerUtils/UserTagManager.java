@@ -10,7 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.HiddenRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
@@ -26,14 +29,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Inject
 public class UserTagManager {
+    private static @Plugin @NotNull XmasLegacy plugin;
     private static final Map<UUID, TextDisplay> tagMap = new HashMap<>();
     private static final Map<UUID, Interaction> baseMap = new HashMap<>();
-    private static final XmasLegacy plugin = XmasLegacy.getInstance();
     private static final UserManager um = UserManager.INSTANCE;
     private static BukkitTask task;
 
-    public static void runTask() {
+    public static void startTask() {
         if (task != null) return;
         task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 

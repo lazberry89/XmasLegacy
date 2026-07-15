@@ -16,7 +16,7 @@ import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.BoardUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public enum UserPartyScoreBoard implements Tasks {
 	public void updateUserBoard(@NotNull Player player) {
 		User user = um.getUser(player.getUniqueId());
 		if (user == null) {
-			ServerTransfer.sendReloadNotice(player);
+			UserHandler.sendReloadNotice(player);
 			log.error("Tried to create user board with null User!");
 			return;
 		}

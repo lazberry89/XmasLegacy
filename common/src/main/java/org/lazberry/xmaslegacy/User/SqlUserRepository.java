@@ -3,7 +3,9 @@ package org.lazberry.xmaslegacy.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.*;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 import java.util.UUID;
 
-public enum SqlUserRepository implements UserRepository {
+@Registry
+public enum SqlUserRepository implements UserRepository, ServerManager {
 	INSTANCE;
 
 	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
@@ -22,6 +25,7 @@ public enum SqlUserRepository implements UserRepository {
 
 	SqlUserRepository() {}
 
+	@Override
 	public void init() {
 		createTable();
 	}

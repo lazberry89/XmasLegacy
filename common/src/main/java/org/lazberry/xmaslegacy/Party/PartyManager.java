@@ -4,18 +4,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.*;
 
-public enum PartyManager {
+@Inject
+@Registry
+public enum PartyManager implements ServerManager {
 	INSTANCE;
 
-    private final @NotNull UserManager um;
+    private @Manager @NotNull UserManager um;
 	private final @NotNull Map<User, Party> partyMap = new HashMap<>();
 
-    PartyManager() {
-        this.um = UserManager.INSTANCE;
-    }
+    PartyManager() {}
 
 	public boolean createParty(@NotNull User leader) {
 		if (partyMap.containsKey(leader)) return false;
@@ -25,7 +29,7 @@ public enum PartyManager {
 		return true;
 	}
 
-	public boolean joinParty(User leader, User join) {
+	public boolean joinParty(@NotNull User leader, @NotNull User join) {
 		if (partyMap.containsKey(leader)) {
 			Party party = partyMap.get(leader);
 			if (party.joinParty(join)) {
@@ -94,4 +98,7 @@ public enum PartyManager {
         return party.getMembers().stream()
                 .anyMatch(user -> user.getUniqueId().equals(uuid2));
     }
+
+	@Override
+	public void init() {}
 }

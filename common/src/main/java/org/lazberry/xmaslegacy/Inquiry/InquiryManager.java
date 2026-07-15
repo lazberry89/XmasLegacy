@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Inquiry;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -7,32 +8,38 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum InquiryManager {
+@Inject
+@Registry
+public enum InquiryManager implements ServerManager {
 	INSTANCE;
 
 	private final @NotNull Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
 	private final @NotNull Map<UUID, String> activeInquiries = new ConcurrentHashMap<>();
-	private final int cooldownTime = Constants.INQUIRY_COOLDOWN;
-	private final @NotNull UserManager um;
-	private final @NotNull RuleManager rm;
+    private final @Getter int cooldownTime = Constants.INQUIRY_COOLDOWN;
+	private @Manager @NotNull UserManager um;
+	private @Manager @NotNull RuleManager rm;
 	private final @NotNull InquiryRepository repository;
 
 	InquiryManager() {
-		this.um = UserManager.INSTANCE;
-		this.rm = RuleManager.INSTANCE;
 		this.repository = new InquiryRepository();
 	}
+
+	@Override
+	public void init() {}
 
 	public Component Inquiry(UUID uuid, @Nullable String message) {
 		User user = um.getUser(uuid);
@@ -60,11 +67,7 @@ public enum InquiryManager {
 		}
 	}
 
-	public int getCooldownTime() {
-		return cooldownTime;
-	}
-
-	public void updateInquiryStatus(UUID uuid, InquiryStatus status) {
+    public void updateInquiryStatus(UUID uuid, InquiryStatus status) {
 		repository.updateStatus(uuid, status.name());
 	}
 

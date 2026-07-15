@@ -1,23 +1,28 @@
 package org.lazberry.xmaslegacy;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Inject
+@Registry
 public enum EconomyManager {
 	INSTANCE;
 
-    private final UserManager um;
-    private final Map<String, Integer> marketDemand = new HashMap<>();
+    private @Manager @NotNull UserManager um;
+    private final @NotNull Map<String, Integer> marketDemand = new HashMap<>();
 
-    EconomyManager() {
-        this.um = UserManager.INSTANCE;
-    }
+    EconomyManager() {}
 
-    public boolean deposit(UUID uuid, int amount) {
+    public boolean deposit(@Nullable UUID uuid, int amount) {
         if (uuid != null) {
             um.deposit(uuid, amount);
             return true;
@@ -25,7 +30,7 @@ public enum EconomyManager {
         return false;
     }
 
-    public boolean withdraw(UUID uuid, int amount) {
+    public boolean withdraw(@NotNull UUID uuid, int amount) {
         User user = um.getUser(uuid);
         if (user != null) {
             return um.withdraw(uuid, amount);
@@ -33,7 +38,7 @@ public enum EconomyManager {
         return false;
     }
 
-    public boolean transferMoney(UUID uuid, UUID uuid1, int amount) {
+    public boolean transferMoney(@NotNull UUID uuid, @NotNull UUID uuid1, int amount) {
         User sender = um.getUser(uuid);
         User target = um.getUser(uuid1);
         if (target == null || sender == null) return false;
@@ -46,19 +51,19 @@ public enum EconomyManager {
         return false;
     }
 
-    public int checkBalance(UUID uuid) {
+    public int checkBalance(@NotNull UUID uuid) {
 		User user = um.getUser(uuid);
 	    return (user != null) ? user.getDollars() : 0;
     }
 
-	public boolean setBalance(UUID uuid, int amount) {
+	public boolean setBalance(@NotNull UUID uuid, int amount) {
 		User user = um.getUser(uuid);
 		if (user == null) return false;
 		user.setDollars(amount);
 		return true;
 	}
 
-    public boolean hasEnough(UUID uuid, int amount) {
+    public boolean hasEnough(@NotNull UUID uuid, int amount) {
         if (amount <= 0) return false;
 
 		var user = um.getUser(uuid);
@@ -68,7 +73,7 @@ public enum EconomyManager {
         return userMoney >= amount;
     }
 
-    public void recordSale(String itemKey, int amount) {
+    public void recordSale(@NotNull String itemKey, int amount) {
         marketDemand.put(itemKey, marketDemand.getOrDefault(itemKey, 0) + amount);
     }
 

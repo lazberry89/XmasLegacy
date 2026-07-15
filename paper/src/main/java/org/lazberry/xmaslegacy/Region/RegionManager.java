@@ -5,26 +5,20 @@ import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.joml.AxisAngle4f;
-import org.joml.Quaternionf;
-import org.lazberry.xmaslegacy.Annotation.Task;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
-import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.Region.Events.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.Region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
@@ -37,17 +31,17 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
+@Inject
 public enum RegionManager {
 	INSTANCE;
 
-	private final @NotNull XmasLegacy plugin;
+	private @Plugin @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
 	private File file;
 	private FileConfiguration config;
 
 	RegionManager() {
-		this.plugin = XmasLegacy.getInstance();
 		setupFile();
 		saveAsync();
 	}
@@ -133,21 +127,21 @@ public enum RegionManager {
 	private void setupFile() {
 		if (!plugin.getDataFolder().exists()) {
 			if (plugin.getDataFolder().mkdir()) {
-				plugin.getLogger().info("[RegionManager] Data folder created.");
+				log.info("[RegionManager] Data folder created.");
 			} else {
-				plugin.getSLF4JLogger().error("[RegionManager] Failed to create data folder at: {}", plugin.getDataFolder().getAbsolutePath());
+				log.error("[RegionManager] Failed to create data folder at: {}", plugin.getDataFolder().getAbsolutePath());
 			}
 		}
 		file = new File(plugin.getDataFolder(), "regions.yml");
 		if (!file.exists()) {
 			try {
 				if (file.createNewFile()) {
-					plugin.getLogger().info("[RegionManager] regions.yml file created.");
+					log.info("[RegionManager] regions.yml file created.");
 				} else {
-					plugin.getSLF4JLogger().error("[RegionManager] Failed to create regions.yml file.");
+					log.error("[RegionManager] Failed to create regions.yml file.");
 				}
 			} catch (IOException e) {
-				plugin.getSLF4JLogger().error("파일 생성 중 문제 발생: {}", e.getMessage(), e);
+				log.error("파일 생성 중 문제 발생: {}", e.getMessage(), e);
 			}
 		}
 		config = YamlConfiguration.loadConfiguration(file);
@@ -183,7 +177,7 @@ public enum RegionManager {
 			regions.put(chunkKey, region);
 			userRegionsMap.computeIfAbsent(owner, k -> new ArrayList<>()).add(region);
 		}
-		plugin.getSLF4JLogger().info("총 {}개의 구역 데이터를 성공적으로 로드했습니다.", regions.size());
+		log.info("총 {}개의 구역 데이터를 성공적으로 로드했습니다.", regions.size());
 	}
 
 	public void addRegion(Player p, Region region) {
@@ -219,7 +213,7 @@ public enum RegionManager {
 					userRegionsMap.remove(ownerUUID);
 				}
 				saveAsync();
-				plugin.getSLF4JLogger().info("구역이 삭제되었습니다. ID: {}", region.Id());
+				log.info("구역이 삭제되었습니다. ID: {}", region.Id());
 			}
 		}
 	}

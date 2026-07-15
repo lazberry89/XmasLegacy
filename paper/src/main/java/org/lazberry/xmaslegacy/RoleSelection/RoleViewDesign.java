@@ -9,40 +9,42 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
+import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
-public enum RoleViewDesign {
-	INSTANCE;
+@Inject
+@Task(type = ServerType.MAIN)
+public enum RoleViewDesign implements Tasks {
+    INSTANCE;
 
-    private final @NotNull XmasLegacy plugin;
+    private @Plugin @NotNull XmasLegacy plugin;
     private final @NotNull ItemStack[][][] allFrames = new ItemStack[3][9][3];
-    private final @NotNull ItemStack RED;
-    private final @NotNull ItemStack WHITE;
+
+    private @Nullable ItemStack RED;
+    private @Nullable ItemStack WHITE;
 
     private int currentFrameIndex = 0;
     private @Nullable BukkitTask task;
 
-	RoleViewDesign() {
-        this.plugin = XmasLegacy.getInstance();
+    RoleViewDesign() {}
 
+    public void init() {
         this.RED = createGuiItem(Material.RED_STAINED_GLASS_PANE);
         this.WHITE = createGuiItem(Material.WHITE_STAINED_GLASS_PANE);
 
-    }
-
-    public void init() {
         for (int f = 0; f < 3; f++) {
             allFrames[f] = setupFrame(f);
         }
-        for (int f = 0; f < 3; f++) {
-            allFrames[f] = setupFrame(f);
-        }
-        this.startVisualLoop();
+        this.startTask(plugin);
     }
 
-    private ItemStack createGuiItem(Material material) {
+    private @NotNull ItemStack createGuiItem(@NotNull Material material) {
         return ItemBuilder.of(plugin, material)
                 .setName(ColorUtils.chat(""))
                 .setLore(ColorUtils.chat(""))
@@ -50,7 +52,7 @@ public enum RoleViewDesign {
                 .build().clone();
     }
 
-    public ItemStack[][] setupFrame(int frame) {
+    public @NotNull ItemStack[][] setupFrame(int frame) {
         ItemStack[][] frameI = new ItemStack[9][3];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 3; j++) {
@@ -59,7 +61,6 @@ public enum RoleViewDesign {
             }
         }
 
-        // 사용자님의 3단계 패턴 로직
         switch (frame) {
             case 0 -> {
                 frameI[0][0] = RED; frameI[2][0] = RED; frameI[1][1] = RED;
@@ -82,7 +83,8 @@ public enum RoleViewDesign {
         return frameI;
     }
 
-    public void startVisualLoop() {
+    @Override
+    public void startTask(@NotNull XmasLegacy plugin) {
         if (task != null) task.cancel();
 
         task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -93,7 +95,6 @@ public enum RoleViewDesign {
                 Inventory topInventory = view.getTopInventory();
 
                 if (topInventory.getHolder() instanceof RoleSelectionInterface) {
-
                     for (int i = 0; i < 9; i++) {
                         for (int j = 0; j < 3; j++) {
                             ItemStack item = currentFrameData[i][j];
@@ -107,7 +108,8 @@ public enum RoleViewDesign {
         }, 0L, 5L);
     }
 
-    public void stopVisualLoop() {
+    @Override
+    public void stopTask() {
         if (task != null) {
             task.cancel();
             task = null;

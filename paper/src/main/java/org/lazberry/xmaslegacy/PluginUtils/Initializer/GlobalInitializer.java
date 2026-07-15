@@ -25,7 +25,7 @@ public class GlobalInitializer implements ServerInitializer {
 	public void enable(@NotNull XmasLegacy plugin) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
 		SqlUserRepository.INSTANCE.init();
-		UserManager.INSTANCE.initDataFolder(plugin.getDataFolder());
+		UserManager.INSTANCE.init(plugin.getDataFolder());
 		plugin.registerReflection();
 
 		if (AgeableCrops.RegisterRecipe()) log.info("Recipe Registered!");

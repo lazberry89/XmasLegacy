@@ -6,30 +6,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.settings.RoleMastery;
-import org.lazberry.xmaslegacy.settings.Tier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum UserManager {
+@Registry
+public enum UserManager implements ServerManager {
 	INSTANCE;
 
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
-	private @NotNull @Getter File rootDataFolder = new File("plugins/XmasLegacy");
-	private static final Logger log = LoggerFactory.getLogger(UserManager.class);
+	private final @NotNull @Getter File rootDataFolder = new File("plugins/XmasLegacy");
 
 	UserManager() {}
 
-	public void initDataFolder(@Nullable File dataFolder) {
-		if (dataFolder != null)
-			this.rootDataFolder = dataFolder;
-	}
+	public void init() {}
 
 	public void addUser(@NotNull User user) {
         users.put(user.getUniqueId(), user);

@@ -4,7 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +19,18 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.UUID;
 
-public class UserEmergencyDump {
-    private static final @NotNull Logger log = LoggerFactory.getLogger(UserEmergencyDump.class);
-    private final @NotNull UserManager um;
-    private final @NotNull File rootDataFolder;
+@Inject
+@Registry
+public enum UserEmergencyDump implements ServerManager {
+    INSTANCE;
 
-    UserEmergencyDump() {
-        this.um = UserManager.INSTANCE;
+    private static final @NotNull Logger log = LoggerFactory.getLogger(UserEmergencyDump.class);
+    private File rootDataFolder;
+    private @Manager @NotNull UserManager um;
+
+    UserEmergencyDump() {}
+
+    public void init() {
         this.rootDataFolder = um.getRootDataFolder();
     }
 
