@@ -12,10 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
@@ -27,17 +29,54 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import java.util.Arrays;
 import java.util.UUID;
 
+/**
+ * This class handles Server to Server transfer. Use plugin messenger at "bungeecord:main", sends
+ * packet-byte message to Velocity. Also handles Party logics like moving another members if target player
+ * is party leader. Also have option to hide where to go, force or not player to move.
+ * @see org.bukkit.plugin.messaging.Messenger
+ * @see org.lazberry.xmaslegacy.Party.Party
+ * @see org.bukkit.Server
+ * @see org.lazberry.xmaslegacy.User.User
+ */
 @Slf4j
 @UtilityClass
 public final class ServerTransfer {
+
+    /**
+     * Lazy-Initialize of plugin instance. Due to static class, there would be possibility that
+     * plugin instance is null. So only get instance when methods are used.
+     * @return plugin instance
+     */
+    @Contract(value = "-> !null", pure = true)
 	private @NotNull XmasLegacy plugin() {
 		return XmasLegacy.getInstance();
 	}
 
+    /**
+     * Reusing method {@link ServerTransfer#dramaticTeleport(Player, Location, long)}, but duration is set to 40(Long)
+     * as basic value.
+     * @param player target player to move
+     * @param to where to move
+     */
 	public void dramaticTeleport(@NotNull Player player, @NotNull Location to) {
 		dramaticTeleport(player, to, 40L);
 	}
 
+    /**
+     * Transports target player to {@link Location} that is previously set. Giving {@link Sound}, visual effect
+     * to player and applying delay to make teleport most dramatic. Also, {@link org.lazberry.xmaslegacy.User.User} instance must be loaded if player want to
+     * teleport. if not loaded, sends reload alert.
+     * <pre>{@code
+     * Player p = e.getPlayer();
+     * ServerTransfer.dramaticTeleport(p, targetLoc, 60L);
+     * }</pre>
+     * @param player target player to move
+     * @param to where to move
+     * @param duration how long the effect lasts.
+     * @see ServerTransfer#dramaticTeleport(Player, Location)
+     * @see UserHandler#sendReloadNotice(Player)
+     * @see Location
+     */
 	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, long duration) {
 		var uuid = player.getUniqueId();
 		var user = UserManager.INSTANCE.getUser(uuid);
@@ -76,6 +115,27 @@ public final class ServerTransfer {
         return transfer(toServer, player);
     }
 
+    /**
+     * Main transport logic. Transfers target player to intended server. The Channel on
+     * {@link org.bukkit.plugin.messaging.Messenger#registerOutgoingPluginChannel(Plugin, String)} at "bungeecord:main" should be
+     * opened in {@link org.lazberry.xmaslegacy.PluginUtils.Initializer.GlobalInitializer}. Also, when player is in party, two cases.
+     * First, as general member, leaves {@link org.lazberry.xmaslegacy.Party.Party} and transfers server. Second, as Leader of a party, brings all party member with him/her.
+     * But fails when user info is not loaded, not sending any notice.(Should handle this case.)
+     * <pre>{@code
+     * if (ServerTransfer.transfer(ServerType.HUNTING, p)) {
+     *     p.sendMessage("Transfer successful.");
+     * } else {
+     *     p.sendMessage("Transfer failed!");
+     * }
+     * }</pre>
+     * @param toServer target server as destination
+     * @param player target player to move
+     * @return false when fails, true.
+     * @see org.lazberry.xmaslegacy.Party.Party
+     * @see org.lazberry.xmaslegacy.User.User
+     * @see ServerTransfer#transfer(ServerType, Player, boolean, boolean)
+     * @see ServerTransfer#transfer(ServerType, Player...)
+     */
     @CheckReturnValue
     public boolean transfer(@NotNull ServerType toServer, @NotNull Player player) {
         @NotNull var pm = PartyManager.INSTANCE;
@@ -106,6 +166,16 @@ public final class ServerTransfer {
         return sendBungeePacket(toServer, player);
     }
 
+    /**
+     * Actual logic that sends packet to move player. On opened
+     * {@link org.bukkit.plugin.messaging.Messenger#registerOutgoingPluginChannel(Plugin, String)} channel, this method
+     * sends plugin message to Velocity plugin to transfer player.
+     * @param toServer target server to move as destination
+     * @param player target player to move
+     * @return false when fails, true
+     * @see org.bukkit.plugin.messaging.Messenger#registerOutgoingPluginChannel(Plugin, String)
+     * @see Player#sendPluginMessage(Plugin, String, byte[])
+     */
     private boolean sendBungeePacket(@NotNull ServerType toServer, @NotNull Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
@@ -120,6 +190,18 @@ public final class ServerTransfer {
         }
     }
 
+    /**
+     * Sends asking message to player that are in party. This method works when party leader moves server, and party members can choose
+     * to follow or not if valid.(There are option to force or not.) Also, it handles mobile, java two cases. When mobile(Floodgate),
+     * it sends Form using button. When Java, sends click-able Component message.
+     * @param type where to transfer player
+     * @param hide to hide or not where to transfer.
+     * @param p target player to move
+     * @param isFloodgate if player is from floodgate or not
+     * @return componented message.
+     * @see ServerType
+     * @see Component
+     */
 	private @NotNull Component askComponent(@NotNull ServerType type, boolean hide, @NotNull Player p, boolean isFloodgate) {
 		if (isFloodgate) {
 			var floodgatePlayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());

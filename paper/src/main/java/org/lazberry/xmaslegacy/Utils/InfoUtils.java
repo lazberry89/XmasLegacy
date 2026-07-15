@@ -68,7 +68,7 @@ public final class InfoUtils {
     private void mobileProcess(@NotNull Player p, @NotNull Component msg) {
         var user = UserManager.INSTANCE.getUser(p.getUniqueId());
         if (user == null) {
-            ServerTransfer.sendReloadNotice(p);
+            UserHandler.sendReloadNotice(p);
             return;
         }
         if (user.isMobile()) p.sendActionBar(msg);

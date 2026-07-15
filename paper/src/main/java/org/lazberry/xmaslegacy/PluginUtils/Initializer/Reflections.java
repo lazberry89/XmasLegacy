@@ -17,28 +17,30 @@ import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 @Slf4j
 public final class Reflections {
-	private static final Map<Class<?>, Tasks> ACTIVE_TASKS = new HashMap<>();
+	private static final @NotNull Map<Class<?>, Object> BEAN_CONTAINER = new HashMap<>();
+	private static final @NotNull Map<Class<?>, Tasks> ACTIVE_TASKS = new HashMap<>();
 	private static final @NotNull String packageName = "org.lazberry.xmaslegacy";
-	
+
 	private static @NotNull XmasLegacy plugin() {
 		return XmasLegacy.getInstance();
 	}
 
 	/**
-	 * Essential Exceptions : TASKS_OFF(onEnable), TASKS_ON(onDisable)
-	 * - Always Excepted type is excepted.
-	 * @param classPath Plugin ClassPath instance
-	 * @param exceptions types of InitializeType to be excluded from invocation
+	 * reflections 구동의 최우선 진입점.
+	 * Bean 컨테이너를 먼저 구축하고 주입한 뒤, 기존 리플렉션 등록 메서드들을 호출합니다.
 	 */
 	@Reflection(type = InitializeType.EXCEPTED)
-	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType ...exceptions) {
-		var methods = Reflections.class.getDeclaredMethods();
+	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType... exceptions) {
+		buildBeanContainer(classPath);
 
+		var methods = Reflections.class.getDeclaredMethods();
 		List<InitializeType> exceptionList = Arrays.asList(exceptions);
 
 		for (Method method : methods) {
@@ -58,20 +60,110 @@ public final class Reflections {
 		}
 	}
 
+	/**
+	 * 패키지 내의 모든 클래스를 스캔하여 대상 객체들을 단 한 번만 인스턴스화하고,
+	 * 필드 의존성(@Plugin)을 주입하여 컨테이너에 보관합니다.
+	 */
+	private static void buildBeanContainer(@NotNull ClassPath classPath) {
+		log.info("[IoC] Building Bean Container and injecting dependencies...");
+
+		for (var classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+			try {
+				Class<?> clazz = classInfo.load();
+				if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) || clazz.isEnum()) continue;
+
+				if (clazz.isAnnotationPresent(Listeners.class) ||
+						clazz.isAnnotationPresent(Commands.class) ||
+						clazz.isAnnotationPresent(Skill.class) ||
+						clazz.isAnnotationPresent(Roles.class) ||
+						clazz.isAnnotationPresent(Inject.class)) {
+
+					var constructor = clazz.getDeclaredConstructor();
+					constructor.setAccessible(true);
+					Object instance = constructor.newInstance();
+
+					BEAN_CONTAINER.put(clazz, instance);
+				}
+			} catch (NoSuchMethodException ignored) {
+			} catch (Exception e) {
+				log.error("[IoC] Failed to instantiate managed bean: {}", classInfo.getName(), e);
+			}
+		}
+
+		var plugin = plugin();
+		for (Object instance : BEAN_CONTAINER.values()) {
+			injectPluginField(instance, plugin);
+		}
+		injectGlobalStaticFields(classPath, plugin);
+		log.info("[IoC] Bean Container built successfully. (Total Managed Beans: {})", BEAN_CONTAINER.size());
+	}
+
+	private static void injectPluginField(@NotNull Object instance, @NotNull XmasLegacy plugin) {
+		Class<?> clazz = instance.getClass();
+
+		while (clazz != null && clazz != Object.class) {
+			for (Field field : clazz.getDeclaredFields()) {
+				if (!field.isAnnotationPresent(Plugin.class)) continue;
+
+				if (!field.getType().isAssignableFrom(plugin.getClass())) {
+					log.error("[IoC] @Plugin injection failed. " +
+									"Class \"{}\"'s field \"{}\" type is not compatible with {}",
+							clazz.getSimpleName(), field.getName(), plugin.getClass().getSimpleName());
+					continue;
+				}
+
+				field.setAccessible(true);
+				try {
+					field.set(instance, plugin);
+					log.debug("[IoC] Successfully injected plugin into {}#{}", clazz.getSimpleName(), field.getName());
+				} catch (IllegalAccessException e) {
+					log.error("[IoC] Failed to inject plugin into {}#{}", clazz.getSimpleName(), field.getName(), e);
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+	}
+
+	private static void injectGlobalStaticFields(@NotNull ClassPath classPath, @NotNull XmasLegacy plugin) {
+		for (var classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+			try {
+				Class<?> clazz = classInfo.load();
+				for (Field field : clazz.getDeclaredFields()) {
+					if (!field.isAnnotationPresent(Plugin.class)) continue;
+					field.setAccessible(true);
+
+					if (Modifier.isStatic(field.getModifiers()) && field.getType().isAssignableFrom(plugin.getClass())) {
+						field.set(null, plugin);
+						continue;
+					}
+
+					if (clazz.isEnum()) {
+						Field instanceField = clazz.getDeclaredField("INSTANCE");
+						Object enumInstance = instanceField.get(null);
+						if (enumInstance != null && field.getType().isAssignableFrom(plugin.getClass())) {
+							field.set(enumInstance, plugin);
+						}
+					}
+				}
+			} catch (Exception ignored) {}
+		}
+	}
+
+    /* ==========================================
+       아래 등록 메서드들은 이제 직접 newInstance()를 하지 않고,
+       중앙 Bean 컨테이너에서 이미 조립이 완료된 싱글톤 객체들을 꺼내서 "등록만" 해줍니다. (SRP 준수)
+       ========================================== */
+
 	@Reflection(type = InitializeType.LISTENERS)
 	public static void registerListeners(@NotNull ClassPath classPath) {
 		try {
-			for (var classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
-				Class<?> clazz = classInfo.load();
-
-				if (!Listener.class.isAssignableFrom(clazz)) continue;
-				if (!clazz.isAnnotationPresent(Listeners.class)) continue;
-				if (clazz.isInterface() || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) continue;
-
-				var listenerInstance = clazz.getDeclaredConstructor().newInstance();
-				Bukkit.getPluginManager().registerEvents((Listener) listenerInstance, plugin());
-
-				log.info("Listener {} Automatically registered", clazz.getSimpleName());
+			for (var entry : BEAN_CONTAINER.entrySet()) {
+				Class<?> clazz = entry.getKey();
+				if (Listener.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Listeners.class)) {
+					Listener instance = (Listener) entry.getValue();
+					Bukkit.getPluginManager().registerEvents(instance, plugin());
+					log.info("Listener {} Automatically registered from IoC Container", clazz.getSimpleName());
+				}
 			}
 		} catch (Exception e) {
 			log.error("Error occurred while registering all listeners", e);
@@ -81,31 +173,28 @@ public final class Reflections {
 	@Reflection(type = InitializeType.COMMANDS)
 	public static void registerCommands(@NotNull ClassPath classPath) {
 		try {
-			for (var classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
-				Class<?> clazz = classInfo.load();
+			for (var entry : BEAN_CONTAINER.entrySet()) {
+				Class<?> clazz = entry.getKey();
+				if (CommandExecutor.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Commands.class)) {
+					Commands autoCommand = clazz.getAnnotation(Commands.class);
 
-				if (!CommandExecutor.class.isAssignableFrom(clazz)) continue;
-				if (!clazz.isAnnotationPresent(Commands.class)) continue;
-				if (clazz.isInterface() || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) continue;
+					List<String> allCommands = new ArrayList<>();
+					allCommands.add(autoCommand.command());
+					allCommands.addAll(Arrays.asList(autoCommand.aliases()));
 
-				Commands autoCommand = clazz.getAnnotation(Commands.class);
+					Object commandInstance = entry.getValue();
 
-				List<String> allCommands = new ArrayList<>();
-				allCommands.add(autoCommand.command());
-				allCommands.addAll(Arrays.asList(autoCommand.aliases()));
+					for (String cmdName : allCommands) {
+						var pluginCommand = plugin().getCommand(cmdName);
+						if (pluginCommand == null) continue;
 
-				var commandInstance = clazz.getDeclaredConstructor().newInstance();
+						pluginCommand.setExecutor((CommandExecutor) commandInstance);
 
-				for (String cmdName : allCommands) {
-					var pluginCommand = plugin().getCommand(cmdName);
-					if (pluginCommand == null) continue;
+						if (TabCompleter.class.isAssignableFrom(clazz))
+							pluginCommand.setTabCompleter((TabCompleter) commandInstance);
 
-					pluginCommand.setExecutor((CommandExecutor) commandInstance);
-
-					if (TabCompleter.class.isAssignableFrom(clazz))
-						pluginCommand.setTabCompleter((TabCompleter) commandInstance);
-
-					plugin().getSLF4JLogger().info("Command {} Automatically registered", cmdName);
+						plugin().getSLF4JLogger().info("Command {} Automatically registered from IoC Container", cmdName);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -115,62 +204,27 @@ public final class Reflections {
 
 	@Reflection(type = InitializeType.REGISTER)
 	public static void registerSkills(@NotNull ClassPath classPath) {
-		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
-			try {
-				Class<?> clazz = classInfo.load();
-				if (!Skills.class.isAssignableFrom(clazz)) continue;
-				if (!clazz.isAnnotationPresent(Skill.class)) continue;
-
+		for (var entry : BEAN_CONTAINER.entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (Skills.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Skill.class)) {
 				Skill skillAnnotation = clazz.getAnnotation(Skill.class);
 				PlayerSkills name = skillAnnotation.type();
 
-				Object instance;
-				try {
-					var constructor = clazz.getDeclaredConstructor();
-					constructor.setAccessible(true);
-					instance = constructor.newInstance();
-				} catch (NoSuchMethodException e) {
-					log.warn("Failed to create instance of skill {}. Passing..", clazz.getSimpleName());
-					continue;
-				}
-				if (instance instanceof Skills<?> skill) {
-					SkillManager.INSTANCE.register(name, skill);
-					log.info("Registered skill {}.", name.name());
-				}
-			} catch (Exception e) {
-				log.error("Error occurred while registering all skills.", e);
+				Skills<?> skill = (Skills<?>) entry.getValue();
+				SkillManager.INSTANCE.register(name, skill);
+				log.info("Registered skill {} from IoC Container.", name.name());
 			}
 		}
 	}
 
 	@Reflection(type = InitializeType.REGISTER)
 	public static void registerRoles(@NotNull ClassPath classPath) {
-		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
-			try {
-				Class<?> clazz = classInfo.load();
-				if (!clazz.isAnnotationPresent(Roles.class)) continue;
-				if (!RoleClass.class.isAssignableFrom(clazz)) {
-					log.error("Clazz {} is not implementing RoleClass.class but Using @Roles annotation.", clazz.getSimpleName());
-					continue;
-				}
-
-				Object instance;
-				try {
-					var constructor = clazz.getDeclaredConstructor();
-					constructor.setAccessible(true);
-					instance = constructor.newInstance();
-				} catch (NoSuchMethodException e) {
-					log.warn("Class {} don't have default Constructor. Passing process", clazz.getSimpleName());
-					continue;
-				}
-				if (!(instance instanceof RoleClass roleClass)) {
-					log.error("Filtered instance \"{}\" is not Valid.", instance);
-					continue;
-				}
+		for (var entry : BEAN_CONTAINER.entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (RoleClass.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Roles.class)) {
+				RoleClass roleClass = (RoleClass) entry.getValue();
 				RoleManager.INSTANCE.register(roleClass);
-				log.info("Successfully registered role {}", clazz.getSimpleName());
-			} catch (Exception e) {
-				log.error("Error occurred while registering class {}", classInfo.getName(), e);
+				log.info("Successfully registered role {} from IoC Container", clazz.getSimpleName());
 			}
 		}
 	}

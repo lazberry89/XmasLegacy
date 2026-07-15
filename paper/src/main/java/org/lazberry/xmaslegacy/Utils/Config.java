@@ -4,9 +4,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@TestOnly
 @ParametersAreNonnullByDefault
 public record Config(FileConfiguration file) {
 

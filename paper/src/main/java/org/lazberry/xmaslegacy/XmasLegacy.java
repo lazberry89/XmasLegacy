@@ -36,6 +36,12 @@ public final class XmasLegacy extends JavaPlugin {
 		ServerInitializer.shutdown(this);
 	}
 
+	/**
+	 * Invokes all reflections without {@link InitializeType#TASKS_OFF}.
+	 * @see Reflections
+	 * @see InitializeType
+	 * @see ServerInitializer#enable(XmasLegacy) 
+	 */
 	public void registerReflection() {
 		try {
 			ClassPath classPath = ClassPath.from(getClassLoader());
@@ -45,6 +51,13 @@ public final class XmasLegacy extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Invoke only {@link InitializeType#TASKS_OFF} so that tasks Closing Reflection
+	 * cleans tasks up.
+	 * @see Reflections
+	 * @see org.lazberry.xmaslegacy.PluginUtils.Tasks
+	 * @see ServerInitializer#disable(XmasLegacy) 
+	 */
 	public void unregisterReflection() {
 		try {
 			ClassPath classPath = ClassPath.from(getClassLoader());

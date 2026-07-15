@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.SavingLocation.MainSpawnManager;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Alert;
 
 /**
@@ -47,7 +48,7 @@ public final class ServerJoinListener implements Listener {
 			case MAIN -> {
 				MainSpawnManager val = SpawnRepository.INSTANCE.get(DestinationType.MAIN);
 				val.joinEffect(p);
-				ServerTransfer.loadUser(p, true);
+				UserHandler.loadUser(p, true);
 			}
 			case LOBBY -> {
 				e.joinMessage(ColorUtils.chat(Alert.XmasLegacy + " 입장을 환영합니다! 전방의 포탈로 게임을 시작하세요."));

@@ -107,7 +107,7 @@ public final class UserHandler {
 	 * Option that prevents player spamming reload button.
 	 * @return {@link ClickCallback.Options} of max use 1 time, lifetime 3 minutes.
 	 */
-    @Contract(pure = true)
+    @Contract(value = "-> !null", pure = true)
     private static @NotNull ClickCallback.Options option() {
         return ClickCallback.Options.builder()
                 .uses(1)
@@ -125,7 +125,7 @@ public final class UserHandler {
 	 * @see HoverEvent
 	 * @see ClickEvent
 	 */
-    @Contract(pure = true)
+    @Contract(value = "-> !null", pure = true)
     private static @NotNull Component reloadComponent() {
         return ColorUtils.chat(" &c&l[ 다시 로드하기 ]")
                 .hoverEvent(HoverEvent.showText(ColorUtils.chat("&c&l클릭하여 유저 정보를 다시 로드합니다.")))
