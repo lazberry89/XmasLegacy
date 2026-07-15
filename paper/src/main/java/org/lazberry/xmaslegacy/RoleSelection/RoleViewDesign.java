@@ -9,14 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Inject
 @Task(type = ServerType.MAIN)

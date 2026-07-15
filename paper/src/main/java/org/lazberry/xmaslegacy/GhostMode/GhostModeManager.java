@@ -4,20 +4,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.*;
 
-public enum GhostModeManager {
+@Inject
+@Registry
+public enum GhostModeManager implements ServerManager {
 	INSTANCE;
 
     private final @NotNull Set<UUID> isGhostMode = new HashSet<>();
     private final @NotNull Map<UUID, ItemStack[]> saveArmor = new HashMap<>();
-    private final @NotNull XmasLegacy plugin;
+    private @Plugin @NotNull XmasLegacy plugin;
 
-	GhostModeManager() {
-        this.plugin = XmasLegacy.getInstance();
-    }
+	GhostModeManager() {}
+	@NotNull Set<UUID> getGhostModePlayer() {
+		return new HashSet<>(isGhostMode);
+	}
 
     public void ghostMode(Player p) {
         if (!p.isOp()) return;
@@ -47,22 +54,20 @@ public enum GhostModeManager {
         isGhostMode.add(p.getUniqueId());
     }
 
-    public void toggle(Player p) {
-        if (isGhostMode.contains(p.getUniqueId())) {
-            DeGhostMode(p);
-        } else {
-            ghostMode(p);
-        }
+    public void toggle(@NotNull Player p) {
+        if (isGhostMode.contains(p.getUniqueId())) DeGhostMode(p);
+        else ghostMode(p);
     }
 
-    public boolean isGhostMode(Player p) {
+    public boolean isGhostMode(@NotNull Player p) {
         return isGhostMode.contains(p.getUniqueId());
     }
-    public boolean isGhostMode(UUID uuid) {
+    public boolean isGhostMode(@NotNull UUID uuid) {
         return isGhostMode.contains(uuid);
     }
 
-    public Set<UUID> isGhostMode() {
-        return isGhostMode;
-    }
+	@Override
+	public void init() {
+
+	}
 }

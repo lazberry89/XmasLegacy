@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -102,11 +102,11 @@ public final class ServerTransfer {
 		Bukkit.getScheduler().runTaskLater(plugin(), () -> StunUtils.release(uuid), duration);
 	}
 
-    public boolean transfer(@NotNull ServerType toServer, @NotNull Player... players) {
+    public boolean transfer(@NotNull Initializers toServer, @NotNull Player... players) {
         return Arrays.stream(players).allMatch(p -> sendBungeePacket(toServer, p));
     }
 
-    public boolean transfer(@NotNull ServerType toServer, @NotNull Player player, boolean force, boolean hide) {
+    public boolean transfer(@NotNull Initializers toServer, @NotNull Player player, boolean force, boolean hide) {
         if (!force) {
             player.sendMessage(askComponent(toServer, hide, player, FloodgateUtils.isFloodgate(player)));
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
@@ -133,11 +133,11 @@ public final class ServerTransfer {
      * @return false when fails, true.
      * @see org.lazberry.xmaslegacy.Party.Party
      * @see org.lazberry.xmaslegacy.User.User
-     * @see ServerTransfer#transfer(ServerType, Player, boolean, boolean)
-     * @see ServerTransfer#transfer(ServerType, Player...)
+     * @see ServerTransfer#transfer(Initializers, Player, boolean, boolean)
+     * @see ServerTransfer#transfer(Initializers, Player...)
      */
     @CheckReturnValue
-    public boolean transfer(@NotNull ServerType toServer, @NotNull Player player) {
+    public boolean transfer(@NotNull Initializers toServer, @NotNull Player player) {
         @NotNull var pm = PartyManager.INSTANCE;
         @NotNull var um = UserManager.INSTANCE;
         UUID uuid = player.getUniqueId();
@@ -176,10 +176,10 @@ public final class ServerTransfer {
      * @see org.bukkit.plugin.messaging.Messenger#registerOutgoingPluginChannel(Plugin, String)
      * @see Player#sendPluginMessage(Plugin, String, byte[])
      */
-    private boolean sendBungeePacket(@NotNull ServerType toServer, @NotNull Player player) {
+    private boolean sendBungeePacket(@NotNull Initializers toServer, @NotNull Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
-        out.writeUTF(toServer.configValue());
+        out.writeUTF(toServer.name());
 
         try {
             player.sendPluginMessage(plugin(), "bungeecord:main", out.toByteArray());
@@ -199,10 +199,10 @@ public final class ServerTransfer {
      * @param p target player to move
      * @param isFloodgate if player is from floodgate or not
      * @return componented message.
-     * @see ServerType
+     * @see Initializers
      * @see Component
      */
-	private @NotNull Component askComponent(@NotNull ServerType type, boolean hide, @NotNull Player p, boolean isFloodgate) {
+	private @NotNull Component askComponent(@NotNull Initializers type, boolean hide, @NotNull Player p, boolean isFloodgate) {
 		if (isFloodgate) {
 			var floodgatePlayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());
 

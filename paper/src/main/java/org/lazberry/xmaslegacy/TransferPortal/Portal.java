@@ -8,17 +8,17 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Portal {
     @EqualsAndHashCode.Include
     private final @NotNull String key;
     private final @NotNull @Getter Location center;
-    private final @NotNull @Getter ServerType destination;
+    private final @NotNull @Getter Initializers destination;
     private final @Nullable @Getter ItemDisplay flame;
 
-    public Portal(@NotNull String key, @NotNull Location center, @NotNull ServerType type) {
+    public Portal(@NotNull String key, @NotNull Location center, @NotNull Initializers type) {
         this.key = key;
         this.center = center;
         this.destination = type;

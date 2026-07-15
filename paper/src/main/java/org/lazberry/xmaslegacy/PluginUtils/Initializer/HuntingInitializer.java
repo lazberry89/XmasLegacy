@@ -12,7 +12,6 @@ public class HuntingInitializer implements ServerInitializer {
     public void enable(@NotNull XmasLegacy plugin) {
         log.warn("Hunting 모드로 시작합니다.");
         log.warn("server-type = \"hunting\" 일치하지 않을 시에 config.yml을 수정하세요.");
-        MobRepository.INSTANCE.init();
     }
 
     @Override

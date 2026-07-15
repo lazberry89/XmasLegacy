@@ -14,7 +14,7 @@ public class GachaStockInterface implements InventoryHolder {
 	private final @NotNull Inventory inv;
     private final @NotNull BundleType type;
 
-    public GachaStockInterface(XmasLegacy plugin, @NotNull BundleType type) {
+    public GachaStockInterface(@NotNull XmasLegacy plugin, @NotNull BundleType type) {
         this.type = type;
 	    var gm = GachaManager.INSTANCE;
         this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat(String.format("&c&l%s : %d(개) / %d(전체)" ,type.getKor() , gm.getAllSortedByChance(type).size(), gm.getAll().size())));

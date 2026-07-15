@@ -1,7 +1,8 @@
 package org.lazberry.xmaslegacy.Annotation;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

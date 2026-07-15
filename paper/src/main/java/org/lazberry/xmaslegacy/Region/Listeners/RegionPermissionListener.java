@@ -1,6 +1,5 @@
 package org.lazberry.xmaslegacy.Region.Listeners;
 
-import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,18 +8,19 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Listeners
-@UsedByReflection
 public class RegionPermissionListener implements Listener {
-	private final RegionManager RM;
+	private @Manager @NotNull RegionManager rm;
 
-	public RegionPermissionListener() {
-		this.RM = RegionManager.INSTANCE;
-	}
+	public RegionPermissionListener() {}
 
 	private boolean hasPermission(Player p, Region region) {
 		return p.isOp() || region.getOwner().equals(p.getUniqueId());
@@ -28,7 +28,7 @@ public class RegionPermissionListener implements Listener {
 
 	@EventHandler
 	public void regionEnterEvent(PlayerMoveEvent e) {
-		Region region = RM.getRegionAt(e.getTo());
+		Region region = rm.getRegionAt(e.getTo());
 		if (region == null) return;
 
 		if (region.isInside(e.getTo())) {
@@ -44,7 +44,7 @@ public class RegionPermissionListener implements Listener {
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
 		if (e.getClickedBlock() == null) return;
-		Region region = RM.getRegionAt(e.getClickedBlock().getLocation());
+		Region region = rm.getRegionAt(e.getClickedBlock().getLocation());
 		if (region == null || hasPermission(e.getPlayer(), region)) return;
 
 		if (!region.isInteractionAllowed()) {
@@ -65,7 +65,7 @@ public class RegionPermissionListener implements Listener {
 	}
 
 	private void handleEntityInteraction(Player p, Entity target, org.bukkit.event.Cancellable event) {
-		Region region = RM.getRegionAt(target.getLocation());
+		Region region = rm.getRegionAt(target.getLocation());
 		if (region == null || hasPermission(p, region)) return;
 
 		if (!region.isInteractionAllowed()) {

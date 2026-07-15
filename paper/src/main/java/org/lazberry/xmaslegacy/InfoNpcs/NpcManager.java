@@ -1,11 +1,12 @@
 package org.lazberry.xmaslegacy.InfoNpcs;
 
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public enum NpcManager {
+public enum NpcManager implements ServerManager {
     INSTANCE;
 
     private final @NotNull Map<NpcType, AbstractNpc> npcMap = new HashMap<>();
@@ -32,4 +33,9 @@ public enum NpcManager {
     public <A extends AbstractNpc> A getNpcInstance(@NotNull NpcType type) {
         return (A) this.npcMap.get(type);
     }
+
+	@Override
+	public void init() {
+
+	}
 }

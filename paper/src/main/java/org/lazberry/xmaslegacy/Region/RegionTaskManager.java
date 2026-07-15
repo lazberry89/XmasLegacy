@@ -12,23 +12,24 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 
 @Slf4j
+@Inject
 @Task(type = ServerType.GLOBAL)
-public enum RegionTaskManager implements Tasks {
-    INSTANCE;
-
+public class RegionTaskManager implements Tasks {
+	private @Manager @NotNull RegionManager rm;
     private @Nullable BukkitTask task;
     private float globalAngle = 0.0f;
 
     @Override
     public void startTask(@NotNull XmasLegacy plugin) {
-        var rm = RegionManager.INSTANCE;
         Map<Long, Region> regions = rm.getRegionMap();
         this.task = new BukkitRunnable() {
             int checkDelay = 0;

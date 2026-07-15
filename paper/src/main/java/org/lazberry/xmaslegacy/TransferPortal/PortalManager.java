@@ -1,42 +1,44 @@
 package org.lazberry.xmaslegacy.TransferPortal;
 
-import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.Party;
-import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.Tasks;
-import org.lazberry.xmaslegacy.User.User;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
-import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Slf4j
-@Task(type = ServerType.GLOBAL)
-public enum PortalManager implements Tasks {
+@Registry
+public enum PortalManager implements ServerManager {
 	INSTANCE;
 
     private final @NotNull Map<String, Portal> portalMap = new HashMap<>();
     private final @NotNull Set<Portal> portalSet = new HashSet<>();
     private final @NotNull Map<UUID, Integer> activeCountdowns = new ConcurrentHashMap<>();
-    private @Nullable BukkitTask task;
+
+	@Nullable Integer removeCountdown(@NotNull UUID uuid) {
+		return this.activeCountdowns.remove(uuid);
+	}
+	void setCountdown(@NotNull UUID uuid, int countdown) {
+		this.activeCountdowns.put(uuid, countdown);
+	}
+	int getCountdown(@NotNull UUID uuid, int def) {
+		return this.activeCountdowns.getOrDefault(uuid, def);
+	}
 
     PortalManager() {}
 
-    public void addPortal(@NotNull String key, @NotNull Location loc, @NotNull ServerType destination) {
+    public void addPortal(@NotNull String key, @NotNull Location loc, @NotNull Initializers destination) {
         Portal portal = new Portal(key, loc, destination);
         this.portalMap.put(key, portal);
         this.portalSet.add(portal);
@@ -63,7 +65,7 @@ public enum PortalManager implements Tasks {
         return getPortal(player.getLocation());
     }
 
-    private void sendPartyMessage(@NotNull Party party, @NotNull Component message) {
+    void sendPartyMessage(@NotNull Party party, @NotNull Component message) {
         party.getMembers().stream()
                 .map(u -> Bukkit.getPlayer(u.getUniqueId()))
                 .filter(Objects::nonNull)
@@ -72,89 +74,10 @@ public enum PortalManager implements Tasks {
                 .forEach(p -> p.sendMessage(message));
     }
 
-    @Override
-    public void startTask(@NotNull XmasLegacy plugin) {
-        this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            @NotNull Set<UUID> processedPlayers = new HashSet<>();
-            var pm = PartyManager.INSTANCE;
-
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                UUID pUUID = player.getUniqueId();
-                if (processedPlayers.contains(pUUID)) continue;
-
-                if (pm.isInParty(pUUID)) {
-                    Party party = pm.getParty(pUUID);
-                    if (party == null || party.getMembers().size() <= 1) {
-                        handleSoloLogic(player, pUUID, processedPlayers);
-                        continue;
-                    }
-
-                    UUID leaderUUID = party.getLeader().getUniqueId();
-                    for (User member : party.getMembers()) processedPlayers.add(member.getUniqueId());
-
-                    Portal currentPortal = getPortal(player.getLocation());
-                    if (currentPortal == null) {
-                        if (activeCountdowns.remove(leaderUUID) != null)
-                            sendPartyMessage(party, ColorUtils.chat(Alert.RED + " 이동이 취소되었습니다."));
-                        continue;
-                    }
-
-                    boolean allOnSamePortal = true;
-                    List<Player> onlinePartyPlayers = new ArrayList<>();
-
-                    for (User member : party.getMembers()) {
-                        Player mPlayer = Bukkit.getPlayer(member.getUniqueId());
-                        if (mPlayer == null || !currentPortal.isStepping(mPlayer)) {
-                            allOnSamePortal = false;
-                            break;
-                        }
-                        onlinePartyPlayers.add(mPlayer);
-                    }
-
-                    if (!allOnSamePortal) {
-                        if (activeCountdowns.remove(leaderUUID) != null) {
-                            var msg = ColorUtils.chat(Alert.RED + " 이동이 취소되었습니다. 모든 파티원이 포탈위에 있어야합니다.");
-                            sendPartyMessage(party, msg);
-                        }
-                        continue;
-                    }
-
-                    int secondsLeft = activeCountdowns.getOrDefault(leaderUUID, 3);
-
-                    if (secondsLeft <= 0) {
-                        activeCountdowns.remove(leaderUUID);
-                        sendPartyMessage(party, ColorUtils.chat(Alert.XmasLegacy + " 모든 파티원이 준비되었습니다. 서버를 이동합니다.."));
-
-                        for (Player mPlayer : onlinePartyPlayers)
-                            if (ServerTransfer.transfer(currentPortal.getDestination(), mPlayer, true, false)) {
-                                InfoUtils.warn(mPlayer, "이동 작업 시작중..");
-                                log.info("Server transfer initiated via Portal [{}] for player [{}] (Destination: {})",
-                                        currentPortal.key(), player.getName(), currentPortal.getDestination());
-                            } else {
-                                InfoUtils.error(mPlayer, "서버 이동중 문제가 발생했습니다. 관리자를 호출해주세요.");
-                                log.error("Error occurred while transferring player using Portal Manager.");
-                            }
-                    } else {
-                        sendPartyMessage(party, ColorUtils.chat(Alert.GREEN + " 모든 파티원이 입장했습니다. &6" + secondsLeft + "&f초 후 이동합니다."));
-                        activeCountdowns.put(leaderUUID, secondsLeft - 1);
-                    }
-
-                } else handleSoloLogic(player, pUUID, processedPlayers);
-            }
-        }, 0L, 20L);
-    }
-
-    @Override
-    public void stopTask() {
-        if (this.task == null) return;
-        this.task.cancel();
-        this.task = null;
-    }
-
     /**
      * 중복 방지 및 솔로 포탈 이동 로직 공통 분리
      */
-    private void handleSoloLogic(@NotNull Player player, @NotNull UUID pUUID, @NotNull Set<UUID> processedPlayers) {
+     void handleSoloLogic(@NotNull Player player, @NotNull UUID pUUID, @NotNull Set<UUID> processedPlayers) {
         processedPlayers.add(pUUID);
         Portal portal = getPortal(player.getLocation());
 
@@ -174,4 +97,9 @@ public enum PortalManager implements Tasks {
             activeCountdowns.put(pUUID, secondsLeft - 1);
         }
     }
+
+	@Override
+	public void init() {
+
+	}
 }

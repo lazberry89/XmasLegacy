@@ -12,15 +12,20 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Slf4j
+@Inject
 @Task(type = ServerType.GLOBAL)
 public enum IcingSystem implements Tasks {
     INSTANCE;
 
+	private @Manager @NotNull IcingBossBarManager bar;
     private @Nullable BukkitTask task;
 
     IcingSystem() {}
@@ -42,7 +47,7 @@ public enum IcingSystem implements Tasks {
                 var uuid = p.getUniqueId();
                 var user = UserManager.INSTANCE.getUser(uuid);
                 if (user == null || user.isImmuneToIcing()) {
-                    IcingBossBar.INSTANCE.removeBar(p);
+                    bar.removeBar(p);
                     return;
                 }
 
@@ -50,7 +55,7 @@ public enum IcingSystem implements Tasks {
 				int nextAmount = Math.max(0, amount - 1);
                 user.setIcingState(nextAmount);
 
-                IcingBossBar.INSTANCE.updateBar(p, nextAmount);
+                bar.updateBar(p, nextAmount);
 
                 sendWarnAndAction(p, nextAmount);
             }), 0L, 20 * 3);

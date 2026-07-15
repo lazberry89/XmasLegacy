@@ -11,10 +11,12 @@ import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Mythic.AbstractMythicMobs;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Named.AbstractNamedMobs;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.*;
 import org.lazberry.xmaslegacy.HuntingZone.ZoneType;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Registry
 public enum MobRepository {
 	INSTANCE;
 

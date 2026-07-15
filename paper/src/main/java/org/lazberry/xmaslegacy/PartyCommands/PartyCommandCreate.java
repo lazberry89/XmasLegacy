@@ -7,6 +7,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 public class PartyCommandCreate implements SubCommand {
 
@@ -14,7 +15,7 @@ public class PartyCommandCreate implements SubCommand {
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         var user = UserManager.INSTANCE.getUser(player.getUniqueId());
         if (user == null) {
-            ServerTransfer.sendReloadNotice(player);
+            UserHandler.sendReloadNotice(player);
             return;
         }
         if (args.length >= 1) {

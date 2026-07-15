@@ -5,18 +5,24 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public enum GachaManager {
+@Inject
+@Registry
+public enum GachaManager implements ServerManager {
 	INSTANCE;
 
-	private final @NotNull XmasLegacy plugin;
+	private @Plugin @NotNull XmasLegacy plugin;
 	private final @NotNull Map<String, Gacha> normalGachas = new HashMap<>();
 	private final @NotNull Map<String, Gacha> highEndGachas = new HashMap<>();
 	private final @NotNull Map<String, Gacha> chromaticBundle = new HashMap<>();
@@ -24,12 +30,14 @@ public enum GachaManager {
 
 	private final @NotNull List<ItemStack> bundles = new ArrayList<>();
 
-	GachaManager() {
-		this.plugin = XmasLegacy.getInstance();
+	GachaManager() {}
+
+	@Override
+	public void init() {
 		appendBundles();
 	}
 
-	public void addGacha(String key, ItemStack item, GachaGrade grade, double chance, BundleType... types) {
+	public void addGacha(@NotNull String key, @NotNull ItemStack item, @NotNull GachaGrade grade, double chance, @NotNull BundleType... types) {
 		BundleType[] targetTypes = (types.length == 0) ? new BundleType[]{BundleType.NORMAL} : types;
 
 		for (BundleType type : targetTypes) {
@@ -42,13 +50,13 @@ public enum GachaManager {
 		}
 	}
 
-	public boolean removeGacha(String key, @NotNull BundleType type) {
+	public boolean removeGacha(@NotNull String key, @NotNull BundleType type) {
 		boolean value = getGachaMaps(type).containsKey(key);
 		getGachaMaps(type).remove(key);
 		return value;
 	}
 
-	public @Nullable Gacha getRandomItem(BundleType type) {
+	public @Nullable Gacha getRandomItem(@NotNull BundleType type) {
 		Map<String, Gacha> targetMap = getGachaMaps(type);
 
 		if (targetMap.isEmpty()) return null;
@@ -95,7 +103,7 @@ public enum GachaManager {
 		return gachas;
 	}
 	@Contract(pure = true)
-	public @NotNull List<Gacha> getAllSortedByChance(BundleType type) {
+	public @NotNull List<Gacha> getAllSortedByChance(@NotNull BundleType type) {
 		switch (type) {
 			case HIGH_END -> {
 				return highEndGachas.values().stream()
@@ -120,7 +128,7 @@ public enum GachaManager {
 		}
 	}
 
-	public ItemStack Bundle() {
+	public @NotNull ItemStack Bundle() {
 		return ItemBuilder.of(plugin, Material.BUNDLE)
 				.setName(ColorUtils.chat("&c&l치장 번들"))
 				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)))
@@ -130,7 +138,7 @@ public enum GachaManager {
 				.build().clone();
 	}
 
-	public ItemStack HighEndBundle() {
+	public @NotNull ItemStack HighEndBundle() {
 		return ItemBuilder.of(plugin, Material.ENDER_CHEST)
 				.setName(ColorUtils.chat("&b&l고급 치장 번들"))
 				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)))
@@ -141,7 +149,7 @@ public enum GachaManager {
 				.build().clone();
 	}
 
-	public ItemStack ChromaticBundle() {
+	public @NotNull ItemStack ChromaticBundle() {
 		return ItemBuilder.of(plugin, Material.PAPER)
 				.setGlint(true)
 				.setTag("gacha", "CHROMATIC_BUNDLE")
@@ -154,7 +162,7 @@ public enum GachaManager {
 				.build().clone();
 	}
 
-	public ItemStack ChromaticBox() {
+	public @NotNull ItemStack ChromaticBox() {
 		return ItemBuilder.of(plugin, Material.CHEST)
 				.setItemModel("")
 				.setMaxStackSize(4)
@@ -176,4 +184,6 @@ public enum GachaManager {
 	 public @NotNull List<ItemStack> getBundles() {
 		return List.copyOf(this.bundles);
 	 }
+
+
 }

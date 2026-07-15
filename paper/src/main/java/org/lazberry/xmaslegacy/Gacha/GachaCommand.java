@@ -14,18 +14,19 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Inject
 @Commands(command = "gacha")
 public class GachaCommand implements CommandExecutor, TabCompleter {
-    private final GachaManager gm;
+    private @Manager @NotNull GachaManager gm;
 
-    public GachaCommand() {
-        this.gm = GachaManager.INSTANCE;
-    }
+    public GachaCommand() {}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull ... args) {

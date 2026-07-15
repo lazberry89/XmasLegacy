@@ -13,22 +13,23 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.List;
 
+@Inject
 @Commands(command = "가방")
 public class BagCommandManager implements CommandExecutor, TabCompleter {
-	private final BagManager BM;
+	private @Manager @NotNull BagManager bm;
 
-	public BagCommandManager() {
-		this.BM = BagManager.INSTANCE;
-	}
+	public BagCommandManager() {}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
 		if (!(commandSender instanceof Player p)) return false;
 		if (args.length == 0) {
-			p.openInventory(BM.getUserBags(p).getInventory());
+			p.openInventory(bm.getUserBags(p).getInventory());
 			return true;
 		} else if (args.length == 1) {
 			if (!p.isOp()) {
@@ -38,7 +39,7 @@ public class BagCommandManager implements CommandExecutor, TabCompleter {
 			} else {
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 				if (target.hasPlayedBefore()) {
-					p.openInventory(BM.getBag(target.getUniqueId()).getInventory());
+					p.openInventory(bm.getBag(target.getUniqueId()).getInventory());
 					p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 플레이어 &6" + target.getName() + "&f의 가방을 조회중입니다."));
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 					return true;

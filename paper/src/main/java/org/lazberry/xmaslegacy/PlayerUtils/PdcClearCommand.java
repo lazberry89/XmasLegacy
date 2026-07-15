@@ -15,7 +15,6 @@ public class PdcClearCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
-		var plugin = XmasLegacy.getInstance();
 		if (!(commandSender instanceof Player p)) return true;
 		if (!p.isOp()) {
 			InfoUtils.error(p, "관리자용 명령어에요!");

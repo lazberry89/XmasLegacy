@@ -3,14 +3,12 @@ package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.*;
-import org.lazberry.xmaslegacy.Icing.IcingListener;
 import org.lazberry.xmaslegacy.LogCommands.LogCommand;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
 import org.lazberry.xmaslegacy.RuleCommands.RuleCommand;
-import org.lazberry.xmaslegacy.ServerPrefix.ChatPrefixListener;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 
@@ -24,7 +22,6 @@ public class GlobalInitializer implements ServerInitializer {
 	@Override
 	public void enable(@NotNull XmasLegacy plugin) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
-		SqlUserRepository.INSTANCE.init();
 		UserManager.INSTANCE.init(plugin.getDataFolder());
 		plugin.registerReflection();
 
@@ -35,8 +32,6 @@ public class GlobalInitializer implements ServerInitializer {
 		else log.error("Recipe Not Registered!");
 
 		plugin.getServer().getPluginManager().registerEvents(new ServerJoinListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new ChatPrefixListener(), plugin);
-		plugin.getServer().getPluginManager().registerEvents(new IcingListener(), plugin);
 
 		registerGlobalCommand(plugin);
 		UserSaveTask.INSTANCE.loadValidUsers();

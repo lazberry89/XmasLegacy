@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.HuntingZone;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -22,6 +23,7 @@ public class HuntingZone implements HZone {
 	private final @NotNull List<MobKey> mobs;
 	private final @NotNull Set<Long> zones;
 	private final @NotNull Set<MobKey> mobKeySet;
+    @Getter
     private boolean isEnabled = false;
 
 	public HuntingZone(@NotNull ZoneType type, @NotNull String worldName) {
@@ -91,9 +93,7 @@ public class HuntingZone implements HZone {
 	public void disable() {
 		this.isEnabled = false;
 	}
-	public boolean isEnabled() {
-		return this.isEnabled;
-	}
+
 	public int getMaxSpawn() {
         return 100;
 	}

@@ -6,11 +6,14 @@ import org.lazberry.xmaslegacy.RoleManagers.HiddenRoleManager.AbstractHiddenRole
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.ThirdRoleManager.AbstractThirdRole;
 import org.lazberry.xmaslegacy.Roles.*;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-public enum RoleManager {
+@Registry
+public enum RoleManager implements ServerManager {
 	INSTANCE;
 
 	private final @NotNull Map<BasicRoles, AbstractFirstRole> firstRoleMap = new EnumMap<>(BasicRoles.class);
@@ -52,5 +55,10 @@ public enum RoleManager {
 	}
 	public @NotNull AbstractHiddenRole getHiddenInstance(@NotNull HiddenRoles role) {
 		return this.hiddenRoleMap.get(role);
+	}
+
+	@Override
+	public void init() {
+
 	}
 }

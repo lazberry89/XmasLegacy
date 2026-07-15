@@ -14,19 +14,22 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Inject
 @Commands(command = "filter")
 public class RuleCommand implements CommandExecutor, TabCompleter {
-    private final @NotNull RuleManager rm;
+    private @Manager @NotNull RuleManager rm;
+	private static final List<String> SUB_COMMAND_LIST = List.of("add", "remove", "list");
     private final @NotNull Map<String, SubCommand> subCommands = new HashMap<>(4);
 
     public RuleCommand() {
-        this.rm = RuleManager.INSTANCE;
         this.subCommands.put("add", new RuleCommandAdd());
         this.subCommands.put("remove", new RuleCommandRemove());
     }
@@ -62,15 +65,11 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull ...args) {
         List<String> completions = new ArrayList<>();
 
-        if (args.length == 1) {
-            completions.add("add");
-            completions.add("remove");
-            completions.add("list");
-
-            return completions.stream()
-                    .filter(str -> str.toLowerCase().startsWith(args[0].toLowerCase()))
-                    .toList();
-        }
+	    if (args.length == 1) {
+		    return SUB_COMMAND_LIST.stream()
+				    .filter(str -> str.toLowerCase().startsWith(args[0].toLowerCase()))
+				    .toList();
+	    }
 
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("remove")) {

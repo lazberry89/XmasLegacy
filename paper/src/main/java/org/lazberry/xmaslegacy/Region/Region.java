@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -12,7 +13,6 @@ import org.lazberry.xmaslegacy.IDGenerator;
 
 import java.util.*;
 
-@SuppressWarnings("unused")
 public class Region {
     private final @NotNull UUID owner;
     private final @NotNull String id;
@@ -41,7 +41,7 @@ public class Region {
 		this.allowPublicInteraction = allowPublicInteraction;
     }
 
-    public void setIndicator(BlockDisplay display) {
+    public void setIndicator(@Nullable BlockDisplay display) {
         this.indicator = display;
         this.indicatorId = display != null ? display.getUniqueId() : null;
     }
@@ -70,7 +70,7 @@ public class Region {
         if (!loc.getWorld().equals(this.world)) return false; // 월드가 다르면 바로 컷
         return loc.getChunk().getChunkKey() == this.key;
     }
-    public boolean isInside(Chunk c) {
+    public boolean isInside(@NotNull Chunk c) {
         if (!c.getWorld().equals(this.world)) return false;
         return c.getChunkKey() == this.key;
     }
@@ -116,7 +116,9 @@ public class Region {
     public void blockEntry() {
         this.allowPublicEntry = false;
     }
-    public Location getTrueCenter(@NotNull Chunk chunk) {
+
+	@Contract("_ -> new")
+    public @NotNull Location getTrueCenter(@NotNull Chunk chunk) {
         int minX = chunk.getX() << 4;
         int minZ = chunk.getZ() << 4;
 

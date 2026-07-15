@@ -6,27 +6,37 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+@Inject
+@Listeners
 public class IcingListener implements Listener {
-	private final @NotNull UserManager um;
+	private @Manager @NotNull UserManager um;
+	private @Manager @NotNull IcingBossBarManager bm;
 
-	public IcingListener() {
-		this.um = UserManager.INSTANCE;
-	}
+	public IcingListener() {}
 
 	@EventHandler
 	public void resetIcingWhenDead(PlayerDeathEvent e) {
 		Player p = e.getPlayer();
 		var user = um.getUser(p.getUniqueId());
 		if (user != null) user.setIcingState(100);
+	}
+
+	@EventHandler
+	public void removeWhenLeave(PlayerQuitEvent e) {
+		bm.removeBar(e.getPlayer());
 	}
 
 	@EventHandler
@@ -46,7 +56,7 @@ public class IcingListener implements Listener {
 
 		var user = um.getUser(p.getUniqueId());
 		if (user == null) {
-			ServerTransfer.sendReloadNotice(p);
+			UserHandler.sendReloadNotice(p);
 			return;
 		}
 

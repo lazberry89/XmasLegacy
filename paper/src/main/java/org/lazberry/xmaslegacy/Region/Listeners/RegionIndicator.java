@@ -10,28 +10,27 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
+import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Region.Events.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.Region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.Region.Gui.RegionCreateInterface;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.RegionManager;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Listeners
 public class RegionIndicator implements Listener {
-	private final @NotNull RegionManager rm;
-	private final @NotNull UserManager um;
+	private @Manager @NotNull RegionManager rm;
+	private @Manager @NotNull UserManager um;
 
-	public RegionIndicator() {
-		this.rm = RegionManager.INSTANCE;
-		this.um = UserManager.INSTANCE;
-	}
+	public RegionIndicator() {}
 
 	@EventHandler
 	public void UserRegionCreate(PlayerDropItemEvent e) {

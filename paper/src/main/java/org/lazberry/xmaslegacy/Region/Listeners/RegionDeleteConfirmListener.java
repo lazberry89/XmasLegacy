@@ -1,6 +1,5 @@
 package org.lazberry.xmaslegacy.Region.Listeners;
 
-import com.google.j2objc.annotations.UsedByReflection;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,15 +12,15 @@ import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Region.Gui.RegionDeleteInterface;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.RegionManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Listeners
-@UsedByReflection
 public class RegionDeleteConfirmListener implements Listener {
-    private final @NotNull RegionManager rm;
+    private @Manager @NotNull RegionManager rm;
 
-    public RegionDeleteConfirmListener() {
-        this.rm = RegionManager.INSTANCE;
-    }
+    public RegionDeleteConfirmListener() {}
 
     @EventHandler
     public void deleteConfirming(InventoryClickEvent e) {

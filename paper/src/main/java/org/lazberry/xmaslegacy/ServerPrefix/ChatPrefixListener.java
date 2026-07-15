@@ -11,27 +11,29 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 
+@Inject
+@Listeners
 public class ChatPrefixListener implements Listener {
-	private final @NotNull PrefixManager pfm;
-	private final @NotNull RuleManager rm;
-	private final @NotNull UserManager um;
+	private @Manager @NotNull PrefixManager pfm;
+	private @Manager @NotNull RuleManager rm;
+	private @Manager @NotNull UserManager um;
 
-	public ChatPrefixListener() {
-		this.pfm = PrefixManager.INSTANCE;
-		this.rm = RuleManager.INSTANCE;
-		this.um = UserManager.INSTANCE;
-	}
+	public ChatPrefixListener() {}
 
-	@EventHandler
 	@NonBlocking
+	@EventHandler
 	public void onChatPrefix(AsyncChatEvent e) {
 		var p = e.getPlayer();
 		String rawMsg = PlainTextComponentSerializer.plainText().serialize(e.message());
@@ -67,7 +69,7 @@ public class ChatPrefixListener implements Listener {
 
 		if (user == null) {
 			p.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
-			ServerTransfer.sendReloadNotice(p);
+			UserHandler.sendReloadNotice(p);
 			return;
 		}
 

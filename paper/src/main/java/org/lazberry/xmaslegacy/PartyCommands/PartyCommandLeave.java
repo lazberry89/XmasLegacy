@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +18,7 @@ public class PartyCommandLeave implements SubCommand {
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         var user = UserManager.INSTANCE.getUser(player.getUniqueId());
         if (user == null) {
-            ServerTransfer.sendReloadNotice(player);
+            UserHandler.sendReloadNotice(player);
             return;
         }
         if (args.length >= 1) {

@@ -9,10 +9,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SavedLocation;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 public final class LobbyManager extends SavedLocation {
 

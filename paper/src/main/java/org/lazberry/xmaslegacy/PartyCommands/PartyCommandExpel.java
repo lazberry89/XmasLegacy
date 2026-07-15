@@ -9,6 +9,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 public class PartyCommandExpel implements SubCommand {
 
@@ -19,7 +20,7 @@ public class PartyCommandExpel implements SubCommand {
 
         var user = UserManager.INSTANCE.getUser(uuid);
         if (user == null) {
-            ServerTransfer.sendReloadNotice(player);
+            UserHandler.sendReloadNotice(player);
             return;
         }
 

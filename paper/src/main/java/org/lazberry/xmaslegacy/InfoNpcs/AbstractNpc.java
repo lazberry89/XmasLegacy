@@ -9,27 +9,27 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
-import org.lazberry.xmaslegacy.Utils.Documents;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.Utils.*;
 import org.lazberry.xmaslegacy.Economy.Currency.CurrencyManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Inject
 public abstract class AbstractNpc {
 	protected final @NotNull @Getter NpcType type;
+    private @Plugin @NotNull @Getter XmasLegacy plugin;
     protected final @NotNull Map<UUID, Integer> playerCaption = new HashMap<>();
     protected final @NotNull List<String> caption;
-    private final @NotNull @Getter XmasLegacy plugin;
     private final @NotNull @Getter NamespacedKey key;
 	private final @NotNull @Getter Component name;
 	private final @NotNull Sound conversationSound;
@@ -40,7 +40,6 @@ public abstract class AbstractNpc {
 	private static final long DIALOGUE_TIMEOUT = 20000L;
 
     public AbstractNpc(@NotNull List<String> cap, @NotNull Component name, @NotNull Sound conversationSound, @NotNull NpcType type) {
-        this.plugin = XmasLegacy.getInstance();
 		this.type = type;
         this.key = KeyUtils.get("npc");
         this.caption = cap;
@@ -94,7 +93,9 @@ public abstract class AbstractNpc {
 
 	private void provideMoney(@NotNull Player player) {
 		if (catchKey(player, checkKey)) {
-			player.getInventory().addItem(CurrencyManager.currency(5));
+			ItemStack give = CurrencyManager.INSTANCE.currency();
+			give.setAmount(5);
+			player.getInventory().addItem(give);
 			InfoUtils.info(player, "재화를 클릭하여 현금 입금을 해보세요!");
 		}
 	}
@@ -122,7 +123,7 @@ public abstract class AbstractNpc {
     protected void sendCaption(@NotNull Player player) {
 	    @Nullable var user = UserManager.INSTANCE.getUser(player.getUniqueId());
 	    if (user == null) {
-		    ServerTransfer.sendReloadNotice(player);
+		    UserHandler.sendReloadNotice(player);
 		    return;
 	    }
 

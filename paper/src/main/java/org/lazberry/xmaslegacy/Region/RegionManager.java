@@ -24,6 +24,8 @@ import org.lazberry.xmaslegacy.Region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +34,8 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Inject
-public enum RegionManager {
+@Registry
+public enum RegionManager implements ServerManager {
 	INSTANCE;
 
 	private @Plugin @NotNull XmasLegacy plugin;
@@ -41,7 +44,10 @@ public enum RegionManager {
 	private File file;
 	private FileConfiguration config;
 
-	RegionManager() {
+	RegionManager() {}
+
+	@Override
+	public void init() {
 		setupFile();
 		saveAsync();
 	}

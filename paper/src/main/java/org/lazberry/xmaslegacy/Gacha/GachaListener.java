@@ -13,22 +13,23 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Listeners
 public class GachaListener implements Listener {
-    private final XmasLegacy plugin;
-    private final GachaManager GM;
+    private @Plugin @NotNull XmasLegacy plugin;
+    private @Manager @NotNull GachaManager gm;
 
-    public GachaListener() {
-        this.plugin = XmasLegacy.getInstance();
-        this.GM = GachaManager.INSTANCE;
-    }
+    public GachaListener() {}
 
     @EventHandler
     public void onStockClick(InventoryClickEvent e) {
@@ -47,7 +48,7 @@ public class GachaListener implements Listener {
         if (item == null || item.getType().isAir()) return;
         NamespacedKey nameKey = KeyUtils.get("gacha");
         String key = item.getPersistentDataContainer().get(nameKey, PersistentDataType.STRING);
-        Gacha gacha = GM.getGacha(key, type);
+        Gacha gacha = gm.getGacha(key, type);
         if (gacha == null) return;
 
         ItemStack result = gacha.getItem();
@@ -101,7 +102,7 @@ public class GachaListener implements Listener {
     }
     @Contract(pure = true)
     private void Random(@NotNull Player p, @NotNull BundleType type) {
-        Gacha gacha = GM.getRandomItem(type);
+        Gacha gacha = gm.getRandomItem(type);
         if (gacha == null) {
             InfoUtils.error(p, "현재 등록된 아이템이 없어요! 관리자에게 문의하세요.");
             return;

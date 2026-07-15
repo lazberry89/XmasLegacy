@@ -1,27 +1,35 @@
 package org.lazberry.xmaslegacy;
 
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.List.of;
 
-public enum RuleManager {
-	INSTANCE(List.of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
+@Registry
+public enum RuleManager implements ServerManager {
+	INSTANCE();
 
-	private final List<String> badWords;
+	private final @NotNull List<String> badWords;
 
-    RuleManager(List<String> initialWords) {
-        this.badWords = new ArrayList<>(initialWords);
+    RuleManager() {
+        this.badWords = new ArrayList<>(List.of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
 	    if (this.badWords.isEmpty()) {
 		    this.badWords.addAll(of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
 	    }
     }
 
-	public boolean checkBadWords(String s) {
+	@Override
+	public void init() {}
+
+	public boolean checkBadWords(@NotNull String s) {
 		return badWords.stream().anyMatch(s::contains);
 	}
 
-	public String hideBadWords(String message) {
+	public @NotNull String hideBadWords(@NotNull String message) {
 		String processedMessage = message;
 
 		for (String word : badWords) {
@@ -33,13 +41,15 @@ public enum RuleManager {
 		return processedMessage;
 	}
 
-    public void addBadWordList(String s) {
+    public void addBadWordList(@NotNull String s) {
         this.badWords.add(s);
     }
-    public void removeBadWordList(String s) {
+    public void removeBadWordList(@NotNull String s) {
         this.badWords.remove(s);
     }
-    public List<String> getBadWordList() {
+    public @NotNull List<String> getBadWordList() {
         return this.badWords;
     }
+
+
 }

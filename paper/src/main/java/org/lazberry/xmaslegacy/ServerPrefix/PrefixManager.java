@@ -4,25 +4,27 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.CustomPrefix;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public enum PrefixManager {
+@Inject
+@Registry
+public enum PrefixManager implements ServerManager {
 	INSTANCE;
 
-	private final @NotNull UserManager um;
+	private @Manager @NotNull UserManager um;
 	private final @NotNull Map<String, CustomPrefix> customPrefix = new HashMap<>();
 
-	PrefixManager() {
-		this.um = UserManager.INSTANCE;
-	}
+	PrefixManager() {}
 
 	public boolean add(@NotNull Player p, @NotNull ServerPrefix prefix) {
 		User user = um.getUser(p.getUniqueId());
@@ -82,5 +84,10 @@ public enum PrefixManager {
 		User user = um.getUser(p.getUniqueId());
 		if (user == null) return false;
 		return user.removeEquipped();
+	}
+
+	@Override
+	public void init() {
+
 	}
 }

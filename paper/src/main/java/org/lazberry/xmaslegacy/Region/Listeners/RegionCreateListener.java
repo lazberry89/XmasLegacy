@@ -12,14 +12,15 @@ import org.lazberry.xmaslegacy.Region.Gui.RegionCreateInterface;
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Listeners
 public class RegionCreateListener implements Listener {
-	private final @NotNull RegionManager rm;
+	private @Manager @NotNull RegionManager rm;
 
-	public RegionCreateListener() {
-		this.rm = RegionManager.INSTANCE;
-	}
+	public RegionCreateListener() {}
 
 	@EventHandler
 	public void regionInterface(InventoryClickEvent e) {

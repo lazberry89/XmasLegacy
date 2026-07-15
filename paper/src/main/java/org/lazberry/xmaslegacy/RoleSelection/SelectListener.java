@@ -21,22 +21,22 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
+@Inject
 @Listeners
 public class SelectListener implements Listener {
     private final @NotNull RoleSelectInterface ri;
-    private final @NotNull XmasLegacy plugin;
-    private final @NotNull UserManager um;
-    private final @NotNull UserSaveManager us;
+    private @Manager @NotNull XmasLegacy plugin;
+    private @Manager @NotNull UserManager um;
+    private @Manager @NotNull UserSaveManager us;
 
     public SelectListener() {
         this.ri = new RoleSelectInterface();
-        this.plugin = XmasLegacy.getInstance();
-        this.um = UserManager.INSTANCE;
-        this.us = UserSaveManager.INSTANCE;
     }
 
     @EventHandler

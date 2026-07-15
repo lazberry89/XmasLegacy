@@ -12,11 +12,14 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public enum EnchantManager {
+@Registry
+public enum EnchantManager implements ServerManager {
 	INSTANCE;
 
     private final NamespacedKey key;
@@ -121,7 +124,10 @@ public enum EnchantManager {
         return result;
     }
 
-    public record EnchantChance(double success, double fail, double breakChance) {}
+	@Override
+	public void init() {}
+
+	public record EnchantChance(double success, double fail, double breakChance) {}
     /**
      * 특정 레벨의 강화 확률 정보(성공, 실패, 파괴)를 반환합니다.
      * @param lvl 현재 아이템의 강화 레벨 (1 ~ 9)

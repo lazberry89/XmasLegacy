@@ -13,22 +13,23 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Lang;
 
 import java.util.UUID;
 
+@Inject
 @Listeners
 public class EffectListener implements Listener {
-    private final @NotNull SkillEffectManager sem;
-    private final @NotNull XmasLegacy plugin;
+    private @Manager @NotNull SkillEffectManager sem;
+    private @Plugin @NotNull XmasLegacy plugin;
 
-    public EffectListener() {
-        this.plugin = XmasLegacy.getInstance();
-        this.sem = SkillEffectManager.INSTANCE;
-    }
+    public EffectListener() {}
 
     @EventHandler
     public void removeDebuffIfImmune(PlayerMoveEvent e) {

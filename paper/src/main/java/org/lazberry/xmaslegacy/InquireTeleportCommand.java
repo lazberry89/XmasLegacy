@@ -12,16 +12,15 @@ import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryStatus;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Commands(command = "이동문의")
 public class InquireTeleportCommand implements CommandExecutor {
-	private final @NotNull InquiryManager im;
-	private final @NotNull XmasLegacy plugin;
+	private @Manager @NotNull InquiryManager im;
 
-	public InquireTeleportCommand() {
-		this.im = InquiryManager.INSTANCE;
-		this.plugin = XmasLegacy.getInstance();
-	}
+	public InquireTeleportCommand() {}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {

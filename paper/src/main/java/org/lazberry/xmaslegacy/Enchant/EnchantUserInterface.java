@@ -17,9 +17,9 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import java.util.Objects;
 
 public class EnchantUserInterface implements InventoryHolder {
-    private final Inventory inv;
-    private final EnchantManager ecm;
-    private final XmasLegacy plugin;
+    private final @NotNull Inventory inv;
+    private final @NotNull EnchantManager ecm;
+    private final @NotNull XmasLegacy plugin;
 
     public EnchantUserInterface() {
         this.ecm = EnchantManager.INSTANCE;

@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.Gacha;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public enum GachaGrade {
@@ -10,10 +11,10 @@ public enum GachaGrade {
     LEGENDARY("&e&l", "전설"),
     ULTIMATE("", "<#A800FF>&lU<#B900F2>&lL<#CA00E5>&lT<#DB00D8>&lI<#EC00CB>&lM<#FD00BE>&lA<#FF00B1>&lT<#FF00A4>&lE");
 
-    private final String color;
-    private final String key;
+    private final @NotNull @Getter String color;
+    private final @NotNull @Getter String key;
 
-    GachaGrade(String color, String key) {
+    GachaGrade(@NotNull String color, @NotNull String key) {
         this.color = color;
         this.key = key;
     }

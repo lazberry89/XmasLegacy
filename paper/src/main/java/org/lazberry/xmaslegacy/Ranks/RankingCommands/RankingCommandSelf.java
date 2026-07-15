@@ -2,12 +2,14 @@ package org.lazberry.xmaslegacy.Ranks.RankingCommands;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Ranks.RankManager;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Ranks.RankingSystem;
+import org.lazberry.xmaslegacy.Ranks.RankingTask;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 public class RankingCommandSelf implements SubCommand {
 
@@ -19,7 +21,7 @@ public class RankingCommandSelf implements SubCommand {
 		}
 		var user = UserManager.INSTANCE.getUser(player.getUniqueId());
 		if (user == null) {
-			ServerTransfer.sendReloadNotice(player);
+			UserHandler.sendReloadNotice(player);
 			return;
 		}
 		RankType type;
@@ -29,7 +31,7 @@ public class RankingCommandSelf implements SubCommand {
 			InfoUtils.error(player, "존재하지 않는 랭크 타입입니다.");
 			return;
 		}
-		int rank = RankingSystem.INSTANCE.getRank(type, user);
+		int rank = RankManager.INSTANCE.getRank(type, user);
 		if (rank == -1) {
 			InfoUtils.error(player, "유효한 랭킹 범위 밖입니다! (100등 미만)");
 			return;

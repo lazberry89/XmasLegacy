@@ -13,22 +13,26 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Plugin;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public enum SkillEffectManager {
+@Inject
+@Registry
+public enum SkillEffectManager implements ServerManager {
 	INSTANCE;
 
-    private final @NotNull XmasLegacy plugin;
+    private @Plugin @NotNull XmasLegacy plugin;
     private final @NotNull Set<UUID> immuneToKnockback = new HashSet<>();
     private final @NotNull Set<UUID> immuneToDebuff = new HashSet<>();
     private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();
 
-    SkillEffectManager() {
-        this.plugin = XmasLegacy.getInstance();
-    }
+    SkillEffectManager() {}
 
     public void setImmuneToKnockback(@NotNull UUID uuid, boolean flag) {
         if (flag) this.immuneToKnockback.add(uuid);
@@ -270,7 +274,7 @@ public enum SkillEffectManager {
 
                 elapsed++;
             }
-        }.runTaskTimerAsynchronously(plugin, 0L, 1L);
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 
     public void castSkill(Player p) {
@@ -348,4 +352,9 @@ public enum SkillEffectManager {
 
         Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
     }
+
+	@Override
+	public void init() {
+
+	}
 }

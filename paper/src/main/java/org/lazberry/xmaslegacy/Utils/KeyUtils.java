@@ -57,7 +57,7 @@ public final class KeyUtils {
         return meta.getPersistentDataContainer().get(key, type);
     }
 
-    @Contract("null, _, _ -> param3; _, _, _ -> param3")
+    @Contract("null, _, _ -> param3")
     public static <T> @NotNull T get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull T def) {
         T value = get(item, key, (Class<T>) def.getClass());
         return value == null ? def : value;

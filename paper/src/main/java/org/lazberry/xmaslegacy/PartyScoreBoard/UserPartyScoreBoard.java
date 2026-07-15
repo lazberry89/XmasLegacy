@@ -11,30 +11,30 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.BoardUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@Inject
 @Task(type = ServerType.GLOBAL)
 public enum UserPartyScoreBoard implements Tasks {
 	INSTANCE;
 
-	private final @NotNull PartyManager pm;
-	private final @NotNull UserManager um;
+	private @Manager @NotNull PartyManager pm;
+	private @Manager @NotNull UserManager um;
 	private @Nullable BukkitTask task;
 
-	UserPartyScoreBoard() {
-		this.pm = PartyManager.INSTANCE;
-		this.um = UserManager.INSTANCE;
-	}
+	UserPartyScoreBoard() {}
 
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {

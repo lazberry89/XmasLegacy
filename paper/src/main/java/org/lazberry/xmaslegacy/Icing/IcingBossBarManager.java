@@ -4,17 +4,20 @@ import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public enum IcingBossBar {
+@Registry
+public enum IcingBossBarManager implements ServerManager {
     INSTANCE;
 
     private final @NotNull Map<UUID, BossBar> bars = new HashMap<>();
 
-    IcingBossBar() {}
+    IcingBossBarManager() {}
 
     public void updateBar(@NotNull Player p, int amount) {
         UUID uuid = p.getUniqueId();
@@ -46,4 +49,9 @@ public enum IcingBossBar {
         BossBar bar = bars.remove(p.getUniqueId());
         if (bar != null) bar.removeViewer(p);
     }
+
+	@Override
+	public void init() {
+
+	}
 }

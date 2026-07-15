@@ -8,13 +8,13 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -11,9 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,20 +23,16 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
+@Inject
 @Task(type = ServerType.HUNTING)
-public enum MobSpawnManager implements Tasks {
+public enum MobSpawnTask implements Tasks {
 	INSTANCE;
 
-	private final @NotNull XmasLegacy plugin;
-	private final @NotNull HuntingZoneManager hzm;
-	private final @NotNull MobRepository mr;
+	private @Manager @NotNull HuntingZoneManager hzm;
+	private @Manager @NotNull MobRepository mr;
 	private @Nullable BukkitTask task;
 
-	MobSpawnManager() {
-		this.plugin = XmasLegacy.getInstance();
-		this.hzm = HuntingZoneManager.INSTANCE;
-		this.mr = MobRepository.INSTANCE;
-	}
+	MobSpawnTask() {}
 
 	public @NotNull Location getRandomLocationInChunk(@NotNull Chunk chunk) {
 		World world = chunk.getWorld();

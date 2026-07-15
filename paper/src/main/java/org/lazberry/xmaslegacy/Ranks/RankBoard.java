@@ -36,7 +36,7 @@ public class RankBoard {
 	}
 
 	private @NotNull Component rankComponent(@NotNull RankType type, int amount) {
-		List<User> users = RankingSystem.INSTANCE.rank(type);
+		List<User> users = RankManager.INSTANCE.rank(type);
 		StringBuilder sb = new StringBuilder();
 
 		Component title = ColorUtils.chat("🏆 " + type.name().toUpperCase() + " &#FF4545R&#FB5E39A&#F7762DN&#F28F21K&#EEA715 🏆");

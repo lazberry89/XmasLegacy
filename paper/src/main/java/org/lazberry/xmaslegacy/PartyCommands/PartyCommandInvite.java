@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.Party.Party;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
@@ -37,7 +38,7 @@ public class PartyCommandInvite implements SubCommand {
         var uuid = player.getUniqueId();
         var user = um.getUser(uuid);
         if (user == null) {
-            ServerTransfer.sendReloadNotice(player);
+            UserHandler.sendReloadNotice(player);
             return;
         }
         if (args.length >= 2) {
@@ -88,7 +89,7 @@ public class PartyCommandInvite implements SubCommand {
                     if (audience instanceof Player p && p.isOnline()) {
                         var user = um.getUser(p.getUniqueId());
                         if (user == null) {
-                            ServerTransfer.loadUser(p, false);
+                            UserHandler.loadUser(p, false);
                             return;
                         }
                         if (pm.joinParty(party.getLeader(), user)) {
@@ -119,7 +120,7 @@ public class PartyCommandInvite implements SubCommand {
                     if (buttonId == 0) {
                         var user = um.getUser(uuid);
                         if (user == null) {
-                            ServerTransfer.loadUser(player, false);
+                            UserHandler.loadUser(player, false);
                             return;
                         }
 

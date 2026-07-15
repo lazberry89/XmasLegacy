@@ -2,19 +2,18 @@ package org.lazberry.xmaslegacy.Ranks.RankingCommands;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.User.RankType;
-import org.lazberry.xmaslegacy.Ranks.RankingSystem;
+import org.lazberry.xmaslegacy.Ranks.RankingTask;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 public class RankingCommandTask implements SubCommand {
-	private final @NotNull RankingSystem ranking;
+	private final @NotNull RankingTask ranking;
 	private final @NotNull XmasLegacy plugin;
 
 	public RankingCommandTask() {
-		this.ranking = RankingSystem.INSTANCE;
+		this.ranking = RankingTask.INSTANCE;
 		this.plugin = XmasLegacy.getInstance();
 	}
 

@@ -7,10 +7,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
-import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 import java.util.Objects;

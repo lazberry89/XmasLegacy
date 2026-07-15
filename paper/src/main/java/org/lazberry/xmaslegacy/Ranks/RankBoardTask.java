@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,13 +22,13 @@ import java.util.Objects;
 @Slf4j
 @TestOnly
 @Task(type = ServerType.GLOBAL)
-public enum RankBoardSystem implements Tasks {
+public enum RankBoardTask implements Tasks {
 	INSTANCE;
 
 	private final @NotNull Map<String, RankBoard> board = new HashMap<>();
 	private @Nullable BukkitTask task;
 
-	RankBoardSystem() {}
+	RankBoardTask() {}
 
 	public @NotNull RankBoard spawn(@NotNull String name, @NotNull RankType type, int amount, @NotNull Location loc) {
 		if (this.board.containsKey(name)) return this.board.get(name);

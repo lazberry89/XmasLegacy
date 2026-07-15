@@ -1,8 +1,9 @@
 package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.ServerType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 public interface ServerInitializer {
 	/*
@@ -39,8 +40,8 @@ public interface ServerInitializer {
 		ServerType serverType = getServerType(plugin);
 
 		plugin.getSLF4JLogger().info("Initializing {}", serverType.name());
-		serverType.getInitializer().enable(plugin);
-		if (serverType.isRequiresGlobalInitializer()) ServerType.GLOBAL.getInitializer(GlobalInitializer.class).enable(plugin);
+		Initializers.INSTANCE.getInitializer(serverType).enable(plugin);
+		if (serverType.isRequiresGlobalInitializer()) Initializers.INSTANCE.getInitializer(ServerType.GLOBAL, GlobalInitializer.class).enable(plugin);
 	}
 
 	/**
@@ -51,7 +52,7 @@ public interface ServerInitializer {
 		ServerType serverType = getServerType(plugin);
 
 		plugin.getSLF4JLogger().info("Shutting down {}", serverType.name());
-		serverType.getInitializer().disable(plugin);
-		if (serverType.isRequiresGlobalInitializer()) ServerType.GLOBAL.getInitializer(GlobalInitializer.class).disable(plugin);
+		Initializers.INSTANCE.getInitializer(serverType).disable(plugin);
+		if (serverType.isRequiresGlobalInitializer()) Initializers.INSTANCE.getInitializer(ServerType.GLOBAL, GlobalInitializer.class).disable(plugin);
 	}
 }

@@ -6,17 +6,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
+@Inject
 @Commands(command = "문의")
 public class InquiryCommandManager implements CommandExecutor {
-	private final InquiryManager im;
+	private @Manager @NotNull InquiryManager im;
 
-	public InquiryCommandManager() {
-		this.im = InquiryManager.INSTANCE;
-	}
+	public InquiryCommandManager() {}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull...args) {

@@ -9,17 +9,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Inject
 @Commands(command = "guide")
 public class NpcCommand implements CommandExecutor, TabCompleter {
-    private final @NotNull NpcManager ncm;
+    private @Manager @NotNull NpcManager ncm;
 
-    public NpcCommand() {
-        this.ncm = NpcManager.INSTANCE;
-    }
+    public NpcCommand() {}
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {

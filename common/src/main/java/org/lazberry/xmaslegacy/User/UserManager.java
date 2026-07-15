@@ -18,11 +18,14 @@ public enum UserManager implements ServerManager {
 	INSTANCE;
 
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
-	private final @NotNull @Getter File rootDataFolder = new File("plugins/XmasLegacy");
+	private @NotNull @Getter File rootDataFolder = new File("plugins/XmasLegacy");
 
 	UserManager() {}
 
 	public void init() {}
+	public void init(@NotNull File rootDataFolder) {
+		this.rootDataFolder = rootDataFolder;
+	}
 
 	public void addUser(@NotNull User user) {
         users.put(user.getUniqueId(), user);
