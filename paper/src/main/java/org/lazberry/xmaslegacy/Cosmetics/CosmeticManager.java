@@ -4,19 +4,17 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Registry
-public enum CosmeticManager implements ServerManager {
-	INSTANCE;
-
+@Registry.Exclude(type = ServerType.LOBBY)
+public class CosmeticManager {
 	private final @NotNull Map<String, Cosmetics> equippedCosmetics = new HashMap<>();
 
-	CosmeticManager() {}
+	public CosmeticManager() {}
 
 	public void addCosmetics(@NotNull ItemStack model, @NotNull String name) {
 		CosmeticType type = name.contains("head") ? CosmeticType.HEAD : CosmeticType.BODY;
@@ -35,7 +33,4 @@ public enum CosmeticManager implements ServerManager {
 	public @NotNull List<String> getCosmeticsName() {
 		return equippedCosmetics.keySet().stream().toList();
 	}
-
-	@Override
-	public void init() {}
 }

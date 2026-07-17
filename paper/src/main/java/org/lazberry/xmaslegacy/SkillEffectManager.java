@@ -13,7 +13,6 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
@@ -23,11 +22,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Inject
-@Registry
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public enum SkillEffectManager implements ServerManager {
 	INSTANCE;
 
-    private @Plugin @NotNull XmasLegacy plugin;
+    private @NotNull XmasLegacy plugin;
     private final @NotNull Set<UUID> immuneToKnockback = new HashSet<>();
     private final @NotNull Set<UUID> immuneToDebuff = new HashSet<>();
     private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();

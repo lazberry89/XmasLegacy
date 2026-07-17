@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
@@ -32,23 +33,25 @@ import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.*;
 
 @Listeners
 public class EnchantListener implements Listener {
-	private final XmasLegacy plugin;
-	private final EnchantManager ecm;
-	private final SkillEffectManager sem;
-	private final UserManager um;
-	private final BagManager bm;
+	private final @NotNull XmasLegacy plugin;
+	private final @NotNull EnchantManager ecm;
+	private final @NotNull SkillEffectManager sem;
+	private final @NotNull UserManager um;
+	private final @NotNull BagManager bm;
 
-	public EnchantListener() {
-		this.plugin = XmasLegacy.getInstance();
-		this.ecm = EnchantManager.INSTANCE;
-		this.sem = SkillEffectManager.INSTANCE;
-		this.um = UserManager.INSTANCE;
-		this.bm = BagManager.INSTANCE;
+	@Inject
+	public EnchantListener(@NotNull XmasLegacy plugin, @NotNull EnchantManager ecm, @NotNull SkillEffectManager sem, @NotNull UserManager um, @NotNull BagManager bm) {
+		this.plugin = plugin;
+		this.ecm = ecm;
+		this.sem = sem;
+		this.um = um;
+		this.bm = bm;
 	}
 
 	@EventHandler

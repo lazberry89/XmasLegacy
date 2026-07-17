@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
@@ -23,7 +22,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 public enum RoleViewDesign implements Tasks {
     INSTANCE;
 
-    private @Plugin @NotNull XmasLegacy plugin;
+    private @NotNull XmasLegacy plugin;
     private final @NotNull ItemStack[][][] allFrames = new ItemStack[3][9][3];
 
     private @Nullable ItemStack RED;

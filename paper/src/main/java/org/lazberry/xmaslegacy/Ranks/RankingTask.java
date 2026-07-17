@@ -9,7 +9,6 @@ import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ public enum RankingTask implements Tasks {
 	INSTANCE;
 
 	private final @NotNull Map<RankType, BukkitTask> tasks = new ConcurrentHashMap<>();
-	private @Manager @NotNull RankManager rm;
+	private @NotNull RankManager rm;
 
     RankingTask() {}
 

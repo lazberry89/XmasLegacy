@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.Emblems;
 
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,23 +13,25 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Emblem {
 	private final @NotNull ItemStack targetEmblem;
 	private final @NotNull ItemStack rangeEmblem;
 	@EqualsAndHashCode.Include
-	private final @NotNull Role role;
+	private final @Getter @NotNull Role role;
 
 	public Emblem(@NotNull Role role) {
 		this.role = role;
-		targetEmblem = targetEmblem();
-		rangeEmblem = rangeEmblem();
+		this.targetEmblem = targetEmblem();
+		this.rangeEmblem = rangeEmblem();
 	}
 
 	private @NotNull ItemStack targetEmblem() {
@@ -74,8 +77,5 @@ public class Emblem {
 	}
 	public @NotNull ItemStack getRangeEmblem() {
 		return this.rangeEmblem;
-	}
-	public @NotNull Role getRole() {
-		return this.role;
 	}
 }

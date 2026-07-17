@@ -15,6 +15,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class LogCommandInquiry implements SubCommand {
+	private final @NotNull InquiryManager im;
+
+	public LogCommandInquiry(@NotNull InquiryManager im) {
+		this.im = im;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
@@ -27,7 +32,7 @@ public class LogCommandInquiry implements SubCommand {
                 OfflinePlayer op = Bukkit.getOfflinePlayer(targetName);
                 UUID uuid = op.getUniqueId();
 
-                List<String> logs = InquiryManager.INSTANCE.getInquiryLogs(uuid);
+                List<String> logs = im.getInquiryLogs(uuid);
 
                 if (logs.isEmpty() || (logs.size() == 1 && logs.getFirst().contains("없습니다")))
                     player.sendMessage(ColorUtils.chat(Alert.RED + "'" + targetName + "' 유저의 기록이 없습니다."));

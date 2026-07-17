@@ -3,23 +3,22 @@ package org.lazberry.xmaslegacy;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.List.of;
 
-@Registry
-public enum RuleManager implements ServerManager {
-	INSTANCE();
-
+@Registry.Exclude(type = ServerType.LOBBY)
+public class RuleManager implements ServerManager {
 	private final @NotNull List<String> badWords;
 
-    RuleManager() {
+    public RuleManager() {
         this.badWords = new ArrayList<>(List.of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
 	    if (this.badWords.isEmpty()) {
 		    this.badWords.addAll(of("ㅅㅂ", "ㅄ", "시발", "장애", "지랄", "ㅈㄹ", "병신"));
-	    }
+	    } //TODO I/O Process is needed.
     }
 
 	@Override
@@ -31,13 +30,8 @@ public enum RuleManager implements ServerManager {
 
 	public @NotNull String hideBadWords(@NotNull String message) {
 		String processedMessage = message;
-
-		for (String word : badWords) {
-			if (processedMessage.contains(word)) {
-				processedMessage = processedMessage.replace(word, "&k" + "#".repeat(word.length()) + "&r");
-			}
-		}
-
+		for (String word : badWords)
+			processedMessage = processedMessage.replace(word, "&k" + "#".repeat(word.length()) + "&r");
 		return processedMessage;
 	}
 
@@ -50,6 +44,4 @@ public enum RuleManager implements ServerManager {
     public @NotNull List<String> getBadWordList() {
         return this.badWords;
     }
-
-
 }

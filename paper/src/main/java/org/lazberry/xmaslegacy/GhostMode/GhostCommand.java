@@ -7,14 +7,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
-@Inject
 @Commands(command = "vanish")
 public class GhostCommand implements CommandExecutor {
-    private @Manager @NotNull GhostModeManager gmm;
+    private final @NotNull GhostModeManager gmm;
 
-    public GhostCommand() {}
+	@Inject
+    public GhostCommand(@NotNull GhostModeManager gmm) {
+		this.gmm = gmm;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {

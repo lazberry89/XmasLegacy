@@ -17,7 +17,6 @@ import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
@@ -27,7 +26,7 @@ import java.util.*;
 @Task(type = ServerType.GLOBAL)
 public class PortalTask implements Tasks {
 	private @Nullable BukkitTask task;
-	private @Manager @NotNull PortalManager pt;
+	private @NotNull PortalManager pt;
 
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {

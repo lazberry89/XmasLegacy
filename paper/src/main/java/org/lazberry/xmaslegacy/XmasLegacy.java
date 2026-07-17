@@ -25,7 +25,7 @@ public final class XmasLegacy extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
-		ServerInitializer.initiate(this);
+		this.registerReflection();
 	}
 
 	/**
@@ -33,19 +33,20 @@ public final class XmasLegacy extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-		ServerInitializer.shutdown(this);
+		this.unregisterReflection();
 	}
 
 	/**
 	 * Invokes all reflections without {@link InitializeType#TASKS_OFF}.
 	 * @see Reflections
 	 * @see InitializeType
-	 * @see ServerInitializer#enable(XmasLegacy) 
+	 * @see ServerInitializer#initiate(XmasLegacy)
 	 */
 	public void registerReflection() {
 		try {
 			ClassPath classPath = ClassPath.from(getClassLoader());
 			Reflections.invokeReflections(classPath, InitializeType.TASKS_OFF);
+			Reflections.runInitializers(true);
 		} catch (IOException e) {
 			log.error("Failed to initialize framework.");
 		}
@@ -56,18 +57,10 @@ public final class XmasLegacy extends JavaPlugin {
 	 * cleans tasks up.
 	 * @see Reflections
 	 * @see org.lazberry.xmaslegacy.PluginUtils.Tasks
-	 * @see ServerInitializer#disable(XmasLegacy) 
+	 * @see ServerInitializer#shutdown(XmasLegacy)
 	 */
 	public void unregisterReflection() {
-		try {
-			ClassPath classPath = ClassPath.from(getClassLoader());
-			Reflections.invokeReflections(classPath,
-					InitializeType.TASKS_ON,
-					InitializeType.REGISTER,
-					InitializeType.LISTENERS,
-					InitializeType.COMMANDS);
-		} catch (IOException e) {
-			log.error("Failed to uninitialize framework.");
-		}
+		Reflections.stopTasks(null);
+		Reflections.runInitializers(false);
 	}
 }

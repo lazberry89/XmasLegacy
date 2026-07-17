@@ -14,16 +14,17 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.List;
 
-@Inject
 @Commands(command = "가방")
 public class BagCommandManager implements CommandExecutor, TabCompleter {
-	private @Manager @NotNull BagManager bm;
+	private final @NotNull BagManager bm;
 
-	public BagCommandManager() {}
+	@Inject
+	public BagCommandManager(@NotNull BagManager bm) {
+		this.bm = bm;
+	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {

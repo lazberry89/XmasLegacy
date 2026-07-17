@@ -8,12 +8,12 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
-import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Registry.Command(command = "lobby", type = ServerType.LOBBY)
 public class LobbyCommand implements CommandExecutor, TabCompleter {
     private final @NotNull Map<String, SubCommand> sub = new HashMap<>();
 
+	@Inject
     public LobbyCommand(@NotNull LobbyManager lbm) {
         this.sub.put("location", new LobbyCommandLocation(lbm));
         this.sub.put("reload", new LobbyCommandReload(lbm));
@@ -36,12 +38,6 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
         if (!(sender instanceof Player p)) return true;
         if (!p.isOp()) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 죄송한데, 관리자용 명령어에요!"));
-            p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
-            return true;
-        }
-		var plugin = XmasLegacy.getInstance();
-        if (!ServerInitializer.getServerType(plugin).equals(ServerType.LOBBY)) {
-            p.sendMessage(ColorUtils.chat(Alert.RED + " 해당 서버에서는 사용할 수 없는 명령어에요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             return true;
         }

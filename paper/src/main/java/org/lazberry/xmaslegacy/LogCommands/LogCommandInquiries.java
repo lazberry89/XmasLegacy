@@ -13,19 +13,23 @@ import java.util.Map;
 import java.util.UUID;
 
 public class LogCommandInquiries implements SubCommand {
+	private final @NotNull InquiryManager im;
+
+	public LogCommandInquiries(@NotNull InquiryManager im) {
+		this.im = im;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var im = InquiryManager.INSTANCE;
         if (args.length == 1) {
             player.sendMessage(ColorUtils.chat("&b&l[현재 대기 중인 문의 목록]"));
 
-            if (im.getInquiryMap().isEmpty()) {
+            if (im.getActiveInquiries().isEmpty()) {
                 player.sendMessage(ColorUtils.chat("&7대기 중인 문의가 없습니다. 평화롭네요!"));
                 return;
             }
 
-            for (Map.Entry<UUID, String> entry : im.getInquiryMap().entrySet()) {
+            for (Map.Entry<UUID, String> entry : im.getActiveInquiries().entrySet()) {
                 String userName = Bukkit.getOfflinePlayer(entry.getKey()).getName();
                 String msg = entry.getValue();
 

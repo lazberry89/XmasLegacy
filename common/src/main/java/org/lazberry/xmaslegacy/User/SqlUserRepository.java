@@ -2,31 +2,35 @@ package org.lazberry.xmaslegacy.User;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.*;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.sql.*;
 import java.util.UUID;
 
-public enum SqlUserRepository implements UserRepository {
-	INSTANCE;
-
-	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
+@Registry.Exclude(type = ServerType.LOBBY)
+public class SqlUserRepository implements UserRepository {
+	private final @NotNull String url;
 	private final String user = "root";
-	private final String password = "your_password"; //TODO need I/O process
+	private final String password = "your_password";
 
 	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
 
-	SqlUserRepository() {
+	@Inject
+	public SqlUserRepository(@NotNull File rootDataFolder) {
+		this.url = "jdbc:sqlite:" + new File(rootDataFolder, "database.db").getAbsolutePath();
 		createTable();
 	}
 
-	private Connection getConnection() throws SQLException {
+	private @NotNull Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(url, user, password);
 	}
 

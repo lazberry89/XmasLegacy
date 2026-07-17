@@ -16,11 +16,16 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 import java.util.List;
 
 public class PartyCommandMember implements SubCommand {
+	private final @NotNull PartyManager pm;
+	private final @NotNull UserManager um;
+
+	public PartyCommandMember(@NotNull PartyManager pm, @NotNull UserManager um) {
+		this.pm = pm;
+		this.um = um;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var pm = PartyManager.INSTANCE;
-        var um = UserManager.INSTANCE;
         if (args.length == 1) {
             var party = pm.getParty(player.getUniqueId());
             if (party == null) {

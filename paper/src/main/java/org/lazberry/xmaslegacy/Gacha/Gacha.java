@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Gacha;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -9,20 +10,22 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Commands(command = "gacha")
+@ConsumableClass
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Gacha {
-	private final ItemStack item;
-	private final String key;
-	private final GachaGrade grade;
+	private final @NotNull @Getter ItemStack item;
+	@EqualsAndHashCode.Include
+	private final @NotNull @Getter String key;
+	private final @NotNull @Getter GachaGrade grade;
 	private @Getter @Setter double chance;
-	private final ItemStack showItem;
+	private final @NotNull @Getter ItemStack showItem;
 
 	public Gacha(@NotNull ItemStack item, @NotNull String key, @NotNull GachaGrade grade, double chance) {
 		this.item = Objects.requireNonNull(item, "Item cannot be null!");
@@ -47,30 +50,5 @@ public class Gacha {
 		});
 
 		return showTem;
-	}
-
-	public @NotNull ItemStack getItem() {
-		return this.item;
-	}
-
-	public @NotNull String getKey() {
-		return this.key;
-	}
-	public @NotNull GachaGrade getGrade() {
-		return this.grade;
-	}
-	public @NotNull ItemStack getShowItem() {
-		return this.showItem;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Gacha c)) return false;
-		return Objects.equals(c.getKey(), key);
-	}
-
-	@Override
-	public int hashCode() {
-		return key.hashCode();
 	}
 }

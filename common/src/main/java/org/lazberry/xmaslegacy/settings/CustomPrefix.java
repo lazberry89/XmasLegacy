@@ -8,8 +8,10 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 @Slf4j
+@ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CustomPrefix implements ServerPrefix {
     @EqualsAndHashCode.Include

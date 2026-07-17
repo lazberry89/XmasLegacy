@@ -7,18 +7,23 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 public class PartyCommandExpel implements SubCommand {
+	private final @NotNull UserManager um;
+	private final @NotNull PartyManager pm;
+
+	public PartyCommandExpel(@NotNull UserManager um, @NotNull PartyManager pm) {
+		this.um = um;
+		this.pm = pm;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var pm = PartyManager.INSTANCE;
         var uuid = player.getUniqueId();
 
-        var user = UserManager.INSTANCE.getUser(uuid);
+        var user = um.getUser(uuid);
         if (user == null) {
             UserHandler.sendReloadNotice(player);
             return;
@@ -30,7 +35,7 @@ public class PartyCommandExpel implements SubCommand {
                 InfoUtils.error(player, "플레이어를 찾을 수 없습니다.");
                 return;
             }
-            User targetUser = UserManager.INSTANCE.getUser(target.getUniqueId());
+            User targetUser = um.getUser(target.getUniqueId());
             if (targetUser == null) {
                 InfoUtils.error(player, "해당 유저의 정보가 로드되지 않았습니다.");
                 return;

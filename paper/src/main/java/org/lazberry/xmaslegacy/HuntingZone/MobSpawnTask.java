@@ -14,7 +14,6 @@ import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
@@ -23,16 +22,17 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
-@Inject
 @Task(type = ServerType.HUNTING)
-public enum MobSpawnTask implements Tasks {
-	INSTANCE;
-
-	private @Manager @NotNull HuntingZoneManager hzm;
-	private @Manager @NotNull MobRepository mr;
+public class MobSpawnTask implements Tasks {
+	private final @NotNull HuntingZoneManager hzm;
+	private final @NotNull MobRepository mr;
 	private @Nullable BukkitTask task;
 
-	MobSpawnTask() {}
+	@Inject
+	public MobSpawnTask(@NotNull HuntingZoneManager hzm, @NotNull MobRepository mr) {
+		this.hzm = hzm;
+		this.mr = mr;
+	}
 
 	public @NotNull Location getRandomLocationInChunk(@NotNull Chunk chunk) {
 		World world = chunk.getWorld();

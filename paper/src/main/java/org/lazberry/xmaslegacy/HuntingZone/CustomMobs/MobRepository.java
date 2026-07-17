@@ -16,10 +16,9 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-@Registry
-public enum MobRepository {
-	INSTANCE;
-
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
+public class MobRepository {
     private final @NotNull Map<MobKey, CustomMob> mobInstances = new HashMap<>();
     private final @NotNull IcedZombie icedZombie;
     private final @NotNull HunterZombie hunterZombie;

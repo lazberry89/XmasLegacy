@@ -5,6 +5,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * This class parses {@link String} value to targeted {@link Enum} value.
+ * Also with plenty of overloaded utility methods, you can add default value to prevent null.
+ * @see Enum
+ * @see String
+ */
 public final class ParseEnum {
     private final @NotNull Class<? extends Enum<?>> clazz;
 
@@ -35,8 +41,8 @@ public final class ParseEnum {
      * @return return value of enum instance, if fail returns null.
      * @param <E> enum
      */
-    @Contract("null -> null")
     @SuppressWarnings("unchecked")
+    @Contract("null -> null")
     public <E extends Enum<E>> @Nullable E parse(@Nullable String value) {
         if (value == null || value.isEmpty()) return null;
         try {
@@ -56,7 +62,6 @@ public final class ParseEnum {
      * @return target enum instance, returns default if fails.
      * @param <E> enum
      */
-    @Contract("null, _ -> param2; _, _ -> param2")
     public <E extends Enum<E>> @NotNull E parseOrDefault(@Nullable String value, @NotNull E def) {
         E result = parse(value);
         return result != null ? result : def;

@@ -8,20 +8,21 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.UUID;
 
-@Inject
 @Listeners
 public class GhostListener implements Listener {
-    private @Manager @NotNull GhostModeManager gmm;
-    private @Plugin @NotNull XmasLegacy plugin;
+    private final @NotNull GhostModeManager gmm;
+    private final @NotNull XmasLegacy plugin;
 
-    public GhostListener() {}
+	@Inject
+    public GhostListener(@NotNull XmasLegacy plugin, @NotNull GhostModeManager gmm) {
+		this.plugin = plugin;
+		this.gmm = gmm;
+    }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {

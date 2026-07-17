@@ -1,16 +1,37 @@
 package org.lazberry.xmaslegacy;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Utility class that generates random id only with Numbers and Letters.
+ */
 public class IDGenerator {
 
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	/**
+	 * I like coding in legacy way. Instead of using {@link lombok.experimental.UtilityClass},
+	 * I prefer making Constructor untouchable.
+	 */
+	@ApiStatus.Internal
+	@Contract("-> fail")
+	private IDGenerator() {
+		throw new UnsupportedOperationException("Utility class");
+	}
 
-    public static @NotNull String generateRandomId() {
-        StringBuilder sb = new StringBuilder(Constants.ID_LENGTH);
+    private static final @NotNull String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        for (int i = 0; i < Constants.ID_LENGTH; i++) {
+	/**
+	 * ID generating method. It generates totally random id.
+	 * But, this method does not check for Duplicated cases.
+	 * @param size how long the results be.
+	 * @return String value of generated id
+	 */
+    public static @NotNull String generateRandomId(int size) {
+        StringBuilder sb = new StringBuilder(size);
+
+        for (int i = 0; i < size; i++) {
             int randomIndex = ThreadLocalRandom.current().nextInt(CHARACTERS.length());
             sb.append(CHARACTERS.charAt(randomIndex));
         }

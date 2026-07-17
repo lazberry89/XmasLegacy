@@ -13,12 +13,11 @@ import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 @Inject
 @Listeners
 public class RegionCreateListener implements Listener {
-	private @Manager @NotNull RegionManager rm;
+	private @NotNull RegionManager rm;
 
 	public RegionCreateListener() {}
 

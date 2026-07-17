@@ -6,12 +6,13 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
+@ConsumableClass
 public class BundleTypeInterface implements InventoryHolder {
-    private final Inventory inv;
+    private final @NotNull Inventory inv;
 
-	public BundleTypeInterface() {
-		var gm = GachaManager.INSTANCE;
+	public BundleTypeInterface(@NotNull GachaManager gm) {
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&c&l확률형 번들 &f4&r&l / 9"));
         for (ItemStack bundle : gm.getBundles()) {
             this.inv.addItem(bundle);

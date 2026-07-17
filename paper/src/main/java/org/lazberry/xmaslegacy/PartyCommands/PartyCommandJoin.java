@@ -7,17 +7,20 @@ import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 public class PartyCommandJoin implements SubCommand {
+	private final @NotNull UserManager um;
+	private final @NotNull PartyManager pm;
+
+	public PartyCommandJoin(@NotNull UserManager um, @NotNull PartyManager pm) {
+		this.um = um;
+		this.pm = pm;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var pm = PartyManager.INSTANCE;
-        var um = UserManager.INSTANCE;
-
         var user = um.getUser(player.getUniqueId());
         if (user == null) {
             UserHandler.sendReloadNotice(player);

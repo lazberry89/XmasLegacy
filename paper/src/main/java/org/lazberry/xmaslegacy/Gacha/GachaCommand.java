@@ -15,18 +15,19 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Inject
 @Commands(command = "gacha")
 public class GachaCommand implements CommandExecutor, TabCompleter {
-    private @Manager @NotNull GachaManager gm;
+    private final @NotNull GachaManager gm;
 
-    public GachaCommand() {}
+	@Inject
+    public GachaCommand(@NotNull GachaManager gm) {
+		this.gm = gm;
+    }
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull ... args) {
@@ -37,7 +38,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 			return true;
 		}
 		if (args.length == 1 && args[0].equalsIgnoreCase("inv") || args[0].equalsIgnoreCase("inventory")) {
-			p.openInventory(new BundleTypeInterface().getInventory());
+			p.openInventory(new BundleTypeInterface(gm).getInventory());
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			return true;
 		}

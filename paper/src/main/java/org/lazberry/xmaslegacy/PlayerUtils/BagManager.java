@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -23,15 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Inject
-@Registry
-public enum BagManager implements ServerManager {
-	INSTANCE;
-
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
+public class BagManager implements ServerManager {
 	private final @NotNull Map<UUID, TempBag> bags = new HashMap<>();
-	private @Plugin @NotNull XmasLegacy plugin;
+	private final @NotNull XmasLegacy plugin;
 
-	BagManager() {}
+	@Inject
+	public BagManager(@NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+	}
 
 	public @NotNull TempBag getUserBags(@NotNull Player p) {
 		return bags.computeIfAbsent(p.getUniqueId(),

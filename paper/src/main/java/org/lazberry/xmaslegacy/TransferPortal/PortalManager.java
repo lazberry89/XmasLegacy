@@ -18,7 +18,8 @@ import org.lazberry.xmaslegacy.settings.ServerManager;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public enum PortalManager implements ServerManager {
 	INSTANCE;
 

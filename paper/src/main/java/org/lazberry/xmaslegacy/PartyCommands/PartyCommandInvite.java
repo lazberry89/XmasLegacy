@@ -14,12 +14,11 @@ import org.lazberry.xmaslegacy.Party.Party;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Utils.UserHandler;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -28,9 +27,9 @@ public class PartyCommandInvite implements SubCommand {
     private final @NotNull UserManager um;
     private final @NotNull PartyManager pm;
 
-    public PartyCommandInvite() {
-        this.um = UserManager.INSTANCE;
-        this.pm = PartyManager.INSTANCE;
+    public PartyCommandInvite(@NotNull UserManager um, @NotNull PartyManager pm) {
+        this.um = um;
+		this.pm = pm;
     }
 
     @Override

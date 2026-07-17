@@ -6,26 +6,27 @@ import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Inject
-@Registry
-public enum UserSaveManager implements ServerManager {
-    INSTANCE;
-
+@Registry.Exclude(type = ServerType.LOBBY)
+public class UserSaveManager implements ServerManager {
     private static final @NotNull Logger log = LoggerFactory.getLogger(UserSaveManager.class);
-    private final @NotNull UserRepository repository = SqlUserRepository.INSTANCE;
-    private @Manager @NotNull UserManager um;
-    private @Manager @NotNull UserEmergencyDump dump;
+    private final @NotNull UserManager um;
+    private final @NotNull UserRepository repository;
+    private final @NotNull UserEmergencyDump dump;
 
-    UserSaveManager() {
+	@Inject
+    public UserSaveManager(@NotNull UserManager um, @NotNull UserRepository repository, @NotNull UserEmergencyDump dump) {
+		this.um = um;
+		this.repository = repository;
+		this.dump = dump;
     }
 
     public void saveAll() {

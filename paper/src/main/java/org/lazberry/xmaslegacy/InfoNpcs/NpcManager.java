@@ -7,7 +7,8 @@ import org.lazberry.xmaslegacy.settings.ServerManager;
 import java.util.HashMap;
 import java.util.Map;
 
-@Registry
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public enum NpcManager implements ServerManager {
     INSTANCE;
 

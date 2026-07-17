@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -12,23 +14,23 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Slf4j
-@Inject
 @Task(type = ServerType.GLOBAL)
-public enum IcingSystem implements Tasks {
-    INSTANCE;
-
-	private @Manager @NotNull IcingBossBarManager bar;
+public class IcingSystem implements Tasks {
+	private final @NotNull IcingBossBarManager bar;
+	private final @NotNull UserManager um;
     private @Nullable BukkitTask task;
 
-    IcingSystem() {}
+	@Inject
+    public IcingSystem(@NotNull IcingBossBarManager bar, @NotNull UserManager um) {
+		this.bar = bar;
+		this.um = um;
+    }
 
 	/**
 	 * This scheduler reduces player's icing state.
@@ -45,7 +47,7 @@ public enum IcingSystem implements Tasks {
 		                || p.getGameMode() == GameMode.CREATIVE
 		                || p.getGameMode() == GameMode.SPECTATOR) return;
                 var uuid = p.getUniqueId();
-                var user = UserManager.INSTANCE.getUser(uuid);
+                var user = um.getUser(uuid);
                 if (user == null || user.isImmuneToIcing()) {
                     bar.removeBar(p);
                     return;
@@ -67,7 +69,7 @@ public enum IcingSystem implements Tasks {
 			player.sendActionBar(ColorUtils.chat(String.format("&4&l[ 빙결수치 경고 : %d%% ]", nextAmount)));
 
 			if (nextAmount == 0) {
-				player.damage(9.0);
+				player.damage(9.0, DamageSource.builder(DamageType.FREEZE).build());
 				player.getWorld().playSound(player, Sound.BLOCK_BELL_USE, 1.0f, 0.4f);
 			} else {
 				//p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);

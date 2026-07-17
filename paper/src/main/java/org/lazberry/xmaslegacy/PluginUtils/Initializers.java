@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.PluginUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.*;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.EnumMap;
@@ -13,21 +13,16 @@ import java.util.Objects;
 
 @Slf4j
 @Registry
-public enum Initializers implements ServerManager {
-	INSTANCE;
+public class Initializers {
+	private final @NotNull Map<ServerType, ServerInitializer> initializers = new EnumMap<>(ServerType.class);
 
-	private final @NotNull Map<ServerType, ServerInitializer> initializers = new EnumMap<>(ServerType.class){{
-		put(ServerType.GLOBAL, new GlobalInitializer());
-		put(ServerType.MAIN, new MainInitializer());
-		put(ServerType.HUNTING, new HuntingInitializer());
-		put(ServerType.LOBBY, new LobbyInitializer());
-	}};
-
-    Initializers() {}
-
-	@Override
-	public void init() {
-
+	@Inject
+    public Initializers(@NotNull GlobalInitializer globalInitializer, @NotNull MainInitializer mainInitializer,
+	                    @NotNull HuntingInitializer huntingInitializer, @NotNull LobbyInitializer lobbyInitializer) {
+		this.initializers.put(ServerType.GLOBAL, globalInitializer);
+		this.initializers.put(ServerType.MAIN, mainInitializer);
+		this.initializers.put(ServerType.HUNTING, huntingInitializer);
+		this.initializers.put(ServerType.LOBBY, lobbyInitializer);
 	}
 
 	/**
@@ -58,8 +53,6 @@ public enum Initializers implements ServerManager {
 	 * @throws ClassCastException throws ClassCastException
 	 */
 	public <I extends ServerInitializer> @NotNull I getInitializer(ServerType type, Class<I> clazz) throws ClassCastException {
-		return clazz.cast(this.initializers.get(type));
+		return Objects.requireNonNull(clazz.cast(this.initializers.get(type)));
 	}
-
-
 }

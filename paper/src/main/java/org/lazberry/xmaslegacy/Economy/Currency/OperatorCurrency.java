@@ -12,16 +12,18 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Commands(command = "currency")
 public class OperatorCurrency implements CommandExecutor, TabCompleter {
-	private final EconomyManager ecm;
+	private final @NotNull EconomyManager ecm;
 
-	public OperatorCurrency() {
-		this.ecm = EconomyManager.INSTANCE;
+	@Inject
+	public OperatorCurrency(@NotNull EconomyManager ecm) {
+		this.ecm = ecm;
 	}
 
 	@Override

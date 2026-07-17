@@ -6,8 +6,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Annotation.*;
+import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.Reflection;
+import org.lazberry.xmaslegacy.Annotation.Roles;
+import org.lazberry.xmaslegacy.Annotation.Skill;
+import org.lazberry.xmaslegacy.Annotation.Task;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
@@ -15,12 +21,13 @@ import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
+import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,27 +35,56 @@ import java.util.*;
 
 @Slf4j
 public final class Reflections {
-	private static final @NotNull Map<Class<?>, Object> BEAN_CONTAINER = new HashMap<>();
+	private static final @NotNull Map<Class<?>, Object> BEAN_CONTAINER = new LinkedHashMap<>();
+	private static final @NotNull Set<Class<?>> CONSTRUCTION_STACK = new HashSet<>();
 	private static final @NotNull List<ServerManager> ORDERED_MANAGERS = new ArrayList<>();
-	private static final @NotNull Map<Class<?>, Tasks> ACTIVE_TASKS = new HashMap<>();
 	private static final @NotNull String packageName = "org.lazberry.xmaslegacy";
+
+	public static void runInitializers(boolean on) {
+		log.info("[IoC] Starting Server Initializers...");
+		try {
+			Initializers initializersBean = (Initializers) BEAN_CONTAINER.get(Initializers.class);
+			if (initializersBean == null) {
+				log.warn("[IoC] Initializers bean not found in container! Skipping lifecycle triggers.");
+				return;
+			}
+
+			ServerType current = ServerInitializer.getServerType(plugin());
+
+			if (current.isRequiresGlobalInitializer()) {
+				ServerInitializer globalInit = initializersBean.getInitializer(ServerType.GLOBAL);
+				log.info("[Lifecycle] Executing GlobalInitializer...");
+				if (on) globalInit.initiate(plugin());
+				else globalInit.shutdown(plugin());
+			}
+
+			ServerInitializer specificInit = initializersBean.getInitializer(current);
+			log.info("[Lifecycle] Executing {}Initializer...", current.name());
+			if (on) specificInit.initiate(plugin());
+			else specificInit.shutdown(plugin());
+
+		} catch (Exception e) {
+			log.error("[Lifecycle] CRITICAL | Failed to execute initializers", e);
+		}
+	}
 
 	private static @NotNull XmasLegacy plugin() {
 		return XmasLegacy.getInstance();
 	}
 
+	public static void registerInstance(@NotNull Class<?> clazz, @NotNull Object instance) {
+		BEAN_CONTAINER.put(clazz, instance);
+		log.info("[IoC] Pre-registered external bean: {}", clazz.getSimpleName());
+	}
+
 	@Reflection(type = InitializeType.EXCEPTED)
 	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType... exceptions) {
-		// 1. 컨테이너 인스턴스화
-		buildBeanContainer(classPath);
+		registerInstance(XmasLegacy.class, plugin());
+		registerInstance(JavaPlugin.class, plugin());
+		registerInstance(File.class, plugin().getDataFolder());
 
-		// 2. 의존성 주입 (@Manager 및 @Plugin 필드 스캔 후 꽂아넣기)
-		injectDependencies();
-
-		// 3. ServerManager 분류 및 우선순위 자동 계산 정렬
-		sortAndRegisterManagers();
-
-		// 4. 순서에 따른 일괄 init() 호출
+		buildAndInjectBeans(classPath);
+		collectManagers();
 		initializeManagers();
 
 		var methods = Reflections.class.getDeclaredMethods();
@@ -71,147 +107,211 @@ public final class Reflections {
 		}
 	}
 
-	/**
-	 * 패키지 내의 모든 클래스를 스캔하여 대상 객체들을 인스턴스화하여 컨테이너에 보관합니다.
-	 */
-	private static void buildBeanContainer(@NotNull ClassPath classPath) {
-		log.info("[IoC] Building Bean Container and instantiating components...");
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	private static boolean isCompatibleWithCurrentServer(@NotNull Class<?> clazz) {
+		ServerType current = ServerInitializer.getServerType(plugin());
 
+		// 1. @Registry.Exclude 검사 (커맨드, 매니저 가리지 않고 전체 적용)
+		if (clazz.isAnnotationPresent(Registry.Exclude.class)) {
+			Registry.Exclude exclude = clazz.getAnnotation(Registry.Exclude.class);
+			for (ServerType excludedType : exclude.type()) {
+				if (excludedType == current) return false;
+			}
+		}
+
+		// 2. @Registry.Include 검사 (커맨드, 매니저 가리지 않고 전체 적용)
+		if (clazz.isAnnotationPresent(Registry.Include.class)) {
+			Registry.Include include = clazz.getAnnotation(Registry.Include.class);
+			boolean matched = false;
+			for (ServerType targetType : include.type()) {
+				if (!isServerTypeUnCompatible(targetType, current)) {
+					matched = true;
+					break;
+				}
+			}
+			if (!matched) return false;
+		}
+
+		// 💡 원래 있던 @Registry.Command 내부의 구형 type() 검사는 깔끔하게 제거했습니다!
+		// 이제 커맨드도 위 Include/Exclude 설정을 그대로 따라갑니다.
+
+		// 3. @Task 검사
+		if (clazz.isAnnotationPresent(Task.class)) {
+			Task taskAnnotation = clazz.getAnnotation(Task.class);
+			List<ServerType> typeList = Arrays.asList(taskAnnotation.type());
+
+			return typeList.contains(current) || (current.isRequiresGlobalInitializer() && typeList.contains(ServerType.GLOBAL));
+		}
+
+		return true;
+	}
+
+	private static boolean isServerTypeUnCompatible(@NotNull ServerType targetType, @NotNull ServerType currentType) {
+		if (targetType == currentType) return false;
+		return targetType != ServerType.GLOBAL || !currentType.isRequiresGlobalInitializer();
+	}
+
+	private static void buildAndInjectBeans(@NotNull ClassPath classPath) {
+		log.info("[IoC] Building Bean Container and resolving constructor dependencies...");
+
+		List<Class<?>> targetClasses = new ArrayList<>();
 		for (var classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
 			try {
 				Class<?> clazz = classInfo.load();
 				if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
 
-				// @Registry 또는 기존 대상 어노테이션이 감지되면 인스턴스화 대상으로 지정
-				if (clazz.isAnnotationPresent(Listeners.class) ||
-						clazz.isAnnotationPresent(Commands.class) ||
+				if (clazz.isAnnotationPresent(org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass.class)) {
+					log.debug("[IoC] Skipping @ConsumableClass: {}", clazz.getSimpleName());
+					continue;
+				}
+
+				// 1차 관문: 호환성 필터 (여기서 걸러지면 인스턴스화 대상에서 완전히 제외됨)
+				if (!isCompatibleWithCurrentServer(clazz)) {
+					log.debug("[IoC] Skipping incompatible class: {}", clazz.getSimpleName());
+					continue;
+				}
+
+				boolean hasInjectConstructor = false;
+				for (var constructor : clazz.getDeclaredConstructors()) {
+					if (constructor.isAnnotationPresent(Inject.class)) {
+						hasInjectConstructor = true;
+						break;
+					}
+				}
+
+				// 수집 대상 조건 설정
+				if (clazz.isAnnotationPresent(Registry.Include.class) ||
+						clazz.isAnnotationPresent(Registry.Exclude.class) ||
+						clazz.isAnnotationPresent(Registry.Command.class) ||
+						ServerManager.class.isAssignableFrom(clazz) || // 💡 명시적 어노테이션이 없는 일반 매니저도 안전하게 스캔 대상에 포함
 						clazz.isAnnotationPresent(Skill.class) ||
 						clazz.isAnnotationPresent(Roles.class) ||
-						clazz.isAnnotationPresent(Inject.class) ||
-						clazz.isAnnotationPresent(Registry.class)) {
+						clazz.isAnnotationPresent(Task.class) ||
+						hasInjectConstructor) {
 
-					Object instance;
-					if (clazz.isEnum()) {
-						// Enum 클래스인 경우 INSTANCE 상수를 가져옴
-						Field instanceField = clazz.getDeclaredField("INSTANCE");
-						instance = instanceField.get(null);
-					} else {
-						var constructor = clazz.getDeclaredConstructor();
-						constructor.setAccessible(true);
-						instance = constructor.newInstance();
-					}
-
-					if (instance != null) {
-						BEAN_CONTAINER.put(clazz, instance);
-					}
+					targetClasses.add(clazz);
 				}
-			} catch (NoSuchFieldException | NoSuchMethodException ignored) {
 			} catch (Exception e) {
-				log.error("[IoC] Failed to instantiate managed bean: {}", classInfo.getName(), e);
+				log.warn("[IoC] Failed to load class for scanning: {}", classInfo.getName());
+			}
+		}
+
+		for (Class<?> targetClass : targetClasses) {
+			try {
+				getOrCreateBean(targetClass);
+			} catch (Exception e) {
+				log.error("[IoC] CRITICAL | Failed to instantiate bean: {}", targetClass.getSimpleName(), e);
 			}
 		}
 	}
 
-	/**
-	 * 모든 빈을 탐색하며 @Manager 및 @Plugin 필드 주입을 일괄 처리합니다.
-	 */
-	private static void injectDependencies() {
-		log.info("[IoC] Injecting field dependencies...");
-		var plugin = plugin();
-
-		for (Object instance : BEAN_CONTAINER.values()) {
-			Class<?> clazz = instance.getClass();
-
-			if (!clazz.isAnnotationPresent(Inject.class)) {
-				continue;
+	private static @Nullable Object getOrCreateBean(@NotNull Class<?> clazz) throws Exception {
+		for (var entry : BEAN_CONTAINER.entrySet()) {
+			if (clazz.isAssignableFrom(entry.getKey())) {
+				return entry.getValue();
 			}
+		}
 
-			while (clazz != null && clazz != Object.class) {
-				for (Field field : clazz.getDeclaredFields()) {
+		if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
+			Class<?> implementationClass = findImplementation(clazz);
+			if (implementationClass == null) {
+				throw new NoSuchElementException("[IoC] Cannot find any registered implementation for: " + clazz.getName());
+			}
+			return getOrCreateBean(implementationClass);
+		}
 
-					if (field.isAnnotationPresent(Plugin.class)) {
-						if (field.getType().isAssignableFrom(plugin.getClass())) {
-							field.setAccessible(true);
-							try {
-								if (Modifier.isStatic(field.getModifiers())) {
-									field.set(null, plugin);
-								} else {
-									field.set(instance, plugin);
-								}
-							} catch (IllegalAccessException e) {
-								log.error("[IoC] Failed to inject plugin into {}#{}", clazz.getSimpleName(), field.getName(), e);
-							}
-						}
-					}
+		if (!isCompatibleWithCurrentServer(clazz)) {
+			throw new IllegalStateException("[IoC] " + clazz.getSimpleName() + " is NOT compatible with the current server type!");
+		}
 
-					if (field.isAnnotationPresent(Manager.class)) {
-						Class<?> fieldType = field.getType();
-						Object managerInstance = BEAN_CONTAINER.get(fieldType);
+		if (CONSTRUCTION_STACK.contains(clazz)) {
+			throw new IllegalStateException("Circular dependency detected involving: " + clazz.getSimpleName());
+		}
 
-						if (managerInstance != null) {
-							field.setAccessible(true);
-							try {
-								if (Modifier.isStatic(field.getModifiers())) {
-									field.set(null, managerInstance);
-								} else {
-									field.set(instance, managerInstance);
-								}
-								log.debug("[IoC] Injected @Manager '{}' into {}#{}", fieldType.getSimpleName(), clazz.getSimpleName(), field.getName());
-							} catch (IllegalAccessException e) {
-								log.error("[IoC] Failed to inject @Manager into {}#{}", clazz.getSimpleName(), field.getName(), e);
-							}
-						} else {
-							log.warn("[IoC] Cannot find @Registry bean for type: {} (Required by {}#{})",
-									fieldType.getSimpleName(), clazz.getSimpleName(), field.getName());
-						}
+		CONSTRUCTION_STACK.add(clazz);
+		Object instance = null;
+
+		try {
+			if (clazz.isEnum()) {
+				Field instanceField = clazz.getDeclaredField("INSTANCE");
+				instance = instanceField.get(null);
+			} else {
+				Constructor<?> targetConstructor = null;
+				for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+					if (constructor.isAnnotationPresent(Inject.class)) {
+						targetConstructor = constructor;
+						break;
 					}
 				}
-				clazz = clazz.getSuperclass();
-			}
-		}
 
-		injectGlobalStaticFields(plugin);
+				if (targetConstructor == null) {
+					targetConstructor = clazz.getDeclaredConstructor();
+				}
+
+				targetConstructor.setAccessible(true);
+				Class<?>[] paramTypes = targetConstructor.getParameterTypes();
+				Object[] paramInstances = new Object[paramTypes.length];
+
+				for (int i = 0; i < paramTypes.length; i++) {
+					Class<?> paramType = paramTypes[i];
+					paramInstances[i] = getOrCreateBean(paramType);
+				}
+
+				instance = targetConstructor.newInstance(paramInstances);
+				log.debug("[IoC] Successfully created bean: {} with {} dependencies.", clazz.getSimpleName(), paramTypes.length);
+			}
+
+			if (instance != null) {
+				BEAN_CONTAINER.put(clazz, instance);
+			}
+
+			return instance;
+
+		} finally {
+			CONSTRUCTION_STACK.remove(clazz);
+		}
 	}
 
-	/**
-	 * ServerManager 구현체들을 분류하고, 의존성 개수에 맞추어 정렬하여 리스트에 등록합니다.
-	 */
-	private static void sortAndRegisterManagers() {
-		log.info("[IoC] Sorting ServerManagers by auto-calculated priority...");
-		List<ServerManager> tempManagers = new ArrayList<>();
+	private static Class<?> findImplementation(Class<?> interfaceType) {
+		try {
+			ClassPath classPath = com.google.common.reflect.ClassPath.from(Reflections.class.getClassLoader());
+			for (var classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+				Class<?> candidate = classInfo.load();
+				if (candidate.isInterface() || Modifier.isAbstract(candidate.getModifiers())) continue;
+				if (candidate.isAnnotationPresent(org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass.class)) {
+					continue;
+				}
+				if (interfaceType.isAssignableFrom(candidate)) {
+					if (candidate.isAnnotationPresent(Registry.Include.class) ||
+							candidate.isAnnotationPresent(Registry.Exclude.class) ||
+							candidate.isAnnotationPresent(Registry.Command.class) ||
+							ServerManager.class.isAssignableFrom(candidate)) {
+						return candidate;
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("[IoC] Error occurred while finding implementation for {}", interfaceType.getSimpleName(), e);
+		}
+		return null;
+	}
 
+	private static void collectManagers() {
+		ORDERED_MANAGERS.clear();
 		for (var entry : BEAN_CONTAINER.entrySet()) {
 			Class<?> clazz = entry.getKey();
 
-			if (clazz.isAnnotationPresent(Registry.class) && ServerManager.class.isAssignableFrom(clazz)) {
-				tempManagers.add((ServerManager) entry.getValue());
+			// 💡 핵심 예술 포인트 변경:
+			// 이미 BEAN_CONTAINER에 담겨있다는 것 자체가 '현재 서버 유형 검사'를 완벽히 통과했다는 뜻입니다.
+			// 따라서 지저분하게 어노테이션 매칭 조건문을 주렁주렁 달 필요 없이, 오직 ServerManager 인터페이스를
+			// 상속받았는지만 체크해서 쏙쏙 골라 담으면 끝납니다. 가독성 및 확장성 폭발!
+			if (ServerManager.class.isAssignableFrom(clazz)) {
+				ORDERED_MANAGERS.add((ServerManager) entry.getValue());
 			}
 		}
-
-		tempManagers.sort(Comparator.comparingInt(manager -> {
-			Class<?> clazz = manager.getClass();
-			int managerFieldCount = 0;
-
-			if (clazz.isAnnotationPresent(Inject.class)) {
-				while (clazz != null && clazz != Object.class) {
-					for (Field field : clazz.getDeclaredFields()) {
-						if (field.isAnnotationPresent(Manager.class)) {
-							managerFieldCount++;
-						}
-					}
-					clazz = clazz.getSuperclass();
-				}
-			}
-			return managerFieldCount + 1;
-		}));
-
-		ORDERED_MANAGERS.clear();
-		ORDERED_MANAGERS.addAll(tempManagers);
+		log.info("[IoC] Collected {} ServerManagers in safe initialization order.", ORDERED_MANAGERS.size());
 	}
 
-	/**
-	 * 정렬된 매니저들의 init() 메서드를 순차적으로 호출합니다.
-	 */
 	private static void initializeManagers() {
 		log.info("[IoC] Initializing ServerManagers sequentially...");
 		for (ServerManager manager : ORDERED_MANAGERS) {
@@ -224,45 +324,12 @@ public final class Reflections {
 		}
 	}
 
-	private static void injectGlobalStaticFields(@NotNull XmasLegacy plugin) {
-		for (var entry : BEAN_CONTAINER.entrySet()) {
-			Class<?> clazz = entry.getKey();
-			for (Field field : clazz.getDeclaredFields()) {
-				if (!field.isAnnotationPresent(Plugin.class)) continue;
-				field.setAccessible(true);
-
-				try {
-					if (Modifier.isStatic(field.getModifiers()) && field.getType().isAssignableFrom(plugin.getClass())) {
-						field.set(null, plugin);
-						continue;
-					}
-
-					if (clazz.isEnum()) {
-						Object enumInstance = entry.getValue();
-						if (enumInstance != null && field.getType().isAssignableFrom(plugin.getClass())) {
-							field.set(enumInstance, plugin);
-						}
-					}
-				} catch (Exception ignored) {}
-			}
-		}
-	}
-
-	@Deprecated
-	private static void injectGlobalStaticFields(@NotNull ClassPath classPath, @NotNull XmasLegacy plugin) {
-
-	}
-
-    /* ==========================================
-       이하 Bukkit Event 및 Command 자동 등록 메서드 영역 (이전과 동일)
-       ========================================== */
-
 	@Reflection(type = InitializeType.LISTENERS)
 	public static void registerListeners(@NotNull ClassPath classPath) {
 		try {
 			for (var entry : BEAN_CONTAINER.entrySet()) {
 				Class<?> clazz = entry.getKey();
-				if (Listener.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Listeners.class)) {
+				if (Listener.class.isAssignableFrom(clazz)) {
 					Listener instance = (Listener) entry.getValue();
 					Bukkit.getPluginManager().registerEvents(instance, plugin());
 					log.info("Listener {} Automatically registered from IoC Container", clazz.getSimpleName());
@@ -278,8 +345,8 @@ public final class Reflections {
 		try {
 			for (var entry : BEAN_CONTAINER.entrySet()) {
 				Class<?> clazz = entry.getKey();
-				if (CommandExecutor.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Commands.class)) {
-					Commands autoCommand = clazz.getAnnotation(Commands.class);
+				if (CommandExecutor.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Registry.Command.class)) {
+					Registry.Command autoCommand = clazz.getAnnotation(Registry.Command.class);
 
 					List<String> allCommands = new ArrayList<>();
 					allCommands.add(autoCommand.command());
@@ -334,73 +401,31 @@ public final class Reflections {
 
 	@Reflection(type = InitializeType.TASKS_ON)
 	public static void startTasks(@NotNull ClassPath classPath) {
-		taskReflection(classPath, true);
+		taskReflection(true);
 	}
 
 	@Reflection(type = InitializeType.TASKS_OFF)
-	public static void stopTasks(@NotNull ClassPath classPath) {
-		taskReflection(classPath, false);
+	public static void stopTasks(@Nullable ClassPath classPath) {
+		taskReflection(false);
 	}
 
-	private static void taskReflection(@NotNull ClassPath classPath, boolean enable) {
-		ServerType current = ServerInitializer.getServerType(plugin());
+	private static void taskReflection(boolean enable) {
+		for (var entry : BEAN_CONTAINER.entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (!clazz.isAnnotationPresent(Task.class)) continue;
+			if (!Tasks.class.isAssignableFrom(clazz)) continue;
 
-		for (ClassPath.ClassInfo classInfo : classPath.getTopLevelClassesRecursive(packageName)) {
+			Tasks instance = (Tasks) entry.getValue();
 			try {
-				Class<?> clazz = classInfo.load();
-				if (!clazz.isAnnotationPresent(Task.class)) continue;
-				if (!Tasks.class.isAssignableFrom(clazz)) continue;
-
-				Task taskAnnotation = clazz.getAnnotation(Task.class);
-				List<ServerType> typeList = Arrays.asList(taskAnnotation.type());
-
-				if (!typeList.contains(current) && !(current.isRequiresGlobalInitializer() && typeList.contains(ServerType.GLOBAL))) {
-					log.info("Task {} skipped due to Invalid ServerType. EXPECTED: {}, ACTUAL: {}",
-							clazz.getSimpleName(), Arrays.toString(taskAnnotation.type()), current);
-					continue;
-				}
-
-				Tasks instance;
-				if (clazz.isEnum()) {
-					var field = clazz.getField("INSTANCE");
-					instance = (Tasks) field.get(null);
-				} else {
-					if (enable) {
-						if (ACTIVE_TASKS.containsKey(clazz)) {
-							instance = ACTIVE_TASKS.get(clazz);
-						} else {
-							if (BEAN_CONTAINER.containsKey(clazz)) {
-								instance = (Tasks) BEAN_CONTAINER.get(clazz);
-							} else {
-								var constructor = clazz.getDeclaredConstructor();
-								constructor.setAccessible(true);
-								instance = (Tasks) constructor.newInstance();
-							}
-							ACTIVE_TASKS.put(clazz, instance);
-							log.info("Successfully registered and cached instance of Task {}", clazz.getSimpleName());
-						}
-					} else {
-						instance = ACTIVE_TASKS.get(clazz);
-						if (instance == null && BEAN_CONTAINER.containsKey(clazz)) {
-							instance = (Tasks) BEAN_CONTAINER.get(clazz);
-						}
-
-						if (instance == null) {
-							log.warn("Task {} instance not found for stopping. Skipping.", clazz.getSimpleName());
-							continue;
-						}
-					}
-				}
 				if (enable) {
 					instance.startTask(plugin());
 					log.info("Task {} started successfully.", clazz.getSimpleName());
 				} else {
 					instance.stopTask();
-					if (!clazz.isEnum()) ACTIVE_TASKS.remove(clazz);
 					log.info("Task {} stopped successfully.", clazz.getSimpleName());
 				}
 			} catch (Exception e) {
-				log.error("Error occurred while processing task {}, Passing process.", classInfo.getName(), e);
+				log.error("Error occurred while processing task {}", clazz.getSimpleName(), e);
 			}
 		}
 	}

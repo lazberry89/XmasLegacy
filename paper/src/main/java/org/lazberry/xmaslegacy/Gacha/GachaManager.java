@@ -5,7 +5,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
@@ -17,12 +16,10 @@ import org.lazberry.xmaslegacy.settings.ServerManager;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Inject
-@Registry
-public enum GachaManager implements ServerManager {
-	INSTANCE;
-
-	private @Plugin @NotNull XmasLegacy plugin;
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
+public class GachaManager implements ServerManager {
+	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<String, Gacha> normalGachas = new HashMap<>();
 	private final @NotNull Map<String, Gacha> highEndGachas = new HashMap<>();
 	private final @NotNull Map<String, Gacha> chromaticBundle = new HashMap<>();
@@ -30,7 +27,10 @@ public enum GachaManager implements ServerManager {
 
 	private final @NotNull List<ItemStack> bundles = new ArrayList<>();
 
-	GachaManager() {}
+	@Inject
+	public GachaManager(@NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public void init() {

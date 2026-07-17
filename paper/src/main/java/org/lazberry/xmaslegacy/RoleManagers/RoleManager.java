@@ -12,7 +12,8 @@ import org.lazberry.xmaslegacy.settings.ServerManager;
 import java.util.EnumMap;
 import java.util.Map;
 
-@Registry
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public enum RoleManager implements ServerManager {
 	INSTANCE;
 

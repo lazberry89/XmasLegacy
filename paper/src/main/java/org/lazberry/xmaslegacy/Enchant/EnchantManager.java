@@ -18,35 +18,34 @@ import org.lazberry.xmaslegacy.settings.ServerManager;
 import java.util.ArrayList;
 import java.util.List;
 
-@Registry
-public enum EnchantManager implements ServerManager {
-	INSTANCE;
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
+public class EnchantManager implements ServerManager {
+    private final @NotNull NamespacedKey key;
 
-    private final NamespacedKey key;
-
-    private static final Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");
-    private static final Component LEVEL_2 = ColorUtils.chat("&e★★☆☆☆☆☆&6☆☆&c☆");
-    private static final Component LEVEL_3 = ColorUtils.chat("&e★★★☆☆☆☆&6☆☆&c☆");
-    private static final Component LEVEL_4 = ColorUtils.chat("&e★★★★☆☆☆&6☆☆&c☆");
-    private static final Component LEVEL_5 = ColorUtils.chat("&e★★★★★☆☆&6☆☆&c☆");
-    private static final Component LEVEL_6 = ColorUtils.chat("&e★★★★★★☆&6☆☆&c☆");
-    private static final Component LEVEL_7 = ColorUtils.chat("&e★★★★★★★&6☆☆&c☆");
-    private static final Component LEVEL_8 = ColorUtils.chat("&e★★★★★★★&6★☆&c☆");
-    private static final Component LEVEL_9 = ColorUtils.chat("&e★★★★★★★&6★★&c☆");
-    private static final Component LEVEL_10 = ColorUtils.chat("&e★★★★★★★&6★★&c★");
-    private static final Component PRISM = ColorUtils.chat("&#C822FF★&#B22CFC★&#9C36F8★&#853FF5★&#6F49F2★&#5953EE★&#435DEB★&#2C66E8★&#1670E4★&#007AE1★");
+    private static final @NotNull Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_2 = ColorUtils.chat("&e★★☆☆☆☆☆&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_3 = ColorUtils.chat("&e★★★☆☆☆☆&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_4 = ColorUtils.chat("&e★★★★☆☆☆&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_5 = ColorUtils.chat("&e★★★★★☆☆&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_6 = ColorUtils.chat("&e★★★★★★☆&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_7 = ColorUtils.chat("&e★★★★★★★&6☆☆&c☆");
+    private static final @NotNull Component LEVEL_8 = ColorUtils.chat("&e★★★★★★★&6★☆&c☆");
+    private static final @NotNull Component LEVEL_9 = ColorUtils.chat("&e★★★★★★★&6★★&c☆");
+    private static final @NotNull Component LEVEL_10 = ColorUtils.chat("&e★★★★★★★&6★★&c★");
+    private static final @NotNull Component PRISM = ColorUtils.chat("&#C822FF★&#B22CFC★&#9C36F8★&#853FF5★&#6F49F2★&#5953EE★&#435DEB★&#2C66E8★&#1670E4★&#007AE1★");
     private static final List<Component> LORE_LIST = List.of(
             LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5,
             LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10
     );
 
-    EnchantManager() {
+    public EnchantManager() {
         this.key = KeyUtils.get("enchant");
     }
 
     @Range(from = 1, to = 10)
     public Component getLore(int lvl) {
-        return LORE_LIST.get(lvl - 1);
+        return LORE_LIST.get(Math.clamp(lvl, 1, 10));
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -62,14 +61,14 @@ public enum EnchantManager implements ServerManager {
         return container.get(key, PersistentDataType.INTEGER);
     }
 
-    public void editTag(ItemStack item, int lvl) {
+    public void editTag(@NotNull ItemStack item, int lvl) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
         meta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, lvl);
         item.setItemMeta(meta);
     }
 
-    private void applyLevelChange(ItemStack item, int newLvl) {
+    private void applyLevelChange(@NotNull ItemStack item, int newLvl) {
         editTag(item, newLvl);
 
         item.editMeta(meta -> {

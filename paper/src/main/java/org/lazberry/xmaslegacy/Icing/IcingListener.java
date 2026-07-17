@@ -15,17 +15,19 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-@Inject
 @Listeners
 public class IcingListener implements Listener {
-	private @Manager @NotNull UserManager um;
-	private @Manager @NotNull IcingBossBarManager bm;
+	private final @NotNull UserManager um;
+	private final @NotNull IcingBossBarManager bm;
 
-	public IcingListener() {}
+	@Inject
+	public IcingListener(@NotNull UserManager um, @NotNull IcingBossBarManager bm) {
+		this.um = um;
+		this.bm = bm;
+	}
 
 	@EventHandler
 	public void resetIcingWhenDead(PlayerDeathEvent e) {

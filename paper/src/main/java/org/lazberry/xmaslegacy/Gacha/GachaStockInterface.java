@@ -9,14 +9,15 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
+@ConsumableClass
 public class GachaStockInterface implements InventoryHolder {
 	private final @NotNull Inventory inv;
     private final @NotNull BundleType type;
 
-    public GachaStockInterface(@NotNull XmasLegacy plugin, @NotNull BundleType type) {
+    public GachaStockInterface(@NotNull XmasLegacy plugin, @NotNull BundleType type, @NotNull GachaManager gm) {
         this.type = type;
-	    var gm = GachaManager.INSTANCE;
         this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat(String.format("&c&l%s : %d(개) / %d(전체)" ,type.getKor() , gm.getAllSortedByChance(type).size(), gm.getAll().size())));
         ItemStack none = ItemBuilder.of(plugin, Material.BARRIER).setName(ColorUtils.chat("")).setLore(ColorUtils.chat("")).hideAllFlags().build();
         if (gm.getAllSortedByChance(type).isEmpty()) {

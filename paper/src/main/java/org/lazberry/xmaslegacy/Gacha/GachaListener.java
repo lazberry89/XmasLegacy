@@ -13,7 +13,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
@@ -21,15 +20,17 @@ import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
-@Inject
 @Listeners
 public class GachaListener implements Listener {
-    private @Plugin @NotNull XmasLegacy plugin;
-    private @Manager @NotNull GachaManager gm;
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull GachaManager gm;
 
-    public GachaListener() {}
+	@Inject
+    public GachaListener(@NotNull XmasLegacy plugin, @NotNull GachaManager gm) {
+		this.plugin = plugin;
+		this.gm = gm;
+    }
 
     @EventHandler
     public void onStockClick(InventoryClickEvent e) {
@@ -67,7 +68,7 @@ public class GachaListener implements Listener {
         try {
             String value = click.getPersistentDataContainer().get(KeyUtils.get("gacha"), PersistentDataType.STRING);
             BundleType type = BundleType.valueOf(value);
-            p.openInventory(new GachaStockInterface(plugin, type).getInventory());
+            p.openInventory(new GachaStockInterface(plugin, type, gm).getInventory());
             p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
             p.updateInventory();
 

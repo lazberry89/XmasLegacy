@@ -1,24 +1,23 @@
 package org.lazberry.xmaslegacy.Party;
 
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("ClassCanBeRecord")
+@ConsumableClass
 public class PartyQuitResult {
 
-	private final UUID leaverUuid;
-	private final List<User> remainingMembers;
-	private final User newLeader;
+	private final @NotNull @Getter UUID leaverUuid;
+	private final @NotNull @Getter List<User> remainingMembers;
+	private final @NotNull @Getter User newLeader;
 
-	public PartyQuitResult(UUID leaverUuid, List<User> remainingMembers, User newLeader) {
+	public PartyQuitResult(@NotNull UUID leaverUuid, @NotNull List<User> remainingMembers, @NotNull User newLeader) {
 		this.leaverUuid = leaverUuid;
 		this.remainingMembers = remainingMembers;
 		this.newLeader = newLeader;
 	}
-
-	public List<User> getRemainingMembers() { return remainingMembers; }
-	public User getNewLeader() { return newLeader; }
-
 }

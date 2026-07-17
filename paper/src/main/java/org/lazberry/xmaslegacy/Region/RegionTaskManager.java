@@ -15,7 +15,6 @@ import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
@@ -24,7 +23,7 @@ import java.util.Map;
 @Inject
 @Task(type = ServerType.GLOBAL)
 public class RegionTaskManager implements Tasks {
-	private @Manager @NotNull RegionManager rm;
+	private @NotNull RegionManager rm;
     private @Nullable BukkitTask task;
     private float globalAngle = 0.0f;
 

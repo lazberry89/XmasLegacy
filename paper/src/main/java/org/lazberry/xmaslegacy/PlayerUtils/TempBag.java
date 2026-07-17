@@ -2,12 +2,10 @@ package org.lazberry.xmaslegacy.PlayerUtils;
 
 import com.google.common.collect.Lists;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -16,16 +14,18 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Env.Cookie;
-import org.lazberry.xmaslegacy.Utils.ItemBuilder;
-import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@ConsumableClass
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class TempBag implements InventoryHolder {
 	private final @NotNull Inventory inv;
+	@EqualsAndHashCode.Include
 	private final @NotNull @Getter UUID owner;
 
 	public TempBag(@NotNull UUID uuid) {

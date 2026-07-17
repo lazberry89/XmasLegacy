@@ -5,22 +5,22 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Inject
-@Registry
-public enum EconomyManager {
-	INSTANCE;
-
-    private @Manager @NotNull UserManager um;
+@Registry.Exclude(type = ServerType.LOBBY)
+public class EconomyManager {
+    private final @NotNull UserManager um;
     private final @NotNull Map<String, Integer> marketDemand = new HashMap<>();
 
-    EconomyManager() {}
+	@Inject
+    public EconomyManager(@NotNull UserManager um) {
+		this.um = um;
+    }
 
     public boolean deposit(@Nullable UUID uuid, int amount) {
         if (uuid != null) {

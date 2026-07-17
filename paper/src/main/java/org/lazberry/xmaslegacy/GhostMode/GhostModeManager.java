@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -12,16 +11,18 @@ import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.*;
 
-@Inject
-@Registry
-public enum GhostModeManager implements ServerManager {
-	INSTANCE;
-
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
+public class GhostModeManager implements ServerManager {
     private final @NotNull Set<UUID> isGhostMode = new HashSet<>();
     private final @NotNull Map<UUID, ItemStack[]> saveArmor = new HashMap<>();
-    private @Plugin @NotNull XmasLegacy plugin;
+    private final @NotNull XmasLegacy plugin;
 
-	GhostModeManager() {}
+	@Inject
+	public GhostModeManager(@NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+	}
+
 	@NotNull Set<UUID> getGhostModePlayer() {
 		return new HashSet<>(isGhostMode);
 	}

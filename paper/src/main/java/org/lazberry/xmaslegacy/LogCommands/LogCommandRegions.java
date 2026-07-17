@@ -15,10 +15,14 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 import java.util.List;
 
 public class LogCommandRegions implements SubCommand {
+	private final @NotNull RegionManager rm;
+
+	public LogCommandRegions(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var rm = RegionManager.INSTANCE;
         if (args.length >= 2) {
             OfflinePlayer of = Bukkit.getOfflinePlayer(args[1]);
             if (of.hasPlayedBefore()) {

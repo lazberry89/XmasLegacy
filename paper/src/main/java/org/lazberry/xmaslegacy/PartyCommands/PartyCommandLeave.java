@@ -13,16 +13,22 @@ import java.util.List;
 import java.util.Objects;
 
 public class PartyCommandLeave implements SubCommand {
+	private final @NotNull PartyManager pm;
+	private final @NotNull UserManager um;
+
+	public PartyCommandLeave(@NotNull UserManager um, @NotNull PartyManager pm) {
+		this.pm = pm;
+		this.um = um;
+	}
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var user = UserManager.INSTANCE.getUser(player.getUniqueId());
+        var user = um.getUser(player.getUniqueId());
         if (user == null) {
             UserHandler.sendReloadNotice(player);
             return;
         }
         if (args.length >= 1) {
-            var pm = PartyManager.INSTANCE;
             var party = pm.getParty(player.getUniqueId());
             if (party == null) return;
 

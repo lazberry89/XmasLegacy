@@ -5,10 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,19 +18,14 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.UUID;
 
-@Inject
-@Registry
-public enum UserEmergencyDump implements ServerManager {
-    INSTANCE;
-
+@Registry.Exclude(type = ServerType.LOBBY)
+public class UserEmergencyDump {
     private static final @NotNull Logger log = LoggerFactory.getLogger(UserEmergencyDump.class);
-    private File rootDataFolder;
-    private @Manager @NotNull UserManager um;
+    private final @NotNull File rootDataFolder;
 
-    UserEmergencyDump() {}
-
-    public void init() {
-        this.rootDataFolder = um.getRootDataFolder();
+	@Inject
+    public UserEmergencyDump(@NotNull File rootDataFolder) {
+		this.rootDataFolder = rootDataFolder;
     }
 
     void threadDump(@NotNull User user) {
@@ -78,14 +72,7 @@ public enum UserEmergencyDump implements ServerManager {
             props.load(in);
             String name = props.getProperty("name", "Unknown");
 
-            Role role;
-            try {
-                role = Role.valueOf(props.getProperty("role", "USER"));
-            } catch (IllegalArgumentException e) {
-                role = BasicRoles.USER;
-                log.warn("No valid role name of {}, replaced to Roles.USER.", name);
-            }
-
+	        Role role = Role.parseRole(props.getProperty("role"), BasicRoles.USER);
             User recoveredUser = new User(uuid, role, name);
 
             recoveredUser.setDollars(Integer.parseInt(props.getProperty("dollars", "0")));

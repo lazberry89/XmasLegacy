@@ -9,14 +9,15 @@ import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
-@Inject
 @Commands(command = "icing")
 public class IcingCommand implements CommandExecutor {
-	private @Manager @NotNull IcingSystem system;
+	private final @NotNull IcingSystem system;
 
-	public IcingCommand() {}
+	@Inject
+	public IcingCommand(@NotNull IcingSystem system) {
+		this.system = system;
+	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull ...args) {

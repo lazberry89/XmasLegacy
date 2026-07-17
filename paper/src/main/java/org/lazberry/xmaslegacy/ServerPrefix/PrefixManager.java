@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.CustomPrefix;
 import org.lazberry.xmaslegacy.settings.ServerManager;
@@ -17,11 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Inject
-@Registry
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public enum PrefixManager implements ServerManager {
 	INSTANCE;
 
-	private @Manager @NotNull UserManager um;
+	private @NotNull UserManager um;
 	private final @NotNull Map<String, CustomPrefix> customPrefix = new HashMap<>();
 
 	PrefixManager() {}

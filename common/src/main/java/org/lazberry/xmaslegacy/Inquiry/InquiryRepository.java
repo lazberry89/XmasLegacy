@@ -1,20 +1,30 @@
 package org.lazberry.xmaslegacy.Inquiry;
 
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Registry.Exclude(type = ServerType.LOBBY)
 public class InquiryRepository {
-	private final String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
-	private final String user = "root";
-	private final String password = "password";
-	private static final Logger logger = LoggerFactory.getLogger(InquiryRepository.class);
+	private final @NotNull String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
+	private final @NotNull String user = "root";
+	private final @NotNull String password = "password";
+	private static final @NotNull Logger logger = LoggerFactory.getLogger(InquiryRepository.class);
 
-	public void saveInquiry(UUID uuid, String name, String message) {
+	public InquiryRepository() {
+		createDatabaseFolder();
+		createNewTable();
+	}
+
+	public void saveInquiry(@NotNull UUID uuid, @NotNull String name, @NotNull String message) {
 		String sql = "INSERT INTO inquiry_logs (uuid, player_name, message, status) VALUES (?, ?, ?, 'PENDING')";
 		try (Connection conn = DriverManager.getConnection(url, user, password);
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -27,8 +37,37 @@ public class InquiryRepository {
 		}
 	}
 
-	// 상태 업데이트 (RESOLVED 등)
-	public void updateStatus(UUID uuid, String status) {
+	private void createDatabaseFolder() {
+		File dbFolder = new File("plugins/XmasLegacy");
+		if (!dbFolder.exists()) {
+			if (dbFolder.mkdirs()) {
+				logger.info("[Inquiry] Successfully created database folder directory.");
+			}
+		}
+	}
+
+	private void createNewTable() {
+		String sql = """
+            CREATE TABLE IF NOT EXISTS inquiry_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                uuid TEXT NOT NULL,
+                player_name TEXT NOT NULL,
+                message TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'PENDING',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """;
+
+		try (Connection conn = DriverManager.getConnection(url, user, password);
+		     Statement stmt = conn.createStatement()) {
+			stmt.execute(sql);
+			logger.info("[Inquiry] Checked and verified/created 'inquiry_logs' table.");
+		} catch (SQLException e) {
+			logger.error("[Inquiry] Failed to initialize database table 'inquiry_logs'", e);
+		}
+	}
+
+	public void updateStatus(@NotNull UUID uuid, @NotNull String status) {
 		String sql = "UPDATE inquiry_logs SET status = ? WHERE uuid = ? AND status = 'PENDING' ORDER BY created_at DESC LIMIT 1";
 		try (Connection conn = DriverManager.getConnection(url, user, password);
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -40,8 +79,7 @@ public class InquiryRepository {
 		}
 	}
 
-	// 특정 유저의 로그 가져오기
-	public List<String> getLogs(UUID uuid) {
+	public @NotNull List<String> getLogs(@NotNull UUID uuid) {
 		List<String> logs = new ArrayList<>();
 		String sql = "SELECT * FROM inquiry_logs WHERE uuid = ? ORDER BY created_at DESC";
 		try (Connection conn = DriverManager.getConnection(url, user, password);

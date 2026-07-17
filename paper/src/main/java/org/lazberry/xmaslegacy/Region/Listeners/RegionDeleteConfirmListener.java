@@ -13,12 +13,11 @@ import org.lazberry.xmaslegacy.Region.Gui.RegionDeleteInterface;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 @Inject
 @Listeners
 public class RegionDeleteConfirmListener implements Listener {
-    private @Manager @NotNull RegionManager rm;
+    private @NotNull RegionManager rm;
 
     public RegionDeleteConfirmListener() {}
 

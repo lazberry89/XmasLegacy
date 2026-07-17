@@ -2,28 +2,40 @@ package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.*;
-import org.lazberry.xmaslegacy.LogCommands.LogCommand;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
-import org.lazberry.xmaslegacy.RuleCommands.RuleCommand;
+import org.lazberry.xmaslegacy.ServerJoinListener;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.UserSaveTask;
+import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Slf4j
+@Registry
 public class GlobalInitializer implements ServerInitializer {
+	private final @NotNull UserManager um;
+	private final @NotNull SqlUserRepository sr;
+	private final @NotNull BagManager bm;
+
+	@Inject
+	public GlobalInitializer(@NotNull UserManager um, @NotNull SqlUserRepository sr, @NotNull BagManager bm) {
+		this.um = um;
+		this.sr = sr;
+		this.bm = bm;
+	}
 
 	/**
 	 * BungeeCord plugin messenger registered in this method.
 	 * @param plugin Plugin instance
 	 */
 	@Override
-	public void enable(@NotNull XmasLegacy plugin) {
+	public void initiate(@NotNull XmasLegacy plugin) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
-		UserManager.INSTANCE.init(plugin.getDataFolder());
-		plugin.registerReflection();
 
 		if (AgeableCrops.RegisterRecipe()) log.info("Recipe Registered!");
 		else log.error("Recipe Not Registered!");
@@ -33,41 +45,20 @@ public class GlobalInitializer implements ServerInitializer {
 
 		plugin.getServer().getPluginManager().registerEvents(new ServerJoinListener(), plugin);
 
-		registerGlobalCommand(plugin);
 		UserSaveTask.INSTANCE.loadValidUsers();
 
 		log.info("XmasLegacy Plugin Enabled!");
 		log.warn("This Christmas will be Perfect!");
 	}
 
-	private void registerGlobalCommand(@NotNull XmasLegacy plugin) {
-		var inquiry = plugin.getCommand("문의");
-		var move = plugin.getCommand("이동문의");
-		var filter = plugin.getCommand("filter");
-		var log = plugin.getCommand("log");
-		if (inquiry != null) inquiry.setExecutor(new InquiryCommandManager());
-		if (move != null) move.setExecutor(new InquireTeleportCommand());
-		var rule = new RuleCommand();
-		if (filter != null) {
-			filter.setExecutor(rule);
-			filter.setTabCompleter(rule);
-		}
-		var logCommand = new LogCommand();
-		if (log != null) {
-			log.setExecutor(logCommand);
-			log.setTabCompleter(logCommand);
-		}
-	}
-
 	@Override
-	public void disable(@NotNull XmasLegacy plugin) {
-		plugin.unregisterReflection();
+	public void shutdown(@NotNull XmasLegacy plugin) {
 		RegionManager.INSTANCE.saveAsync();
 
-		UserManager.INSTANCE.getUsers().forEach(SqlUserRepository.INSTANCE::saveUser);
+		um.getUsers().forEach(sr::saveUser);
 		log.info("User info is automatically saved!");
 
-		BagManager.INSTANCE.saveAllBags();
+		bm.saveAllBags();
 		log.info("Bag data is automatically saved!");
 		log.info("Stopping Hunting Zone spawning.");
 	}

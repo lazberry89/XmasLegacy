@@ -10,18 +10,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Commands(command = "cos")
+@Registry.Command(command = "cos", type = ServerType.GLOBAL)
 public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull CosmeticManager csm;
 
-	public CosmeticsCommand() {
-		this.csm = CosmeticManager.INSTANCE;
+	@Inject
+	public CosmeticsCommand(@NotNull CosmeticManager csm) {
+		this.csm = csm;
 	}
 
 	@Override

@@ -18,17 +18,15 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 
 @Inject
 @Listeners
 public class ChatPrefixListener implements Listener {
-	private @Manager @NotNull PrefixManager pfm;
-	private @Manager @NotNull RuleManager rm;
-	private @Manager @NotNull UserManager um;
+	private @NotNull PrefixManager pfm;
+	private @NotNull RuleManager rm;
+	private @NotNull UserManager um;
 
 	public ChatPrefixListener() {}
 

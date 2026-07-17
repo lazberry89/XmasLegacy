@@ -11,24 +11,27 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Task;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
-import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 
 @Slf4j
-@Inject
 @Task(type = ServerType.MAIN)
 public class FreeFoodTask implements Tasks {
 	private @Nullable BukkitTask task;
 	private @Getter boolean isRunning = false;
-	private @Manager @NotNull UserManager um;
-	private @Manager @NotNull BagManager bm;
+	private final @NotNull UserManager um;
+	private final @NotNull BagManager bm;
+
+	@Inject
+	public FreeFoodTask(@NotNull UserManager um, @NotNull BagManager bm) {
+		this.um = um;
+		this.bm = bm;
+	}
 
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {

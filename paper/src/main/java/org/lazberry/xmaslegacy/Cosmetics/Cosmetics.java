@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Cosmetics;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
@@ -8,27 +9,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@ConsumableClass
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Cosmetics {
-	private final @Getter ItemStack model;
-	private final @Getter String name;
-	private final CosmeticType type;
+	@EqualsAndHashCode.Include
+	private final @NotNull @Getter ItemStack model;
+	private final @NotNull @Getter String name;
+	private final @NotNull CosmeticType type;
 	private final @NotNull Map<UUID, ItemDisplay> display = new HashMap<>();
 	private final @NotNull Map<UUID, BukkitTask> task = new HashMap<>();
-	private final @NotNull XmasLegacy plugin = XmasLegacy.getInstance();
+	private final @NotNull XmasLegacy plugin;
 
-	public Cosmetics(ItemStack model, String name, CosmeticType type) {
+	public Cosmetics(@NotNull ItemStack model, @NotNull String name, @NotNull CosmeticType type) {
 		this.model = model;
 		this.name = name;
 		this.type = type;
+		this.plugin = XmasLegacy.getInstance();
 	}
 
-
-	private void spawnCosmeticDisplay(Player p) {
+	private void spawnCosmeticDisplay(@NotNull Player p) {
 		ItemDisplay display = p.getWorld().spawn(p.getLocation(), ItemDisplay.class);
 		display.setItemStack(model);
 		display.setInvisible(true);
@@ -55,8 +60,7 @@ public class Cosmetics {
 		this.display.put(p.getUniqueId(), display);
 	}
 
-	private void updateCosmeticDisplay(Player p, ItemDisplay display) {
-		// 1인칭 시야 가림 방지 (Pitch 값에 따라 숨김)
+	private void updateCosmeticDisplay(@NotNull Player p, @NotNull ItemDisplay display) {
 		float pitch = p.getLocation().getPitch();
 		if (type == CosmeticType.BODY) {
 			if (pitch > 60 && display.isVisibleByDefault()) {
@@ -67,7 +71,7 @@ public class Cosmetics {
 		}
 	}
 
-	private void startUpdateLoop(Player p) {
+	private void startUpdateLoop(@NotNull Player p) {
 		UUID uuid = p.getUniqueId();
 
 		BukkitTask newTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
@@ -103,16 +107,5 @@ public class Cosmetics {
 			task.cancel();
 			this.task.remove(uuid);
 		}
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Cosmetics c)) return false;
-		return c.getModel().equals(model);
-	}
-
-	@Override
-	public int hashCode() {
-		return model.hashCode();
 	}
 }

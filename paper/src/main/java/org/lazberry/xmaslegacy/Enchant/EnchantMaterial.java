@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
@@ -19,9 +20,9 @@ import java.util.List;
 
 public class EnchantMaterial {
 
-    public EnchantMaterial() {}
+    private EnchantMaterial() {}
 
-	public static ItemStack PrismFractal() {
+	public static @NotNull ItemStack PrismFractal() {
 		var oraxen = OraxenItems.getItemById("prism_fractal");
 
 		if (oraxen == null) {

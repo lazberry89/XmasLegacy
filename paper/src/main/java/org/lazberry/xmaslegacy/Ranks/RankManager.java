@@ -9,7 +9,6 @@ import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -20,10 +19,11 @@ import java.util.concurrent.CompletableFuture;
 
 @Inject
 @Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)(type = ServerType.GLOBAL)
 public enum RankManager implements ServerManager {
 	INSTANCE;
 
-	private @Manager @NotNull @Getter UserManager userManager;
+	private @NotNull @Getter UserManager userManager;
 	private @NotNull volatile List<User> dollarRank = List.of();
 	private @NotNull volatile List<User> expRank = List.of();
 	private @NotNull volatile List<User> roleExpRank = List.of();

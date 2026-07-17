@@ -12,8 +12,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Roles.HiddenRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
@@ -21,23 +19,20 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Roles.ThirdRoles;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
-import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Inject
 public class UserTagManager {
-    private static @Plugin @NotNull XmasLegacy plugin;
     private static final Map<UUID, TextDisplay> tagMap = new HashMap<>();
     private static final Map<UUID, Interaction> baseMap = new HashMap<>();
-    private static final UserManager um = UserManager.INSTANCE;
     private static BukkitTask task;
 
-    public static void startTask() {
+    public static void startTask(@NotNull XmasLegacy plugin, @NotNull UserManager um) {
         if (task != null) return;
         task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 

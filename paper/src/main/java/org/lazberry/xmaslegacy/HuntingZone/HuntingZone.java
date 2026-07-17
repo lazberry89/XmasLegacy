@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.HuntingZone;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -13,24 +14,27 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.*;
 
+@ConsumableClass
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class HuntingZone implements HZone {
-	private final @NotNull ZoneType type;
-	private final @NotNull String worldName;
-	private final @NotNull MobRepository mobRepository;
+	private final @NotNull @Getter ZoneType type;
+	@EqualsAndHashCode.Include
+	private final @NotNull @Getter String worldName;
+	private final @NotNull @Getter MobRepository mobRepository;
 	private final @NotNull List<MobKey> mobs;
 	private final @NotNull Set<Long> zones;
 	private final @NotNull Set<MobKey> mobKeySet;
-    @Getter
-    private boolean isEnabled = false;
+    private @Getter boolean isEnabled = false;
 
-	public HuntingZone(@NotNull ZoneType type, @NotNull String worldName) {
+	public HuntingZone(@NotNull ZoneType type, @NotNull String worldName, @NotNull MobRepository mobRepository) {
 		this.zones = new HashSet<>();
 		this.type = type;
 		this.worldName = worldName;
-		this.mobRepository = MobRepository.INSTANCE;
+		this.mobRepository = mobRepository;
 		this.mobs = Arrays.stream(type.getMobs()).toList();
 		this.mobKeySet = new HashSet<>(this.mobs);
 	}
@@ -83,9 +87,6 @@ public class HuntingZone implements HZone {
 
 	public MobKey[] getMobs() {
 		return this.mobs.toArray(MobKey[]::new);
-	}
-	public @NotNull ZoneType getType() {
-		return this.type;
 	}
 	public void enable() {
 		this.isEnabled = true;

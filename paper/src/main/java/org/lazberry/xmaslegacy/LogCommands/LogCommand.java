@@ -10,9 +10,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
+import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +26,11 @@ import java.util.Map;
 public class LogCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> commandMap = new HashMap<>();
 
-    public LogCommand() {
-		this.commandMap.put("inquiry", new LogCommandInquiry());
-		this.commandMap.put("inquiries", new LogCommandInquiries());
-		this.commandMap.put("regions", new LogCommandRegions());
+	@Inject
+    public LogCommand(@NotNull InquiryManager im, @NotNull RegionManager rm) {
+		this.commandMap.put("inquiry", new LogCommandInquiry(im));
+		this.commandMap.put("inquiries", new LogCommandInquiries(im));
+		this.commandMap.put("regions", new LogCommandRegions(rm));
     }
 
     @Override

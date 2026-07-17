@@ -13,12 +13,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Listeners;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 import org.lazberry.xmaslegacy.settings.Lang;
 
 import java.util.UUID;
@@ -26,8 +23,8 @@ import java.util.UUID;
 @Inject
 @Listeners
 public class EffectListener implements Listener {
-    private @Manager @NotNull SkillEffectManager sem;
-    private @Plugin @NotNull XmasLegacy plugin;
+    private @NotNull SkillEffectManager sem;
+    private @NotNull XmasLegacy plugin;
 
     public EffectListener() {}
 

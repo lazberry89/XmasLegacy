@@ -7,13 +7,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 @Commands(command = "0947345")
 public class UserLoadCommand implements CommandExecutor {
 	private final UserSaveManager us;
 
-	public UserLoadCommand() {
-		this.us = UserSaveManager.INSTANCE;
+	@Inject
+	public UserLoadCommand(@NotNull UserSaveManager us) {
+		this.us = us;
 	}
 
 	@Override

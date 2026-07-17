@@ -10,14 +10,15 @@ import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
-@Inject
 @Commands(command = "문의")
-public class InquiryCommandManager implements CommandExecutor {
-	private @Manager @NotNull InquiryManager im;
+public class InquiryCommand implements CommandExecutor {
+	private final @NotNull InquiryManager im;
 
-	public InquiryCommandManager() {}
+	@Inject
+	public InquiryCommand(@NotNull InquiryCommand im) {
+		this.im = im.im;
+	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull...args) {

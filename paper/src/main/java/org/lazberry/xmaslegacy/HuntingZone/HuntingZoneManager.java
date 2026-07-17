@@ -2,6 +2,8 @@ package org.lazberry.xmaslegacy.HuntingZone;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -10,18 +12,21 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
-@Registry(type = ServerType.HUNTING)
-public enum HuntingZoneManager implements ServerManager {
-	INSTANCE;
-
+@Registry(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)(type = ServerType.HUNTING)
+public class HuntingZoneManager implements ServerManager {
 	private final @NotNull Map<ZoneType, HuntingZone> zones = new EnumMap<>(ZoneType.class);
+	private final @NotNull MobRepository mobRepository;
 
-	HuntingZoneManager() {}
+	@Inject
+	public HuntingZoneManager(@NotNull MobRepository mobRepository) {
+		this.mobRepository = mobRepository;
+	}
 
 	public void init() {
-		this.zones.put(ZoneType.ICE_STAGE, new HuntingZone(ZoneType.ICE_STAGE, "world"));
-		this.zones.put(ZoneType.SKY_GARDEN, new HuntingZone(ZoneType.SKY_GARDEN, "world"));
-		this.zones.put(ZoneType.SOUL_GRAVEYARD, new HuntingZone(ZoneType.SOUL_GRAVEYARD, "world"));
+		this.zones.put(ZoneType.ICE_STAGE, new HuntingZone(ZoneType.ICE_STAGE, "world", mobRepository));
+		this.zones.put(ZoneType.SKY_GARDEN, new HuntingZone(ZoneType.SKY_GARDEN, "world", mobRepository));
+		this.zones.put(ZoneType.SOUL_GRAVEYARD, new HuntingZone(ZoneType.SOUL_GRAVEYARD, "world", mobRepository));
 	}
 
 	public @Nullable HuntingZone getZone(@NotNull String value) {

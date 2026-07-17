@@ -8,26 +8,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Plugin;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
-import org.lazberry.xmaslegacy.Utils.*;
 import org.lazberry.xmaslegacy.Economy.Currency.CurrencyManager;
+import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
+import org.lazberry.xmaslegacy.Utils.Documents;
+import org.lazberry.xmaslegacy.Utils.FloodgateUtils;
+import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Inject
 public abstract class AbstractNpc {
 	protected final @NotNull @Getter NpcType type;
-    private @Plugin @NotNull @Getter XmasLegacy plugin;
+    private final @NotNull @Getter XmasLegacy plugin;
     protected final @NotNull Map<UUID, Integer> playerCaption = new HashMap<>();
     protected final @NotNull List<String> caption;
     private final @NotNull @Getter NamespacedKey key;
@@ -40,6 +38,7 @@ public abstract class AbstractNpc {
 	private static final long DIALOGUE_TIMEOUT = 20000L;
 
     public AbstractNpc(@NotNull List<String> cap, @NotNull Component name, @NotNull Sound conversationSound, @NotNull NpcType type) {
+		this.plugin = XmasLegacy.getInstance();
 		this.type = type;
         this.key = KeyUtils.get("npc");
         this.caption = cap;
@@ -50,7 +49,7 @@ public abstract class AbstractNpc {
 		this.bookKey = KeyUtils.get("bookKey");
     }
 
-	protected @NotNull String next(@NotNull Player player) {
+	protected @NotNull String next(@NotNull Player player, @NotNull BagManager bm) {
 		var uuid = player.getUniqueId();
 		long currentTime = System.currentTimeMillis();
 
@@ -73,19 +72,19 @@ public abstract class AbstractNpc {
 			num = 0;
 			this.lastTalkTime.remove(uuid);
 			if (type == NpcType.MAIN) provideMoney(player);
-			else if (type == NpcType.BOOK) provideStolenBook(player);
+			else if (type == NpcType.BOOK) provideStolenBook(player, bm);
 		}
 
 		this.playerCaption.put(uuid, num);
 		return currentCaption;
 	}
 
-	private void provideStolenBook(@NotNull Player player) {
+	private void provideStolenBook(@NotNull Player player, @NotNull BagManager bm) {
 		if (catchKey(player, bookKey)) {
 			Map<Integer, ItemStack> remain = player.getInventory().addItem(Documents.StolenBook());
 			if (!remain.isEmpty()) {
 				remain.values().forEach(i ->
-						BagManager.INSTANCE.addItem(player, i));
+						bm.addItem(player, i));
 				InfoUtils.warn(player, "인벤토리가 가득 찼습니다. 가방을 확인하세요.");
 			}
 		}
@@ -93,7 +92,7 @@ public abstract class AbstractNpc {
 
 	private void provideMoney(@NotNull Player player) {
 		if (catchKey(player, checkKey)) {
-			ItemStack give = CurrencyManager.INSTANCE.currency();
+			ItemStack give = CurrencyManager.currency(plugin);
 			give.setAmount(5);
 			player.getInventory().addItem(give);
 			InfoUtils.info(player, "재화를 클릭하여 현금 입금을 해보세요!");
@@ -120,16 +119,10 @@ public abstract class AbstractNpc {
 		return false;
 	}
 
-    protected void sendCaption(@NotNull Player player) {
-	    @Nullable var user = UserManager.INSTANCE.getUser(player.getUniqueId());
-	    if (user == null) {
-		    UserHandler.sendReloadNotice(player);
-		    return;
-	    }
-
+    protected void sendCaption(@NotNull Player player, @NotNull BagManager bm) {
 	    player.playSound(player, this.conversationSound, 1.0f, 1.0f);
-	    Component txt = this.name.append(ColorUtils.chat(" &f" + next(player)));
+	    Component txt = this.name.append(ColorUtils.chat(" &f" + next(player, bm)));
 	    player.sendActionBar(txt);
-	    if (user.isMobile()) player.sendMessage(txt);
+	    if (FloodgateUtils.isFloodgate(player.getUniqueId())) player.sendMessage(txt);
     }
 }

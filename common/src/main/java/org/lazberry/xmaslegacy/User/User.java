@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @EqualsAndHashCode.Include
@@ -25,8 +27,8 @@ public class User {
 	private int dollars = 0;
 	private int inquireCount = 0;
 	private int playTime = 0;
-	private double exp = 0.0f;
-	private double roleExp = 0.0f;
+	private double exp = 0.0d;
+	private double roleExp = 0.0d;
 	private int level = 0;
     private @NotNull Tier tier = Tier.VISITOR;
     private @NotNull RoleMastery mastery = RoleMastery.BEGINNER;

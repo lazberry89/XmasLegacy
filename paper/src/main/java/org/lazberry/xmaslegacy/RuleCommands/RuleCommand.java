@@ -15,7 +15,6 @@ import org.lazberry.xmaslegacy.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import java.util.Map;
 @Inject
 @Commands(command = "filter")
 public class RuleCommand implements CommandExecutor, TabCompleter {
-    private @Manager @NotNull RuleManager rm;
+    private @NotNull RuleManager rm;
 	private static final List<String> SUB_COMMAND_LIST = List.of("add", "remove", "list");
     private final @NotNull Map<String, SubCommand> subCommands = new HashMap<>(4);
 

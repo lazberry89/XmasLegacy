@@ -9,8 +9,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,19 +26,20 @@ import java.util.stream.Stream;
 public class PartyCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> commands = new HashMap<>();
 
-    public PartyCommand() {
-		this.commands.put("invite", new PartyCommandInvite());
-		this.commands.put("초대", new PartyCommandInvite());
-		this.commands.put("join", new PartyCommandJoin());
-		this.commands.put("참가", new PartyCommandJoin());
-		this.commands.put("member", new PartyCommandMember());
-		this.commands.put("멤버", new PartyCommandMember());
-		this.commands.put("expel", new PartyCommandExpel());
-		this.commands.put("추방", new PartyCommandExpel());
-		this.commands.put("create", new PartyCommandCreate());
-		this.commands.put("생성", new PartyCommandCreate());
-		this.commands.put("leave", new PartyCommandLeave());
-		this.commands.put("나가기", new PartyCommandLeave());
+	@Inject
+    public PartyCommand(@NotNull UserManager um, @NotNull PartyManager pm) {
+		this.commands.put("invite", new PartyCommandInvite(um, pm));
+		this.commands.put("초대", new PartyCommandInvite(um, pm));
+		this.commands.put("join", new PartyCommandJoin(um, pm));
+		this.commands.put("참가", new PartyCommandJoin(um, pm));
+		this.commands.put("member", new PartyCommandMember(pm, um));
+		this.commands.put("멤버", new PartyCommandMember(pm, um));
+		this.commands.put("expel", new PartyCommandExpel(um, pm));
+		this.commands.put("추방", new PartyCommandExpel(um, pm));
+		this.commands.put("create", new PartyCommandCreate(um, pm));
+		this.commands.put("생성", new PartyCommandCreate(um, pm));
+		this.commands.put("leave", new PartyCommandLeave(um, pm));
+		this.commands.put("나가기", new PartyCommandLeave(um, pm));
     }
 
     //파티 초대 <이름>
