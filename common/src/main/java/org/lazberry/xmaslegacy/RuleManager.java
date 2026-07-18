@@ -10,7 +10,7 @@ import java.util.List;
 
 import static java.util.List.of;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Registry
 public class RuleManager implements ServerManager {
 	private final @NotNull List<String> badWords;
 

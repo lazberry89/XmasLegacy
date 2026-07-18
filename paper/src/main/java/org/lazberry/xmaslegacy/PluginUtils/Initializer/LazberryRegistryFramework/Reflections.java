@@ -1,0 +1,267 @@
+package org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework;
+
+import com.google.common.reflect.ClassPath;
+import lombok.extern.slf4j.Slf4j;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Annotation.*;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
+import org.lazberry.xmaslegacy.PluginUtils.Initializers;
+import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
+import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
+import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
+import org.lazberry.xmaslegacy.RoleManagers.Skills;
+import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.PlayerSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.ManagerInjection.collectManagers;
+import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.ManagerInjection.initializeManagers;
+import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.PackageScanner.buildAndInjectBeans;
+import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.PackageScanner.registerInstance;
+
+/**
+ * Public execution room for LazberryRegistryFramework lifecycle triggers.
+ * This class takes fully initialized beans from {@link PackageScanner}, then automatically
+ * binds them to Bukkit EventManager, CommandMap, Task schedulers, and Custom Registry systems.
+ * All method invocations are dynamically mapped by {@link InitializeType}.
+ * * @see PackageScanner
+ * @see InitializeType
+ * @see Reflection
+ */
+@Slf4j
+public final class Reflections {
+	private static final @NotNull String icon = LazberryRegistryFramework.icon(false);
+
+	/**
+	 * Executes server type specific or global system setup/shutdown lifecycles.
+	 * Grabs the Initializers single bean via generic IoC container, then sequentially triggers
+	 * initiation or shutdown routines depending on the server type constraint.
+	 * * @param on True for plugin enable (startup phase), false for plugin disable (shutdown phase).
+	 */
+	public static void runInitializers(boolean on) {
+		log.info("{} Starting Server Initializers...", icon);
+		try {
+			Initializers initializersBean = PackageScanner.getBean(Initializers.class);
+			if (initializersBean == null) {
+				log.warn("{} Initializers bean not found in container! Skipping lifecycle triggers.", icon);
+				return;
+			}
+
+			ServerType current = ServerInitializer.getServerType(plugin());
+
+			if (current.isRequiresGlobalInitializer()) {
+				ServerInitializer globalInit = initializersBean.getInitializer(ServerType.GLOBAL);
+				log.info("{} Executing GlobalInitializer...", icon);
+				if (on) globalInit.initiate(plugin());
+				else globalInit.shutdown(plugin());
+			}
+
+			ServerInitializer specificInit = initializersBean.getInitializer(current);
+			log.info("{} Executing {}Initializer...", icon, current.name());
+			if (on) specificInit.initiate(plugin());
+			else specificInit.shutdown(plugin());
+
+		} catch (Exception e) {
+			log.error("{} Failed to execute initializers", icon, e);
+		}
+	}
+
+	/**
+	 * Lazy-lookup wrapper for main plugin core instance.
+	 * * @return Current singleton instance of XmasLegacy plugin context.
+	 */
+	private static @NotNull XmasLegacy plugin() {
+		return XmasLegacy.getInstance();
+	}
+
+	/**
+	 * Entry point for the whole LRF IoC boot process. Pre-registers core platform contexts,
+	 * triggers dependency scanning, and dynamically invokes all internal @Reflection-marked
+	 * registry methods unless explicitly blacklisted.
+	 * * @param classPath  Guava's analyzed classpath metadata.
+	 * @param exceptions Specific initialize types to skip or ignore during this reflection loop.
+	 */
+	@Reflection(type = InitializeType.EXCEPTED)
+	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType... exceptions) {
+		registerInstance(XmasLegacy.class, plugin());
+		registerInstance(JavaPlugin.class, plugin());
+		registerInstance(File.class, plugin().getDataFolder());
+
+		buildAndInjectBeans(classPath);
+		collectManagers();
+		initializeManagers();
+
+		var methods = Reflections.class.getDeclaredMethods();
+		List<InitializeType> exceptionList = Arrays.asList(exceptions);
+
+		for (Method method : methods) {
+			if (!method.isAnnotationPresent(Reflection.class)) continue;
+
+			Reflection annotation = method.getAnnotation(Reflection.class);
+			if (annotation.type().equals(InitializeType.EXCEPTED)) continue;
+			if (exceptionList.contains(annotation.type())) continue;
+
+			try {
+				method.setAccessible(true);
+				method.invoke(null, classPath);
+				log.info("{} Register {} has been invoked", icon, method.getName());
+			} catch (Exception e) {
+				log.error("{} Error occurred while invoking reflection for method {}", icon, method.getName(), e);
+			}
+		}
+	}
+
+	/**
+	 * Iterates through the IoC container and binds all beans implementing Bukkit's {@link Listener}
+	 * interface directly to the server's PluginManager.
+	 * * @param classPath Automatically provided classpath metadata (unused but kept for reflection invoke uniformity).
+	 */
+	@Reflection(type = InitializeType.LISTENERS)
+	public static void registerListeners(@NotNull ClassPath classPath) {
+		try {
+			for (var entry : PackageScanner.getContainer().entrySet()) {
+				Class<?> clazz = entry.getKey();
+				if (Listener.class.isAssignableFrom(clazz)) {
+					Listener instance = (Listener) entry.getValue();
+					Bukkit.getPluginManager().registerEvents(instance, plugin());
+					log.info("{} Listener {} Automatically registered from IoC Container", icon, clazz.getSimpleName());
+				}
+			}
+		} catch (Exception e) {
+			log.error("{} Error occurred while registering all listeners", icon, e);
+		}
+	}
+
+	/**
+	 * Scans the container for {@link CommandExecutor} implementations that are marked with the
+	 * {@link Commands} annotation, maps their aliases, and safely registers them into the Bukkit runtime.
+	 * Automatically registers {@link TabCompleter} logic if the bean implements it.
+	 * * @param classPath Automatically provided classpath metadata (unused but kept for reflection invoke uniformity).
+	 */
+	@Reflection(type = InitializeType.COMMANDS)
+	public static void registerCommands(@NotNull ClassPath classPath) {
+		try {
+			for (var entry : PackageScanner.getContainer().entrySet()) {
+				Class<?> clazz = entry.getKey();
+				if (CommandExecutor.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Commands.class)) {
+					Commands autoCommand = clazz.getAnnotation(Commands.class);
+
+					List<String> allCommands = new ArrayList<>();
+					allCommands.add(autoCommand.command());
+					allCommands.addAll(Arrays.asList(autoCommand.aliases()));
+
+					Object commandInstance = entry.getValue();
+
+					for (String cmdName : allCommands) {
+						var pluginCommand = plugin().getCommand(cmdName);
+						if (pluginCommand == null) continue;
+
+						pluginCommand.setExecutor((CommandExecutor) commandInstance);
+
+						if (TabCompleter.class.isAssignableFrom(clazz))
+							pluginCommand.setTabCompleter((TabCompleter) commandInstance);
+
+						plugin().getSLF4JLogger().info("{} Command {} Automatically registered from IoC Container", icon, cmdName);
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("{} Error occurred while registering all Commands/TabCompleter", icon, e);
+		}
+	}
+
+	/**
+	 * Grabs custom skill beans implementing {@link Skills} marked with {@link Skill} metadata,
+	 * and maps them statically into the project's centralized {@link SkillManager}.
+	 * * @param ignored ClassPath param ignored since we only rely on the pre-built IoC container.
+	 */
+	@Reflection(type = InitializeType.REGISTER)
+	public static void registerSkills(@NotNull ClassPath ignored) {
+		for (var entry : PackageScanner.getContainer().entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (Skills.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Skill.class)) {
+				Skill skillAnnotation = clazz.getAnnotation(Skill.class);
+				PlayerSkills name = skillAnnotation.type();
+
+				Skills<?> skill = (Skills<?>) entry.getValue();
+				SkillManager.INSTANCE.register(name, skill);
+				log.info("{} Registered skill {} from IoC Container.", icon, name.name());
+			}
+		}
+	}
+
+	/**
+	 * Gathers custom role classes inheriting {@link RoleClass} marked with {@link Roles} metadata,
+	 * and registers them into the core {@link RoleManager}.
+	 * * @param ignored ClassPath param ignored since we only rely on the pre-built IoC container.
+	 */
+	@Reflection(type = InitializeType.REGISTER)
+	public static void registerRoles(@NotNull ClassPath ignored) {
+		for (var entry : PackageScanner.getContainer().entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (RoleClass.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Roles.class)) {
+				RoleClass roleClass = (RoleClass) entry.getValue();
+				RoleManager.INSTANCE.register(roleClass);
+				log.info("{} Successfully registered role {} from IoC Container", icon, clazz.getSimpleName());
+			}
+		}
+	}
+
+	/**
+	 * Gateway to turn on all periodic background tasks / schedulers.
+	 * * @param classPath Provided classpath metadata context.
+	 */
+	@Reflection(type = InitializeType.TASKS_ON)
+	public static void startTasks(@NotNull ClassPath classPath) {
+		taskReflection(true);
+	}
+
+	/**
+	 * Gateway to gracefully turn off and cancel all active background tasks / schedulers.
+	 * * @param classPath Provided classpath metadata context, nullable during shutdown phase.
+	 */
+	@Reflection(type = InitializeType.TASKS_OFF)
+	public static void stopTasks(@Nullable ClassPath classPath) {
+		taskReflection(false);
+	}
+
+	/**
+	 * Internal logic processor that filters container beans for the {@link Task} annotation
+	 * and {@link Tasks} interface implementation, executing either start or stop routines.
+	 * * @param enable True to run tasks, false to cancel them.
+	 */
+	private static void taskReflection(boolean enable) {
+		for (var entry : PackageScanner.getContainer().entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (!clazz.isAnnotationPresent(Task.class)) continue;
+			if (!Tasks.class.isAssignableFrom(clazz)) continue;
+
+			Tasks instance = (Tasks) entry.getValue();
+			try {
+				if (enable) {
+					instance.startTask(plugin());
+					log.info("{} Task {} started successfully.", icon, clazz.getSimpleName());
+				} else {
+					instance.stopTask();
+					log.info("{} Task {} stopped successfully.", icon, clazz.getSimpleName());
+				}
+			} catch (Exception e) {
+				log.error("{} Error occurred while processing task {}", icon, clazz.getSimpleName(), e);
+			}
+		}
+	}
+}

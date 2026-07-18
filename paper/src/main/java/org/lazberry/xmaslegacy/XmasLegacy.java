@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.Reflections;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Reflections;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 
 import java.io.IOException;

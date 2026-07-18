@@ -7,5 +7,4 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Deprecated(since = "1.21.11", forRemoval = true)
 public @interface Listeners {}

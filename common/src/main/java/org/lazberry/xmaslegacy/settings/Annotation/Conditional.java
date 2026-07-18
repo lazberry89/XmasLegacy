@@ -1,4 +1,6 @@
-package org.lazberry.xmaslegacy.Annotation;
+package org.lazberry.xmaslegacy.settings.Annotation;
+
+import org.lazberry.xmaslegacy.settings.ConditionalRegistry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Commands {
-    String command();
-    String[] aliases() default {};
+public @interface Conditional {
+    Class<? extends ConditionalRegistry> value();
 }

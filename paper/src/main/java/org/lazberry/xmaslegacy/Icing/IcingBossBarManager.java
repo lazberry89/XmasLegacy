@@ -5,12 +5,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Registry(type = ServerType.GLOBAL)
 @Registry.Exclude(type = ServerType.LOBBY)
 public class IcingBossBarManager {
     private final @NotNull Map<UUID, BossBar> bars = new HashMap<>();

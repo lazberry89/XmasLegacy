@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry.Exclude(type = ServerType.LOBBY)
-public class InquiryManager implements ServerManager {
+@Registry
+public class InquiryManager {
 	private final @NotNull Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
 	private final @NotNull Map<UUID, String> activeInquiries = new ConcurrentHashMap<>();
     private final @Getter int cooldownTime = Constants.INQUIRY_COOLDOWN;
@@ -42,9 +42,6 @@ public class InquiryManager implements ServerManager {
 	public @NotNull Map<UUID, String> getActiveInquiries() {
 		return new HashMap<>(activeInquiries);
 	}
-
-	@Override
-	public void init() {}
 
 	public @NotNull Component Inquiry(@NotNull UUID uuid, @Nullable String message) {
 		User user = um.getUser(uuid);
