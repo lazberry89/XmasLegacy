@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Registry.Include(type = ServerType.GLOBAL)
 public class InquiryRepository {
 	private final @NotNull String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
 	private final @NotNull String user = "root";

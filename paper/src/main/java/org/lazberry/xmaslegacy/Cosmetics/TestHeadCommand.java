@@ -8,8 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 @TestOnly
+@Registry
 @Commands(command = "head")
 public class TestHeadCommand implements CommandExecutor {
 	@Override

@@ -14,7 +14,6 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
@@ -23,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry
+@Registry.Include(type = ServerType.GLOBAL)
 public class InquiryManager {
 	private final @NotNull Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
 	private final @NotNull Map<UUID, String> activeInquiries = new ConcurrentHashMap<>();
