@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.ArrayList;

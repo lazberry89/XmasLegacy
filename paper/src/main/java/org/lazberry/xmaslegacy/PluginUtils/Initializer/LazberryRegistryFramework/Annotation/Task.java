@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.Annotation;
+package org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;

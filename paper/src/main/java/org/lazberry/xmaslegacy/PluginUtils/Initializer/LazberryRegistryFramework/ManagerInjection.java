@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Core Orchestrator for ServerManager lifecycle initialization in LazberryRegistryFramework.
  * * <p><h3>Architecture & Operational Principle</h3>
- * This class acts as a dedicated control bridge between the raw IoC storage ({@link PackageScanner})
+ * This class acts as a dedicated control bridge between the raw IoC storage ({@link DependencyContainer})
  * and the Bukkit platform boot logic. In large-scale plugin environments, components extending
  * {@link ServerManager} contain critical domain business logic (e.g., Database pools, User caches,
  * Game states) that must be prepared strictly before event listeners or command maps start accepting traffic.
@@ -25,7 +25,7 @@ import java.util.List;
  * </ol>
  * * <p><h3>Related Framework Components</h3>
  * <ul>
- * <li>{@link PackageScanner}: The source data provider. Provides fully built bean references via {@link PackageScanner#getContainer()}.</li>
+ * <li>{@link PackageScanner}: The source data provider. Provides fully built bean references via {@link DependencyContainer#getContainer()}.</li>
  * <li>{@link Reflections}: The master lifecycle orchestrator that coordinates the timing of when this injection room is triggered.</li>
  * <li>{@link ServerManager}: The target component contract. Any class implementing this contract automatically participates in this phase.</li>
  * </ul>
@@ -48,7 +48,7 @@ final class ManagerInjection {
      */
     static void collectManagers() {
         ORDERED_MANAGERS.clear();
-        for (var entry : PackageScanner.getContainer().entrySet()) {
+        for (var entry : DependencyContainer.getContainer().entrySet()) {
             Class<?> clazz = entry.getKey();
 
             if (ServerManager.class.isAssignableFrom(clazz)) {

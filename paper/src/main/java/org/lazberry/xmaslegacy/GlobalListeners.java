@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Listeners;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Enchant.EnchantUserInterface;
 import org.lazberry.xmaslegacy.RoleSelection.RoleSelectInterface;
 import org.lazberry.xmaslegacy.RoleSelection.RoleSelectionInterface;

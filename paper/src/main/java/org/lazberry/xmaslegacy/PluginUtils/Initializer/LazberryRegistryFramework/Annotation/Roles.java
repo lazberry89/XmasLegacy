@@ -1,6 +1,4 @@
-package org.lazberry.xmaslegacy.Annotation;
-
-import org.lazberry.xmaslegacy.settings.PlayerSkills;
+package org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Skill {
-    PlayerSkills type();
+public @interface Roles {
+	int grade() default 1;
 }

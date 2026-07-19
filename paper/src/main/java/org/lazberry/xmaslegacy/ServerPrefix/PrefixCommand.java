@@ -14,7 +14,7 @@ import org.lazberry.xmaslegacy.settings.MissionPrefix;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
-import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 
 import java.util.ArrayList;

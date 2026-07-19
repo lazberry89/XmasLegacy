@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.SellItems;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
-import org.lazberry.xmaslegacy.Annotation.Roles;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.Utils.Config;

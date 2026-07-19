@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Annotation.Commands;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;

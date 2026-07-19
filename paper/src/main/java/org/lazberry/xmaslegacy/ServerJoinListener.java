@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.SavingLocation.MainSpawnManager;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Alert;
 
@@ -44,7 +45,7 @@ public final class ServerJoinListener implements Listener {
 		Player p = e.getPlayer();
 		e.joinMessage(null);
 
-		switch (ServerInitializer.getServerType(this.plugin)) {
+		switch (ServerUtils.getServerType(this.plugin)) {
 			case MAIN -> {
 				MainSpawnManager val = SpawnRepository.INSTANCE.get(DestinationType.MAIN);
 				val.joinEffect(p);

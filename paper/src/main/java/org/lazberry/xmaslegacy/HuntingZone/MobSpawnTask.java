@@ -8,7 +8,7 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.Task;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;

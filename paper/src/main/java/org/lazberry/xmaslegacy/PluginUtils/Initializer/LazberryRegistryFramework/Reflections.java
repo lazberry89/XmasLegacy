@@ -9,8 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
 import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
+import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -30,8 +31,6 @@ import java.util.List;
 
 import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.ManagerInjection.collectManagers;
 import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.ManagerInjection.initializeManagers;
-import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.PackageScanner.buildAndInjectBeans;
-import static org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.PackageScanner.registerInstance;
 
 /**
  * Public execution room for LazberryRegistryFramework lifecycle triggers.
@@ -55,13 +54,13 @@ public final class Reflections {
 	public static void runInitializers(boolean on) {
 		log.info("{} Starting Server Initializers...", icon);
 		try {
-			Initializers initializersBean = PackageScanner.getBean(Initializers.class);
+			Initializers initializersBean = DependencyContainer.getBean(Initializers.class);
 			if (initializersBean == null) {
 				log.warn("{} Initializers bean not found in container! Skipping lifecycle triggers.", icon);
 				return;
 			}
 
-			ServerType current = ServerInitializer.getServerType(plugin());
+			ServerType current = ServerUtils.getServerType(plugin());
 
 			if (current.isRequiresGlobalInitializer()) {
 				ServerInitializer globalInit = initializersBean.getInitializer(ServerType.GLOBAL);
@@ -80,6 +79,7 @@ public final class Reflections {
 		}
 	}
 
+
 	/**
 	 * Lazy-lookup wrapper for main plugin core instance.
 	 * * @return Current singleton instance of XmasLegacy plugin context.
@@ -97,13 +97,15 @@ public final class Reflections {
 	 */
 	@Reflection(type = InitializeType.EXCEPTED)
 	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType... exceptions) {
-		registerInstance(XmasLegacy.class, plugin());
-		registerInstance(JavaPlugin.class, plugin());
-		registerInstance(File.class, plugin().getDataFolder());
+		DependencyContainer.registerInstance(XmasLegacy.class, plugin());
+		DependencyContainer.registerInstance(JavaPlugin.class, plugin());
+		DependencyContainer.registerInstance(File.class, plugin().getDataFolder());
 
-		buildAndInjectBeans(classPath);
+		PackageScanner.buildAndInjectBeans(classPath);
 		collectManagers();
 		initializeManagers();
+
+		gatherRegisteredDestruction();
 
 		var methods = Reflections.class.getDeclaredMethods();
 		List<InitializeType> exceptionList = Arrays.asList(exceptions);
@@ -125,6 +127,12 @@ public final class Reflections {
 		}
 	}
 
+	private static void gatherRegisteredDestruction() {
+		for (var entry : DependencyContainer.getContainer().entrySet()) {
+			DestructiveClassEngine.registerDestruction(entry.getKey(), entry.getValue(), plugin());
+		}
+	}
+
 	/**
 	 * Iterates through the IoC container and binds all beans implementing Bukkit's {@link Listener}
 	 * interface directly to the server's PluginManager.
@@ -133,7 +141,7 @@ public final class Reflections {
 	@Reflection(type = InitializeType.LISTENERS)
 	public static void registerListeners(@NotNull ClassPath classPath) {
 		try {
-			for (var entry : PackageScanner.getContainer().entrySet()) {
+			for (var entry : DependencyContainer.getContainer().entrySet()) {
 				Class<?> clazz = entry.getKey();
 				if (Listener.class.isAssignableFrom(clazz)) {
 					Listener instance = (Listener) entry.getValue();
@@ -155,7 +163,7 @@ public final class Reflections {
 	@Reflection(type = InitializeType.COMMANDS)
 	public static void registerCommands(@NotNull ClassPath classPath) {
 		try {
-			for (var entry : PackageScanner.getContainer().entrySet()) {
+			for (var entry : DependencyContainer.getContainer().entrySet()) {
 				Class<?> clazz = entry.getKey();
 				if (CommandExecutor.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Commands.class)) {
 					Commands autoCommand = clazz.getAnnotation(Commands.class);
@@ -191,7 +199,7 @@ public final class Reflections {
 	 */
 	@Reflection(type = InitializeType.REGISTER)
 	public static void registerSkills(@NotNull ClassPath ignored) {
-		for (var entry : PackageScanner.getContainer().entrySet()) {
+		for (var entry : DependencyContainer.getContainer().entrySet()) {
 			Class<?> clazz = entry.getKey();
 			if (Skills.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Skill.class)) {
 				Skill skillAnnotation = clazz.getAnnotation(Skill.class);
@@ -211,7 +219,7 @@ public final class Reflections {
 	 */
 	@Reflection(type = InitializeType.REGISTER)
 	public static void registerRoles(@NotNull ClassPath ignored) {
-		for (var entry : PackageScanner.getContainer().entrySet()) {
+		for (var entry : DependencyContainer.getContainer().entrySet()) {
 			Class<?> clazz = entry.getKey();
 			if (RoleClass.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Roles.class)) {
 				RoleClass roleClass = (RoleClass) entry.getValue();
@@ -226,7 +234,7 @@ public final class Reflections {
 	 * * @param classPath Provided classpath metadata context.
 	 */
 	@Reflection(type = InitializeType.TASKS_ON)
-	public static void startTasks(@NotNull ClassPath classPath) {
+	public static void startTasks(@NotNull ClassPath ignored) {
 		taskReflection(true);
 	}
 
@@ -235,7 +243,7 @@ public final class Reflections {
 	 * * @param classPath Provided classpath metadata context, nullable during shutdown phase.
 	 */
 	@Reflection(type = InitializeType.TASKS_OFF)
-	public static void stopTasks(@Nullable ClassPath classPath) {
+	public static void stopTasks(@Nullable ClassPath ignored) {
 		taskReflection(false);
 	}
 
@@ -245,7 +253,7 @@ public final class Reflections {
 	 * * @param enable True to run tasks, false to cancel them.
 	 */
 	private static void taskReflection(boolean enable) {
-		for (var entry : PackageScanner.getContainer().entrySet()) {
+		for (var entry : DependencyContainer.getContainer().entrySet()) {
 			Class<?> clazz = entry.getKey();
 			if (!clazz.isAnnotationPresent(Task.class)) continue;
 			if (!Tasks.class.isAssignableFrom(clazz)) continue;
@@ -262,6 +270,44 @@ public final class Reflections {
 			} catch (Exception e) {
 				log.error("{} Error occurred while processing task {}", icon, clazz.getSimpleName(), e);
 			}
+		}
+	}
+
+	@Reflection(type = InitializeType.NETWORKS)
+	public static void registerPluginChannels(@NotNull ClassPath ignored) {
+		var messenger = Bukkit.getMessenger();
+		PluginMessageRouter messageRouter = DependencyContainer.getBean(PluginMessageRouter.class);
+		if (messageRouter == null) {
+			messageRouter = new PluginMessageRouter();
+			DependencyContainer.registerInstance(PluginMessageRouter.class, messageRouter);
+		}
+
+		try {
+			for (var entry : DependencyContainer.getContainer().entrySet()) {
+				Class<?> clazz = entry.getKey();
+				Object instance = entry.getValue();
+
+				if (PluginReceiver.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(InboundChannel.class)) {
+					InboundChannel inbound = clazz.getAnnotation(InboundChannel.class);
+					String channelName = inbound.value();
+					messenger.registerIncomingPluginChannel(plugin(), channelName, messageRouter);
+					messageRouter.registerRoute(channelName, (PluginReceiver) instance);
+
+					log.info("{} Incoming PluginChannel [{}] -> {} Automatically registered", icon, channelName, clazz.getSimpleName());
+				}
+
+				if (PluginSender.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(OutboundChannel.class)) {
+					OutboundChannel outbound = clazz.getAnnotation(OutboundChannel.class);
+					String[] channelNames = outbound.value();
+					for (String channel : channelNames) {
+						messenger.registerOutgoingPluginChannel(plugin(), channel);
+					}
+
+					log.info("{} Outbound PluginChannels {} -> {} Automatically activated", icon, Arrays.toString(channelNames), clazz.getSimpleName());
+				}
+			}
+		} catch (Exception e) {
+			log.error("{} Error occurred while registering Plugin Channels", icon, e);
 		}
 	}
 }

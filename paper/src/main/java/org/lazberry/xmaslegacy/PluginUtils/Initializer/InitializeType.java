@@ -10,5 +10,6 @@ public enum InitializeType {
 	TASKS_ON,
 	TASKS_OFF,
 	REGISTER,
+	NETWORKS,
 	EXCEPTED,
 }
