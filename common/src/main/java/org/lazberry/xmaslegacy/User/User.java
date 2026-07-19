@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.settings.Annotation.Document;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
@@ -18,6 +19,12 @@ import java.util.UUID;
 @Data
 @ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Document(description = """
+		Class for saving detail & info for user.
+		Using Equals and HashCode override, made UserSaveManager or another DB access
+		more easier.Also when editing this class's field, you should also change DB,
+		emergency dump class's saving method.
+		""")
 public class User {
     @EqualsAndHashCode.Include
     private final @NotNull UUID uniqueId;

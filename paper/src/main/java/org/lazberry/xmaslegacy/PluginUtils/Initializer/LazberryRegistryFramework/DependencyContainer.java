@@ -5,17 +5,20 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.ConfigValue;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.FrameworkExceptions.CircularDependencyException;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.FrameworkExceptions.NotCompatibleWithServerException;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.FrameworkExceptions.NotValidInitializeTimingException;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.FrameworkExceptions.VirtualClassInjectException;
 import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.CircularDependencyException;
+import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.NotCompatibleWithServerException;
+import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.NotValidInitializeTimingException;
+import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.VirtualClassInjectException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <h2>Core IoC / DI Assembly Matrix (Dependency Container Engine)</h2>

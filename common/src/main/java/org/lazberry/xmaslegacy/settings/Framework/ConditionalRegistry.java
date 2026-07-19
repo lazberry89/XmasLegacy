@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.settings;
+package org.lazberry.xmaslegacy.settings.Framework;
 
 /**
  * <h2>LRF Functional Condition Evaluator Interface</h2>

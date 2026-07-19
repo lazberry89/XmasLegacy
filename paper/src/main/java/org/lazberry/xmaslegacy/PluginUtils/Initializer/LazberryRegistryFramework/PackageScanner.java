@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ConditionalRegistry;
+import org.lazberry.xmaslegacy.settings.Framework.ConditionalRegistry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.lang.reflect.Modifier;

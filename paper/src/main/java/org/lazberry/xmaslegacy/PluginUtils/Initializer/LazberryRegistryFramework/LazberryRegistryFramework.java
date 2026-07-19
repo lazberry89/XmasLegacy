@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.PackageScanner;
 
 /**
  * <h2>LazberryRegistryFramework (LRF Bootstrapper & Global Context Manager)</h2>
@@ -81,13 +80,13 @@ public final class LazberryRegistryFramework {
     }
 
     @Contract(pure = true)
-    static @NotNull <T> T icon(boolean component) {
+    public static @NotNull <T> T icon(boolean component) {
         if (component) return (T) ColorUtils.chat("&#F45454[&#F7563FL&#FA592AR&#FC5B15F&#FF5D00]");
         return (T) ColorUtils.chatStr("&#F45454[&#F7563FL&#FA592AR&#FC5B15F&#FF5D00]");
     }
 
     @Contract(pure = true)
-    static @NotNull <T> T IoC(boolean component) {
+    public static @NotNull <T> T IoC(boolean component) {
         if (component) return (T) ColorUtils.chat("&#001CFF[&#0045FFI&#006FFFo&#0098FFC&#00C1FF]");
         return (T) ColorUtils.chatStr("&#001CFF[&#0045FFI&#006FFFo&#0098FFC&#00C1FF]");
     }

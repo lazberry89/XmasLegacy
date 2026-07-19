@@ -19,8 +19,8 @@ import java.lang.annotation.Target;
  * @author Lazberry (LRF Architecture Team)
  */
 @Target(value = {ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-@Retention(value = RetentionPolicy.RUNTIME)
+@Retention(value = RetentionPolicy.CLASS)
 public @interface Document {
-    @NotNull String url();
-    @NotNull String description() default "";
+    @NotNull String description();
+    @NotNull String url() default "";
 }

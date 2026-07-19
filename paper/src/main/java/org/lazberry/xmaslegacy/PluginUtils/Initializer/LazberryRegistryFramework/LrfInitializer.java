@@ -1,7 +1,6 @@
 package org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework;
 
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.PackageScanner;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.FrameworkExceptions.NotValidInitializeTimingException;
+import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.NotValidInitializeTimingException;
 
 /**
  * Standard Functional Lifecycle Callback Hook for the LazberryRegistryFramework (LRF) Container.

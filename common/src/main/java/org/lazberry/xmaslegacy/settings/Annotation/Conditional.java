@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.settings.Annotation;
 
-import org.lazberry.xmaslegacy.settings.ConditionalRegistry;
+import org.lazberry.xmaslegacy.settings.Framework.ConditionalRegistry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
