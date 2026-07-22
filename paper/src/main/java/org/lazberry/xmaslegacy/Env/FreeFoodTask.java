@@ -15,12 +15,14 @@ import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 
 @Slf4j
-@Task(type = ServerType.MAIN)
+@Task
+@Registry.Include(type = ServerType.MAIN)
 public class FreeFoodTask implements Tasks {
 	private @Nullable BukkitTask task;
 	private @Getter boolean isRunning = false;

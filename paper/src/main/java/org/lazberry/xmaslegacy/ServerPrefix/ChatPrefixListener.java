@@ -11,24 +11,31 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Inject
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class ChatPrefixListener implements Listener {
-	private @NotNull PrefixManager pfm;
-	private @NotNull RuleManager rm;
-	private @NotNull UserManager um;
+	private final @NotNull PrefixManager pfm;
+	private final @NotNull RuleManager rm;
+	private final @NotNull UserManager um;
 
-	public ChatPrefixListener() {}
+	@Inject
+	public ChatPrefixListener(@NotNull PrefixManager pm, @NotNull RuleManager rm, @NotNull UserManager um) {
+		this.pfm = pm;
+		this.rm = rm;
+		this.um = um;
+	}
 
 	@NonBlocking
 	@EventHandler

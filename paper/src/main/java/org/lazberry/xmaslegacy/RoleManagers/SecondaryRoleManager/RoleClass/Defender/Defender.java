@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 @Roles(grade = 2)
 public class Defender extends AbstractSecondRole {
-	private Container container;
+	private final Container container;
 
 	public record Container(
 			XmasLegacy plugin

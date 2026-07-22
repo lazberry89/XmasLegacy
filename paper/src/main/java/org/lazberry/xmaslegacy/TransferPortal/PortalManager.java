@@ -13,16 +13,13 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry(type = ServerType.GLOBAL)
-@Registry.Exclude(type = ServerType.LOBBY)
-public enum PortalManager implements ServerManager {
-	INSTANCE;
-
+@Registry
+public class PortalManager {
     private final @NotNull Map<String, Portal> portalMap = new HashMap<>();
     private final @NotNull Set<Portal> portalSet = new HashSet<>();
     private final @NotNull Map<UUID, Integer> activeCountdowns = new ConcurrentHashMap<>();
@@ -39,7 +36,7 @@ public enum PortalManager implements ServerManager {
 
     PortalManager() {}
 
-    public void addPortal(@NotNull String key, @NotNull Location loc, @NotNull Initializers destination) {
+    public void addPortal(@NotNull String key, @NotNull Location loc, @NotNull ServerType destination) {
         Portal portal = new Portal(key, loc, destination);
         this.portalMap.put(key, portal);
         this.portalSet.add(portal);
@@ -98,9 +95,4 @@ public enum PortalManager implements ServerManager {
             activeCountdowns.put(pUUID, secondsLeft - 1);
         }
     }
-
-	@Override
-	public void init() {
-
-	}
 }

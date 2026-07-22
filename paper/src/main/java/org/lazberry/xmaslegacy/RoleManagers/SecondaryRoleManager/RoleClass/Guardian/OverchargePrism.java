@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -27,8 +28,14 @@ import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.OVERCHARGE_PRIS
 
 @Skill(type = PlayerSkills.OVERCHARGE_PRISM)
 public class OverchargePrism implements Skills<Guardian.Container>, UsingEnergy {
+	private final @NotNull PartyManager pm;
 
-    @Override
+	@Inject
+	public OverchargePrism(@NotNull PartyManager pm) {
+		this.pm = pm;
+	}
+
+	@Override
     public boolean execute(@NotNull Player caster, @NotNull Guardian.@NotNull Container container) {
         LivingEntity target = container.targetMap.get(caster);
         if (target == null) {
@@ -71,7 +78,7 @@ public class OverchargePrism implements Skills<Guardian.Container>, UsingEnergy 
                     for (Entity e : point.getWorld().getNearbyEntities(point, 1.0, 1.0, 1.0)) {
                         if (e instanceof LivingEntity le
                                 && !e.equals(caster)
-                                && !PartyManager.INSTANCE.isParty(caster.getUniqueId(), e.getUniqueId())
+                                && !pm.isParty(caster.getUniqueId(), e.getUniqueId())
                                 && !hitEntities.contains(e.getUniqueId())) {
                             le.damage(8.0, caster);
                             hitEntities.add(e.getUniqueId());

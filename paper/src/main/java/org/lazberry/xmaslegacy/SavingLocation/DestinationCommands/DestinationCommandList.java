@@ -11,15 +11,20 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 import java.util.Arrays;
 
 public class DestinationCommandList implements SubCommand {
+	private final @NotNull SpawnRepository spawnRepo;
 
-    @Override
+	public DestinationCommandList(@NotNull SpawnRepository spawnRepo) {
+		this.spawnRepo = spawnRepo;
+	}
+
+	@Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        Arrays.stream(SpawnRepository.INSTANCE.availableTypes())
+        Arrays.stream(spawnRepo.availableTypes())
                 .forEach(t -> sendFormatted(t, player));
     }
 
     private void sendFormatted(@NotNull DestinationType type, @NotNull Player p) {
-        var value = SpawnRepository.INSTANCE.get(type);
+        var value = spawnRepo.get(type);
         Location loc = value.getSpawn();
         p.sendMessage(ColorUtils.chat(loc == null ?
                 String.format(

@@ -8,12 +8,13 @@ import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 public class RuleCommandAdd implements SubCommand {
     private final @NotNull RuleManager rm;
 
-    public RuleCommandAdd() {
-        this.rm = RuleManager.INSTANCE;
+    public RuleCommandAdd(@NotNull RuleManager rm) {
+	    this.rm = rm;
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.List;
 public class RoleCommand implements CommandExecutor, TabCompleter {
 	private final UserManager um;
 
-	public RoleCommand() {
-		this.um = UserManager.INSTANCE;
+	@Inject
+	public RoleCommand(UserManager um) {
+		this.um = um;
 	}
 
 	@Override // /role Player USER

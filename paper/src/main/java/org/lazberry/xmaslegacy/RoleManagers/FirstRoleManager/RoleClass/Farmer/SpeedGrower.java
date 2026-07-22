@@ -17,6 +17,7 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -25,10 +26,15 @@ import java.util.List;
 
 @Skill(type = PlayerSkills.SPEED_GROWER)
 public class SpeedGrower implements Skills<Farmer.Container>, UsingEnergy {
+	private final @NotNull RegionManager rm;
 
-    @Override
+	@Inject
+	public SpeedGrower(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
+
+	@Override
     public boolean execute(@NotNull Player caster, @NotNull Farmer.@NotNull Container container) {
-        var rm = RegionManager.INSTANCE;
         List<Region> playerRegions = rm.getRegion(caster);
 
         if (playerRegions.isEmpty()) {

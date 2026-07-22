@@ -7,24 +7,30 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.HuntingZone.HuntingZoneManager;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.HuntingZone.ZoneType;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 
 @Commands(command = "zone")
+@Registry.Include(type = ServerType.HUNTING)
 public class ZoneCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> subCommand = new HashMap<>();
 
-	public ZoneCommand() {
-		this.subCommand.put("alive", new ZoneCommandAlive());
-		this.subCommand.put("delete", new ZoneCommandDelete());
-		this.subCommand.put("despawn", new ZoneCommandDespawn());
-		this.subCommand.put("expand", new ZoneCommandExpand());
-		this.subCommand.put("get", new ZoneCommandGet());
-		this.subCommand.put("spawn", new ZoneCommandSpawn());
+	@Inject
+	public ZoneCommand(@NotNull HuntingZoneManager hzm) {
+		this.subCommand.put("alive", new ZoneCommandAlive(hzm));
+		this.subCommand.put("delete", new ZoneCommandDelete(hzm));
+		this.subCommand.put("despawn", new ZoneCommandDespawn(hzm));
+		this.subCommand.put("expand", new ZoneCommandExpand(hzm));
+		this.subCommand.put("get", new ZoneCommandGet(hzm));
+		this.subCommand.put("spawn", new ZoneCommandSpawn(hzm));
 	}
 
 	@Override

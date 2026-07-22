@@ -15,22 +15,25 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Inject
+@Registry
 @Commands(command = "filter")
 public class RuleCommand implements CommandExecutor, TabCompleter {
-    private @NotNull RuleManager rm;
+    private final @NotNull RuleManager rm;
 	private static final List<String> SUB_COMMAND_LIST = List.of("add", "remove", "list");
     private final @NotNull Map<String, SubCommand> subCommands = new HashMap<>(4);
 
-    public RuleCommand() {
-        this.subCommands.put("add", new RuleCommandAdd());
-        this.subCommands.put("remove", new RuleCommandRemove());
+	@Inject
+    public RuleCommand(@NotNull RuleManager rm) {
+		this.rm = rm;
+        this.subCommands.put("add", new RuleCommandAdd(rm));
+        this.subCommands.put("remove", new RuleCommandRemove(rm));
     }
 
     @Override

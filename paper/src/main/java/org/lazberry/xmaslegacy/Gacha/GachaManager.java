@@ -12,11 +12,11 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Registry(type = ServerType.GLOBAL)
 @Registry.Exclude(type = ServerType.LOBBY)
 public class GachaManager implements ServerManager {
 	private final @NotNull XmasLegacy plugin;

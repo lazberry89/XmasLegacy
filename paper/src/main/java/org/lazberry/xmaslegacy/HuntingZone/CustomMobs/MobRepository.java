@@ -12,12 +12,12 @@ import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Named.AbstractNamedMobs;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.*;
 import org.lazberry.xmaslegacy.HuntingZone.ZoneType;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Registry(type = ServerType.GLOBAL)
-@Registry.Exclude(type = ServerType.LOBBY)
+@Registry.Include(type = ServerType.HUNTING)
 public class MobRepository {
     private final @NotNull Map<MobKey, CustomMob> mobInstances = new HashMap<>();
     private final @NotNull IcedZombie icedZombie;

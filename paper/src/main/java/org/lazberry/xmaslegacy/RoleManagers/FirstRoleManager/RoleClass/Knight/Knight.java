@@ -18,6 +18,9 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
+
+import static org.lazberry.xmaslegacy.settings.BasicSkills.SHARP_SWEEPING;
 
 @Roles
 public class Knight extends AbstractFirstRole {
@@ -27,8 +30,6 @@ public class Knight extends AbstractFirstRole {
 	private double armor_state_value;
 
 	private Container container;
-	private final @NotNull SharpSweeping sharpSweeping = new SharpSweeping();
-	private final @NotNull Taunt taunt = new Taunt();
 
 	public Knight() {
 		super(BasicRoles.KNIGHT);
@@ -109,12 +110,12 @@ public class Knight extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, sharpSweeping, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(SHARP_SWEEPING), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, taunt, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.TAUNT), container, getCooldown2());
 	}
 
 	@Override

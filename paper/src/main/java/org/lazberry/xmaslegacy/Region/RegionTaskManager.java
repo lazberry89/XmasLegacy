@@ -15,17 +15,23 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 
 @Slf4j
-@Inject
-@Task(type = ServerType.GLOBAL)
+@Task
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RegionTaskManager implements Tasks {
-	private @NotNull RegionManager rm;
+	private final @NotNull RegionManager rm;
     private @Nullable BukkitTask task;
     private float globalAngle = 0.0f;
+
+	@Inject
+	public RegionTaskManager(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
 
     @Override
     public void startTask(@NotNull XmasLegacy plugin) {

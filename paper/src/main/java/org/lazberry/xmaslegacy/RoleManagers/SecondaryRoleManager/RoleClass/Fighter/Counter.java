@@ -13,6 +13,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -21,6 +22,14 @@ import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.COUNTER;
 
 @Skill(type = PlayerSkills.COUNTER)
 public class Counter implements Skills<Fighter.Container>, UsingEnergy {
+	private final @NotNull SkillEffectManager sem;
+	private final @NotNull PartyManager pm;
+
+	@Inject
+	public Counter(@NotNull SkillEffectManager sem, @NotNull PartyManager pm) {
+		this.sem = sem;
+		this.pm = pm;
+	}
 
 	@Override
 	public boolean execute(@NotNull Player caster, Fighter.@NotNull Container container) {
@@ -29,7 +38,6 @@ public class Counter implements Skills<Fighter.Container>, UsingEnergy {
 			return false;
 		}
 		if (!consumeEnergy(caster, 3)) return false;
-		var sem = SkillEffectManager.INSTANCE;
 
 		caster.setCollidable(false);
 		sem.hideEntity(caster);
@@ -64,7 +72,7 @@ public class Counter implements Skills<Fighter.Container>, UsingEnergy {
 			caster.getWorld().spawnParticle(Particle.DUST, centerPoint, 1, 0, 0, 0, 0, option);
 			centerPoint.getNearbyEntitiesByType(LivingEntity.class, 0.5, 0.5)
 					.stream()
-					.filter(s -> !PartyManager.INSTANCE.isParty(caster.getUniqueId(), s.getUniqueId()))
+					.filter(s -> !pm.isParty(caster.getUniqueId(), s.getUniqueId()))
 					.forEach(s -> s.damage(2.0, caster));
 
 			double radians = d * spiralTightness;

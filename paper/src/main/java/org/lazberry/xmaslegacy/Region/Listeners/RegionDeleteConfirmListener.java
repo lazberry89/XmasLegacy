@@ -13,13 +13,18 @@ import org.lazberry.xmaslegacy.Region.Gui.RegionDeleteInterface;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Inject
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RegionDeleteConfirmListener implements Listener {
-    private @NotNull RegionManager rm;
+    private final @NotNull RegionManager rm;
 
-    public RegionDeleteConfirmListener() {}
+	@Inject
+    public RegionDeleteConfirmListener(@NotNull RegionManager rm) {
+		this.rm = rm;
+    }
 
     @EventHandler
     public void deleteConfirming(InventoryClickEvent e) {

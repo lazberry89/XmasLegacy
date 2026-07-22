@@ -10,6 +10,9 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,9 +20,14 @@ import java.util.Locale;
 import java.util.Objects;
 
 @Commands(command = "destination")
+@Registry.Include(type = ServerType.HUNTING)
 public final class DestinationCommand implements CommandExecutor, TabCompleter {
+	private final @NotNull SpawnRepository spawnRepo;
 
-    public DestinationCommand() {}
+	@Inject
+    public DestinationCommand(@NotNull SpawnRepository spawnRepo) {
+	    this.spawnRepo = spawnRepo;
+    }
 
     ///destination list/set/move/reset/reload/save/location/loc <DestinationType>
 
@@ -31,7 +39,7 @@ public final class DestinationCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-            new DestinationCommandList().execute(p, args);
+            new DestinationCommandList(spawnRepo).execute(p, args);
             return true;
         }
         if (args.length < 2) {
@@ -51,11 +59,11 @@ public final class DestinationCommand implements CommandExecutor, TabCompleter {
         }
 
         switch (args[0].toLowerCase(Locale.ENGLISH)) {
-            case "set" -> new DestinationCommandSet(value).execute(p, args);
-            case "move" -> new DestinationCommandMove(value).execute(p, args);
-			case "reset" -> new DestinationCommandReset(value).execute(p, args);
-			case "reload" -> new DestinationCommandReload(value).execute(p, args);
-			case "location", "loc" -> new DestinationCommandLocation(value).execute(p, args);
+            case "set" -> new DestinationCommandSet(value, spawnRepo).execute(p, args);
+            case "move" -> new DestinationCommandMove(value, spawnRepo).execute(p, args);
+			case "reset" -> new DestinationCommandReset(value, spawnRepo).execute(p, args);
+			case "reload" -> new DestinationCommandReload(value, spawnRepo).execute(p, args);
+			case "location", "loc" -> new DestinationCommandLocation(value, spawnRepo).execute(p, args);
         }
         return true;
     }
@@ -63,7 +71,7 @@ public final class DestinationCommand implements CommandExecutor, TabCompleter {
     @Override
     public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length == 1) return List.of("list", "set", "move", "reset", "reload", "save", "location", "loc");
-        return Arrays.stream(SpawnRepository.INSTANCE.availableTypes())
+        return Arrays.stream(spawnRepo.availableTypes())
                 .map(Objects::toString)
                 .map(String::toLowerCase)
                 .toList();

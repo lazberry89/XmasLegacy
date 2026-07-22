@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Alert;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,10 +27,12 @@ import java.util.stream.Stream;
 @Commands(command = "구역", aliases = {"region", "rg"})
 public class RegionCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> commands = new HashMap<>();
+	private final @NotNull RegionManager rm;
 
-	public RegionCommand() {
-		var setting = new RegionCommandSetting();
-		var delete = new RegionCommandDelete();
+	public RegionCommand(@NotNull RegionManager rm) {
+		this.rm = rm;
+		var setting = new RegionCommandSetting(rm);
+		var delete = new RegionCommandDelete(rm);
 		this.commands.put("입장", setting);
 		this.commands.put("entry", setting);
 		this.commands.put("interaction", setting);
@@ -50,7 +52,7 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 			}
 
 			if (args.length == 1) {
-				Region region = RegionManager.INSTANCE.getRegion(args[0]);
+				Region region = rm.getRegion(args[0]);
 				if (region == null) {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 					return true;
@@ -83,7 +85,6 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull [] args) {
 		if (!(commandSender instanceof Player p)) return List.of();
-		var rm = RegionManager.INSTANCE;
 
 		String lowerLabel = label.toLowerCase();
 		boolean isEnglish = lowerLabel.equals("region") || lowerLabel.equals("rg");

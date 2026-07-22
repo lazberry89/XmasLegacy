@@ -7,17 +7,35 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.Ranks.RankManager;
+import org.lazberry.xmaslegacy.Ranks.RankingTask;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "rank")
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RankingCommand implements CommandExecutor, TabCompleter {
+	private final @NotNull XmasLegacy plugin;
+	private final @NotNull UserManager um;
+	private final @NotNull RankManager rm;
+	private final @NotNull RankingTask task;
 
-	public RankingCommand() {}
+	@Inject
+	public RankingCommand(@NotNull XmasLegacy plugin, @NotNull UserManager um, @NotNull RankManager rm, @NotNull RankingTask task) {
+		this.plugin = plugin;
+		this.um = um;
+		this.rm = rm;
+		this.task = task;
+	}
 
 	///rank self/<Player> <type>
 	///rank task <Type> <Boolean>
@@ -30,15 +48,15 @@ public class RankingCommand implements CommandExecutor, TabCompleter {
 			return true;
 		}
 		if (args.length == 2) {
-			if (args[0].equalsIgnoreCase("self")) new RankingCommandSelf().execute(p, args);
-			else new RankingCommandPlayer().execute(p, args);
+			if (args[0].equalsIgnoreCase("self")) new RankingCommandSelf(um, rm).execute(p, args);
+			else new RankingCommandPlayer(um, rm).execute(p, args);
 		}
 		else if (args.length == 3) {
 			if (!p.isOp()) {
 				InfoUtils.error(p, "관리자용 명령어에요!");
 				return true;
 			}
-			if (args[0].equalsIgnoreCase("task")) new RankingCommandTask().execute(p, args);
+			if (args[0].equalsIgnoreCase("task")) new RankingCommandTask(plugin, task).execute(p, args);
 			else InfoUtils.error(p, "유효하지 않은 명령어입니다!");
 		}
 		else InfoUtils.error(p, "유효하지 않은 명령어입니다!");

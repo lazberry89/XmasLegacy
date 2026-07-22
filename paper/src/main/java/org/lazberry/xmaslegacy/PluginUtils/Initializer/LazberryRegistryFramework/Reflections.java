@@ -223,7 +223,7 @@ public final class Reflections {
 			Class<?> clazz = entry.getKey();
 			if (RoleClass.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Roles.class)) {
 				RoleClass roleClass = (RoleClass) entry.getValue();
-				RoleManager.INSTANCE.register(roleClass);
+				RoleManager.register(roleClass);
 				log.info("{} Successfully registered role {} from IoC Container", icon, clazz.getSimpleName());
 			}
 		}

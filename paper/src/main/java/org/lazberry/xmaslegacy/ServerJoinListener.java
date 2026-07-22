@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PlayerUtils.UserTagManager;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
@@ -21,6 +22,8 @@ import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 /**
  * As not implementing Listeners annotation, this Listener should be
@@ -31,13 +34,17 @@ import org.lazberry.xmaslegacy.settings.Alert;
  * @see ServerTransfer
  */
 @Slf4j
+@Listeners
+@Registry.Include(type = ServerType.GLOBAL)
 public final class ServerJoinListener implements Listener {
 	private final @NotNull UserSaveManager us;
 	private final @NotNull XmasLegacy plugin;
+	private final @NotNull SpawnRepository spawnRepo;
 
-	public ServerJoinListener() {
-		this.us = UserSaveManager.INSTANCE;
-		this.plugin = XmasLegacy.getInstance();
+	public ServerJoinListener(@NotNull UserSaveManager us, @NotNull XmasLegacy plugin, @NotNull SpawnRepository spawnRepo) {
+		this.us = us;
+		this.plugin = plugin;
+		this.spawnRepo = spawnRepo;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -47,17 +54,17 @@ public final class ServerJoinListener implements Listener {
 
 		switch (ServerUtils.getServerType(this.plugin)) {
 			case MAIN -> {
-				MainSpawnManager val = SpawnRepository.INSTANCE.get(DestinationType.MAIN);
+				MainSpawnManager val = spawnRepo.get(DestinationType.MAIN);
 				val.joinEffect(p);
 				UserHandler.loadUser(p, true);
 			}
 			case LOBBY -> {
 				e.joinMessage(ColorUtils.chat(Alert.XmasLegacy + " 입장을 환영합니다! 전방의 포탈로 게임을 시작하세요."));
-				LobbyManager lbm = SpawnRepository.INSTANCE.get(DestinationType.LOBBY);
+				LobbyManager lbm = spawnRepo.get(DestinationType.LOBBY);
 				lbm.lobbyJoin(e);
 			}
 			default -> {
-				plugin.getSLF4JLogger().warn("알 수 없는 서버 타입입니다: {}", ServerInitializer.getServerType(this.plugin));
+				plugin.getSLF4JLogger().warn("알 수 없는 서버 타입입니다: {}", ServerUtils.getServerType(this.plugin));
 				p.kick(ColorUtils.chat("&c올바르지 않은 서버 타입입니다. config.yml을 수정하세요."), PlayerKickEvent.Cause.PLUGIN);
 				Bukkit.getOnlinePlayers().forEach(Player::kick);
 			}

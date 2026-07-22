@@ -18,16 +18,16 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 
 import java.time.Duration;
 
-public record DestinationCommandMove(@NotNull DestinationType type) implements SubCommand {
+public record DestinationCommandMove(@NotNull DestinationType type, @NotNull SpawnRepository spawnRepo) implements SubCommand {
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         if (type.equals(DestinationType.PORT)) {
-            PortVillageManager value = SpawnRepository.INSTANCE.get(type);
+            PortVillageManager value = spawnRepo.get(type);
             value.move(player);
             return;
         }
-        var value = SpawnRepository.INSTANCE.get(type);
+        var value = spawnRepo.get(type);
         Location from = player.getLocation();
         Location to = value.getSpawn();
         if (to == null) {

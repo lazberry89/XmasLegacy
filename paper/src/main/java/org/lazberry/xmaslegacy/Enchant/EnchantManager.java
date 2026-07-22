@@ -14,11 +14,11 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Registry(type = ServerType.GLOBAL)
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantManager implements ServerManager {
     private final @NotNull NamespacedKey key;
@@ -44,7 +44,7 @@ public class EnchantManager implements ServerManager {
     }
 
     @Range(from = 1, to = 10)
-    public Component getLore(int lvl) {
+    public @NotNull Component getLore(int lvl) {
         return LORE_LIST.get(Math.clamp(lvl, 1, 10));
     }
 

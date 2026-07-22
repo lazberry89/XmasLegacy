@@ -17,10 +17,12 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Slf4j
-@Task(type = ServerType.GLOBAL)
+@Task
+@Registry.Exclude(type = ServerType.LOBBY)
 public class IcingSystem implements Tasks {
 	private final @NotNull IcingBossBarManager bar;
 	private final @NotNull UserManager um;

@@ -7,7 +7,6 @@ import org.bukkit.Utility;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.User.UserManager;
 import org.slf4j.helpers.MessageFormatter;
 
 @Slf4j
@@ -66,11 +65,6 @@ public final class InfoUtils {
     }
 
     private void mobileProcess(@NotNull Player p, @NotNull Component msg) {
-        var user = UserManager.INSTANCE.getUser(p.getUniqueId());
-        if (user == null) {
-            UserHandler.sendReloadNotice(p);
-            return;
-        }
-        if (user.isMobile()) p.sendActionBar(msg);
+        if (FloodgateUtils.isFloodgate(p.getUniqueId())) p.sendActionBar(msg);
     }
 }

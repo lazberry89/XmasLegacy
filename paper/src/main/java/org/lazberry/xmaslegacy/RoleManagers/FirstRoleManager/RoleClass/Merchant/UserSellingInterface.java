@@ -14,10 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
-import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Economy.Currency.CurrencyManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
+import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -26,20 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated(since = "1.21.4")
-@SuppressWarnings("FieldCanBeLocal, unused")
 public class UserSellingInterface {
     private final Merchant inv;
-    private final UserManager um;
     private final XmasLegacy plugin;
 	@Getter
 	private final Component title = ColorUtils.chat("&c&lSystem - &7&l매입");
-	private final NamespacedKey key;
 
-    public UserSellingInterface(Player viewer) {
-        this.um = UserManager.INSTANCE;
+	public UserSellingInterface(Player viewer, UserManager um) {
 		this.plugin = XmasLegacy.getInstance();
         this.inv = Bukkit.createMerchant(title);
-		this.key = KeyUtils.get("merchant_money");
+		NamespacedKey key = KeyUtils.get("merchant_money");
         List<MerchantRecipe> recipes = new ArrayList<>();
 
 		var user = um.getUser(viewer.getUniqueId());
@@ -47,7 +43,7 @@ public class UserSellingInterface {
 
         switch (user.getRole()) {
             case BasicRoles.FARMER -> {
-                ItemStack resultForWheat = CurrencyManager.INSTANCE.currency();
+                ItemStack resultForWheat = CurrencyManager.currency(plugin);
 				resultForWheat.setAmount(3);
 	            ItemMeta meta = resultForWheat.getItemMeta();
 				meta.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -59,12 +55,12 @@ public class UserSellingInterface {
                 ItemStack seed = AgeableCrops.SunFlowerSeed();
                 seed.setAmount(32);
                 MerchantRecipe seedRecipe = new MerchantRecipe(seed, Integer.MAX_VALUE);
-                ItemStack money = CurrencyManager.INSTANCE.currency();
+                ItemStack money = CurrencyManager.currency(plugin);
 				money.setAmount(18);
                 seedRecipe.addIngredient(money);
                 recipes.add(seedRecipe);
 
-                ItemStack resultForSunflower = CurrencyManager.INSTANCE.currency();
+                ItemStack resultForSunflower = CurrencyManager.currency(plugin);
 				resultForSunflower.setAmount(10);
 	            ItemMeta metas = resultForSunflower.getItemMeta();
 	            metas.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -76,7 +72,7 @@ public class UserSellingInterface {
                 recipes.add(sunflower);
             }
             case BasicRoles.MINER -> {
-				ItemStack resultForCoal = CurrencyManager.INSTANCE.currency();
+				ItemStack resultForCoal = CurrencyManager.currency(plugin);
 				resultForCoal.setAmount(5);
 	            ItemMeta metac = resultForCoal.getItemMeta();
 	            metac.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -85,7 +81,7 @@ public class UserSellingInterface {
 				coal.addIngredient(new ItemStack(Material.COAL, 16));
 				recipes.add(coal);
 
-				ItemStack resultForIron = CurrencyManager.INSTANCE.currency();
+				ItemStack resultForIron = CurrencyManager.currency(plugin);
 				resultForIron.setAmount(11);
 				ItemMeta metai = resultForIron.getItemMeta();
 				metai.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -94,7 +90,7 @@ public class UserSellingInterface {
 				iron.addIngredient(new ItemStack(Material.IRON_INGOT, 16));
 				recipes.add(iron);
 
-				ItemStack resultForGold = CurrencyManager.INSTANCE.currency();
+				ItemStack resultForGold = CurrencyManager.currency(plugin);
 				resultForGold.setAmount(13);
 				ItemMeta metag = resultForGold.getItemMeta();
 				metag.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
@@ -103,7 +99,7 @@ public class UserSellingInterface {
 				gold.addIngredient(new ItemStack(Material.GOLD_INGOT, 16));
 				recipes.add(gold);
 
-				ItemStack resultForDiamond = CurrencyManager.INSTANCE.currency();
+				ItemStack resultForDiamond = CurrencyManager.currency(plugin);
 				resultForDiamond.setAmount(18);
 				ItemMeta metad = resultForDiamond.getItemMeta();
 				metad.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);

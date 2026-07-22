@@ -12,18 +12,17 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
+import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Farmer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
-
-	private final @NotNull RadiusHarvest harvest = new RadiusHarvest();
-	private final @NotNull SpeedGrower speed = new SpeedGrower();
 
 	private Container container;
 
@@ -74,12 +73,12 @@ public class Farmer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, harvest, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, SkillManager.INSTANCE.get(BasicSkills.RADIUS_HARVEST), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, speed, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, SkillManager.INSTANCE.get(BasicSkills.SPEED_GROWER), container, getCooldown2());
 	}
 
 	@Override

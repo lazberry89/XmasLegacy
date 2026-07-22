@@ -11,23 +11,26 @@ import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.ParseEnum;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 @TestOnly
 @Commands(command = "second")
 public class SecondTestCommand implements CommandExecutor {
+	private final @NotNull RoleManager rm;
 
-    public SecondTestCommand() {
-	}
+	@Inject
+    public SecondTestCommand(@NotNull RoleManager rm) {
+	    this.rm = rm;
+    }
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 0) return true;
-		@NotNull RoleManager srm = RoleManager.INSTANCE;
 
 		SecondaryRoles sr = ParseEnum.of(SecondaryRoles.class).parse(args[0]);
 		if (sr == null) return true;
-		AbstractSecondRole asr = srm.getRoleInstance(sr);
+		AbstractSecondRole asr = rm.getRoleInstance(sr);
 		p.getInventory().addItem(asr.roleWeapon());
 		p.getInventory().addItem(asr.roleArmor());
 		p.getInventory().addItem(asr.targetEmblem());

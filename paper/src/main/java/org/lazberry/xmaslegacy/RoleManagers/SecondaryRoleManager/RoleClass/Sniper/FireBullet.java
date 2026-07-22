@@ -12,9 +12,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
@@ -22,6 +22,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -31,10 +32,13 @@ import java.util.UUID;
 @Skill(type = PlayerSkills.FIRE_BULLET)
 public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
     private final @NotNull SkillEffectManager sem;
+	private final @NotNull PartyManager pm;
 
-    public FireBullet() {
-        this.sem = SkillEffectManager.INSTANCE;
-    }
+	@Inject
+    public FireBullet(@NotNull SkillEffectManager sem, @NotNull PartyManager pm) {
+        this.sem = sem;
+		this.pm = pm;
+	}
 
     @Override
     public boolean execute(@NotNull Player caster, @NotNull Sniper.@NotNull Container container) {
@@ -170,7 +174,7 @@ public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
         org.bukkit.util.RayTraceResult blockTrace = p.getWorld().rayTraceBlocks(startLoc, direction, maxDistance, FluidCollisionMode.NEVER, true);
 
         org.bukkit.util.RayTraceResult entityTrace = p.getWorld().rayTraceEntities(startLoc, direction, maxDistance, 0.2, (entity) ->
-                entity instanceof LivingEntity && !entity.equals(p) && !PartyManager.INSTANCE.isParty(uuid, entity.getUniqueId())
+                entity instanceof LivingEntity && !entity.equals(p) && !pm.isParty(uuid, entity.getUniqueId())
         );
 
         double finalDistance = maxDistance;
@@ -241,7 +245,7 @@ public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
 
                 RayTraceResult blockTrace = p.getWorld().rayTraceBlocks(currentLoc, direction, speedPerTick, FluidCollisionMode.NEVER, true);
                 RayTraceResult entityTrace = p.getWorld().rayTraceEntities(currentLoc, direction, speedPerTick, 0.2, (entity) ->
-                        entity instanceof LivingEntity && !entity.equals(p) && !PartyManager.INSTANCE.isParty(uuid, entity.getUniqueId())
+                        entity instanceof LivingEntity && !entity.equals(p) && !pm.isParty(uuid, entity.getUniqueId())
                 );
 
                 double stepDistance = speedPerTick;

@@ -9,10 +9,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
@@ -20,6 +20,7 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 import java.util.HashSet;
@@ -30,15 +31,16 @@ import java.util.UUID;
 public class Berserker extends AbstractSecondRole {
     private final @NotNull Set<UUID> usedPassive = new HashSet<>();
     private final @NotNull PartyManager pm;
-    private Container container;
+    private final Container container;
 
     public record Container(
             XmasLegacy plugin
     ) implements RoleContainer {}
 
-    public Berserker() {
+	@Inject
+    public Berserker(@NotNull PartyManager pm) {
         super(SecondaryRoles.BERSERKER);
-        this.pm = PartyManager.INSTANCE;
+        this.pm = pm;
         this.container = new Container(getPlugin());
     }
 

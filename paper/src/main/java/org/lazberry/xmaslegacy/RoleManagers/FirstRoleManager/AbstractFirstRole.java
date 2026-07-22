@@ -19,6 +19,7 @@ import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.Emblem;
 import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
+import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
@@ -26,12 +27,14 @@ import java.io.File;
 import java.io.IOException;
 
 @Slf4j
+@Getter
 public abstract class AbstractFirstRole implements RoleClass {
-    private final @Getter XmasLegacy plugin;
+    private final XmasLegacy plugin;
 	private final @NotNull BasicRoles role;
-	protected final @NotNull @Getter Emblem emblem;
-    protected @Getter @Setter int cooldown1;
-    protected @Getter @Setter int cooldown2;
+	protected final @NotNull Emblem emblem;
+    protected @Setter int cooldown1;
+    protected @Setter int cooldown2;
+	protected final @NotNull SkillManager SkillRepo = SkillManager.INSTANCE;
 
 	public AbstractFirstRole(@NotNull BasicRoles role) {
 		this.plugin = XmasLegacy.getInstance();

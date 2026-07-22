@@ -22,6 +22,7 @@ import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 import java.util.*;
@@ -29,7 +30,7 @@ import java.util.*;
 @Roles(grade = 2)
 public class Guardian extends AbstractSecondRole {
     private final @NotNull PartyManager pm;
-    private Container container;
+    private final Container container;
 
     public static class Container implements RoleContainer {
         public final int cooldown1;
@@ -45,9 +46,10 @@ public class Guardian extends AbstractSecondRole {
         }
     }
 
-    public Guardian() {
+	@Inject
+    public Guardian(@NotNull PartyManager pm) {
         super(SecondaryRoles.GUARDIAN);
-        this.pm = PartyManager.INSTANCE;
+        this.pm = pm;
         this.container = new Container(getPlugin(), 30, 30);
     }
 

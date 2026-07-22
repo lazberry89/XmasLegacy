@@ -13,12 +13,19 @@ import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 @Skill(type = PlayerSkills.TAUNT)
 public class Taunt implements Skills<Knight.Container>, UsingEnergy {
+	private final @NotNull SkillEffectManager sem;
+
+	@Inject
+	public Taunt(@NotNull SkillEffectManager sem) {
+		this.sem = sem;
+	}
 
 	@Override
 	public boolean execute(@NotNull Player caster, Knight.@NotNull Container container) {
@@ -32,7 +39,7 @@ public class Taunt implements Skills<Knight.Container>, UsingEnergy {
 					mob.setTarget(caster);
 					mob.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, mob.getLocation(), 10, 1.5, 1.5, 1.5, 0.1);
 				}
-				if (e instanceof Player target) SkillEffectManager.INSTANCE.knockbackEntity(caster, target, container.second_skill_knockback(), container.second_skill_knockback_y());
+				if (e instanceof Player target) sem.knockbackEntity(caster, target, container.second_skill_knockback(), container.second_skill_knockback_y());
 			}
 		}
 		return true;

@@ -15,7 +15,6 @@ import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Region.Events.RegionDeleteEvent;
@@ -23,8 +22,10 @@ import org.lazberry.xmaslegacy.Region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,19 +33,18 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Inject
-@Registry(type = ServerType.GLOBAL)
 @Registry.Exclude(type = ServerType.LOBBY)
-public enum RegionManager implements ServerManager {
-	INSTANCE;
-
-	private @NotNull XmasLegacy plugin;
+public class RegionManager implements ServerManager {
+	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
 	private File file;
 	private FileConfiguration config;
 
-	RegionManager() {}
+	@Inject
+	public RegionManager(@NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public void init() {

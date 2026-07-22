@@ -12,11 +12,15 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 
 @Slf4j
 public class RegionCommandDelete implements SubCommand {
+	private final @NotNull RegionManager rm;
 
-    @Override
+	public RegionCommandDelete(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
+
+	@Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         try {
-            var rm = RegionManager.INSTANCE;
             if (args.length < 2) {
                 InfoUtils.error(player, "사용법: /구역 <ID> 삭제/delete");
                 return;

@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -22,8 +23,14 @@ import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.TARGET_GUARD;
 
 @Skill(type = PlayerSkills.TARGET_GUARD)
 public class TargetGuard implements Skills<Guardian.Container>, UsingEnergy {
+	private final @NotNull PartyManager pm;
 
-    @Override
+	@Inject
+	public TargetGuard(@NotNull PartyManager pm) {
+		this.pm = pm;
+	}
+
+	@Override
     public boolean execute(@NotNull Player caster, @NotNull Guardian.@NotNull Container container) {
         LivingEntity target = container.targetMap.get(caster);
         ItemStack tool = caster.getInventory().getItemInMainHand();
@@ -41,7 +48,7 @@ public class TargetGuard implements Skills<Guardian.Container>, UsingEnergy {
 
         container.activeSkill.add(caster.getUniqueId());
         caster.sendActionBar(ColorUtils.chat("&a스킬 활성화"));
-        boolean isAlly = target instanceof Player t && PartyManager.INSTANCE.isParty(caster.getUniqueId(), t.getUniqueId());
+        boolean isAlly = target instanceof Player t && pm.isParty(caster.getUniqueId(), t.getUniqueId());
 
         new BukkitRunnable() {
             int ticks = 0;

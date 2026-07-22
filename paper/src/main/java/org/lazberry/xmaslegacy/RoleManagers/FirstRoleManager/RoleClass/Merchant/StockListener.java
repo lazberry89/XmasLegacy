@@ -16,8 +16,8 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 public class StockListener implements Listener {
 	private final MerchantStockInterface msi;
 
-	public StockListener() {
-		this.msi = MerchantStockInterface.INSTANCE;
+	public StockListener(MerchantStockInterface msi) {
+		this.msi = msi;
 	}
 
 	@EventHandler

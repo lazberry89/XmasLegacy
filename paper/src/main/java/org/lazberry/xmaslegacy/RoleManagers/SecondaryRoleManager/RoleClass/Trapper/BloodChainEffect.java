@@ -11,15 +11,19 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 public final class BloodChainEffect {
     private final @NotNull XmasLegacy plugin;
+	private final @NotNull PartyManager pm;
 
-    public BloodChainEffect(@NotNull XmasLegacy plugin) {
+	@Inject
+    public BloodChainEffect(@NotNull XmasLegacy plugin, @NotNull PartyManager pm) {
         this.plugin = plugin;
+	    this.pm = pm;
     }
 
     public void playEffect(@NotNull Player caster, @NotNull Consumer<LivingEntity> onHit, @NotNull Runnable onMiss) {
@@ -54,7 +58,7 @@ public final class BloodChainEffect {
                 List<LivingEntity> targets = world.getNearbyEntities(currentMainLoc, 0.6, 0.6, 0.6,
                                 entity -> entity instanceof LivingEntity && entity != caster)
                         .stream()
-                        .filter(entity -> !PartyManager.INSTANCE.isParty(entity.getUniqueId(), caster.getUniqueId()))
+                        .filter(entity -> !pm.isParty(entity.getUniqueId(), caster.getUniqueId()))
                         .map(entity -> (LivingEntity) entity)
                         .toList();
 

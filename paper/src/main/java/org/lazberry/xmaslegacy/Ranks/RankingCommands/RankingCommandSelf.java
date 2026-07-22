@@ -5,13 +5,18 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Ranks.RankManager;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Ranks.RankingTask;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 
 public class RankingCommandSelf implements SubCommand {
+	private final @NotNull UserManager um;
+	private final @NotNull RankManager rm;
+
+	public RankingCommandSelf(@NotNull UserManager um, @NotNull RankManager rm) {
+		this.um = um;
+		this.rm = rm;
+	}
 
 	@Override
 	public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
@@ -19,7 +24,7 @@ public class RankingCommandSelf implements SubCommand {
 			InfoUtils.error(player, "잘못된 사용법입니다!");
 			return;
 		}
-		var user = UserManager.INSTANCE.getUser(player.getUniqueId());
+		var user = um.getUser(player.getUniqueId());
 		if (user == null) {
 			UserHandler.sendReloadNotice(player);
 			return;
@@ -31,7 +36,7 @@ public class RankingCommandSelf implements SubCommand {
 			InfoUtils.error(player, "존재하지 않는 랭크 타입입니다.");
 			return;
 		}
-		int rank = RankManager.INSTANCE.getRank(type, user);
+		int rank = rm.getRank(type, user);
 		if (rank == -1) {
 			InfoUtils.error(player, "유효한 랭킹 범위 밖입니다! (100등 미만)");
 			return;

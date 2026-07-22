@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 @Slf4j
 @Listeners
@@ -22,9 +23,10 @@ public class RoleListener implements Listener {
     private final @NotNull NamespacedKey key;
     private final @NotNull RoleManager rlm;
 
-    public RoleListener() {
+	@Inject
+    public RoleListener(@NotNull RoleManager rlm) {
         this.key = KeyUtils.get("role_id");
-        this.rlm = RoleManager.INSTANCE;
+        this.rlm = rlm;
     }
 
     @EventHandler
@@ -43,7 +45,7 @@ public class RoleListener implements Listener {
             log.warn("Failed to parse role named \"{}\"", value);
             role = BasicRoles.USER;
         }
-        RoleClass rc = RoleManager.INSTANCE.getRoleInstance(role);
+        RoleClass rc = rlm.getRoleInstance(role);
         rc.useDash(p, role);
     }
 

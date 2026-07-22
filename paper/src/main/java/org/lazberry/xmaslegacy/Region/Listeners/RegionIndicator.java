@@ -22,14 +22,20 @@ import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Inject
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RegionIndicator implements Listener {
-	private @NotNull RegionManager rm;
-	private @NotNull UserManager um;
+	private final @NotNull RegionManager rm;
+	private final @NotNull UserManager um;
 
-	public RegionIndicator() {}
+	@Inject
+	public RegionIndicator(@NotNull UserManager um, @NotNull RegionManager rm) {
+		this.rm = rm;
+		this.um = um;
+	}
 
 	@EventHandler
 	public void UserRegionCreate(PlayerDropItemEvent e) {

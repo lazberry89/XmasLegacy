@@ -8,12 +8,14 @@ import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 public class RuleCommandRemove implements SubCommand {
     private final @NotNull RuleManager rm;
 
-    public RuleCommandRemove() {
-        this.rm = RuleManager.INSTANCE;
+	@Inject
+    public RuleCommandRemove(@NotNull RuleManager rm) {
+	    this.rm = rm;
     }
 
     @Override

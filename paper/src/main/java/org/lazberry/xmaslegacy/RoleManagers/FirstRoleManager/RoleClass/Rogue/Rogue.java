@@ -20,6 +20,7 @@ import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Rogue extends AbstractFirstRole {
@@ -27,9 +28,6 @@ public class Rogue extends AbstractFirstRole {
 	private @Getter Material armor_item;
 
 	private Container container;
-
-	private final @NotNull DaggerRush rush = new DaggerRush();
-	private final @NotNull Smoke smoke = new Smoke();
 
 	public record Container(
 		XmasLegacy plugin,
@@ -86,12 +84,12 @@ public class Rogue extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, rush, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.DAGGER_RUSH), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, smoke, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.SMOKE), container, getCooldown2());
 	}
 
 	@Override

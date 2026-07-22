@@ -18,13 +18,15 @@ import org.lazberry.xmaslegacy.Utils.BoardUtils;
 import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-@Task(type = ServerType.GLOBAL)
+@Task
+@Registry.Exclude(type = ServerType.LOBBY)
 public class UserPartyScoreBoard implements Tasks {
 	private final @NotNull PartyManager pm;
 	private final @NotNull UserManager um;

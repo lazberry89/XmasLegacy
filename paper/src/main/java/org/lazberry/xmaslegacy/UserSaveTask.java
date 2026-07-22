@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 import java.util.Map;
 import java.util.Objects;
@@ -18,11 +19,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Task(type = ServerType.GLOBAL)
-public enum UserSaveTask implements Tasks {
-	INSTANCE;
-
+@Task
+@Registry
+public class UserSaveTask implements Tasks {
 	private volatile @Nullable BukkitTask task;
+	private final @NotNull UserSaveManager us;
+
+	@Inject
+	public UserSaveTask(@NotNull UserSaveManager us) {
+		this.us = us;
+	}
 
 	/**
 	 * Async scheduler will start. Also synchronized.
@@ -37,7 +43,7 @@ public enum UserSaveTask implements Tasks {
 
 			this.task = Bukkit.getScheduler()
 					.runTaskTimerAsynchronously(plugin, () -> {
-								UserSaveManager.INSTANCE.saveAll();
+								us.saveAll();
 								log.warn("User info saved automatically saved for {} tick duration.", Constants.USER_SAVE_TASK_DURATION);
 							},
 							0L, Constants.USER_SAVE_TASK_DURATION);
@@ -68,8 +74,6 @@ public enum UserSaveTask implements Tasks {
 	}
 
 	public void loadValidUsers() {
-		var us = UserSaveManager.INSTANCE;
-
 		Map<UUID, String> playerData = Bukkit.getOnlinePlayers().stream()
 				.filter(Objects::nonNull)
 				.collect(Collectors.toMap(Player::getUniqueId, Player::getName));

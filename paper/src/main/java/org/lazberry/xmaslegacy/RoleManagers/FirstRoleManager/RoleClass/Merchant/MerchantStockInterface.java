@@ -13,13 +13,14 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public enum MerchantStockInterface {
-	INSTANCE;
-
+@Registry.Exclude(type = ServerType.LOBBY)
+public class MerchantStockInterface {
 	private final Component title = ColorUtils.chat("&c&l상점 재고 관리");
 	private final Component titleFarm = ColorUtils.chat("&c&l농부 재고");
 	private final Component titleMiner = ColorUtils.chat("&c&l광부 재고");
@@ -38,9 +39,9 @@ public enum MerchantStockInterface {
 		return this.owner;
 	}
 
-	MerchantStockInterface() {
-		this.plugin = XmasLegacy.getInstance();
-		this.em = EconomyManager.INSTANCE;
+	public MerchantStockInterface(@NotNull EconomyManager em, @NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+		this.em = em;
 		//Main
 		this.inv = Bukkit.createInventory(null, 9, title);
 		ItemStack bg = ItemBuilder.of(plugin, Material.BLACK_STAINED_GLASS_PANE)

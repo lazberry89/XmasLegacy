@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -25,8 +26,14 @@ import java.util.UUID;
 
 @Skill(type = PlayerSkills.SOUL_STEAL)
 public class SoulSteal implements Skills<Defender.Container>, UsingEnergy {
+	private final @NotNull PartyManager pm;
 
-    @Override
+	@Inject
+	public SoulSteal(@NotNull PartyManager pm) {
+		this.pm = pm;
+	}
+
+	@Override
     public boolean execute(@NotNull Player caster, @NotNull Defender.@NotNull Container container) {
         if (!consumeEnergy(caster, 3)) return false;
         Location loc = caster.getLocation();
@@ -77,7 +84,7 @@ public class SoulSteal implements Skills<Defender.Container>, UsingEnergy {
     private void rangeAttack(@NotNull Set<UUID> hitList, @NotNull Location center, @NotNull Player caster) {
         center.getNearbyEntities(0.8, 0.8, 0.8).forEach(e -> {
             if (e instanceof LivingEntity target && !target.equals(caster)) {
-                if (!PartyManager.INSTANCE.isParty(caster.getUniqueId(), target.getUniqueId())) {
+                if (!pm.isParty(caster.getUniqueId(), target.getUniqueId())) {
                     if (hitList.add(target.getUniqueId())) {
                         target.damage(5.0, caster);
                         StunUtils.stun(target.getUniqueId(), 30L, "범위 공격");

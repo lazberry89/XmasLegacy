@@ -8,11 +8,11 @@ import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 
-public record DestinationCommandLocation(@NotNull DestinationType type) implements SubCommand {
+public record DestinationCommandLocation(@NotNull DestinationType type, @NotNull SpawnRepository spawnRepo) implements SubCommand {
 
 	@Override
 	public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-		var value = SpawnRepository.INSTANCE.get(type);
+		var value = spawnRepo.get(type);
 		Location loc = value.getSpawn();
 
 		if (loc == null) {

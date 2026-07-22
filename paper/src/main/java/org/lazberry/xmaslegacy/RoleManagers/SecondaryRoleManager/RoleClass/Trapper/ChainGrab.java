@@ -7,11 +7,13 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -19,16 +21,19 @@ import org.lazberry.xmaslegacy.settings.SkillSet;
 @Skill(type = PlayerSkills.CHAIN_GRAB)
 public class ChainGrab implements Skills<Trapper.Container>, UsingEnergy {
     private final @NotNull Particle.DustTransition trans;
+	private final @NotNull PartyManager pm;
 
-    public ChainGrab() {
-        this.trans = new Particle.DustTransition(Color.RED, Color.BLACK, 1.1f);
+	@Inject
+    public ChainGrab(@NotNull PartyManager pm) {
+	    this.pm = pm;
+	    this.trans = new Particle.DustTransition(Color.RED, Color.BLACK, 1.1f);
     }
 
     @Override
     public boolean execute(@NotNull Player caster, @NotNull Trapper.@NotNull Container container) {
         if (!(consumeEnergy(caster, 3))) return false;
         caster.playSound(caster, Sound.BLOCK_CHAIN_PLACE, 1.0f, 1.0f);
-        new BloodChainEffect(container.plugin()).playEffect(caster, target -> {
+        new BloodChainEffect(container.plugin(), pm).playEffect(caster, target -> {
             Location casterLoc = caster.getLocation();
             Location targetLoc = target.getLocation();
 

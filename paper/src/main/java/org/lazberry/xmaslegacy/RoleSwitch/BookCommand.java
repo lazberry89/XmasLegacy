@@ -15,13 +15,15 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 @Commands(command = "book")
 public class BookCommand implements CommandExecutor {
-    private final @NotNull MagicBook MB;
+    private final @NotNull MagicBook mb;
 
-    public BookCommand() {
-        this.MB = MagicBook.INSTANCE;
+	@Inject
+    public BookCommand(@NotNull MagicBook mb) {
+	    this.mb = mb;
     }
 
     @Override
@@ -38,12 +40,12 @@ public class BookCommand implements CommandExecutor {
             return true;
         }
         Location loc = targetLoc.getLocation();
-        if (MB.getStand() == null) {
-            MB.setDisplay(MB.BookStand(loc));
+        if (mb.getStand() == null) {
+            mb.setDisplay(mb.BookStand(loc));
             InfoUtils.info(p, "직업책이 생성되었어요.");
         } else {
             InfoUtils.error(p, "이미 생성되어 있어요! 제거 후 사용해주세요.");
-            Component delStand = ColorUtils.chat("&c&l[삭제하기]").hoverEvent(HoverEvent.showEntity(Key.key("minecraft:armor_stand"), MB.getStand().getUniqueId()))
+            Component delStand = ColorUtils.chat("&c&l[삭제하기]").hoverEvent(HoverEvent.showEntity(Key.key("minecraft:armor_stand"), mb.getStand().getUniqueId()))
                     .clickEvent(ClickEvent.runCommand("/delstand"));
             Component msg = ColorUtils.chat(Alert.YELLOW + " 제거할까요? ").append(delStand);
             p.sendMessage(msg);

@@ -11,20 +11,20 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.CustomPrefix;
 import org.lazberry.xmaslegacy.settings.ServerManager;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Inject
-@Registry(type = ServerType.GLOBAL)
 @Registry.Exclude(type = ServerType.LOBBY)
-public enum PrefixManager implements ServerManager {
-	INSTANCE;
-
-	private @NotNull UserManager um;
+public class PrefixManager implements ServerManager {
+	private final @NotNull UserManager um;
 	private final @NotNull Map<String, CustomPrefix> customPrefix = new HashMap<>();
 
-	PrefixManager() {}
+	@Inject
+	public PrefixManager(@NotNull UserManager um) {
+		this.um = um;
+	}
 
 	public boolean add(@NotNull Player p, @NotNull ServerPrefix prefix) {
 		User user = um.getUser(p.getUniqueId());

@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Utils;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
@@ -50,6 +51,8 @@ import java.util.function.BiConsumer;
  */
 @Slf4j
 public final class UserHandler {
+	private static @Setter UserSaveManager us;
+	private static @Setter PrefixManager pfm;
 
     /**
      * Same as other utils, block the constructor to be called by others.
@@ -79,13 +82,12 @@ public final class UserHandler {
      */
     @NonBlocking
     public static void loadUser(@NotNull Player player, boolean msg) {
-        var us = UserSaveManager.INSTANCE;
         us.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
             if (throwable != null || user == null) {
                 if (msg) sendError(player, throwable);
                 return;
             }
-            PrefixManager.INSTANCE.removePrefixIfNotValid(user);
+            pfm.removePrefixIfNotValid(user);
             if (msg) sendMsg(player, user);
         });
     }

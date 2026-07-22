@@ -30,17 +30,22 @@ import java.util.Objects;
 
 @Skill(type = PlayerSkills.RADIUS_HARVEST)
 public class RadiusHarvest implements Skills<Farmer.Container>, UsingEnergy {
+	private final @NotNull RegionManager rm;
 
-    @Override
+	public RadiusHarvest(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
+
+	@Override
     public boolean execute(@NotNull Player caster, @NotNull Farmer.@NotNull Container container) {
         if (!consumeEnergy(caster, container.first_skill_hunger_cost())) return false;
-        List<Region> playerRegions = RegionManager.INSTANCE.getRegion(caster);
+        List<Region> playerRegions = rm.getRegion(caster);
         if (playerRegions.isEmpty()) return false;
 
         List<Block> crops = getFullyGrownCrops(caster, container.first_skill_radius());
         List<Item> droppedEntities = new ArrayList<>();
         for (Block block : crops) {
-            Region cropRegion = RegionManager.INSTANCE.getRegionAt(block.getLocation());
+            Region cropRegion = rm.getRegionAt(block.getLocation());
 
             if (cropRegion != null && playerRegions.contains(cropRegion)) {
                 for (ItemStack drop : block.getDrops()) {

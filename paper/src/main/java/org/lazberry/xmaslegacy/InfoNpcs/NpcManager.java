@@ -2,19 +2,15 @@ package org.lazberry.xmaslegacy.InfoNpcs;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Registry(type = ServerType.GLOBAL)
-@Registry.Exclude(type = ServerType.LOBBY)
-public enum NpcManager implements ServerManager {
-    INSTANCE;
-
+@Registry
+public class NpcManager {
     private final @NotNull Map<NpcType, AbstractNpc> npcMap = new HashMap<>();
 
-    NpcManager() {
+    public NpcManager() {
         this.npcMap.put(NpcType.MAIN, new MainNpc());
 		this.npcMap.put(NpcType.ROLE, new CenterNpc());
 		this.npcMap.put(NpcType.WITCH, new WitchNpc());
@@ -36,9 +32,4 @@ public enum NpcManager implements ServerManager {
     public <A extends AbstractNpc> A getNpcInstance(@NotNull NpcType type) {
         return (A) this.npcMap.get(type);
     }
-
-	@Override
-	public void init() {
-
-	}
 }

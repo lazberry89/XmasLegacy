@@ -16,6 +16,7 @@ import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Miner extends AbstractFirstRole {
@@ -23,9 +24,6 @@ public class Miner extends AbstractFirstRole {
 	private Material armor_item;
 
 	private Container container;
-
-	private final @NotNull ChainMining chain = new ChainMining();
-	private final @NotNull OreEye eye = new OreEye();
 
 	public record Container(
 		XmasLegacy plugin,
@@ -69,12 +67,12 @@ public class Miner extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, chain, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.CHAIN_MINING), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, eye, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.ORE_EYE), container, getCooldown2());
 	}
 
 	@Override

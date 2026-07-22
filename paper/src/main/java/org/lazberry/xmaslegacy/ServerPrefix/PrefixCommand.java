@@ -10,10 +10,9 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.MissionPrefix;
-import org.lazberry.xmaslegacy.settings.RoleMastery;
-import org.lazberry.xmaslegacy.settings.ServerPrefix;
-import org.lazberry.xmaslegacy.settings.Tier;
+import org.lazberry.xmaslegacy.settings.*;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 
@@ -22,13 +21,15 @@ import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "prefix")
+@Registry.Exclude(type = ServerType.LOBBY)
 public class PrefixCommand implements CommandExecutor, TabCompleter {
     private final @NotNull PrefixManager pfm;
     private final @NotNull UserManager um;
 
-    public PrefixCommand() {
-        this.pfm = PrefixManager.INSTANCE;
-        this.um = UserManager.INSTANCE;
+	@Inject
+    public PrefixCommand(@NotNull PrefixManager pfm, @NotNull UserManager um) {
+	    this.pfm = pfm;
+	    this.um = um;
     }
 
     @Override
@@ -110,11 +111,11 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
                 }
             } else if (args.length == 1) {
                 if (args[0].startsWith("inv")) {
-                    p.openInventory(new PrefixInterface(p).getInventory());
+                    p.openInventory(new PrefixInterface(p, um).getInventory());
                 }
-            } else if (args.length == 0) p.openInventory(new PrefixInterface(p).getInventory());
+            } else if (args.length == 0) p.openInventory(new PrefixInterface(p, um).getInventory());
         } else {
-            if (args.length == 1 && args[0].startsWith("inv") || args.length == 0) p.openInventory(new PrefixInterface(p).getInventory());
+            if (args.length == 1 && args[0].startsWith("inv") || args.length == 0) p.openInventory(new PrefixInterface(p, um).getInventory());
         }
         return true;
     }

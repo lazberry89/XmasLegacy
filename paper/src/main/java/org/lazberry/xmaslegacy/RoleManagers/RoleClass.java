@@ -56,13 +56,13 @@ public interface RoleClass {
 		}
 		velocity.setY(finalY);
 
-		SkillEffectManager.INSTANCE.followParticle(p, Particle.END_ROD, 10);
+		SkillEffectManager.followParticle(p, Particle.END_ROD, 10);
 		p.setVelocity(velocity);
 
 		int nextCount = count - 1;
 		dashCount.put(uuid, nextCount);
 
-		if (nextCount <= 0) p.setCooldown(item, 20 * 60);
+		if (nextCount <= 0) p.setCooldown(item, 20 * 30);
 		else p.setCooldown(item, 10);
 	}
 

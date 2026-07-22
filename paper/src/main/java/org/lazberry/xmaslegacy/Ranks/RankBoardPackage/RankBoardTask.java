@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.Ranks;
+package org.lazberry.xmaslegacy.Ranks.RankBoardPackage;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
@@ -9,11 +9,12 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
+import org.lazberry.xmaslegacy.Ranks.RankManager;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +22,21 @@ import java.util.Objects;
 
 @Slf4j
 @TestOnly
-@Task(type = ServerType.GLOBAL)
-public enum RankBoardTask implements Tasks {
-	INSTANCE;
-
+@Task
+public class RankBoardTask implements Tasks {
 	private final @NotNull Map<String, RankBoard> board = new HashMap<>();
+	private final @NotNull RankManager rm;
 	private @Nullable BukkitTask task;
 
-	RankBoardTask() {}
+	@Inject
+	public RankBoardTask(@NotNull RankManager rm) {
+		this.rm = rm;
+	}
 
 	public @NotNull RankBoard spawn(@NotNull String name, @NotNull RankType type, int amount, @NotNull Location loc) {
 		if (this.board.containsKey(name)) return this.board.get(name);
 
-		RankBoard rankBoard = new RankBoard(name, type, amount);
+		RankBoard rankBoard = new RankBoard(name, type, amount, rm);
 		rankBoard.spawn(loc);
 		this.board.put(name, rankBoard);
 

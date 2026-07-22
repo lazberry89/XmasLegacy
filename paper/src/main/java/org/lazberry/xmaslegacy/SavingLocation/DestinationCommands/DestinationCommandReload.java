@@ -9,11 +9,11 @@ import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 
 @Slf4j
-public record DestinationCommandReload(@NotNull DestinationType type) implements SubCommand {
+public record DestinationCommandReload(@NotNull DestinationType type, @NotNull SpawnRepository spawnRepo) implements SubCommand {
 
 	@Override
 	public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-		var value = SpawnRepository.INSTANCE.get(type);
+		var value = spawnRepo.get(type);
 		InfoUtils.warn(player, "&7리로드 중입니다..");
 		value.reload().whenComplete((done, ex) -> {
 			if (ex != null) {

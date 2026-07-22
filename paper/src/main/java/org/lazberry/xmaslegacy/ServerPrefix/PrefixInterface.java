@@ -13,13 +13,15 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.settings.ServerPrefix;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@ConsumableClass
 public class PrefixInterface implements InventoryHolder {
 	private final @NotNull Inventory inv;
 	private final @NotNull XmasLegacy plugin;
@@ -29,10 +31,9 @@ public class PrefixInterface implements InventoryHolder {
 	private int page = 0;
 	private int MAX_PAGE = 0;
 
-	public PrefixInterface(@NotNull Player p) {
+	public PrefixInterface(@NotNull Player p, @NotNull UserManager um) {
 		this.plugin = XmasLegacy.getInstance();
-		this.um = UserManager.INSTANCE;
-
+		this.um = um;
 		this.inv = Bukkit.createInventory(this, 54, ColorUtils.chat("&c&l칭호관리"));
 		for (int i = 45; i < 54; i++) this.inv.setItem(i, bg());
 		this.inv.setItem(47, previous());

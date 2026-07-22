@@ -15,18 +15,19 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ConsumableClass
 public class PromoteInterface implements InventoryHolder {
     private final Inventory inv;
     private final @NotNull Map<Integer, Role> roleMap = new HashMap<>();
 
-    public PromoteInterface(Player view) {
+    public PromoteInterface(Player view, UserManager um) {
         var plugin = XmasLegacy.getInstance();
-        var um = UserManager.INSTANCE;
         User user = um.getUser(view.getUniqueId());
 
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&b&l전직 루트 선택"));

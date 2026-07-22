@@ -9,12 +9,12 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 public class RankingCommandTask implements SubCommand {
-	private final @NotNull RankingTask ranking;
 	private final @NotNull XmasLegacy plugin;
+	private final @NotNull RankingTask ranking;
 
-	public RankingCommandTask() {
-		this.ranking = RankingTask.INSTANCE;
-		this.plugin = XmasLegacy.getInstance();
+	public RankingCommandTask(@NotNull XmasLegacy plugin, @NotNull RankingTask ranking) {
+		this.plugin = plugin;
+		this.ranking = ranking;
 	}
 
 	@Override

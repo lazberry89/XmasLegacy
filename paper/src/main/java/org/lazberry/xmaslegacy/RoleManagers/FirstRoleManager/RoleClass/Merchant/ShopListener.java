@@ -12,28 +12,36 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class ShopListener implements Listener {
-	private final PriceManager PIF;
+	private final PriceManager pif;
 	private final UserManager um;
 	private final EconomyManager em;
 	private boolean ignoreReset = false;
 
-	public ShopListener() {
-		this.PIF = PriceManager.INSTANCE;
-		this.um = UserManager.INSTANCE;
-		this.em = EconomyManager.INSTANCE;
+	@Inject
+	public ShopListener(@NotNull UserManager um, @NotNull PriceManager pif, @NotNull EconomyManager em) {
+		this.pif = pif;
+		this.um = um;
+		this.em = em;
 	}
 
 	@SuppressWarnings("DuplicatedCode")
@@ -46,16 +54,16 @@ public class ShopListener implements Listener {
 		if (view.equals(Constants.SHOP_TITLE)) {
 			e.setCancelled(true);
 
-			if (!PIF.getAvailableSlot().contains(slot)) return;
-			Product prd = PIF.getProduct(slot);
+			if (!pif.getAvailableSlot().contains(slot)) return;
+			Product prd = pif.getProduct(slot);
 			if (prd == null) {
-				PIF.setSlot(slot);
-				p.openInventory(PIF.PriceSet());
+				pif.setSlot(slot);
+				p.openInventory(pif.PriceSet());
 			} else {
-				PIF.setPurchaseItem(prd);
-				PIF.PurchaseInv(slot);
-				PIF.setSlot(slot);
-				p.openInventory(PIF.getPurchaseInv());
+				pif.setPurchaseItem(prd);
+				pif.PurchaseInv(slot);
+				pif.setSlot(slot);
+				p.openInventory(pif.getPurchaseInv());
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 			}
 		} else if (view.equals(Constants.PRICE_TITLE)) {
@@ -66,7 +74,7 @@ public class ShopListener implements Listener {
 					if (i != null && i.getType() != Material.AIR) {
 						Map<Integer, ItemStack> leftOver = p.getInventory().addItem(i);
 						inv.setItem(4, null);
-						PIF.removeProduct();
+						pif.removeProduct();
 						if (!leftOver.isEmpty()) {
 							for (ItemStack item : leftOver.values()) {
 								p.getWorld().dropItemNaturally(p.getLocation(), item);
@@ -74,18 +82,18 @@ public class ShopListener implements Listener {
 						}
 					}
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-					p.openInventory(PIF.MerchantShop());
+					p.openInventory(pif.MerchantShop());
 				}
 			case 3 -> {
 				e.setCancelled(true);
-				Product prd = PIF.getProduct(PIF.getSelectedSlot());
+				Product prd = pif.getProduct(pif.getSelectedSlot());
 				if (prd == null) {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 상품을 먼저 올려주세요!"));
 					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 				} else {
 					prd.addPrice(500);
-					PIF.reloadIcons();
-					PIF.reloadShopIcons();
+					pif.reloadIcons();
+					pif.reloadShopIcons();
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 				}
 			}
@@ -94,17 +102,17 @@ public class ShopListener implements Listener {
 				Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(XmasLegacy.class), () -> {
 					ItemStack itemInSlot = inv.getItem(4);
 					if (itemInSlot == null || itemInSlot.getType() == Material.AIR) {
-						PIF.removeProduct();
+						pif.removeProduct();
 					} else {
 						Product prd = new Product(itemInSlot, 500);
-						PIF.setProduct(prd, prd.getPrice());
+						pif.setProduct(prd, prd.getPrice());
 					}
-					PIF.reloadIcons();
-					PIF.reloadShopIcons();
+					pif.reloadIcons();
+					pif.reloadShopIcons();
 				});
 			case 5 -> {
 				e.setCancelled(true);
-				Product prd = PIF.getProduct(PIF.getSelectedSlot());
+				Product prd = pif.getProduct(pif.getSelectedSlot());
 				if (prd == null) {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 상품을 먼저 올려주세요!"));
 					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
@@ -115,26 +123,26 @@ public class ShopListener implements Listener {
 						return;
 					}
 					prd.removePrice(500);
-					PIF.reloadIcons();
-					PIF.reloadShopIcons();
+					pif.reloadIcons();
+					pif.reloadShopIcons();
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 				}
 			}
 			case 8 -> {
 				e.setCancelled(true);
-				Product prd = PIF.getProduct(PIF.getSelectedSlot());
+				Product prd = pif.getProduct(pif.getSelectedSlot());
 				if (prd == null) {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 상품을 먼저 올려주세요!"));
 					p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 				} else {
 					e.getInventory().setItem(4, new ItemStack(Material.AIR));
-					PIF.setProduct(prd, prd.getPrice());
+					pif.setProduct(prd, prd.getPrice());
 					p.sendMessage(ColorUtils.chat(Alert.GREEN + " 상품이 등록되었습니다!"));
 					ignoreReset = true;
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-					PIF.reloadShopIcons();
+					pif.reloadShopIcons();
 					Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(XmasLegacy.class),
-							() -> p.openInventory(PIF.MerchantShop()), 1L);
+							() -> p.openInventory(pif.MerchantShop()), 1L);
 				}
 			}
 				default -> {
@@ -148,12 +156,24 @@ public class ShopListener implements Listener {
 	public void onPurchase(InventoryClickEvent e) {
 		if (!(e.getWhoClicked() instanceof Player p)) return;
 		User user = um.getUser(p.getUniqueId());
-		Inventory inv = e.getInventory();
+
+		if (user == null) {
+			UserHandler.sendReloadNotice(p);
+			return;
+		}
+
 		if (e.getView().title().equals(Constants.PURCHASE_TITLE)) {
 			e.setCancelled(true);
 			int slot = e.getRawSlot();
-			Product prd = PIF.getPurchaseItem();
+			Product prd = pif.getPurchaseItem();
 			if (prd == null) return;
+
+			var owner = pif.getOwner();
+			if (owner == null) {
+				InfoUtils.error(p, "주인장이 아직 안돌아왔네요..!");
+				return;
+			}
+
 			switch (slot) {
 				case 12 -> {
 					if (user.getDollars() < prd.getPrice()) {
@@ -161,7 +181,7 @@ public class ShopListener implements Listener {
 						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 						return;
 					}
-					if (em.transferMoney(p.getUniqueId(), PIF.getOwner(), prd.getPrice())) {
+					if (em.transferMoney(p.getUniqueId(), owner, prd.getPrice())) {
 						p.sendMessage(ColorUtils.chat(Alert.GREEN + " 상품을 구매하였습니다!"));
 						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 						Map<Integer, ItemStack> leftOver = p.getInventory().addItem(prd.getItem());
@@ -170,20 +190,20 @@ public class ShopListener implements Listener {
 								p.getWorld().dropItemNaturally(p.getLocation(), item);
 							}
 						}
-						PIF.removeProduct();
-						PIF.removePurchaseItem();
-						PIF.reloadShopIcons();
+						pif.removeProduct();
+						pif.removePurchaseItem();
+						pif.reloadShopIcons();
 					} else {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 구매에 실패하였습니다!"));
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 잔액부족 : &c" + user.getDollars()));
 						p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
 					}
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
-					p.openInventory(PIF.MerchantShop());
+					p.openInventory(pif.MerchantShop());
 				}
 				case 14 -> {
 					p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
-					p.openInventory(PIF.MerchantShop());
+					p.openInventory(pif.MerchantShop());
 				}
 			}
 		}
@@ -198,7 +218,7 @@ public class ShopListener implements Listener {
 		if (e.getView().title().equals(Constants.PRICE_TITLE)) {
 			inv.setItem(4, new ItemStack(Material.AIR));
 			if (!ignoreReset) {
-				PIF.removeProduct();
+				pif.removeProduct();
 			}
 			ignoreReset = false;
 			if (item != null && item.getType() != Material.AIR) {

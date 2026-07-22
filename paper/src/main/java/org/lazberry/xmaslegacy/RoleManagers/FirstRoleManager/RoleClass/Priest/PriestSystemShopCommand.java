@@ -6,14 +6,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 @Commands(command = "system")
 public class PriestSystemShopCommand implements CommandExecutor {
 	StockInterface shopInterface = new StockInterface();
-	private final PriestShopManager PSM;
+	private final PriestShopManager psm;
 
-	public PriestSystemShopCommand() {
-		this.PSM = PriestShopManager.INSTANCE;
+	@Inject
+	public PriestSystemShopCommand(@NotNull PriestShopManager psm) {
+		this.psm = psm;
 	}
 
 	@Override
@@ -23,7 +25,7 @@ public class PriestSystemShopCommand implements CommandExecutor {
 		if (args.length == 0) {
 			p.openInventory(shopInterface.getInventory());
 		} else {
-            PriestShop priestAShop = PSM.get(p.getUniqueId());
+            PriestShop priestAShop = psm.get(p.getUniqueId());
 			if (priestAShop == null || !priestAShop.isShopEnabled()) {
 				p.sendMessage("상점이 열려있지 않습니다!");
 				return true;

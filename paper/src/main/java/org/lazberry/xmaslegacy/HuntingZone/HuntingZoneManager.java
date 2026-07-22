@@ -12,8 +12,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
-@Registry(type = ServerType.GLOBAL)
-@Registry.Exclude(type = ServerType.LOBBY)(type = ServerType.HUNTING)
+@Registry.Include(type = ServerType.HUNTING)
 public class HuntingZoneManager implements ServerManager {
 	private final @NotNull Map<ZoneType, HuntingZone> zones = new EnumMap<>(ZoneType.class);
 	private final @NotNull MobRepository mobRepository;

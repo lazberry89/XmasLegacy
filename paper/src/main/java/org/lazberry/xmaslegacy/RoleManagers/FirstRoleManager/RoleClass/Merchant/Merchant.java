@@ -7,30 +7,28 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.OpenStocks;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Skill.SellItems;
+import org.lazberry.xmaslegacy.Emblems.EmblemType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
+import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
-import org.lazberry.xmaslegacy.Emblems.EmblemType;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Merchant extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
+	private final @NotNull MerchantStockInterface msi;
 
 	private Container container;
 
-	private final @NotNull OpenStocks open = new OpenStocks();
-	private final @NotNull SellItems sell = new SellItems();
-
-	public Merchant() {
+	public Merchant(@NotNull MerchantStockInterface msi) {
 		super(BasicRoles.MERCHANT);
 		this.loadRoleData(getRole().name().toLowerCase());
+		this.msi = msi;
 	}
 
 	public record Container(
@@ -49,18 +47,18 @@ public class Merchant extends AbstractFirstRole {
 
 		this.container = new Container(
 				PriceManager.INSTANCE,
-				MerchantStockInterface.INSTANCE
+				msi
 		);
 	}
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, open, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.OPEN_STOCKS), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, sell, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.SELL_ITEMS), container, getCooldown2());
 	}
 
 	@Override

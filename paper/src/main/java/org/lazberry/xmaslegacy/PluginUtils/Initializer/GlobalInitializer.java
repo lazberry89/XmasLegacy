@@ -3,17 +3,13 @@ package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
-import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
-import org.lazberry.xmaslegacy.ServerJoinListener;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.UserSaveTask;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Slf4j
 @Registry
@@ -43,18 +39,12 @@ public class GlobalInitializer implements ServerInitializer {
 		if (SpecialOre.RegisterRecipe()) log.info("Recipe Registered!");
 		else log.error("Recipe Not Registered!");
 
-		plugin.getServer().getPluginManager().registerEvents(new ServerJoinListener(), plugin);
-
-		UserSaveTask.INSTANCE.loadValidUsers();
-
 		log.info("XmasLegacy Plugin Enabled!");
 		log.warn("This Christmas will be Perfect!");
 	}
 
 	@Override
 	public void shutdown(@NotNull XmasLegacy plugin) {
-		RegionManager.INSTANCE.saveAsync();
-
 		um.getUsers().forEach(sr::saveUser);
 		log.info("User info is automatically saved!");
 

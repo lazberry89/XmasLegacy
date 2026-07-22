@@ -15,24 +15,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Inject
-@Registry(type = ServerType.GLOBAL)
-@Registry.Exclude(type = ServerType.LOBBY)
-public enum SkillEffectManager implements ServerManager {
-	INSTANCE;
-
-    private @NotNull XmasLegacy plugin;
+@Registry
+public class SkillEffectManager {
+    private final @NotNull XmasLegacy plugin;
     private final @NotNull Set<UUID> immuneToKnockback = new HashSet<>();
     private final @NotNull Set<UUID> immuneToDebuff = new HashSet<>();
     private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();
 
-    SkillEffectManager() {}
+	@Inject
+    public SkillEffectManager(@NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+    }
 
     public void setImmuneToKnockback(@NotNull UUID uuid, boolean flag) {
         if (flag) this.immuneToKnockback.add(uuid);
@@ -52,7 +50,7 @@ public enum SkillEffectManager implements ServerManager {
         return this.immuneToDebuff.contains(uuid);
     }
 
-    private static final Set<PotionEffectType> DEBUFFS = Set.of(
+    private final Set<PotionEffectType> DEBUFFS = Set.of(
             PotionEffectType.POISON,
             PotionEffectType.WITHER,
             PotionEffectType.BLINDNESS,
@@ -66,7 +64,7 @@ public enum SkillEffectManager implements ServerManager {
             PotionEffectType.DARKNESS
     );
 
-    public static void clearDebuffs(@NotNull Player p) {
+    public void clearDebuffs(@NotNull Player p) {
         for (PotionEffectType debuffType : DEBUFFS) {
             if (p.hasPotionEffect(debuffType))
                 p.removePotionEffect(debuffType);
@@ -235,7 +233,7 @@ public enum SkillEffectManager implements ServerManager {
         return false;
     }
 
-    public void followParticle(Player p, Particle particle, double duration) {
+    public static void followParticle(Player p, Particle particle, double duration) {
         new BukkitRunnable() {
             double elapsed = 0;
             final double maxTicks = duration;
@@ -250,7 +248,7 @@ public enum SkillEffectManager implements ServerManager {
                 p.getWorld().spawnParticle(particle, p.getLocation().add(0, 1, 0), 10, 0.3, 0.3, 0.3, 0.01);
                 elapsed++;
             }
-        }.runTaskTimer(plugin, 0L, 1L);
+        }.runTaskTimer(XmasLegacy.getInstance(), 0L, 1L);
     }
 
     public void followParticle(Player p, Particle particle, double duration, Particle.DustOptions dust) {
@@ -352,9 +350,4 @@ public enum SkillEffectManager implements ServerManager {
 
         Bukkit.getScheduler().runTaskLater(plugin, display::remove, 9L);
     }
-
-	@Override
-	public void init() {
-
-	}
 }

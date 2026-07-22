@@ -11,6 +11,13 @@ import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 
 public class RankingCommandPlayer implements SubCommand {
+	private final @NotNull UserManager um;
+	private final @NotNull RankManager rm;
+
+	public RankingCommandPlayer(@NotNull UserManager um, @NotNull RankManager rm) {
+		this.um = um;
+		this.rm = rm;
+	}
 
 	@Override
 	public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
@@ -23,7 +30,7 @@ public class RankingCommandPlayer implements SubCommand {
 			InfoUtils.error(player, "유효하지 않은 플레이어입니다!");
 			return;
 		}
-		User user = UserManager.INSTANCE.getUser(target.getUniqueId());
+		User user = um.getUser(target.getUniqueId());
 		if (user == null) {
 			InfoUtils.error(player, "유저가 오프라인 이거나 정보가 로드되지 않았습니다!");
 			return;
@@ -35,7 +42,7 @@ public class RankingCommandPlayer implements SubCommand {
 			InfoUtils.error(player, "유효하지 않은 랭크 타입입니다.");
 			return;
 		}
-		int rank = RankManager.INSTANCE.getRank(type, user);
+		int rank = rm.getRank(type, user);
 		if (rank == -1) {
 			InfoUtils.error(player, "유효한 랭킹 범위 밖입니다! (100등 미만)");
 			return;

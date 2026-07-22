@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.Ranks;
+package org.lazberry.xmaslegacy.Ranks.RankBoardPackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Ranks.RankManager;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
@@ -27,16 +28,18 @@ public class RankBoard {
 	private final @NotNull @Getter RankType type;
 	private final @Getter int amount;
 	private @Getter @Setter TextDisplay display;
+	private final @NotNull RankManager rm;
 
-	public RankBoard(@NotNull String name, @NotNull RankType type, int amount) {
+	public RankBoard(@NotNull String name, @NotNull RankType type, int amount, @NotNull RankManager rm) {
 		this.key = KeyUtils.get("rank_board");
 		this.name = name;
 		this.type = type;
 		this.amount = amount;
+		this.rm = rm;
 	}
 
 	private @NotNull Component rankComponent(@NotNull RankType type, int amount) {
-		List<User> users = RankManager.INSTANCE.rank(type);
+		List<User> users = rm.rank(type);
 		StringBuilder sb = new StringBuilder();
 
 		Component title = ColorUtils.chat("🏆 " + type.name().toUpperCase() + " &#FF4545R&#FB5E39A&#F7762DN&#F28F21K&#EEA715 🏆");

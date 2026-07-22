@@ -9,11 +9,11 @@ import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 
 @Slf4j
-public record DestinationCommandReset(@NotNull DestinationType type) implements SubCommand {
+public record DestinationCommandReset(@NotNull DestinationType type, @NotNull SpawnRepository spawnRepo) implements SubCommand {
 
 	@Override
 	public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-		var value = SpawnRepository.INSTANCE.get(type);
+		var value = spawnRepo.get(type);
 		value.resetSpawn();
 		InfoUtils.info(player, "위치가 초기화되었습니다.");
 		log.warn("{}'s spawn has been reset.", type);

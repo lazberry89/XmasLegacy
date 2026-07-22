@@ -5,23 +5,21 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Archer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
 	private Container container;
-
-	private final @NotNull ShockDart shockDart = new ShockDart();
-	private final @NotNull BackDash backDash = new BackDash();
 
 	public Archer() {
 		super(BasicRoles.ARCHER);
@@ -93,12 +91,12 @@ public class Archer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NotNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, shockDart, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.SHOCK_DART), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NotNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, backDash, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.BACK_DASH), container, getCooldown2());
 	}
 
 	@Override

@@ -20,14 +20,12 @@ import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Warrior extends AbstractFirstRole implements RoleClass {
 	private Material weapon_item;
 	private Material armor_item;
-
-	private final @NotNull Tomahawk tomahawk = new Tomahawk();
-	private final @NotNull BloodFrenzy frenzy = new BloodFrenzy();
 
 	private Container container;
 
@@ -85,12 +83,12 @@ public class Warrior extends AbstractFirstRole implements RoleClass {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, frenzy, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.BLOOD_FRENZY), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, tomahawk, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.TOMAHAWK), container, getCooldown2());
 	}
 
 	@Override

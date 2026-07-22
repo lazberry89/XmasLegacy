@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.IDGenerator;
 
 import java.util.*;
@@ -26,7 +27,7 @@ public class Region {
 
     public Region(Player p, Location loc) {
         this.owner = p.getUniqueId();
-        this.id = IDGenerator.generateRandomId();
+        this.id = IDGenerator.generateRandomId(Constants.ID_LENGTH);
         this.world = loc.getWorld();
         var chunk = loc.getChunk();
         this.key = chunk.isLoaded() && chunk.isGenerated() ? chunk.getChunkKey() : -1;

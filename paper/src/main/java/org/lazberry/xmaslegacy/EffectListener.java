@@ -20,19 +20,22 @@ import org.lazberry.xmaslegacy.settings.Lang;
 
 import java.util.UUID;
 
-@Inject
 @Listeners
 public class EffectListener implements Listener {
-    private @NotNull SkillEffectManager sem;
-    private @NotNull XmasLegacy plugin;
+    private final @NotNull SkillEffectManager sem;
+    private final @NotNull XmasLegacy plugin;
 
-    public EffectListener() {}
+	@Inject
+    public EffectListener(@NotNull XmasLegacy plugin, @NotNull SkillEffectManager sem) {
+		this.plugin = plugin;
+		this.sem = sem;
+    }
 
     @EventHandler
     public void removeDebuffIfImmune(PlayerMoveEvent e) {
         if (!e.hasChangedPosition()) return;
         var player = e.getPlayer();
-        if (sem.isImmuneToDebuff(player.getUniqueId())) SkillEffectManager.clearDebuffs(player);
+        if (sem.isImmuneToDebuff(player.getUniqueId())) sem.clearDebuffs(player);
     }
 
     @EventHandler

@@ -5,17 +5,17 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
-public enum ExpManager {
-	INSTANCE;
+public class ExpManager {
+    private final @NotNull UserManager um;
 
-    private final UserManager um;
+	@Inject
+	public ExpManager(@NotNull UserManager um) {
+		this.um = um;
+	}
 
-	ExpManager() {
-        this.um = UserManager.INSTANCE;
-    }
-
-    public boolean addExp(@NotNull Player p, double amount) {
+	public boolean addExp(@NotNull Player p, double amount) {
         User user = um.getUser(p.getUniqueId());
         if (user == null) return false;
         user.addExp(amount);

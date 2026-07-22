@@ -5,12 +5,18 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.HuntingZone.HuntingZoneManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
+@ConsumableClass
 public class ZoneCommandSpawn implements SubCommand {
+	private final @NotNull HuntingZoneManager hzm;
 
-    @Override
+	public ZoneCommandSpawn(@NotNull HuntingZoneManager hzm) {
+		this.hzm = hzm;
+	}
+
+	@Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var hzm = HuntingZoneManager.INSTANCE;
         if (args.length >= 2) {
             var zone = hzm.getZone(args[1]);
 

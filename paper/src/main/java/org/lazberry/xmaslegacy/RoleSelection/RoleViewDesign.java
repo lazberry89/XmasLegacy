@@ -9,20 +9,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Inject
-@Task(type = ServerType.MAIN)
-public enum RoleViewDesign implements Tasks {
-    INSTANCE;
-
-    private @NotNull XmasLegacy plugin;
+@Task
+@Registry.Include(type = ServerType.MAIN)
+public class RoleViewDesign implements Tasks {
+    private final @NotNull XmasLegacy plugin;
     private final @NotNull ItemStack[][][] allFrames = new ItemStack[3][9][3];
 
     private @Nullable ItemStack RED;
@@ -31,7 +30,10 @@ public enum RoleViewDesign implements Tasks {
     private int currentFrameIndex = 0;
     private @Nullable BukkitTask task;
 
-    RoleViewDesign() {}
+	@Inject
+    public RoleViewDesign(@NotNull XmasLegacy plugin) {
+		this.plugin = plugin;
+    }
 
     public void init() {
         this.RED = createGuiItem(Material.RED_STAINED_GLASS_PANE);

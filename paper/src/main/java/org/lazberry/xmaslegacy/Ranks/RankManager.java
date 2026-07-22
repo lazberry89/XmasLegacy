@@ -17,19 +17,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@Inject
-@Registry(type = ServerType.GLOBAL)
-@Registry.Exclude(type = ServerType.LOBBY)(type = ServerType.GLOBAL)
-public enum RankManager implements ServerManager {
-	INSTANCE;
-
-	private @NotNull @Getter UserManager userManager;
+@Registry.Exclude(type = ServerType.LOBBY)
+public class RankManager implements ServerManager {
+	private final @NotNull @Getter UserManager userManager;
 	private @NotNull volatile List<User> dollarRank = List.of();
 	private @NotNull volatile List<User> expRank = List.of();
 	private @NotNull volatile List<User> roleExpRank = List.of();
 	private @NotNull volatile List<User> playtimeRank = List.of();
 
-	RankManager() {}
+	@Inject
+	public RankManager(@NotNull UserManager userManager) {
+		this.userManager = userManager;
+	}
 
 	@Override
 	public void init() {}

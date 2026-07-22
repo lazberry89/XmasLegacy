@@ -19,14 +19,12 @@ import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Mage extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
-
-	private final @NotNull CompactPoint point = new CompactPoint();
-	private final @NotNull Gravity gravity = new Gravity();
 
 	public Container container;
 
@@ -100,12 +98,12 @@ public class Mage extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, point, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.COMPACT_POINT), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, gravity, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.GRAVITY), container, getCooldown2());
 	}
 
 	@Override

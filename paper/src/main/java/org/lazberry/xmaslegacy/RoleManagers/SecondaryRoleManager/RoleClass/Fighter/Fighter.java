@@ -21,7 +21,7 @@ import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 @Roles(grade = 2)
 public class Fighter extends AbstractSecondRole implements Unpromotable {
-	private Container container;
+	private final Container container;
 
 	public record Container(
 			XmasLegacy plugin

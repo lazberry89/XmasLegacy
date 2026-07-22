@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
@@ -21,6 +20,7 @@ import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -32,10 +32,12 @@ public class GlacialPrison implements Skills<Wizard.Container>, UsingEnergy {
     private final @NotNull BlockData iceBlock;
     private static final float PROJECTILE_SCALE = 1.5f;
     private static final int PRISON_DURATION_TICKS = 60;
+	private final @NotNull UserManager um;
 
-    @ApiStatus.Internal
-    private GlacialPrison() {
-        this.iceBlock = Material.ICE.createBlockData();
+	@Inject
+    public GlacialPrison(@NotNull UserManager um) {
+	    this.um = um;
+	    this.iceBlock = Material.ICE.createBlockData();
     }
 
     @Override
@@ -136,7 +138,7 @@ public class GlacialPrison implements Skills<Wizard.Container>, UsingEnergy {
         StunUtils.stun(victim.getUniqueId(), PRISON_DURATION_TICKS, "마법사의 얼음감옥");
 
         if (victim instanceof Player targetPlayer) {
-            var user = UserManager.INSTANCE.getUser(targetPlayer.getUniqueId());
+            var user =um.getUser(targetPlayer.getUniqueId());
             if (user != null && !user.isImmuneToIcing()) {
                 user.addIcingState(-10);
             }

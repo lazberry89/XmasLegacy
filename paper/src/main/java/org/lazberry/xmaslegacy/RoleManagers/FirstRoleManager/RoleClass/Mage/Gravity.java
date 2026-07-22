@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
@@ -29,8 +30,9 @@ import java.util.List;
 public class Gravity implements Skills<Mage.Container>, UsingEnergy {
 	private final @NotNull SkillEffectManager sem;
 
-	public Gravity() {
-		this.sem = SkillEffectManager.INSTANCE;
+	@Inject
+	public Gravity(@NotNull SkillEffectManager sem) {
+		this.sem = sem;
 	}
 
 	@Override

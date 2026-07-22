@@ -7,15 +7,15 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SavedLocation;
+import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Registry(type = ServerType.LOBBY)
+@Registry
 public final class LobbyManager extends SavedLocation {
 
     public LobbyManager() {
@@ -24,7 +24,7 @@ public final class LobbyManager extends SavedLocation {
 
     public void lobbyJoin(PlayerJoinEvent e) {
 		var plugin = XmasLegacy.getInstance();
-        if (!ServerInitializer.getServerType(plugin).equals(ServerType.LOBBY)) return;
+        if (!ServerUtils.getServerType(plugin).equals(ServerType.LOBBY)) return;
         Player p = e.getPlayer();
         var spawn = super.getSpawn();
         if (spawn != null) {

@@ -25,21 +25,20 @@ import org.lazberry.xmaslegacy.RoleSelection.RoleSelectInterface;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
-public enum MagicBook {
-	INSTANCE;
+@Registry
+public class MagicBook {
+    private final @NotNull UserManager um;
+    private @Setter @Nullable ItemDisplay display;
 
-    private final XmasLegacy plugin;
-    private final UserManager um;
-    @Setter
-    private ItemDisplay display;
+	@Inject
+	public MagicBook(@NotNull UserManager um) {
+		this.um = um;
+	}
 
-    MagicBook() {
-        this.plugin = XmasLegacy.getInstance();
-        this.um = UserManager.INSTANCE;
-    }
-
-    @Contract(pure = true)
+	@Contract(pure = true)
     private @NotNull ItemStack magicBook() {
         if (OraxenItems.exists(Constants.SELECT_BOOK)) {
             return OraxenItems.getItemById(Constants.SELECT_BOOK).build();

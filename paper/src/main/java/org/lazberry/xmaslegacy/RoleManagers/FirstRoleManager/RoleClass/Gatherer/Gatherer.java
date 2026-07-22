@@ -19,14 +19,12 @@ import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.BasicSkills;
 
 @Roles
 public class Gatherer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
-
-	private final @NotNull EternalPose pose = new EternalPose();
-	private final @NotNull TruthEye eye = new TruthEye();
 
 	private Container container;
 
@@ -91,12 +89,12 @@ public class Gatherer extends AbstractFirstRole {
 
 	@Override
 	public void useFirstSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.TARGET, pose, container, getCooldown1());
+		handleSkill(p, emblem, EmblemType.TARGET, getSkillRepo().get(BasicSkills.ETERNAL_POSE), container, getCooldown1());
 	}
 
 	@Override
 	public void useSecondSkill(@NonNull Player p) {
-		handleSkill(p, emblem, EmblemType.RANGE, eye, container, getCooldown2());
+		handleSkill(p, emblem, EmblemType.RANGE, getSkillRepo().get(BasicSkills.TRUTH_EYE), container, getCooldown2());
 	}
 
 	@Override

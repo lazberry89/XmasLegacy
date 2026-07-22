@@ -30,6 +30,7 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.*;
 
@@ -40,10 +41,11 @@ public class SecondaryRoleListener implements Listener {
     private final @NotNull PartyManager pm;
 	private final @NotNull RoleManager rlm;
 
-    public SecondaryRoleListener() {
-        this.um = UserManager.INSTANCE;
-        this.pm = PartyManager.INSTANCE;
-		this.rlm = RoleManager.INSTANCE;
+	@Inject
+    public SecondaryRoleListener(@NotNull UserManager um, @NotNull PartyManager pm, @NotNull RoleManager rlm) {
+	    this.um = um;
+	    this.pm = pm;
+	    this.rlm = rlm;
     }
 
     @EventHandler
@@ -173,7 +175,7 @@ public class SecondaryRoleListener implements Listener {
 
 		if (!(item.getType() == Material.CROSSBOW)) return;
 
-		Sniper sniper = RoleManager.INSTANCE.getRoleInstance(SNIPER);
+		Sniper sniper = rlm.getRoleInstance(SNIPER);
 		if (!KeyUtils.hasKey(item, KeyUtils.get("role_id"), PersistentDataType.STRING, SNIPER.name())) return;
 		sniper.fire(p);
 	}

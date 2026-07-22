@@ -10,22 +10,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@SuppressWarnings("unused, FieldCanBeLocal, DuplicatedCode")
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class FirstRoleListener implements Listener {
-	private final @NotNull XmasLegacy plugin;
-    private final @NotNull UserManager um;
 
-	public FirstRoleListener() {
-		this.plugin = XmasLegacy.getInstance();
-        this.um = UserManager.INSTANCE;
-	}
+	public FirstRoleListener() {}
 
     //Archer skill
     @EventHandler
@@ -33,7 +27,7 @@ public class FirstRoleListener implements Listener {
         NamespacedKey key = KeyUtils.get("skill");
         String npKey = e.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING);
         Projectile projectile = e.getEntity();
-        if (!(projectile.getShooter() instanceof Player) && !(projectile instanceof Arrow a)) return;
+        if (!(projectile.getShooter() instanceof Player) && !(projectile instanceof Arrow)) return;
         if (!(npKey != null && npKey.equals("archer_arrow"))) return;
 
         if (e.getHitBlock() != null) {

@@ -13,13 +13,18 @@ import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Inject
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RegionCreateListener implements Listener {
-	private @NotNull RegionManager rm;
+	private final @NotNull RegionManager rm;
 
-	public RegionCreateListener() {}
+	@Inject
+	public RegionCreateListener(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
 
 	@EventHandler
 	public void regionInterface(InventoryClickEvent e) {

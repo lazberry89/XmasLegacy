@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +26,15 @@ import java.util.Map;
 
 @Listeners
 public class ShopListener implements Listener {
-	private final @NotNull PriestShopManager PSM;
-	private final @NotNull EconomyManager ECM;
-    private final @NotNull BagManager BAG;
+	private final @NotNull PriestShopManager psm;
+	private final @NotNull EconomyManager ecm;
+    private final @NotNull BagManager bm;
 
-	public ShopListener() {
-		this.PSM = PriestShopManager.INSTANCE;
-		this.ECM = EconomyManager.INSTANCE;
-        this.BAG = BagManager.INSTANCE;
+	@Inject
+	public ShopListener(@NotNull PriestShopManager psm, @NotNull EconomyManager ecm, @NotNull BagManager bm) {
+		this.psm = psm;
+		this.ecm = ecm;
+		this.bm = bm;
 	}
 
     private boolean isConductableItem(ItemStack item) {
@@ -67,7 +69,7 @@ public class ShopListener implements Listener {
         if (!(e.getInventory().getHolder() instanceof StockInterface)) return;
         if (!(e.getClickedInventory().getHolder() instanceof StockInterface)) return;
 
-		PriestShop shop = PSM.get(p.getUniqueId());
+		PriestShop shop = psm.get(p.getUniqueId());
         int slot = e.getRawSlot();
         switch (slot) {
             case 3 -> {
@@ -101,7 +103,7 @@ public class ShopListener implements Listener {
 
             case 5 -> {
                 e.setCancelled(true);
-                if (PSM.getOrCreate(p).isShopEnabled()) {
+                if (psm.getOrCreate(p).isShopEnabled()) {
                     p.sendMessage(ColorUtils.chat(Alert.RED + " 상점이 이미 시작되어 회수할 수 없습니다!"));
                     p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.5f, 1.0f);
                     return;
@@ -125,7 +127,7 @@ public class ShopListener implements Listener {
 
                     if (!invLeftover.isEmpty()) {
                         for (ItemStack toBag : invLeftover.values()) {
-                            BAG.addItem(p, toBag);
+                            bm.addItem(p, toBag);
                         }
                     }
                 }
@@ -135,18 +137,18 @@ public class ShopListener implements Listener {
             }
             case 6 -> {
 				e.setCancelled(true);
-                if (PSM.getOrCreate(p).isShopEnabled()) {
+                if (psm.getOrCreate(p).isShopEnabled()) {
                     p.sendMessage(ColorUtils.chat(Alert.RED + " 이미 상점이 시작되었습니다!"));
                     p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
                 } else {
-					if (PSM.getOrCreate(p).getStockCount() == 0) {
+					if (psm.getOrCreate(p).getStockCount() == 0) {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 재고가 없습니다!"));
 						p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 					} else {
-						PSM.getOrCreate(p).enableShop();
+						psm.getOrCreate(p).enableShop();
 						p.sendMessage(ColorUtils.chat(Alert.GREEN + " 상점을 시작했습니다!"));
 						p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-						PSM.getOrCreate(p).openShop(p);
+						psm.getOrCreate(p).openShop(p);
 					}
                 }
             }
@@ -189,11 +191,11 @@ public class ShopListener implements Listener {
 
 	private void processPurchase(Player viewer, Player owner, String type, int price, ItemStack item) {
 		int currentStock = switch (type) {
-			case "dragon" -> PSM.getOrCreate(owner).getDragonStock();
-			case "healer" -> PSM.getOrCreate(owner).getHealerStock();
-			case "protection" -> PSM.getOrCreate(owner).getProtectionStock();
-			case "spear" -> PSM.getOrCreate(owner).getSpearStock();
-			case "save" -> PSM.getOrCreate(owner).getSaveStock();
+			case "dragon" -> psm.getOrCreate(owner).getDragonStock();
+			case "healer" -> psm.getOrCreate(owner).getHealerStock();
+			case "protection" -> psm.getOrCreate(owner).getProtectionStock();
+			case "spear" -> psm.getOrCreate(owner).getSpearStock();
+			case "save" -> psm.getOrCreate(owner).getSaveStock();
 			default -> 0;
 		};
 
@@ -203,31 +205,31 @@ public class ShopListener implements Listener {
 			return;
 		}
 
-		if (!ECM.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), price)) {
+		if (!ecm.transferMoney(viewer.getUniqueId(), owner.getUniqueId(), price)) {
 			viewer.sendMessage(ColorUtils.chat(Alert.RED + " 돈이 부족합니다!"));
 			viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 			return;
 		}
 
 		switch (type) {
-			case "dragon" -> PSM.getOrCreate(owner).setDragonStock(currentStock - 1);
-			case "healer" -> PSM.getOrCreate(owner).setHealerStock(currentStock - 1);
-			case "protection" -> PSM.getOrCreate(owner).setProtectionStock(currentStock - 1);
-			case "spear" -> PSM.getOrCreate(owner).setSpearStock(currentStock - 1);
-			case "save" -> PSM.getOrCreate(owner).setSaveStock(currentStock - 1);
+			case "dragon" -> psm.getOrCreate(owner).setDragonStock(currentStock - 1);
+			case "healer" -> psm.getOrCreate(owner).setHealerStock(currentStock - 1);
+			case "protection" -> psm.getOrCreate(owner).setProtectionStock(currentStock - 1);
+			case "spear" -> psm.getOrCreate(owner).setSpearStock(currentStock - 1);
+			case "save" -> psm.getOrCreate(owner).setSaveStock(currentStock - 1);
 		}
 
 		viewer.sendMessage(ColorUtils.chat(Alert.GREEN + " 상품을 구매하였습니다."));
 		Map<Integer, ItemStack> leftOver = viewer.getInventory().addItem(item);
 		if (!leftOver.isEmpty()) {
-			leftOver.values().forEach(s -> BAG.addItem(viewer, s));
+			leftOver.values().forEach(s -> bm.addItem(viewer, s));
 			viewer.sendMessage(ColorUtils.chat(Alert.YELLOW + " 공간이 부족하여 아이템이 가방으로 이동합니다."));
 		}
 
 		viewer.playSound(viewer, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 
-		if (PSM.getOrCreate(owner).getStockCount() > 0) {
-			viewer.openInventory(new ShopInterface(PSM.getOrCreate(owner)).getInventory());
+		if (psm.getOrCreate(owner).getStockCount() > 0) {
+			viewer.openInventory(new ShopInterface(psm.getOrCreate(owner)).getInventory());
 		} else {
 			viewer.closeInventory();
 			viewer.sendMessage(ColorUtils.chat(Alert.RED + " 모든 재고가 소진되어 상점이 종료되었습니다."));

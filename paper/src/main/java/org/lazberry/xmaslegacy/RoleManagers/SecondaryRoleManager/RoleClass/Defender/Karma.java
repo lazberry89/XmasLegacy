@@ -16,14 +16,21 @@ import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.SkillEffectManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 @Skill(type = PlayerSkills.KARMA)
 public class Karma implements Skills<Defender.Container>, UsingEnergy {
+	private final @NotNull PartyManager pm;
 
-    @Override
+	@Inject
+	public Karma(@NotNull PartyManager pm) {
+		this.pm = pm;
+	}
+
+	@Override
     public boolean execute(@NotNull Player caster, @NotNull Defender.@NotNull Container container) {
         if (!consumeEnergy(caster, 3)) return false;
 
@@ -33,7 +40,7 @@ public class Karma implements Skills<Defender.Container>, UsingEnergy {
 
         caster.getNearbyEntities(5, 5, 5).stream()
                 .filter(e -> e != caster && e instanceof LivingEntity)
-                .filter(e -> !PartyManager.INSTANCE.isParty(caster.getUniqueId(), e.getUniqueId()))
+                .filter(e -> !pm.isParty(caster.getUniqueId(), e.getUniqueId()))
                 .map(e -> (LivingEntity) e)
                 .forEach(le -> {
                     le.damage(8.0, caster);

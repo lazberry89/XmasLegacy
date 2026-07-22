@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
@@ -28,6 +29,12 @@ import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.PRISM_LASER;
 
 @Skill(type = PlayerSkills.PRISM_LASER)
 public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
+	private final @NotNull PartyManager pm;
+
+	@Inject
+	public PrismLaser(@NotNull PartyManager pm) {
+		this.pm = pm;
+	}
 
 	@Override
 	public boolean execute(@NotNull Player caster, Ranger.@NotNull Container container) {
@@ -39,7 +46,7 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 				startLoc, direction, maxDistance, 0.5,
 				entity -> entity instanceof LivingEntity
 						&& !entity.equals(caster)
-						&& !PartyManager.INSTANCE.isParty(caster.getUniqueId(), entity.getUniqueId())
+						&& !pm.isParty(caster.getUniqueId(), entity.getUniqueId())
 		);
 
 		if (ray == null || !(ray.getHitEntity() instanceof LivingEntity hitEntity)) {
@@ -176,7 +183,7 @@ public class PrismLaser implements Skills<Ranger.Container>, UsingEnergy {
 					// 간격을 2.0 -> 1.5로 줄이고, 체크 반경을 1.2 -> 1.5로 늘려 사각지대(Gap) 제거
 					for (Entity e : world.getNearbyEntities(checkLoc, 1.5, 1.5, 1.5)) {
 						if (e instanceof LivingEntity le && !le.equals(caster) && !hitEntities.contains(le.getUniqueId())) {
-							if (!PartyManager.INSTANCE.isParty(caster.getUniqueId(), le.getUniqueId())) {
+							if (!pm.isParty(caster.getUniqueId(), le.getUniqueId())) {
 
 								double currentDistance = start.distance(le.getLocation());
 								double calculatedDamage = 4.0 + (currentDistance * 0.25);

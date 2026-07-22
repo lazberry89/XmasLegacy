@@ -7,13 +7,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 @Commands(command = "delstand")
 public class DeleteStandCommand implements CommandExecutor {
-    private final MagicBook MB;
+    private final @NotNull MagicBook mb;
 
-    public DeleteStandCommand() {
-        this.MB = MagicBook.INSTANCE;
+	@Inject
+    public DeleteStandCommand(@NotNull MagicBook mb) {
+	    this.mb = mb;
     }
 
     @Override
@@ -23,10 +25,10 @@ public class DeleteStandCommand implements CommandExecutor {
             InfoUtils.error(p, "관리자용 명령어에요!");
             return true;
         }
-        if (MB.getStand() == null) {
+        if (mb.getStand() == null) {
             InfoUtils.error(p, "현재 직업책이 없어요!");
         } else {
-            MB.deleteStand();
+            mb.deleteStand();
             InfoUtils.info(p, "삭제되었습니다.");
         }
         return true;

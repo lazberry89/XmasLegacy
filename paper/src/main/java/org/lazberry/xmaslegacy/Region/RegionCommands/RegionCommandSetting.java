@@ -12,8 +12,13 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 
 @Slf4j
 public class RegionCommandSetting implements SubCommand {
+	private final @NotNull RegionManager rm;
 
-    @Override
+	public RegionCommandSetting(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
+
+	@Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         try {
             if (args.length < 3) {
@@ -21,7 +26,6 @@ public class RegionCommandSetting implements SubCommand {
                 return;
             }
 
-            var rm = RegionManager.INSTANCE;
             Region region = rm.getRegion(args[0]);
             if (region == null) {
                 player.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));

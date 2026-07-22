@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
-@Task(type = ServerType.HUNTING)
+@Task
+@Registry.Include(type = ServerType.HUNTING)
 public class MobSpawnTask implements Tasks {
 	private final @NotNull HuntingZoneManager hzm;
 	private final @NotNull MobRepository mr;

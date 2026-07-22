@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.User;
@@ -22,20 +23,28 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
-@Inject
 @Listeners
+@Registry.Include(type = ServerType.MAIN)
 public class SelectListener implements Listener {
     private final @NotNull RoleSelectInterface ri;
-    private @NotNull XmasLegacy plugin;
-    private @NotNull UserManager um;
-    private @NotNull UserSaveManager us;
+    private final @NotNull XmasLegacy plugin;
+    private final @NotNull UserManager um;
+    private final @NotNull UserSaveManager us;
+	private final @NotNull RoleManager rm;
 
-    public SelectListener() {
-        this.ri = new RoleSelectInterface();
+	@Inject
+    public SelectListener(@NotNull XmasLegacy plugin, @NotNull UserManager um, @NotNull UserSaveManager us, @NotNull RoleManager rm) {
+		this.rm = rm;
+		this.ri = new RoleSelectInterface();
+		this.plugin = plugin;
+		this.um = um;
+		this.us = us;
     }
 
     @EventHandler
@@ -75,7 +84,7 @@ public class SelectListener implements Listener {
     }
 
     private void openSelectionInv(@NotNull Player p,@NotNull BasicRoles role) {
-        RoleSelectionInterface RSI = new RoleSelectionInterface(role);
+        RoleSelectionInterface RSI = new RoleSelectionInterface(role, rm);
         p.closeInventory(InventoryCloseEvent.Reason.OPEN_NEW);
         p.openInventory(RSI.getInventory());
         p.updateInventory();

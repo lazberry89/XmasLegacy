@@ -6,10 +6,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.Party;
 import org.lazberry.xmaslegacy.Party.PartyManager;
+import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
@@ -17,22 +17,28 @@ import org.lazberry.xmaslegacy.Utils.ServerTransfer;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 import java.util.*;
 
 @Slf4j
-@Inject
-@Task(type = ServerType.GLOBAL)
+@Task
+@Registry
 public class PortalTask implements Tasks {
 	private @Nullable BukkitTask task;
-	private @NotNull PortalManager pt;
+	private final @NotNull PortalManager pt;
+	private final @NotNull PartyManager pm;
+
+	@Inject
+	public PortalTask(@NotNull PortalManager pt, @NotNull PartyManager pm) {
+		this.pt = pt;
+		this.pm = pm;
+	}
 
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {
 		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 			@NotNull Set<UUID> processedPlayers = new HashSet<>();
-			var pm = PartyManager.INSTANCE;
 
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				UUID pUUID = player.getUniqueId();

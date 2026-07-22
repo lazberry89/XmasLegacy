@@ -16,15 +16,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Inject
-@Task(type = ServerType.GLOBAL)
-public enum RankingTask implements Tasks {
-	INSTANCE;
-
+@Task
+public class RankingTask implements Tasks {
 	private final @NotNull Map<RankType, BukkitTask> tasks = new ConcurrentHashMap<>();
-	private @NotNull RankManager rm;
+	private final @NotNull RankManager rm;
 
-    RankingTask() {}
+	@Inject
+    public RankingTask(@NotNull RankManager rm) {
+		this.rm = rm;
+    }
 
 	private @NotNull BukkitTask rankTask(@NotNull XmasLegacy plugin, @NotNull RankType type) {
 		var task = tasks.get(type);

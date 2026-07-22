@@ -13,13 +13,18 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Inject
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RegionPermissionListener implements Listener {
-	private @NotNull RegionManager rm;
+	private final @NotNull RegionManager rm;
 
-	public RegionPermissionListener() {}
+	@Inject
+	public RegionPermissionListener(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
 
 	private boolean hasPermission(Player p, Region region) {
 		return p.isOp() || region.getOwner().equals(p.getUniqueId());

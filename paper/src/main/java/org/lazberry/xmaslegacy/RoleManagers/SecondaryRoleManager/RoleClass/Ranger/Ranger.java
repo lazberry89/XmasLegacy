@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
 
 @Roles
 public class Ranger extends AbstractSecondRole {
-	private Container container;
+	private final Container container;
 
 	public record Container(
 			XmasLegacy plugin

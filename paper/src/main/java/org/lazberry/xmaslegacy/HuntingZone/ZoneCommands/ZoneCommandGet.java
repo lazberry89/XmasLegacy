@@ -11,10 +11,14 @@ import org.lazberry.xmaslegacy.Utils.SubCommand;
 import java.util.Arrays;
 
 public class ZoneCommandGet implements SubCommand {
+	private final @NotNull HuntingZoneManager hzm;
 
-    @Override
+	public ZoneCommandGet(@NotNull HuntingZoneManager hzm) {
+		this.hzm = hzm;
+	}
+
+	@Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-        var hzm = HuntingZoneManager.INSTANCE;
         if (args.length >= 2) {
             var zone = hzm.getZone(args[1]);
 
