@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
@@ -16,15 +16,14 @@ import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.*;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.BasicSkills;
-import org.lazberry.xmaslegacy.settings.PlayerSkills;
-import org.lazberry.xmaslegacy.settings.SkillSet;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
 import java.util.List;
 
 @Skill(type = PlayerSkills.SPEED_GROWER)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class SpeedGrower implements Skills<Farmer.Container>, UsingEnergy {
 	private final @NotNull RegionManager rm;
 

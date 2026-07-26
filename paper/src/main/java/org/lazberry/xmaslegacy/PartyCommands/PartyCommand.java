@@ -8,12 +8,14 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Registry.Exclude(type = ServerType.LOBBY)
 @Commands(command = "파티", aliases = {"party", "pt"})
 public class PartyCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> commands = new HashMap<>();

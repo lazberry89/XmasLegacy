@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class InquiryManager {
 	private final @NotNull Map<UUID, Long> cooldowns = new ConcurrentHashMap<>();
 	private final @NotNull Map<UUID, String> activeInquiries = new ConcurrentHashMap<>();

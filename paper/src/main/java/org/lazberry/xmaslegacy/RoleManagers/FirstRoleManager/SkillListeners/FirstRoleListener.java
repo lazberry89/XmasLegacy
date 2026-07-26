@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;

@@ -11,18 +11,21 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.Ranks.RankManager;
 import org.lazberry.xmaslegacy.User.RankType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Task
 @Slf4j
 @TestOnly
-@Task
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RankBoardTask implements Tasks {
 	private final @NotNull Map<String, RankBoard> board = new HashMap<>();
 	private final @NotNull RankManager rm;

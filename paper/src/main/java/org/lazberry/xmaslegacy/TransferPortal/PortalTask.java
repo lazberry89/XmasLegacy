@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.Party;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
@@ -18,12 +18,13 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 
 @Slf4j
 @Task
-@Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class PortalTask implements Tasks {
 	private @Nullable BukkitTask task;
 	private final @NotNull PortalManager pt;

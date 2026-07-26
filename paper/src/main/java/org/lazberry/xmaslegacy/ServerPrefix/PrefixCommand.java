@@ -13,7 +13,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.*;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 
 import java.util.ArrayList;

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Initializers {
 	private final @NotNull Map<ServerType, ServerInitializer> initializers = new EnumMap<>(ServerType.class);
 

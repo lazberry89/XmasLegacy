@@ -6,18 +6,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Commands(command = "문의")
+@Registry.Exclude(type = ServerType.LOBBY)
 public class InquiryCommand implements CommandExecutor {
 	private final @NotNull InquiryManager im;
 
 	@Inject
-	public InquiryCommand(@NotNull InquiryCommand im) {
-		this.im = im.im;
+	public InquiryCommand(@NotNull InquiryManager im) {
+		this.im = im;
 	}
 
 	@Override

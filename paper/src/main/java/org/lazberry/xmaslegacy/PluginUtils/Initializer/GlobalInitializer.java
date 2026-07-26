@@ -10,9 +10,11 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Slf4j
 @Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class GlobalInitializer implements ServerInitializer {
 	private final @NotNull UserManager um;
 	private final @NotNull SqlUserRepository sr;

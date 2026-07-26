@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Region.Events.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.Region.Events.RegionGenerateEvent;

@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;

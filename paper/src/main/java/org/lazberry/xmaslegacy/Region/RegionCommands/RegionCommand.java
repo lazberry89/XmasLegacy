@@ -10,13 +10,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.Region;
 import org.lazberry.xmaslegacy.Region.RegionManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +27,13 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
+@Registry.Exclude(type = ServerType.LOBBY)
 @Commands(command = "구역", aliases = {"region", "rg"})
 public class RegionCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> commands = new HashMap<>();
 	private final @NotNull RegionManager rm;
 
+	@Inject
 	public RegionCommand(@NotNull RegionManager rm) {
 		this.rm = rm;
 		var setting = new RegionCommandSetting(rm);

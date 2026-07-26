@@ -8,26 +8,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.ParseItem;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Roles
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Merchant extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;
 	private final @NotNull MerchantStockInterface msi;
-
+	private final @NotNull PriceManager priceManager;
 	private Container container;
 
-	public Merchant(@NotNull MerchantStockInterface msi) {
+	@Inject
+	public Merchant(@NotNull MerchantStockInterface msi, @NotNull PriceManager priceManager) {
 		super(BasicRoles.MERCHANT);
 		this.loadRoleData(getRole().name().toLowerCase());
+		this.priceManager = priceManager;
 		this.msi = msi;
 	}
 
@@ -46,7 +52,7 @@ public class Merchant extends AbstractFirstRole {
 		this.armor_item = ParseItem.parse(configs.getValue("tool.role_armor"), Material.IRON_HELMET);
 
 		this.container = new Container(
-				PriceManager.INSTANCE,
+				priceManager,
 				msi
 		);
 	}

@@ -6,11 +6,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Region.Gui.RegionDeleteInterface;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RegionSettingListener implements Listener {
 
     public RegionSettingListener() {}

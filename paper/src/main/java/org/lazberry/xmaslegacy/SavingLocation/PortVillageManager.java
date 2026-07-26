@@ -8,10 +8,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.Objects;
 
 @Slf4j
+@ConsumableClass
 public final class PortVillageManager extends SavedLocation {
 
     public PortVillageManager() {

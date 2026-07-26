@@ -8,17 +8,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 @Skill(type = PlayerSkills.SHOCK_DART)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class ShockDart implements Skills<Archer.Container>, UsingEnergy {
 
 	@Override

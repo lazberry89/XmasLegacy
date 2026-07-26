@@ -16,18 +16,21 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.WIZARD;
 import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.MANA_ORB;
 
 @Skill(type = PlayerSkills.MANA_ORB)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class ManaOrb implements Skills<Wizard.Container>, UsingEnergy {
     private final @NotNull BlockData glassBlock;
 

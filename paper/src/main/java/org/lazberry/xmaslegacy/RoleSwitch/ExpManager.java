@@ -6,7 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
+@Registry.Exclude(type = ServerType.LOBBY)
 public class ExpManager {
     private final @NotNull UserManager um;
 

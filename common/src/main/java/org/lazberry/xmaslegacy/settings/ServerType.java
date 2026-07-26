@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum ServerType {
 	GLOBAL("global", true),
-	LOBBY("lobby", false),
+	LOBBY("lobby", true),
 	MAIN("main", true),
 	HUNTING("hunting", true);
 

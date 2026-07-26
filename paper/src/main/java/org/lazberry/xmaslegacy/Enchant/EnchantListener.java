@@ -27,17 +27,20 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantListener implements Listener {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull EnchantManager ecm;

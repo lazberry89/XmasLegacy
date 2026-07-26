@@ -18,7 +18,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class PortalManager {
     private final @NotNull Map<String, Portal> portalMap = new HashMap<>();
     private final @NotNull Set<Portal> portalSet = new HashSet<>();

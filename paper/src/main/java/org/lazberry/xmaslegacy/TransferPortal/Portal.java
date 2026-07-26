@@ -9,8 +9,10 @@ import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
+@ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Portal {
     @EqualsAndHashCode.Include

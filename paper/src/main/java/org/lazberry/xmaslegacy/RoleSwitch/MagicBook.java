@@ -27,8 +27,9 @@ import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class MagicBook {
     private final @NotNull UserManager um;
     private @Setter @Nullable ItemDisplay display;

@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;

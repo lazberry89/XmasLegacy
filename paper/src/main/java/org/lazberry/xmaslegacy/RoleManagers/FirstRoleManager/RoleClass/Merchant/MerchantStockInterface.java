@@ -13,6 +13,7 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
@@ -39,6 +40,7 @@ public class MerchantStockInterface {
 		return this.owner;
 	}
 
+	@Inject
 	public MerchantStockInterface(@NotNull EconomyManager em, @NotNull XmasLegacy plugin) {
 		this.plugin = plugin;
 		this.em = em;

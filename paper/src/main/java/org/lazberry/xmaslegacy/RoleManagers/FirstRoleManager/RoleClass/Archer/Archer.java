@@ -7,15 +7,18 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.AbstractFirstRole;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Roles
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Archer extends AbstractFirstRole {
 	private Material weapon_item;
 	private Material armor_item;

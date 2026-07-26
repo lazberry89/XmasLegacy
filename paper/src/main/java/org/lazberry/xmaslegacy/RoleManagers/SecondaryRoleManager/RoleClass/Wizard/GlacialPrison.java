@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
@@ -21,13 +21,16 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.WIZARD;
 import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.GLACIAL_PRISON;
 
 @Skill(type = PlayerSkills.GLACIAL_PRISON)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class GlacialPrison implements Skills<Wizard.Container>, UsingEnergy {
     private final @NotNull BlockData iceBlock;
     private static final float PROJECTILE_SCALE = 1.5f;

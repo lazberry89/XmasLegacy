@@ -13,11 +13,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Commands(command = "book")
+@Registry.Exclude(type = ServerType.LOBBY)
 public class BookCommand implements CommandExecutor {
     private final @NotNull MagicBook mb;
 

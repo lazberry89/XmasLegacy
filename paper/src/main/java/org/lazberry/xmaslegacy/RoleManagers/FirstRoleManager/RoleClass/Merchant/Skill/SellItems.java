@@ -3,17 +3,20 @@ package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Merchant.Merchant;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.BasicSkills;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 @Skill(type = PlayerSkills.SELL_ITEMS)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class SellItems implements Skills<Merchant.Container>, UsingEnergy {
 
 	@Override

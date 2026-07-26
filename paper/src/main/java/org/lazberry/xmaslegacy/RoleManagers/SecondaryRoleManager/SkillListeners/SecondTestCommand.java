@@ -6,15 +6,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.ParseEnum;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 @TestOnly
 @Commands(command = "second")
+@Registry.Exclude(type = ServerType.LOBBY)
 public class SecondTestCommand implements CommandExecutor {
 	private final @NotNull RoleManager rm;
 

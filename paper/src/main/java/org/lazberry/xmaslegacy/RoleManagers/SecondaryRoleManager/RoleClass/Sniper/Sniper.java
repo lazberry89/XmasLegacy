@@ -11,7 +11,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
@@ -22,11 +22,14 @@ import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 
 @Roles
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Sniper extends AbstractSecondRole {
     private final @NotNull Container container;
 

@@ -19,7 +19,7 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;

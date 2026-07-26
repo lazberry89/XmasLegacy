@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
@@ -23,13 +23,16 @@ import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import java.util.UUID;
 
 @Skill(type = PlayerSkills.FIRE_BULLET)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class FireBullet implements Skills<Sniper.Container>, UsingEnergy {
     private final @NotNull SkillEffectManager sem;
 	private final @NotNull PartyManager pm;

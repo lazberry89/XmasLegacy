@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Ranger;
 
+import lombok.NoArgsConstructor;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -10,14 +11,16 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.settings.SkillSet;
 
 import java.util.*;
@@ -26,6 +29,8 @@ import static org.lazberry.xmaslegacy.Roles.SecondaryRoles.RANGER;
 import static org.lazberry.xmaslegacy.settings.SecondarySkillSet.CHAINING;
 
 @Skill(type = PlayerSkills.CHAINING)
+@Registry.Exclude(type = ServerType.LOBBY)
+@NoArgsConstructor
 public class Chaining implements Skills<Ranger.Container>, UsingEnergy {
 	private final @NotNull Map<UUID, ActiveLaserTask> activeLasers = new HashMap<>();
 

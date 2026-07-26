@@ -10,7 +10,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.Party.PartyManager;
@@ -23,11 +23,14 @@ import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 
 @Roles(grade = 2)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Guardian extends AbstractSecondRole {
     private final @NotNull PartyManager pm;
     private final Container container;

@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+@Registry
 @Commands(command = "destination")
-@Registry.Include(type = ServerType.HUNTING)
 public final class DestinationCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull SpawnRepository spawnRepo;
 

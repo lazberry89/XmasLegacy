@@ -4,22 +4,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Skill;
 import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.RoleManagers.UsingEnergy;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.Roles.SecondaryRoles;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.PlayerSkills;
-import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
-import org.lazberry.xmaslegacy.settings.SkillSet;
+import org.lazberry.xmaslegacy.settings.*;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 
-import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Skill(type = PlayerSkills.SNIPE)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Snipe implements Skills<Sniper.Container>, UsingEnergy {
 
     @Override
@@ -51,8 +50,7 @@ public class Snipe implements Skills<Sniper.Container>, UsingEnergy {
     }
 
     private @NotNull BulletType selectBullet() {
-        Random random = new Random();
-        int num = random.nextInt(0, 3);
+        int num = ThreadLocalRandom.current().nextInt(0, 3);
         return BulletType.getType(num);
     }
 

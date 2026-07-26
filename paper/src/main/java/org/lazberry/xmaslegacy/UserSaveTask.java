@@ -6,11 +6,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.UserSaveManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Task
-@Registry
+@Registry.Exclude(type = ServerType.LOBBY)
 public class UserSaveTask implements Tasks {
 	private volatile @Nullable BukkitTask task;
 	private final @NotNull UserSaveManager us;

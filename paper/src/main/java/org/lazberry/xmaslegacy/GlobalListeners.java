@@ -15,16 +15,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Enchant.EnchantUserInterface;
 import org.lazberry.xmaslegacy.RoleSelection.RoleSelectInterface;
 import org.lazberry.xmaslegacy.RoleSelection.RoleSelectionInterface;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.List;
 
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class GlobalListeners implements Listener {
     private final @NotNull NamespacedKey key;
 	private final @NotNull NamespacedKey key2;

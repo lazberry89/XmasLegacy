@@ -7,16 +7,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
-@SuppressWarnings("FieldCanBeLocal")
 @Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
 public class StockListener implements Listener {
-	private final MerchantStockInterface msi;
+	private final @NotNull MerchantStockInterface msi;
 
-	public StockListener(MerchantStockInterface msi) {
+	@Inject
+	public StockListener(@NotNull MerchantStockInterface msi) {
 		this.msi = msi;
 	}
 

@@ -11,7 +11,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Registry.Include(type = ServerType.HUNTING)
+@Registry
 public class SpawnRepository {
     private final @NotNull Map<DestinationType, SavedLocation> spawnMap = new EnumMap<>(DestinationType.class);
 

@@ -11,11 +11,13 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@ConsumableClass
 public final class BloodChainEffect {
     private final @NotNull XmasLegacy plugin;
 	private final @NotNull PartyManager pm;

@@ -4,19 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.User.RankType;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Slf4j
 @Task
+@Slf4j
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RankingTask implements Tasks {
 	private final @NotNull Map<RankType, BukkitTask> tasks = new ConcurrentHashMap<>();
 	private final @NotNull RankManager rm;

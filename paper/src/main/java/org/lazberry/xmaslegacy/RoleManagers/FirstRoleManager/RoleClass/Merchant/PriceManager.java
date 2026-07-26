@@ -12,13 +12,13 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 
-@SuppressWarnings("DuplicatedCode")
-public enum PriceManager {
-	INSTANCE;
-
+@Registry.Exclude(type = ServerType.LOBBY)
+public class PriceManager {
 	private final @NotNull Inventory priceInv;
 	private final @NotNull Inventory purchaseInv;
 	private @Nullable Inventory shopInv;

@@ -1,15 +1,10 @@
 package org.lazberry.xmaslegacy;
 
-import com.google.common.reflect.ClassPath;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.LazberryRegistryFramework;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Reflections;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
-
-import java.io.IOException;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Reflections;
 
 @Slf4j
 public final class XmasLegacy extends JavaPlugin {
@@ -26,6 +21,7 @@ public final class XmasLegacy extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
+		LazberryRegistryFramework.setDebug(false);
 		LazberryRegistryFramework.boot(this, XmasLegacy.class);
 		Reflections.runInitializers(true);
 	}

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Emblems.EmblemType;
 import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Roles;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Roles;
 import org.lazberry.xmaslegacy.RoleManagers.RoleContainer;
 import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondRole;
 import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
@@ -21,13 +21,16 @@ import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.SecondarySkillSet;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Roles(grade = 2)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class Berserker extends AbstractSecondRole {
     private final @NotNull Set<UUID> usedPassive = new HashSet<>();
     private final @NotNull PartyManager pm;

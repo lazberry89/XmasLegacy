@@ -7,15 +7,18 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "guide")
+@Registry.Exclude(type = ServerType.LOBBY)
 public class NpcCommand implements CommandExecutor, TabCompleter {
     private final @NotNull NpcManager ncm;
 	private final @NotNull BagManager bm;

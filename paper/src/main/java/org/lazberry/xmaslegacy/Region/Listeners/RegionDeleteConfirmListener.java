@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Region.Gui.RegionDeleteInterface;
 import org.lazberry.xmaslegacy.Region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.Region.RegionManager;
