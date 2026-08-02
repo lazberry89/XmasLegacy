@@ -5,6 +5,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.CustomMob;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;

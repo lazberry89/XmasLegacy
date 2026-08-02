@@ -9,6 +9,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.CustomMob;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;

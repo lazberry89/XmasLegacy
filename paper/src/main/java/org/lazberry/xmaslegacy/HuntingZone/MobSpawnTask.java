@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
-import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
+import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.CustomMob;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;

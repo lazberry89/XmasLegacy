@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobKey;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
-import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.Unrated.CustomMob;
+import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.CustomMob;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.*;
