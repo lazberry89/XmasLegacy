@@ -65,7 +65,10 @@ public class IcingListener implements Listener {
 			return;
 		}
 
-		if (KeyUtils.hasKey(item, key, PersistentDataType.STRING, "sunflower_bread"))
+		if (KeyUtils.hasKey(item, key, PersistentDataType.STRING, "sunflower_bread")) {
 			user.addIcingState(ThreadLocalRandom.current().nextInt(10, 16));
+			p.setFoodLevel(p.getFoodLevel() + 4);
+			p.setSaturation(p.getSaturation() + 4);
+		}
 	}
 }

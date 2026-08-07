@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Economy.Currency.CurrencyManager;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer.AgeableCrops;
+import org.lazberry.xmaslegacy.Env.AgeableCrops;
 import org.lazberry.xmaslegacy.Utils.Documents;
 import org.lazberry.xmaslegacy.Utils.FloodgateUtils;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;

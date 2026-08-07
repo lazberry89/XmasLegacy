@@ -45,7 +45,10 @@ public class FreeFoodTask implements Tasks {
 				if (user == null) continue;
 
 				if (!user.ifWantsCookie()) continue;
-				Map<Integer, ItemStack> leftOver = p.getInventory().addItem(Cookie.cookie(Constants.COOKIE_COUNT));
+				var reward = AgeableCrops.SunFlower();
+				reward.setAmount(5);
+
+				Map<Integer, ItemStack> leftOver = p.getInventory().addItem(reward);
 
 				if (!leftOver.isEmpty()) {
 					leftOver.values().forEach(item -> bm.addItem(p, item));

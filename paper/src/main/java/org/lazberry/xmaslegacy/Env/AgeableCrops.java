@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Farmer;
+package org.lazberry.xmaslegacy.Env;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

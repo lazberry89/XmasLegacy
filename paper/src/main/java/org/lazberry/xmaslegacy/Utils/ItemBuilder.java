@@ -276,11 +276,11 @@ public final class ItemBuilder {
 	 * Finalizes structural builder adjustments and overrides item amount.
 	 * <p><b>NOTE:</b> This method breaks the chaining flow and returns raw {@link ItemStack}.</p>
 	 * @param i target item amount
-	 * @return finalized ItemStack instance
+	 * @return builder instance
 	 */
-	public ItemStack setAmount(int i) {
+	public ItemBuilder setAmount(int i) {
 		item.setAmount(i);
-		return item;
+		return this;
 	}
 
 	/**
@@ -333,6 +333,13 @@ public final class ItemBuilder {
 		return this;
 	}
 
+	public ItemBuilder setTag(@NotNull NamespacedKey key, @NotNull String value) {
+		if (meta != null) {
+			meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, value);
+		}
+		return this;
+	}
+
 	/**
 	 * Embeds metadata tag using {@link PersistentDataType#INTEGER}.
 	 * @param key unique namespace tag key
@@ -344,6 +351,37 @@ public final class ItemBuilder {
 		if (meta != null) {
 			NamespacedKey nsk = new NamespacedKey(this.plugin, key);
 			meta.getPersistentDataContainer().set(nsk, PersistentDataType.INTEGER, value);
+		}
+		return this;
+	}
+
+	@Contract("_, _ -> this")
+	public ItemBuilder setTag(@NotNull NamespacedKey key, @NotNull Integer value) {
+		if (meta != null) {
+			meta.getPersistentDataContainer().set(key, PersistentDataType.INTEGER, value);
+		}
+		return this;
+	}
+
+	/**
+	 * Embeds metadata tag using {@link PersistentDataType#DOUBLE}.
+	 * @param key unique namespace tag key
+	 * @param value metadata value integer
+	 * @return builder instance
+	 */
+	@Contract("_, _ -> this")
+	public ItemBuilder setTag(@NotNull String key, @NotNull Double value) {
+		if (meta != null) {
+			NamespacedKey nsk = new NamespacedKey(this.plugin, key);
+			meta.getPersistentDataContainer().set(nsk, PersistentDataType.DOUBLE, value);
+		}
+		return this;
+	}
+
+	@Contract("_, _ -> this")
+	public ItemBuilder setTag(@NotNull NamespacedKey key, @NotNull Double value) {
+		if (meta != null) {
+			meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, value);
 		}
 		return this;
 	}
