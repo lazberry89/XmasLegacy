@@ -48,11 +48,19 @@ public class Stock {
 		return ((currentPrice - previousPrice) / previousPrice) * 100.0;
 	}
 
-	public Component getFormatMessage() {
+	public Component getFormatComponentMessage() {
 		return switch (defineChange()) {
             case RISE -> ColorUtils.chat(String.format("&7&l%s &c&l▲ +%.2f%%", getName(), getChangeRate()));
 			case DESCENT -> ColorUtils.chat(String.format("&7&l%s &9&l▼ %.2f%%", getName(), getChangeRate()));
 			case STABLE -> ColorUtils.chat(String.format("&7&l%s - 0.0%%", getName()));
+		};
+	}
+
+	public String getFormatStringMessage() {
+		return switch (defineChange()) {
+			case RISE -> String.format("&7&l%s &c&l▲ +%.2f%%", getName(), getChangeRate());
+			case DESCENT -> String.format("&7&l%s &9&l▼ %.2f%%", getName(), getChangeRate());
+			case STABLE -> String.format("&7&l%s - 0.0%%", getName());
 		};
 	}
 }

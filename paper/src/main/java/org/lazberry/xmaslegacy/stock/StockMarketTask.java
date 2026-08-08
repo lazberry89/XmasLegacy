@@ -48,12 +48,12 @@ public class StockMarketTask implements Tasks {
 					});
 
 					String hoursNotice = " &7(" + sc.getOperatingHoursFormatted() + ")";
-					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" &a주식 시장이 개장되었습니다! 주가가 새로 갱신되었습니다." + hoursNotice)));
+					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" &a주식 시장이 &a개장&f되었습니다! 주가가 새로 갱신되었습니다." + hoursNotice)));
 				}
 			} else {
 				if (isOpen) {
 					isOpen = false;
-					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" &c주식 시장이 마감되었습니다. 다음 날 아침에 개장됩니다.")));
+					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" 주식 시장이 &c마감&f되었습니다. 다음 날 아침에 개장됩니다.")));
 				}
 			}
 		}, 0L, sc.getSchedulerInterval());

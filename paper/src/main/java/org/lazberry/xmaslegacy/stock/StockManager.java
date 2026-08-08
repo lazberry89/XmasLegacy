@@ -3,7 +3,6 @@ package org.lazberry.xmaslegacy.stock;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,11 +11,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
-import org.lazberry.xmaslegacy.Utils.ParseUser;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -25,6 +22,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
@@ -56,6 +54,10 @@ public class StockManager {
 
 	public Component icon() {
 		return icon;
+	}
+
+	public Optional<Stock> getStock(@NotNull String name) {
+		return Optional.ofNullable(stocks.get(name));
 	}
 
 	public Collection<Stock> getStocks() {
