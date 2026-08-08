@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class UserSaveManager implements ServerManager {
+public class UserSaveManager implements Initiator {
     private static final @NotNull Logger log = LoggerFactory.getLogger(UserSaveManager.class);
     private final @NotNull UserManager um;
     private final @NotNull UserRepository repository;

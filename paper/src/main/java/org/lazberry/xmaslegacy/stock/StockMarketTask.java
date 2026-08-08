@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.stock;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,47 +16,47 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Task
-@Registry.Include(type = ServerType.GLOBAL)
+@Slf4j
+@Registry.Include(type = ServerType.MAIN)
 public class StockMarketTask implements Tasks {
 	private final StockManager sm;
+	private final StockConfig sc;
 	private @Nullable BukkitTask task;
 	private @Getter boolean isOpen = false;
-	private long lastCheckedTime = -1;
 
 	@Inject
-	public StockMarketTask(StockManager sm) {
+	public StockMarketTask(StockManager sm, StockConfig sc) {
 		this.sm = sm;
-	}
+        this.sc = sc;
+    }
 
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {
 		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-			World world = Bukkit.getWorld("world");
+			World world = Bukkit.getWorld(sc.getTargetWorldName());
 			if (world == null) return;
+
 			long currentTime = world.getTime();
 
-			if (currentTime >= 0 && currentTime < 12000) {
+			if (currentTime >= sc.getMinimumStartTime() && currentTime < sc.getMaximumStartTime()) {
 				if (!isOpen) {
 					isOpen = true;
-					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" 주식 시장이 시작되었습니다! &7(06:00 ~ 18:00)")));
+					sm.updateAllPrices();
+					sc.saveStocks().whenComplete((v, e) -> {
+						if (e == null) log.info("Stock info successfully saved in Scheduler.");
+						else log.error("Failed to save info in Scheduler.", e);
+					});
+
+					String hoursNotice = " &7(" + sc.getOperatingHoursFormatted() + ")";
+					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" &a주식 시장이 개장되었습니다! 주가가 새로 갱신되었습니다." + hoursNotice)));
 				}
 			} else {
 				if (isOpen) {
 					isOpen = false;
-					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" 주식 시장이 마감되었습니다. 다음 날 아침에 개장됩니다.")));
+					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" &c주식 시장이 마감되었습니다. 다음 날 아침에 개장됩니다.")));
 				}
 			}
-
-			boolean passedNight = (lastCheckedTime < 17000 && currentTime >= 17000);
-			boolean skippedNight = (lastCheckedTime > currentTime && lastCheckedTime < 17000);
-
-			if (passedNight || skippedNight) {
-				sm.updateAllPrices();
-				Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" 주가가 새로 변동되었습니다!")));
-			}
-
-			lastCheckedTime = currentTime;
-		}, 0L, 20L);
+		}, 0L, sc.getSchedulerInterval());
 	}
 
 	@Override

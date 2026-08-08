@@ -7,11 +7,10 @@ import java.util.Collection;
 @NoArgsConstructor
 public class StockUpdater {
 
-	public void tickPrices(Collection<Stock> stocks) {
+	public void tickPrices(Collection<Stock> stocks, double totalSpread, double negativeOffset) {
 		for (Stock stock : stocks) {
-			double randomRate = (Math.random() * 0.40) - 0.20;
+			double randomRate = (Math.random() * totalSpread) - negativeOffset;
 			stock.applyFluctuation(randomRate);
 		}
 	}
-
 }

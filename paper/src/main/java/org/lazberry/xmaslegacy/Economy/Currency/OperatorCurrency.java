@@ -54,7 +54,7 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (ecm.deposit(target.getUniqueId(), amount)) {
-						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 코인 -> " + amount));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저에게" + amount + "달러가 입금되었습니다."));
 					} else {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 입금에 실패하였습니다."));
 					}
@@ -65,7 +65,7 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (ecm.withdraw(target.getUniqueId(), amount)) {
-						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 코인 -> " + amount));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 계좌에서 " + amount + "달러를 출금했습니다."));
 					} else {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 출금에 실패하였습니다."));
 					}
@@ -76,12 +76,12 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (ecm.setBalance(target.getUniqueId(), amount)) {
-						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 코인 -> " + amount));
+						p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 해당 유저의 잔액을 " + amount + "달러로 설정하였습니다."));
 					} else {
 						p.sendMessage(ColorUtils.chat(Alert.RED + " 자금설정에 실패하였습니다."));
 					}
 				}
-				case "check" -> p.sendMessage(ColorUtils.chat(Alert.YELLOW + target.getName() + "의 코인: " + ecm.checkBalance(target.getUniqueId())));
+				case "check" -> p.sendMessage(ColorUtils.chat(Alert.YELLOW + "&c" + target.getName() + "&c은(는) &6" + ecm.checkBalance(target.getUniqueId()) + "&f달러를 보유중입니다."));
 				default -> p.sendMessage(ColorUtils.chat(Alert.RED + " 잘못된 명령어입니다!"));
 			}
 		} else if (args.length == 4) {
@@ -104,7 +104,7 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 					return true;
 				}
 				if (ecm.transferMoney(target.getUniqueId(), toTarget.getUniqueId(), amount)) {
-					p.sendMessage(ColorUtils.chat(Alert.YELLOW + target.getName() + "의 코인 -> " + amount + " -> " + toTarget.getName()));
+					p.sendMessage(ColorUtils.chat(Alert.YELLOW + "&c" + target.getName() + "&f의 계좌에서 &6" + amount + "&f달러가 &c" + toTarget.getName() + "&f에게 송금되었습니다."));
 				} else {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 송금에 실패하였습니다."));
 				}

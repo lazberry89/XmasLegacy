@@ -11,14 +11,14 @@ import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class GachaManager implements ServerManager {
+public class GachaManager implements Initiator {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<String, Gacha> normalGachas = new HashMap<>();
 	private final @NotNull Map<String, Gacha> highEndGachas = new HashMap<>();

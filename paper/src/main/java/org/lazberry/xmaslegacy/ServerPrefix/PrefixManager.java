@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.CustomPrefix;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class PrefixManager implements ServerManager {
+public class PrefixManager implements Initiator {
 	private final @NotNull UserManager um;
 	private final @NotNull Map<String, CustomPrefix> customPrefix = new HashMap<>();
 

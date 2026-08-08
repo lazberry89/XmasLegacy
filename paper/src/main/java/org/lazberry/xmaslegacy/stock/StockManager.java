@@ -1,70 +1,124 @@
 package org.lazberry.xmaslegacy.stock;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.Utils.ParseUser;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Data
 @Slf4j
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry.Include(type = ServerType.MAIN)
 public class StockManager {
 	private final Map<String, Stock> stocks = new ConcurrentHashMap<>();
 	private final StockUpdater updater = new StockUpdater();
+	private final UserManager um;
 	private final XmasLegacy plugin;
-	private final double FEE_RATE = 0.03;
-
-	public Component icon() {
-		return ColorUtils.chat("&#FF4545[&#F86E31주&#F1971D식&#EAC009]");
-	}
+	private @Nullable StockItemBuilder builder = null;
+	private double feeRate = 0.03;
+	private Component icon = ColorUtils.chat("&#FF4545[&#F86E31주&#F1971D식&#EAC009]");
+	private Material certificateItem;
+	private double totalSpread = 0.45;
+	private double negativeOffset = 0.20;
 
 	@Inject
-	public StockManager(XmasLegacy plugin) {
-		this.plugin = plugin;
+	public StockManager(UserManager um, XmasLegacy plugin) {
+        this.um = um;
+        this.plugin = plugin;
+    }
+
+	public boolean isStockCertificate(@Nullable ItemStack item) {
+		if (item == null) return false;
+		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
+		return builder.isStockItem(item);
 	}
 
-	public void registerStock(Stock stock) {
+	public Component icon() {
+		return icon;
+	}
+
+	public Collection<Stock> getStocks() {
+		return Collections.unmodifiableCollection(stocks.values());
+	}
+
+	@Contract("_, _, _, _ -> new")
+	public Stock createStock(@NotNull String name, double initPrice, double maxPrice, double minPrice) {
+		return registerStock(new Stock(name, initPrice, maxPrice, minPrice));
+	}
+
+	@Contract("_, _ -> new")
+	public Stock createStock(@NotNull String name, double initPrice) {
+		return registerStock(new Stock(name, initPrice));
+	}
+
+	public Stock registerStock(Stock stock) {
 		stocks.put(stock.getName(), stock);
+		return stock;
 	}
 
-	public boolean buyStock(Stock stock, int amount, @Nullable User user) {
+	public double getChangeRate(Stock stock) {
+		return stock.getChangeRate();
+	}
+
+	public Component getFormatMessage(Stock stock) {
+		return stock.getFormatMessage();
+	}
+
+	public boolean removeStock(Stock stock) {
+		return stocks.remove(stock.getName(), stock);
+	}
+
+	public boolean removeStock(String name) {
+		return stocks.remove(name) != null;
+	}
+
+	public boolean buyStock(Player buyer, Stock stock, int amount) {
+		var user = um.getUser(buyer.getUniqueId());
 		if (user == null || amount <= 0) return false;
 
 		double currentPrice = stock.getCurrentPrice();
-		double totalCost = (currentPrice * amount) * (1 + FEE_RATE);
+		double totalCost = (currentPrice * amount) * (1 + feeRate);
 		int finalCost = (int) Math.ceil(totalCost);
 
 		if (user.getDollars() < finalCost) return false;
 		user.addDollars(-finalCost);
 
-		ItemStack cert = new StockItemBuilder(plugin).createStockCertificate(stock, amount, currentPrice);
-		ParseUser.parse(user).whenComplete((u, e) -> {
-			if (e == null && u != null && u.isOnline()) {
-				u.getInventory().addItem(cert);
-				InfoUtils.info(u, "구매하신 주식이 지급되었습니다.");
-				InfoUtils.warn(u, "유저간 거래가 가능하지만, 분실시 책임은 본인에게 있습니다.");
-			} else log.error("Item supply occurred error. {}", user.getName());
-		});
-
+		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
+		ItemStack cert = builder.createStockCertificate(stock, amount, currentPrice);
+		buyer.getInventory().addItem(cert);
+		InfoUtils.info(buyer, "구매하신 주식이 지급되었습니다.");
+		InfoUtils.warn(buyer, "유저간 거래가 가능하지만, 분실시 책임은 본인에게 있습니다.");
 		return true;
 	}
 
-	public boolean sellStock(ItemStack certItem, @Nullable User user, StockItemBuilder builder) {
+	public boolean sellStock(Player owner, ItemStack certItem) {
+		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
+
+		var user = um.getUser(owner.getUniqueId());
 		if (user == null || !builder.isStockItem(certItem)) return false;
 
-		var meta = certItem.getItemMeta();
-		String stockId = meta.getPersistentDataContainer().get(builder.getKeyStockId(), PersistentDataType.STRING);
+		String stockId = KeyUtils.get(certItem, builder.getKeyStockId(), PersistentDataType.STRING);
 
 		Stock stock = stocks.get(stockId);
 		if (stock == null) return false;
@@ -72,7 +126,7 @@ public class StockManager {
 		int amount = certItem.getAmount();
 		double currentPrice = stock.getCurrentPrice();
 
-		double totalRevenue = (currentPrice * amount) * (1 - FEE_RATE);
+		double totalRevenue = (currentPrice * amount) * (1 - feeRate);
 		int finalRevenue = (int) Math.floor(totalRevenue);
 
 		user.addDollars(finalRevenue);
@@ -82,6 +136,6 @@ public class StockManager {
 	}
 
 	public void updateAllPrices() {
-		updater.tickPrices(stocks.values());
+		updater.tickPrices(stocks.values(), totalSpread, negativeOffset);
 	}
 }

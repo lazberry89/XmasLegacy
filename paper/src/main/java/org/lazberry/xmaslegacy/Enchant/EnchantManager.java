@@ -13,14 +13,14 @@ import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class EnchantManager implements ServerManager {
+public class EnchantManager implements Initiator {
     private final @NotNull NamespacedKey key;
 
     private static final @NotNull Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");

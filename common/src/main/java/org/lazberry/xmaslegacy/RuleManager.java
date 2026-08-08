@@ -2,8 +2,7 @@ package org.lazberry.xmaslegacy;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.settings.Initiator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
 import static java.util.List.of;
 
 @Registry
-public class RuleManager implements ServerManager {
+public class RuleManager implements Initiator {
 	private final @NotNull List<String> badWords;
 
     public RuleManager() {

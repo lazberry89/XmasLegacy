@@ -10,7 +10,7 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Comparator;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class RankManager implements ServerManager {
+public class RankManager implements Initiator {
 	private final @NotNull @Getter UserManager userManager;
 	private @NotNull volatile List<User> dollarRank = List.of();
 	private @NotNull volatile List<User> expRank = List.of();

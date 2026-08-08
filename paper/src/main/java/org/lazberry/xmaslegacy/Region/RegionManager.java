@@ -24,7 +24,7 @@ import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.io.File;
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Registry.Exclude(type = ServerType.LOBBY)
-public class RegionManager implements ServerManager {
+public class RegionManager implements Initiator {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<Long, Region> regions = new HashMap<>();
 	private final @NotNull Map<UUID, List<Region>> userRegionsMap = new HashMap<>();

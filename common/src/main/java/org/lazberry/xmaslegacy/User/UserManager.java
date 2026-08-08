@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.Roles.BasicRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.io.File;
@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class UserManager implements ServerManager {
+public class UserManager implements Initiator {
     private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final @NotNull @Getter File rootDataFolder;
 

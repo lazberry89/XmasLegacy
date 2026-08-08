@@ -6,12 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
 import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.ConditionalRegistry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -126,7 +125,7 @@ final class PackageScanner {
                     if (candidate.isAnnotationPresent(Registry.Include.class) ||
                             candidate.isAnnotationPresent(Registry.Exclude.class) ||
                             candidate.isAnnotationPresent(Commands.class) ||
-                            ServerManager.class.isAssignableFrom(candidate)) {
+                            Initiator.class.isAssignableFrom(candidate)) {
                         return candidate;
                     }
                 }

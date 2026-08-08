@@ -7,14 +7,14 @@ import org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.AbstractSecondR
 import org.lazberry.xmaslegacy.RoleManagers.ThirdRoleManager.AbstractThirdRole;
 import org.lazberry.xmaslegacy.Roles.*;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class RoleManager implements ServerManager {
+public class RoleManager implements Initiator {
 	private static final @NotNull Map<BasicRoles, AbstractFirstRole> firstRoleMap = new EnumMap<>(BasicRoles.class);
 	private static final @NotNull Map<SecondaryRoles, AbstractSecondRole> secondRoleMap = new EnumMap<>(SecondaryRoles.class);
 	private static final @NotNull Map<ThirdRoles, AbstractThirdRole> thirdRoleMap = new EnumMap<>(ThirdRoles.class);

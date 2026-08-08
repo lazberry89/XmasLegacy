@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @Registry.Include(type = ServerType.HUNTING)
-public class HuntingZoneManager implements ServerManager {
+public class HuntingZoneManager implements Initiator {
 	private final @NotNull Map<ZoneType, HuntingZone> zones = new EnumMap<>(ZoneType.class);
 	private final @NotNull MobRepository mobRepository;
 

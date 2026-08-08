@@ -6,14 +6,14 @@ import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerManager;
+import org.lazberry.xmaslegacy.settings.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Registry.Exclude(type = ServerType.LOBBY)
-public class PartyManager implements ServerManager {
+public class PartyManager implements Initiator {
 	private final @NotNull UserManager um;
 	private final @NotNull Map<User, Party> partyMap = new ConcurrentHashMap<>();
 

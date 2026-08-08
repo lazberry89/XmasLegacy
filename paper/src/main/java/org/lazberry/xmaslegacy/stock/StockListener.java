@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Listeners
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry.Include(type = ServerType.MAIN)
 public class StockListener implements Listener {
 	private final StockManager sm;
 	private final XmasLegacy plugin;

@@ -55,7 +55,7 @@ public final class ParseEnum {
     /**
      * Runs a parsing process, returns default value if failed.
      * <pre>{@code
-     * Material material = ParseEnum.of(Material.class).parseOrdefault("NETHERITE", Material.NETHERITE_SWORD); //returns netherite
+     * Material material = ParseEnum.of(Material.class).parseOrDefault("NETHERITE", Material.NETHERITE_SWORD); //returns netherite
      * }</pre>
      * @param value target value to parse
      * @param def default value to use if failed.

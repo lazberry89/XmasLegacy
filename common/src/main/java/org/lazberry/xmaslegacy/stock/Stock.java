@@ -1,27 +1,58 @@
 package org.lazberry.xmaslegacy.stock;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
+@Data
 @ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Stock {
 	@EqualsAndHashCode.Include
-	private final @Getter String name;
-	private final @Getter double maxPrice;
-	private final @Getter double minPrice;
-	private @Getter double currentPrice;
+	private final String name;
+	private final double maxPrice;
+	private final double minPrice;
+	private final double initPrice;
+	private double currentPrice;
+	private double previousPrice;
+
+	public Stock(String name, double initPrice) {
+		this(name, initPrice, initPrice * 6.0, Math.max(1.0, initPrice * 0.05));
+	}
 
 	public Stock(String name, double initPrice, double maxPrice, double minPrice) {
 		this.name = name;
+		this.initPrice = initPrice;
 		this.currentPrice = initPrice;
+		this.previousPrice = initPrice;
 		this.maxPrice = maxPrice;
 		this.minPrice = minPrice;
 	}
 
 	public void applyFluctuation(double rate) {
-		double nextPrice = this.currentPrice * (1 + rate);
-		this.currentPrice = Math.max(minPrice, Math.min(maxPrice, nextPrice));
+		previousPrice = currentPrice;
+		double nextPrice = currentPrice * (1 + rate);
+		currentPrice = Math.clamp(nextPrice, minPrice, maxPrice);
+	}
+
+	public Fluctuation defineChange() {
+		if (currentPrice > previousPrice) return Fluctuation.RISE;
+		if (currentPrice < previousPrice) return Fluctuation.DESCENT;
+		return Fluctuation.STABLE;
+	}
+
+	public double getChangeRate() {
+		if (previousPrice == 0) return 0.0;
+		return ((currentPrice - previousPrice) / previousPrice) * 100.0;
+	}
+
+	public Component getFormatMessage() {
+		return switch (defineChange()) {
+            case RISE -> ColorUtils.chat(String.format("&7&l%s &c&l▲ +%.2f%%", getName(), getChangeRate()));
+			case DESCENT -> ColorUtils.chat(String.format("&7&l%s &9&l▼ %.2f%%", getName(), getChangeRate()));
+			case STABLE -> ColorUtils.chat(String.format("&7&l%s - 0.0%%", getName()));
+		};
 	}
 }

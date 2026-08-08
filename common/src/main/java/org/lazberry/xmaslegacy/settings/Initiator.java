@@ -1,5 +1,5 @@
 package org.lazberry.xmaslegacy.settings;
 
-public interface ServerManager {
+public interface Initiator {
     void init();
 }
