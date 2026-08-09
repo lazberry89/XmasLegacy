@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.lazberry.xmaslegacy.Utils.Config;
 import org.lazberry.xmaslegacy.Utils.InventorySerializer;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -57,7 +56,8 @@ public class StockContainerConfig implements Initiator {
 
     private void createDefaultConfig() {
         config = YamlConfiguration.loadConfiguration(file);
-        Config.of(config).setDefault("type", "container");
+        config.addDefault("type", "container");
+		config.options().copyDefaults(true);
     }
 
     public CompletableFuture<Void> loadContainers() {

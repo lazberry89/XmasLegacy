@@ -7,8 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.File;
+import java.io.IOException;
 
-@TestOnly
 @ParametersAreNonnullByDefault
 public record Config(FileConfiguration file) {
 
@@ -45,7 +46,7 @@ public record Config(FileConfiguration file) {
 	 */
 	@Contract("_, _ -> this")
 	public @NotNull Config setDefault(String key, Object value) {
-		this.file.addDefault(key, value);
+		if (!this.file.isSet(key)) this.file.set(key, value);
 		return this;
 	}
 
@@ -75,11 +76,8 @@ public record Config(FileConfiguration file) {
                 default -> {}
             }
         }
-		try {
-			return (T) value;
-		} catch (ClassCastException e) {
-			return def;
-		}
+		if (def.getClass().isInstance(value)) return (T) value;
+		return def;
 	}
 
 	/**
@@ -93,6 +91,7 @@ public record Config(FileConfiguration file) {
 	 * @return returns target value, but returns null if not exists.
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated(forRemoval = true)
 	public @Nullable <T> T getValue(String key) {
 		Object value = this.file.get(key);
 		if (value == null) return null;
@@ -101,5 +100,14 @@ public record Config(FileConfiguration file) {
 		} catch (ClassCastException e) {
 			return null;
 		}
+	}
+
+	public @NotNull Config save(File targetFile) {
+		try {
+			this.file.save(targetFile);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to save config to " + targetFile, e);
+		}
+		return this;
 	}
 }
