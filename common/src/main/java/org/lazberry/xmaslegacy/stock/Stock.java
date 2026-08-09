@@ -63,4 +63,41 @@ public class Stock {
 			case STABLE -> String.format("&7&l%s - 0.0%%", getName());
 		};
 	}
+
+	public Component getInfoMessage() {
+		String changeSymbol = switch (defineChange()) {
+			case RISE -> "&c▲";
+			case DESCENT -> "&9▼";
+			case STABLE -> "&7-";
+		};
+
+		String changeColor = switch (defineChange()) {
+			case RISE -> "&c";
+			case DESCENT -> "&9";
+			case STABLE -> "&7";
+		};
+
+		return ColorUtils.chat(String.format(
+				"""
+                &6&l[ &f&l%s 종목 상세 정보 &6&l]
+                &7&m--------------------------------
+                &f• 현재 주가 : &e%,.0f원 &7(%s%s %.2f%%&7)
+                &f• 전일 주가 : &7%,.0f원
+                &f• 상장 주가 : &7%,.0f원
+                
+                &f• 상한가 : &c%,.0f원
+                &f• 하한가 : &9%,.0f원
+                &7&m--------------------------------
+                """,
+				name,
+				currentPrice,
+				changeColor,
+				changeSymbol,
+				Math.abs(getChangeRate()),
+				previousPrice,
+				initPrice,
+				maxPrice,
+				minPrice
+		));
+	}
 }

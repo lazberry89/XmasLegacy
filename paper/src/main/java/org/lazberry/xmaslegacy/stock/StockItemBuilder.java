@@ -5,7 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.ConfigValue;
 import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -26,7 +29,7 @@ public class StockItemBuilder {
 		this.plugin = plugin;
 	}
 
-	public ItemStack createStockCertificate(Stock stock, int amount, double buyPrice) {
+	public @NotNull ItemStack createStockCertificate(@NotNull Stock stock, int amount, double buyPrice) {
 		return ItemBuilder.of(plugin, cert)
 				.setName(ColorUtils.chat("&#FF4545[&#F86E31주&#F1971D식&#EAC009]" + stock.getName()))
 				.setLore(
@@ -41,7 +44,7 @@ public class StockItemBuilder {
 				.build();
 	}
 
-	public boolean isStockItem(ItemStack item) {
+	public boolean isStockItem(@Nullable ItemStack item) {
 		if (item == null || !item.hasItemMeta()) return false;
 		return item.getItemMeta().getPersistentDataContainer().has(keyStockId, PersistentDataType.STRING);
 	}

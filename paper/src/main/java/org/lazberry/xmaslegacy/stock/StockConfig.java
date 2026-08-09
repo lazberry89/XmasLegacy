@@ -37,7 +37,6 @@ public class StockConfig implements Initiator {
     @Override
     public void init() {
         file = new File(dataFolder, "stock_settings.yml");
-
         if (!file.exists()) {
             try {
                 if (!dataFolder.exists()) {
@@ -104,7 +103,6 @@ public class StockConfig implements Initiator {
                 }
             }
         });
-
     }
 
     public CompletableFuture<Void> saveStocks() {

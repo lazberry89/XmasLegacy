@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.intellij.lang.annotations.Flow;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,10 +47,24 @@ public class StockManager {
         this.plugin = plugin;
     }
 
+	public boolean exists(String name) {
+		return stocks.containsKey(name);
+	}
+
 	public boolean isStockCertificate(@Nullable ItemStack item) {
 		if (item == null) return false;
 		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
 		return builder.isStockItem(item);
+	}
+
+	public Optional<Stock> parseStockFromCertificate(@NotNull ItemStack item) {
+		if (!isStockCertificate(item)) return Optional.empty();
+
+		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
+		var value = KeyUtils.get(item, builder.getKeyStockId(), PersistentDataType.STRING);
+		if (value == null || value.trim().isEmpty()) return Optional.empty();
+
+		return getStock(value);
 	}
 
 	public Component icon() {
@@ -83,19 +98,27 @@ public class StockManager {
 		return stock.getChangeRate();
 	}
 
-	public Component getFormatMessage(Stock stock) {
-		return stock.getFormatMessage();
+	public @NotNull String getFormatStringMessage(@NotNull Stock stock) {
+		return stock.getFormatStringMessage();
 	}
 
+	public @NotNull Component getFormatComponentMessage(@NotNull Stock stock) {
+		return stock.getFormatComponentMessage();
+	}
+
+	@Contract(mutates = "this")
+	@Flow(source = "this.stocks", targetIsContainer = true)
 	public boolean removeStock(Stock stock) {
 		return stocks.remove(stock.getName(), stock);
 	}
 
-	public boolean removeStock(String name) {
-		return stocks.remove(name) != null;
+	@Contract(mutates = "this")
+	@Flow(source = "this.stocks", targetIsContainer = true)
+	public @Nullable Stock removeStock(String name) {
+		return stocks.remove(name);
 	}
 
-	public boolean buyStock(Player buyer, Stock stock, int amount) {
+	public boolean buyStock(@NotNull Player buyer, @NotNull Stock stock, int amount) {
 		var user = um.getUser(buyer.getUniqueId());
 		if (user == null || amount <= 0) return false;
 

@@ -23,7 +23,7 @@ public record StockCommandSell(StockManager sm) implements SubCommand {
 						InfoUtils.error(player, "판매에 실패하였습니다!");
 						InfoUtils.warn(player, "유저 정보가 &c소실&f되었거나, 주식이 존재하지 않을 수 있습니다. &7(상장폐지)");
 					}
-				} else InfoUtils.error(player, "주식 확인증이 아닙니다!");
+				} else InfoUtils.error(player, "주식 확인증이 아닙니다. 확인증을 손에 들어주세요!");
 			} else InfoUtils.error(player, "올바른 명령어 사용법이 아닙니다.");
 		} else {
 			InfoUtils.error(player, "올바른 명령어 사용법이 아닙니다.");
