@@ -18,6 +18,9 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -81,12 +84,13 @@ public class StockConfig implements Initiator {
 		saveConfig();
 	}
 
-	public CompletableFuture<Void> loadStocks() {
+	public CompletableFuture<Collection<Stock>> loadStocks() {
 		ConfigurationSection stocksSection = config.getConfigurationSection("stocks");
 		if (stocksSection == null) return CompletableFuture.completedFuture(null);
 
-		return CompletableFuture.runAsync(() -> {
+		return CompletableFuture.supplyAsync(() -> {
 			synchronized (this) {
+				List<Stock> stocks = new ArrayList<>();
 				for (String stockName : stocksSection.getKeys(false)) {
 					String path = "stocks." + stockName + ".";
 					double maxPrice = config.getDouble(path + "max-price", 91_000);
@@ -98,9 +102,11 @@ public class StockConfig implements Initiator {
 					Stock stock = new Stock(stockName, initPrice, maxPrice, minPrice);
 					stock.setCurrentPrice(currentPrice);
 					stock.setPreviousPrice(previousPrice);
-					sm.registerStock(stock);
+					stocks.add(stock);
 					log.info("Loaded stock: {} (Current: {})", stockName, currentPrice);
 				}
+				sm.registerAll(stocks);
+				return stocks;
 			}
 		});
 	}

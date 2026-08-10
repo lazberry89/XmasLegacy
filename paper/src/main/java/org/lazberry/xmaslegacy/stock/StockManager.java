@@ -94,6 +94,10 @@ public class StockManager {
 		return stock;
 	}
 
+	public <C extends Collection<Stock>> void registerAll(C values) {
+		values.forEach(this::registerStock);
+	}
+
 	public double getChangeRate(Stock stock) {
 		return stock.getChangeRate();
 	}

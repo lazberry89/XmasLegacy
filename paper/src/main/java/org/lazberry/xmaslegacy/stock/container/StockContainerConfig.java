@@ -13,9 +13,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -60,12 +58,13 @@ public class StockContainerConfig implements Initiator {
 		config.options().copyDefaults(true);
     }
 
-    public CompletableFuture<Void> loadContainers() {
+    public CompletableFuture<Collection<StockContainer>> loadContainers() {
         ConfigurationSection stocksSection = config.getConfigurationSection("containers");
         if (stocksSection == null) return CompletableFuture.completedFuture(null);
 
-        return CompletableFuture.runAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             synchronized (this) {
+				List<StockContainer> containers = new ArrayList<>();
                 for (String owner : stocksSection.getKeys(false)) {
                     try {
                         String path = "containers." + owner;
@@ -73,11 +72,13 @@ public class StockContainerConfig implements Initiator {
                         ItemStack[] contents = InventorySerializer.deserializeContents(config.getString(path, ""));
 
                         StockContainer container = new StockContainer(uuid, contents);
-                        scm.add(container);
+                        containers.add(container);
                     } catch (Exception e) {
                         log.error("Failed to load itemStack information from Config. (UUID: {})", owner);
                     }
                 }
+				scm.addAll(containers);
+				return containers;
             }
         });
     }

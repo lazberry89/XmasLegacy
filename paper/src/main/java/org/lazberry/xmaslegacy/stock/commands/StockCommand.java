@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.stock.Stock;
 import org.lazberry.xmaslegacy.stock.StockManager;
+import org.lazberry.xmaslegacy.stock.commands.admin.StockCommandAdmin;
 
 import java.util.*;
 
@@ -31,6 +32,7 @@ public class StockCommand implements CommandExecutor, TabCompleter {
 		var list = new StockCommandList(sm);
 		var buy = new StockCommandBuy(sm);
 		var info = new StockCommandInfo(sm);
+		var admin = new StockCommandAdmin(sm);
 		commands.put("sell", sell);
 		commands.put("판매", sell);
 		commands.put("list", list);
@@ -39,6 +41,8 @@ public class StockCommand implements CommandExecutor, TabCompleter {
 		commands.put("구매", buy);
 		commands.put("info", info);
 		commands.put("정보", info);
+		commands.put("admin", admin);
+		commands.put("관리", admin);
 	}
 
 	@Override
@@ -60,12 +64,22 @@ public class StockCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		List<String> result = new ArrayList<>();
-		if (args.length == 1) result.addAll(List.of("help", "도움", "sell", "판매", "buy", "구매", "list", "목록"));
+		boolean en = command.getName().equalsIgnoreCase("stock");
+		if (args.length == 1)
+			if (en) result.addAll(List.of("help", "sell", "buy", "list", "admin", "info"));
+			else result.addAll(List.of("판매", "구매", "리스트", "관리", "정보"));
 		if (args.length == 2) {
 			var str = args[0].toLowerCase();
-			if (str.equalsIgnoreCase("sell") || str.equals("판매")) {
+			if (str.equalsIgnoreCase("buy") || str.equals("구매"))
 				result.addAll(sm.getStocks().stream().map(Stock::getName).toList());
-			}
+			if (str.equalsIgnoreCase("admin") || str.equals("관리"))
+				if (en) result.addAll(List.of("add", "remove", "update"));
+				else result.addAll(List.of("추가", "제거", "업데이트"));
+		}
+		if (args.length == 3) {
+			var str = args[1].toLowerCase();
+			if (str.equalsIgnoreCase("remove") || str.equals("제거"))
+				result.addAll(sm.getStocks().stream().map(Stock::getName).toList());
 		}
 		return result;
 	}

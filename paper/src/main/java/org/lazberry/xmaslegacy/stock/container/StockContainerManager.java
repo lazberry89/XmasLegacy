@@ -1,7 +1,6 @@
 package org.lazberry.xmaslegacy.stock.container;
 
 import lombok.extern.slf4j.Slf4j;
-import net.kyori.adventure.text.Component;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
@@ -22,6 +21,10 @@ public class StockContainerManager {
     public StockContainer add(StockContainer container) {
         return containers.put(container.getOwner(), container);
     }
+
+	public <C extends Collection<StockContainer>> void addAll(C values) {
+		values.forEach(this::add);
+	}
 
     public StockContainer getOrCreateContainer(UUID uuid) {
         return containers.computeIfAbsent(uuid, k -> new StockContainer(uuid));
