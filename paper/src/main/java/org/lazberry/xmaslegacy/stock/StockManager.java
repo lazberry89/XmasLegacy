@@ -40,6 +40,7 @@ public class StockManager {
 	private Material certificateItem;
 	private double totalSpread = 0.45;
 	private double negativeOffset = 0.20;
+	private boolean open = false;
 
 	@Inject
 	public StockManager(UserManager um, XmasLegacy plugin) {
@@ -122,15 +123,16 @@ public class StockManager {
 		return stocks.remove(name);
 	}
 
-	public boolean buyStock(@NotNull Player buyer, @NotNull Stock stock, int amount) {
+	public Response buyStock(@NotNull Player buyer, @NotNull Stock stock, int amount) {
+		if (!isOpen()) return Response.TIMEOUT;
 		var user = um.getUser(buyer.getUniqueId());
-		if (user == null || amount <= 0) return false;
+		if (user == null || amount <= 0) return Response.NOT_APPROPRIATE;
 
 		double currentPrice = stock.getCurrentPrice();
 		double totalCost = (currentPrice * amount) * (1 + feeRate);
 		int finalCost = (int) Math.ceil(totalCost);
 
-		if (user.getDollars() < finalCost) return false;
+		if (user.getDollars() < finalCost) return Response.NOT_ENOUGH;
 		user.addDollars(-finalCost);
 
 		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
@@ -138,19 +140,20 @@ public class StockManager {
 		buyer.getInventory().addItem(cert);
 		InfoUtils.info(buyer, "구매하신 주식이 지급되었습니다.");
 		InfoUtils.warn(buyer, "유저간 거래가 가능하지만, 분실시 책임은 본인에게 있습니다.");
-		return true;
+		return Response.SUCCESS;
 	}
 
-	public boolean sellStock(Player owner, ItemStack certItem) {
+	public Response sellStock(Player owner, ItemStack certItem) {
+		if (!isOpen()) return Response.TIMEOUT;
 		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
 
 		var user = um.getUser(owner.getUniqueId());
-		if (user == null || !builder.isStockItem(certItem)) return false;
+		if (user == null || !builder.isStockItem(certItem)) return Response.NOT_APPROPRIATE;
 
 		String stockId = KeyUtils.get(certItem, builder.getKeyStockId(), PersistentDataType.STRING);
 
 		Stock stock = stocks.get(stockId);
-		if (stock == null) return false;
+		if (stock == null) return Response.NOT_EXIST;
 
 		int amount = certItem.getAmount();
 		double currentPrice = stock.getCurrentPrice();
@@ -161,7 +164,7 @@ public class StockManager {
 		user.addDollars(finalRevenue);
 		certItem.setAmount(0);
 
-		return true;
+		return Response.SUCCESS;
 	}
 
 	public void updateAllPrices() {

@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.stock.display.StockDisplayManager;
 
 @Task
 @Slf4j
@@ -21,13 +22,15 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 public class StockMarketTask implements Tasks {
 	private final StockManager sm;
 	private final StockConfig sc;
+	private final StockDisplayManager sdm;
 	private @Nullable BukkitTask task;
 	private @Getter boolean isOpen = false;
 
 	@Inject
-	public StockMarketTask(StockManager sm, StockConfig sc) {
+	public StockMarketTask(StockManager sm, StockConfig sc, StockDisplayManager sdm) {
 		this.sm = sm;
         this.sc = sc;
+		this.sdm = sdm;
     }
 
 	@Override
@@ -39,9 +42,11 @@ public class StockMarketTask implements Tasks {
 			long currentTime = world.getTime();
 
 			if (currentTime >= sc.getMinimumStartTime() && currentTime < sc.getMaximumStartTime()) {
+				sdm.updateAll();
+				sm.updateAllPrices();
 				if (!isOpen) {
 					isOpen = true;
-					sm.updateAllPrices();
+					sm.setOpen(true);
 					sc.saveStocks().whenComplete((v, e) -> {
 						if (e == null) log.info("Stock info successfully saved in Scheduler.");
 						else log.error("Failed to save info in Scheduler.", e);
@@ -53,6 +58,7 @@ public class StockMarketTask implements Tasks {
 			} else {
 				if (isOpen) {
 					isOpen = false;
+					sm.setOpen(false);
 					Bukkit.broadcast(sm.icon().append(ColorUtils.chat(" 주식 시장이 &c마감&f되었습니다. 다음 날 아침에 개장됩니다.")));
 				}
 			}

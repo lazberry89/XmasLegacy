@@ -13,11 +13,11 @@ public record StockCommandInfo(StockManager sm) implements SubCommand {
         if (args.length == 1) {
             var item = player.getInventory().getItemInMainHand();
             if (item.getType().isAir()) {
-                InfoUtils.error(player, "주권 확인증을 손에 들고있어주세요!");
+                InfoUtils.error(player, "주식 확인증을 손에 들고있어주세요!");
                 return;
             }
             if (!sm.isStockCertificate(item)) {
-                InfoUtils.error(player, "주권 확인증을 손에 들고 사용해주세요.");
+                InfoUtils.error(player, "주식 확인증을 손에 들고 사용해주세요.");
                 return;
             }
 
