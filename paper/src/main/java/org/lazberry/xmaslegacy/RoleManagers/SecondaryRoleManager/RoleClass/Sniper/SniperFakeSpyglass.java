@@ -1,9 +1,0 @@
-package org.lazberry.xmaslegacy.RoleManagers.SecondaryRoleManager.RoleClass.Sniper;
-
-import org.bukkit.entity.Player;
-
-public class SniperFakeSpyglass {
-
-    public static void showOverlay(Player p) {
-    }
-}

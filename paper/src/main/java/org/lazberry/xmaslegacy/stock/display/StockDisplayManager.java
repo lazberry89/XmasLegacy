@@ -1,7 +1,9 @@
 package org.lazberry.xmaslegacy.stock.display;
 
+import org.bukkit.Location;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.stock.Stock;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +18,10 @@ public class StockDisplayManager {
 
 	public Collection<StockDisplay> snapshot() {
 		return Collections.unmodifiableCollection(displays);
+	}
+
+	public boolean add(Location loc, Stock ... stocks) {
+		return add(new StockDisplay(loc, stocks));
 	}
 
 	public boolean add(StockDisplay display) {

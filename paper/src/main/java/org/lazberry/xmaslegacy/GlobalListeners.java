@@ -7,7 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -15,10 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Enchant.EnchantUserInterface;
-import org.lazberry.xmaslegacy.RoleSelection.RoleSelectInterface;
-import org.lazberry.xmaslegacy.RoleSelection.RoleSelectionInterface;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -133,6 +130,7 @@ public class GlobalListeners implements Listener {
         }
     }
 
+	/**
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
         Inventory topInv = e.getView().getTopInventory();
@@ -152,4 +150,5 @@ public class GlobalListeners implements Listener {
             InfoUtils.warn(p, "보관함에 남겨진 직업 아이템을 강제 회수했습니다.");
         }
     }
+    **/
 }

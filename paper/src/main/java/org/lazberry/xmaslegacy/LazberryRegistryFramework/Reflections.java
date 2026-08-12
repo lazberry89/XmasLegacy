@@ -15,10 +15,6 @@ import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
-import org.lazberry.xmaslegacy.RoleManagers.RoleClass;
-import org.lazberry.xmaslegacy.RoleManagers.RoleManager;
-import org.lazberry.xmaslegacy.RoleManagers.SkillManager;
-import org.lazberry.xmaslegacy.RoleManagers.Skills;
 import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.PlayerSkills;
@@ -197,7 +193,6 @@ public final class Reflections {
 	 * Grabs custom skill beans implementing {@link Skills} marked with {@link Skill} metadata,
 	 * and maps them statically into the project's centralized {@link SkillManager}.
 	 * * @param ignored ClassPath param ignored since we only rely on the pre-built IoC container.
-	 */
 	@Reflection(type = InitializeType.REGISTER)
 	public static void registerSkills(@NotNull ClassPath ignored) {
 		for (var entry : DependencyContainer.getContainer().entrySet()) {
@@ -213,11 +208,10 @@ public final class Reflections {
 		}
 	}
 
-	/**
 	 * Gathers custom role classes inheriting {@link RoleClass} marked with {@link Roles} metadata,
 	 * and registers them into the core {@link RoleManager}.
 	 * * @param ignored ClassPath param ignored since we only rely on the pre-built IoC container.
-	 */
+
 	@Reflection(type = InitializeType.REGISTER)
 	public static void registerRoles(@NotNull ClassPath ignored) {
 		for (var entry : DependencyContainer.getContainer().entrySet()) {
@@ -229,6 +223,7 @@ public final class Reflections {
 			}
 		}
 	}
+	**/
 
 	/**
 	 * Gateway to turn on all periodic background tasks / schedulers.

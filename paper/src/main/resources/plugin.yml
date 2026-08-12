@@ -131,4 +131,7 @@ commands:
   주식:
     description: 주식과 관련된 커맨드
 
+  display:
+    description: spawning stock indicating display
+
 

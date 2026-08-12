@@ -56,7 +56,7 @@ public class StockDisplayConfig implements Initiator {
 			}
 		}
 		config = YamlConfiguration.loadConfiguration(file);
-		loadAll();
+		loadAll().join();
 	}
 
 	private void createDefaultConfig() {

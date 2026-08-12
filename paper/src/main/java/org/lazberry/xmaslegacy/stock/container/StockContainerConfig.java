@@ -74,7 +74,7 @@ public class StockContainerConfig implements Initiator {
                         StockContainer container = new StockContainer(uuid, contents);
                         containers.add(container);
                     } catch (Exception e) {
-                        log.error("Failed to load itemStack information from Config. (UUID: {})", owner);
+                        log.error("Failed to load itemStack information from ConfigBuilder. (UUID: {})", owner);
                     }
                 }
 				scm.addAll(containers);

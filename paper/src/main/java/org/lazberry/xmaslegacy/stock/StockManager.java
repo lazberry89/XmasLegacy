@@ -138,8 +138,6 @@ public class StockManager {
 		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
 		ItemStack cert = builder.createStockCertificate(stock, amount, currentPrice);
 		buyer.getInventory().addItem(cert);
-		InfoUtils.info(buyer, "구매하신 주식이 지급되었습니다.");
-		InfoUtils.warn(buyer, "유저간 거래가 가능하지만, 분실시 책임은 본인에게 있습니다.");
 		return Response.SUCCESS;
 	}
 

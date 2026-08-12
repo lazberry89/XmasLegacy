@@ -9,6 +9,7 @@ import org.bukkit.entity.TextDisplay;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.Utils.Axiom;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.stock.Stock;
 
@@ -20,12 +21,14 @@ public class StockDisplay {
 	private @Nullable TextDisplay display;
 
 	public StockDisplay(Location loc, Stock ... stocks) {
-		this.location = loc;
+		this.location = Axiom.snapDegrees(loc);
 		this.stocks = stocks;
 	}
 
 	@NotNull
 	public TextDisplay spawn() {
+		if (this.display != null && this.display.isValid()) remove();
+
 		this.display = location.getWorld().spawn(location, TextDisplay.class, t -> {
 			t.setBillboard(Display.Billboard.FIXED);
 			t.setDefaultBackground(false);

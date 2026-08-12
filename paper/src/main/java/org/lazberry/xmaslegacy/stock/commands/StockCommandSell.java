@@ -18,10 +18,13 @@ public record StockCommandSell(StockManager sm) implements SubCommand {
 					return;
 				}
 				if (sm.isStockCertificate(item)) {
-					if (sm.sellStock(player, item)) InfoUtils.info(player, "주권 판매가 완료되었습니다!");
-					else {
-						InfoUtils.error(player, "판매에 실패하였습니다!");
-						InfoUtils.warn(player, "유저 정보가 &c소실&f되었거나, 주식이 존재하지 않을 수 있습니다. &7(상장폐지)");
+					switch (sm.sellStock(player, item)) {
+						case SUCCESS -> InfoUtils.info(player, "주권 판매가 완료되었습니다!");
+						case TIMEOUT -> InfoUtils.info(player, "아직 시장이 개장되지 않았습니다.");
+						default -> {
+							InfoUtils.error(player, "판매에 실패하였습니다!");
+							InfoUtils.warn(player, "유저 정보가 &c소실&f되었거나, 주식이 존재하지 않을 수 있습니다. &7(상장폐지)");
+						}
 					}
 				} else InfoUtils.error(player, "주식 확인증이 아닙니다. 확인증을 손에 들어주세요!");
 			} else InfoUtils.error(player, "올바른 명령어 사용법이 아닙니다.");

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
 import org.lazberry.xmaslegacy.Env.AgeableCrops;
-import org.lazberry.xmaslegacy.RoleManagers.FirstRoleManager.RoleClass.Miner.SpecialOre;
 import org.lazberry.xmaslegacy.User.SqlUserRepository;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -36,9 +35,6 @@ public class GlobalInitializer implements ServerInitializer {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
 
 		if (AgeableCrops.RegisterRecipe()) log.info("Recipe Registered!");
-		else log.error("Recipe Not Registered!");
-
-		if (SpecialOre.RegisterRecipe()) log.info("Recipe Registered!");
 		else log.error("Recipe Not Registered!");
 
 		log.info("XmasLegacy Plugin Enabled!");

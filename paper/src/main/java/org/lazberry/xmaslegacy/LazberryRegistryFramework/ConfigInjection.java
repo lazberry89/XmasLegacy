@@ -98,7 +98,7 @@ public final class ConfigInjection {
                 log.error("{} {}", icon, errorMessage);
                 throw new InvalidConfigInjectException(errorMessage);
             }
-            log.warn("{} [LRF-Config] Optional field value is null for path: {} in class: {}", icon, path, targetClass.getSimpleName());
+            log.warn("{} [LRF-ConfigBuilder] Optional field value is null for path: {} in class: {}", icon, path, targetClass.getSimpleName());
             return null;
         }
 

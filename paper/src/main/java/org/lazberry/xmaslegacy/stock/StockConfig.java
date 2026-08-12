@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.ParseEnum;
-import org.lazberry.xmaslegacy.Utils.Config;
+import org.lazberry.xmaslegacy.Utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -57,6 +57,7 @@ public class StockConfig implements Initiator {
 			}
 		}
 
+		reloadConfig().join();
 		config = YamlConfiguration.loadConfiguration(file);
 		sm.setFeeRate(getFeeRate());
 		sm.setIcon(ColorUtils.chat(getIcon()));
@@ -66,6 +67,25 @@ public class StockConfig implements Initiator {
 
 		loadStocks().join();
 		log.info("Successfully loaded all stock settings.");
+	}
+
+	public CompletableFuture<Void> reloadConfig() {
+		return CompletableFuture.runAsync(() -> {
+			synchronized (this) {
+				if (file != null) {
+					config = YamlConfiguration.loadConfiguration(file);
+					applySettingsToManager();
+				}
+			}
+		});
+	}
+
+	private void applySettingsToManager() {
+		sm.setFeeRate(getFeeRate());
+		sm.setIcon(ColorUtils.chat(getIcon()));
+		sm.setCertificateItem(getCertificateMaterial());
+		sm.setTotalSpread(getTotalSpread());
+		sm.setNegativeOffset(getNegativeOffset());
 	}
 
 	private void createDefaultConfig() {
@@ -82,6 +102,17 @@ public class StockConfig implements Initiator {
 
 		config.options().copyDefaults(true);
 		saveConfig();
+	}
+
+	public CompletableFuture<Void> saveSettings() {
+		if (config == null || file == null) return CompletableFuture.completedFuture(null);
+
+		return CompletableFuture.runAsync(() -> {
+			synchronized (this) {
+				saveConfig();
+				applySettingsToManager();
+			}
+		});
 	}
 
 	public CompletableFuture<Collection<Stock>> loadStocks() {
@@ -134,7 +165,7 @@ public class StockConfig implements Initiator {
 
 	public void setInfo(@NotNull Stock stock) {
 		String path = "stocks." + stock.getName() + ".";
-		Config.of(config)
+		ConfigBuilder.of(config)
 				.set(path + "max-price", stock.getMaxPrice())
 				.set(path + "min-price", stock.getMinPrice())
 				.set(path + "init-price", stock.getInitPrice())
