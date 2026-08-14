@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.stock.display;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Registry.Include(type = ServerType.MAIN)
 public class StockDisplayConfig implements Initiator {
+	private final XmasLegacy plugin;
 	private final StockDisplayManager sdm;
 	private final StockManager sm;
 	private final File dataFolder;
@@ -31,6 +33,7 @@ public class StockDisplayConfig implements Initiator {
 
 	@Inject
 	public StockDisplayConfig(XmasLegacy plugin, StockDisplayManager sdm, StockManager sm) {
+		this.plugin = plugin;
 		this.sdm = sdm;
 		this.sm = sm;
 		this.dataFolder = plugin.getDataFolder();
@@ -116,7 +119,7 @@ public class StockDisplayConfig implements Initiator {
 				if (!stockList.isEmpty()) {
 					StockDisplay display = new StockDisplay(loc, stockList.toArray(new Stock[0]));
 					result.add(display);
-					sdm.add(display);
+					Bukkit.getScheduler().runTask(plugin, () -> sdm.add(display));
 				}
 			}
 			return result;

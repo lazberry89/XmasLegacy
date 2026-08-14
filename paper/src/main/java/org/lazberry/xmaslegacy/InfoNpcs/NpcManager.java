@@ -2,11 +2,12 @@ package org.lazberry.xmaslegacy.InfoNpcs;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Registry
+@Registry.Include(type = ServerType.GLOBAL)
 public class NpcManager {
     private final @NotNull Map<NpcType, AbstractNpc> npcMap = new HashMap<>();
 
