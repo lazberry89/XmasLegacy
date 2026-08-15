@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.HuntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Initiator;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Collection;

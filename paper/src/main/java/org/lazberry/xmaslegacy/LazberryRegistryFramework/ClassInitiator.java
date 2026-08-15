@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.LazberryRegistryFramework;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.Initiator;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
  * @see Reflections
  */
 @Slf4j
-final class ManagerInjection {
+final class ClassInitiator {
     private static final @NotNull List<Initiator> ORDERED_MANAGERS = new ArrayList<>();
     private static final @NotNull String icon = LazberryRegistryFramework.icon(false);
 
@@ -67,13 +67,25 @@ final class ManagerInjection {
      * remaining managers in queue to maximize runtime survivability.
      */
     static void initializeManagers() {
-        log.info("[IoC] Initializing ServerManagers sequentially...");
+        log.info("[IoC] Initializing Initiators sequentially...");
         for (Initiator manager : ORDERED_MANAGERS) {
             try {
                 manager.init();
-                log.info("{} Initialized ServerManager: {}", icon, manager.getClass().getSimpleName());
+                log.info("{} Initialized Initiators: {}", icon, manager.getClass().getSimpleName());
             } catch (Exception e) {
-                log.error("{} Failed to initialize ServerManager: {}", icon, manager.getClass().getSimpleName(), e);
+                log.error("{} Failed to initialize Initiators: {}", icon, manager.getClass().getSimpleName(), e);
+            }
+        }
+    }
+
+    static void closeupManagers() {
+        log.info("[IoC] Closing Initiators sequentially...");
+        for (Initiator manager : ORDERED_MANAGERS) {
+            try {
+                manager.close();
+                log.info("{} Closed Initiators: {}", icon, manager.getClass().getSimpleName());
+            } catch (Exception e) {
+                log.error("{} Failed to Closeup Initiators: {}", icon, manager.getClass().getSimpleName(), e);
             }
         }
     }

@@ -14,11 +14,17 @@ import java.util.List;
 public class InventorySerializer {
 
     public static @NotNull String serializeContents(ItemStack[] items) {
+        if (items == null) return "";
         YamlConfiguration config = new YamlConfiguration();
         config.set("items", items);
 
         String yamlString = config.saveToString();
         return Base64.getEncoder().encodeToString(yamlString.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static @NotNull String serializeContents(ItemStack item) {
+        if (item == null) return "";
+        return serializeContents(new ItemStack[]{ item });
     }
 
     public static @NotNull String serializeContents(Inventory inventory) {

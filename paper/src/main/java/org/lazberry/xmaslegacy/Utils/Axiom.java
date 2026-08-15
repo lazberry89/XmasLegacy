@@ -28,9 +28,7 @@ public class Axiom {
 	public static Location snapDegrees(Location location) {
 		var loc = location.clone();
 		float yaw = snapDegrees(loc.getYaw());
-		float pitch = snapDegrees(loc.getPitch());
 		loc.setYaw(yaw);
-		loc.setPitch(pitch);
 
 		return loc;
 	}

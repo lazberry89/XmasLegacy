@@ -12,7 +12,7 @@ import org.lazberry.xmaslegacy.Utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Initiator;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import javax.annotation.Nullable;
@@ -40,33 +40,34 @@ public class StockConfig implements Initiator {
 	@Override
 	public void init() {
 		file = new File(dataFolder, "stock_settings.yml");
-		if (!file.exists()) {
-			try {
-				if (!dataFolder.exists()) {
-					if (!dataFolder.mkdirs()) {
-						log.error("Failed to create directories for stock settings.");
-						return;
-					}
-				}
-				if (file.createNewFile()) {
-					log.info("Successfully created stock setting files.");
-					createDefaultConfig();
-				}
-			} catch (IOException e) {
-				log.error("Exception occurred while initiating stock setting files.", e);
-			}
+
+		if (!dataFolder.exists() && !dataFolder.mkdirs()) {
+			log.error("Failed to create directories for stock settings.");
+			return;
 		}
 
-		reloadConfig().join();
-		config = YamlConfiguration.loadConfiguration(file);
-		sm.setFeeRate(getFeeRate());
-		sm.setIcon(ColorUtils.chat(getIcon()));
-		sm.setCertificateItem(getCertificateMaterial());
-		sm.setTotalSpread(getTotalSpread());
-		sm.setNegativeOffset(getNegativeOffset());
+		// 1. 파일 생성 + 기본값 보장 + 저장 + 로드를 단 한 번에 처리
+		this.config = ConfigBuilder.of(file)
+				.setDefault("settings.icon", "&#FF4545[&#F86E31주&#F1971D식&#EAC009]")
+				.setDefault("settings.certificate-item", "FLOW_BANNER_PATTERN")
+				.setDefault("settings.target-world", "port")
+				.setDefault("settings.total-spread", 0.45)
+				.setDefault("settings.negative-offset", 0.20)
+				.setDefault("settings.fee-rate", 0.03)
+				.setDefault("settings.scheduler-interval", 20)
+				.setDefault("settings.start-time.min", 0)
+				.setDefault("settings.start-time.max", 12_000)
+				.save(file)
+				.build();
 
+		applySettingsToManager();
 		loadStocks().join();
 		log.info("Successfully loaded all stock settings.");
+	}
+
+	@Override
+	public void close() {
+
 	}
 
 	public CompletableFuture<Void> reloadConfig() {
@@ -86,22 +87,6 @@ public class StockConfig implements Initiator {
 		sm.setCertificateItem(getCertificateMaterial());
 		sm.setTotalSpread(getTotalSpread());
 		sm.setNegativeOffset(getNegativeOffset());
-	}
-
-	private void createDefaultConfig() {
-		config = YamlConfiguration.loadConfiguration(file);
-		config.addDefault("settings.icon", "&#FF4545[&#F86E31주&#F1971D식&#EAC009]");
-		config.addDefault("settings.certificate-item", "FLOW_BANNER_PATTERN");
-		config.addDefault("settings.target-world", "port");
-		config.addDefault("settings.total-spread", 0.45);
-		config.addDefault("settings.negative-offset", 0.20);
-		config.addDefault("settings.fee-rate", 0.03);
-		config.addDefault("settings.scheduler-interval", 20);
-		config.addDefault("settings.start-time.min", 0);
-		config.addDefault("settings.start-time.max", 12_000);
-
-		config.options().copyDefaults(true);
-		saveConfig();
 	}
 
 	public CompletableFuture<Void> saveSettings() {

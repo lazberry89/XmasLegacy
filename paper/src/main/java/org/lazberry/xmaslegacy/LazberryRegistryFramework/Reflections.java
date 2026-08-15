@@ -11,13 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.PlayerSkills;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.io.File;
@@ -26,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.lazberry.xmaslegacy.LazberryRegistryFramework.ManagerInjection.collectManagers;
-import static org.lazberry.xmaslegacy.LazberryRegistryFramework.ManagerInjection.initializeManagers;
+import static org.lazberry.xmaslegacy.LazberryRegistryFramework.ClassInitiator.collectManagers;
+import static org.lazberry.xmaslegacy.LazberryRegistryFramework.ClassInitiator.initializeManagers;
 
 /**
  * Public execution room for LazberryRegistryFramework lifecycle triggers.

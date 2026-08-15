@@ -98,6 +98,10 @@ public final class ServerUtils {
             }
             return !matched;
         }
+
+        if (clazz.isAnnotationPresent(Registry.class))
+            return isServerTypeUnCompatible(ServerType.GLOBAL, current);
+
         return false;
     }
 

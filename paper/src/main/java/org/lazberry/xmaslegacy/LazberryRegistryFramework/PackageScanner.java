@@ -10,7 +10,7 @@ import org.lazberry.xmaslegacy.Utils.ServerUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.ConditionalRegistry;
-import org.lazberry.xmaslegacy.settings.Initiator;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
  * is only privately opened to package. Never use scanning class in other distinctive class.
  * This class function is quite heavy. Only works when server starts-reflections work.
  * @see Reflections
- * @see ManagerInjection
+ * @see ClassInitiator
  * @see Registry
  */
 @Slf4j
@@ -65,6 +65,7 @@ final class PackageScanner {
 
                 if (clazz.isAnnotationPresent(Registry.Include.class) ||
                         clazz.isAnnotationPresent(Registry.Exclude.class) ||
+                        clazz.isAnnotationPresent(Registry.class) ||
                         clazz.isAnnotationPresent(Commands.class) ||
                         clazz.isAnnotationPresent(Listeners.class) ||
                         clazz.isAnnotationPresent(Skill.class) ||

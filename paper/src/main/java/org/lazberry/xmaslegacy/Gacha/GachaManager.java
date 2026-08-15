@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.Gacha;
 
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
@@ -11,19 +12,25 @@ import org.lazberry.xmaslegacy.Utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Initiator;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Setter
 @Registry.Exclude(type = ServerType.LOBBY)
 public class GachaManager implements Initiator {
 	private final @NotNull XmasLegacy plugin;
-	private final @NotNull Map<String, Gacha> normalGachas = new HashMap<>();
-	private final @NotNull Map<String, Gacha> highEndGachas = new HashMap<>();
-	private final @NotNull Map<String, Gacha> chromaticBundle = new HashMap<>();
-	private final @NotNull Map<String, Gacha> chromaticBox = new HashMap<>();
+	private final @NotNull Map<String, Gacha> normalGachas = new ConcurrentHashMap<>();
+	private final @NotNull Map<String, Gacha> highEndGachas = new ConcurrentHashMap<>();
+	private final @NotNull Map<String, Gacha> chromaticBundle = new ConcurrentHashMap<>();
+	private final @NotNull Map<String, Gacha> chromaticBox = new ConcurrentHashMap<>();
+	private Material bundle = Material.BUNDLE;
+	private Material high_end = Material.CHEST;
+	private Material chromatic_bundle = Material.ENDER_CHEST;
+	private Material chromatic_box = Material.DRAGON_EGG;
 
 	private final @NotNull List<ItemStack> bundles = new ArrayList<>();
 
@@ -84,7 +91,7 @@ public class GachaManager implements Initiator {
 	}
 
 	@Contract(pure = true)
-	public @NotNull Map<String, Gacha> getGachaMaps(BundleType type) {
+	private @NotNull Map<String, Gacha> getGachaMaps(BundleType type) {
 		switch (type) {
             case HIGH_END -> {return this.highEndGachas;}
 			case CHROMATIC_BUNDLE -> {return this.chromaticBundle;}
@@ -93,15 +100,16 @@ public class GachaManager implements Initiator {
 		}
 	}
 	@Contract(pure = true)
-	public @NotNull List<Gacha> getAll() {
+	public @NotNull Collection<Gacha> getAll() {
 		List<Gacha> gachas = new ArrayList<>();
         gachas.addAll(this.normalGachas.values());
 		gachas.addAll(this.highEndGachas.values());
 		gachas.addAll(this.chromaticBundle.values());
 		gachas.addAll(this.chromaticBox.values());
 
-		return gachas;
+		return Collections.unmodifiableCollection(gachas);
 	}
+
 	@Contract(pure = true)
 	public @NotNull List<Gacha> getAllSortedByChance(@NotNull BundleType type) {
 		switch (type) {
@@ -129,7 +137,7 @@ public class GachaManager implements Initiator {
 	}
 
 	public @NotNull ItemStack Bundle() {
-		return ItemBuilder.of(plugin, Material.BUNDLE)
+		return ItemBuilder.of(plugin, bundle)
 				.setName(ColorUtils.chat("&c&l치장 번들"))
 				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)))
 				.hideAllFlags()
@@ -139,7 +147,7 @@ public class GachaManager implements Initiator {
 	}
 
 	public @NotNull ItemStack HighEndBundle() {
-		return ItemBuilder.of(plugin, Material.ENDER_CHEST)
+		return ItemBuilder.of(plugin, high_end)
 				.setName(ColorUtils.chat("&b&l고급 치장 번들"))
 				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)))
 				.hideAllFlags()
@@ -150,7 +158,7 @@ public class GachaManager implements Initiator {
 	}
 
 	public @NotNull ItemStack ChromaticBundle() {
-		return ItemBuilder.of(plugin, Material.PAPER)
+		return ItemBuilder.of(plugin, chromatic_bundle)
 				.setGlint(true)
 				.setTag("gacha", "CHROMATIC_BUNDLE")
 				.setName(ColorUtils.chat("&6&l크로마틱 번들"))
@@ -163,7 +171,7 @@ public class GachaManager implements Initiator {
 	}
 
 	public @NotNull ItemStack ChromaticBox() {
-		return ItemBuilder.of(plugin, Material.CHEST)
+		return ItemBuilder.of(plugin, chromatic_box)
 				.setItemModel("")
 				.setMaxStackSize(4)
 				.setName(ColorUtils.chat("&6&l크로마틱 히든 꾸러미"))
@@ -174,16 +182,21 @@ public class GachaManager implements Initiator {
 				.hideAllFlags()
 				.build().clone();
 	}
-	 private void appendBundles() {
+	private void appendBundles() {
 		this.bundles.add(Bundle());
 		this.bundles.add(HighEndBundle());
 		this.bundles.add(ChromaticBundle());
 		this.bundles.add(ChromaticBox());
-	 }
+	}
 
-	 public @NotNull List<ItemStack> getBundles() {
+	public @NotNull List<ItemStack> getBundles() {
 		return List.copyOf(this.bundles);
 	 }
 
-
+	public void clear() {
+		normalGachas.clear();
+		highEndGachas.clear();
+		chromaticBundle.clear();
+		chromaticBox.clear();
+	}
 }

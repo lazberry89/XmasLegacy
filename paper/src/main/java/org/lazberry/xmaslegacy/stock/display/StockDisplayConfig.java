@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Initiator;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.stock.Stock;
 import org.lazberry.xmaslegacy.stock.StockManager;
@@ -42,24 +42,30 @@ public class StockDisplayConfig implements Initiator {
 	@Override
 	public void init() {
 		file = new File(dataFolder, "stock_displays.yml");
+
+		if (!dataFolder.exists() && !dataFolder.mkdirs()) {
+			log.error("Failed to create directories for stock displays.");
+			return;
+		}
+
 		if (!file.exists()) {
 			try {
-				if (!dataFolder.exists()) {
-					if (!dataFolder.mkdirs()) {
-						log.error("Failed to create directories for stock displays.");
-						return;
-					}
-				}
 				if (file.createNewFile()) {
 					log.info("Successfully created stock display files.");
-					createDefaultConfig();
 				}
 			} catch (IOException e) {
 				log.error("Exception occurred while initiating stock display files.", e);
 			}
 		}
-		config = YamlConfiguration.loadConfiguration(file);
+
+		createDefaultConfig();
 		loadAll().join();
+	}
+
+	@Override
+	public void close() {
+		saveSync();
+		sdm.clear();
 	}
 
 	private void createDefaultConfig() {
@@ -67,26 +73,28 @@ public class StockDisplayConfig implements Initiator {
 	}
 
 	public CompletableFuture<Void> saveAll() {
-		return CompletableFuture.runAsync(() -> {
-			synchronized (this) {
-				config.set("displays", null);
+		return CompletableFuture.runAsync(this::saveSync);
+	}
 
-				int index = 0;
-				for (StockDisplay display : sdm.snapshot()) {
-					String path = "displays." + index + ".";
-					config.set(path + "location", display.getLocation());
-					List<String> stockNames = new ArrayList<>();
+	public void saveSync() {
+		synchronized (this) {
+			config.set("displays", null);
 
-					for (Stock stock : display.getStocks())
-						stockNames.add(stock.getName());
+			int index = 0;
+			for (StockDisplay display : sdm.snapshot()) {
+				String path = "displays." + index + ".";
+				config.set(path + "location", display.getLocation());
+				List<String> stockNames = new ArrayList<>();
 
-					config.set(path + "stocks", stockNames);
+				for (Stock stock : display.getStocks())
+					stockNames.add(stock.getName());
 
-					index++;
-				}
+				config.set(path + "stocks", stockNames);
+
+				index++;
 			}
-			saveConfig();
-		});
+		}
+		saveConfig();
 	}
 
 	private void saveConfig() {
@@ -97,12 +105,12 @@ public class StockDisplayConfig implements Initiator {
 		}
 	}
 
-	public CompletableFuture<Collection<StockDisplay>> loadAll() {
-		ConfigurationSection section = config.getConfigurationSection("displays");
-		if (section == null) return CompletableFuture.completedFuture(new ArrayList<>());
-
-		return CompletableFuture.supplyAsync(() -> {
+	public Collection<StockDisplay> loadSync() {
+		synchronized (this) {
 			List<StockDisplay> result = new ArrayList<>();
+			ConfigurationSection section = config.getConfigurationSection("displays");
+			if (section == null) return result;
+
 			for (String key : section.getKeys(false)) {
 				String path = "displays." + key + ".";
 
@@ -123,7 +131,11 @@ public class StockDisplayConfig implements Initiator {
 				}
 			}
 			return result;
-		});
+		}
+	}
+
+	public CompletableFuture<Collection<StockDisplay>> loadAll() {
+		return CompletableFuture.supplyAsync(this::loadSync);
 	}
 }
 

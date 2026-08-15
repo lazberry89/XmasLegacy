@@ -5,10 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.stock.display.StockDisplayManager;
 
 @Slf4j
-@Registry
+@Registry.Include(type = ServerType.GLOBAL)
 public class MainInitializer implements ServerInitializer {
 	private final StockDisplayManager sdm;
 
@@ -25,6 +26,5 @@ public class MainInitializer implements ServerInitializer {
 
 	@Override
 	public void shutdown(@NotNull XmasLegacy plugin) {
-		sdm.clear();
 	}
 }

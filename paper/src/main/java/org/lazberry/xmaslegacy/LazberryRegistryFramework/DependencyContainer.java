@@ -54,7 +54,7 @@ public final class DependencyContainer {
 
     /**
      * Not Shallow-Copy. Memory address, inner values are all same. In any way,
-     * never use in another class, package. Only in {@link Reflections} and {@link ManagerInjection}
+     * never use in another class, package. Only in {@link Reflections} and {@link ClassInitiator}
      * for Ioc engine start.
      * @return Mapped container that mapped Class with actual generated class instance.
      * @see Map
