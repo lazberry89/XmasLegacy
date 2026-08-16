@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.ParseEnum;
 import org.lazberry.xmaslegacy.Utils.InventorySerializer;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -25,6 +26,7 @@ public class GachaContentsConfig implements Initiator {
     private @Getter YamlConfiguration config;
     private File file;
 
+	@Inject
     public GachaContentsConfig(XmasLegacy plugin, GachaManager gm) {
         this.dataFolder = plugin.getDataFolder();
         this.gm = gm;

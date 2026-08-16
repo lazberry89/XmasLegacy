@@ -16,13 +16,14 @@ public class Axiom {
 		throw new UnsupportedOperationException("Utility class");
 	}
 
+	@Contract(pure = true)
 	public static float snapDegrees(float angle) {
 		angle = (angle % 360 + 360) % 360;
 
-		if (angle >= 315 || angle < 45) return 180f;
-		else if (angle >= 45 && angle < 135) return -90f;
-		else if (angle >= 135 && angle < 225) return 0f;
-		else return 90f;
+		if (angle >= 315 || angle < 45) return 0f;
+		else if (angle >= 45 && angle < 135) return 90f;
+		else if (angle >= 135 && angle < 225) return 180f;
+		else return -90f;
 	}
 
 	public static Location snapDegrees(Location location) {

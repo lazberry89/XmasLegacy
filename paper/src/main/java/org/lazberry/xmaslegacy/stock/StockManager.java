@@ -3,7 +3,9 @@ package org.lazberry.xmaslegacy.stock;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -13,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -38,6 +39,7 @@ public class StockManager {
 	private double feeRate = 0.03;
 	private Component icon = ColorUtils.chat("&#FF4545[&#F86E31주&#F1971D식&#EAC009]");
 	private Material certificateItem;
+	private World world = Bukkit.getWorld("port");
 	private double totalSpread = 0.45;
 	private double negativeOffset = 0.20;
 	private boolean open = false;
@@ -47,6 +49,11 @@ public class StockManager {
         this.um = um;
         this.plugin = plugin;
     }
+
+	public void setWorld(String name) {
+		var world = Bukkit.getWorld(name);
+		this.world = world == null ? Bukkit.getWorld("port") : world;
+	}
 
 	public boolean exists(String name) {
 		return stocks.containsKey(name);

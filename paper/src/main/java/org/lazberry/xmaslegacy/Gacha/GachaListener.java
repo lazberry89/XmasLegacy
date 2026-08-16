@@ -52,6 +52,8 @@ public class GachaListener implements Listener {
         if (item == null || item.getType().isAir()) return;
         NamespacedKey nameKey = KeyUtils.get("gacha");
         String key = item.getPersistentDataContainer().get(nameKey, PersistentDataType.STRING);
+		if (key == null) return;
+
         Gacha gacha = gm.getGacha(key, type);
         if (gacha == null) return;
 

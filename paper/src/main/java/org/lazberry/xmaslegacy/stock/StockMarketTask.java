@@ -36,14 +36,17 @@ public class StockMarketTask implements Tasks {
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {
 		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-			World world = Bukkit.getWorld(sc.getTargetWorldName());
-			if (world == null) return;
+			World world = sm.getWorld();
+			if (world == null) {
+				log.error("World not found. Stopping scheduler.");
+				return;
+			}
 
 			long currentTime = world.getTime();
 
 			if (currentTime >= sc.getMinimumStartTime() && currentTime < sc.getMaximumStartTime()) {
-				sdm.updateAll();
 				sm.updateAllPrices();
+				sdm.updateAll();
 				if (!isOpen) {
 					isOpen = true;
 					sm.setOpen(true);

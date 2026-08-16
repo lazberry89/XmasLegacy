@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.stock;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -87,6 +88,7 @@ public class StockConfig implements Initiator {
 		sm.setCertificateItem(getCertificateMaterial());
 		sm.setTotalSpread(getTotalSpread());
 		sm.setNegativeOffset(getNegativeOffset());
+		sm.setWorld(getTargetWorldName());
 	}
 
 	public CompletableFuture<Void> saveSettings() {

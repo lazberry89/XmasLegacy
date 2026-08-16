@@ -6,10 +6,12 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.Axiom;
+import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.stock.Stock;
 
@@ -22,6 +24,7 @@ public class StockDisplay {
 
 	public StockDisplay(Location loc, Stock ... stocks) {
 		this.location = Axiom.snapDegrees(loc);
+		this.location.setPitch(0.0f);
 		this.stocks = stocks;
 	}
 
@@ -30,6 +33,7 @@ public class StockDisplay {
 		if (this.display != null && this.display.isValid()) remove();
 
 		this.display = location.getWorld().spawn(location, TextDisplay.class, t -> {
+			t.getPersistentDataContainer().set(KeyUtils.get("stock_display"), PersistentDataType.BOOLEAN, true);
 			t.setBillboard(Display.Billboard.FIXED);
 			t.setDefaultBackground(false);
 			t.setBackgroundColor(Color.fromARGB(100, 0, 0, 0));
@@ -40,17 +44,21 @@ public class StockDisplay {
 	}
 
 	public void update() {
-		if (this.display != null && this.display.isValid()) {
-			this.display.text(buildText());
+		if (this.display == null || !this.display.isValid()) {
+			spawn();
+			return;
 		}
+		this.display.text(buildText());
 	}
 
 	private Component buildText() {
-		Component txt = ColorUtils.chat("📉");
+		Component txt = ColorUtils.chat("&8&m━━━━━━━━━━━━━━&r &e&l📈 주식 현황 &r&8&m━━━━━━━━━━━━━━");
 		for (Stock stock : stocks) {
-			txt = txt.appendNewline()
-					.append(stock.getFormatComponentMessage());
+			Component line = stock.getFormatComponentMessage()
+					.append(ColorUtils.chat(String.format(" &7| &e%,.0f원", stock.getCurrentPrice())));
+			txt = txt.appendNewline().append(line);
 		}
+		txt = txt.appendNewline().append(ColorUtils.chat("&8&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
 		return txt;
 	}
 

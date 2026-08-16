@@ -78,6 +78,7 @@ public class BagManager implements Initiator {
 			plugin.getSLF4JLogger().error("가방 정보를 저장하던 중 오류: {}", e.getMessage(), e);
 		}
 	}
+
 	@SuppressWarnings("SuspiciousToArrayCall")
 	public void loadAllBags() {
 		File file = new File(plugin.getDataFolder(), "bags.yml");
@@ -101,5 +102,12 @@ public class BagManager implements Initiator {
 	}
 
 	@Override
-	public void init() {}
+	public void init() {
+		loadAllBags();
+	}
+
+	@Override
+	public void close() {
+		saveAllBags();
+	}
 }

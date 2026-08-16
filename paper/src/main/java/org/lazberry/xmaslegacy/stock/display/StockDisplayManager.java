@@ -1,6 +1,14 @@
 package org.lazberry.xmaslegacy.stock.display;
 
+import lombok.extern.slf4j.Slf4j;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.TextDisplay;
+import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.stock.Stock;
@@ -10,11 +18,34 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Registry.Include(type = ServerType.MAIN)
 public class StockDisplayManager {
 	private final List<StockDisplay> displays = new ArrayList<>();
+	private final XmasLegacy plugin;
 
-	public StockDisplayManager() {}
+	@Inject
+	public StockDisplayManager(XmasLegacy plugin) {
+		this.plugin = plugin;
+	}
+
+	public int cleanDisplays(World world) {
+		if (world == null) {
+			log.error("World is null");
+			return -1;
+		}
+		if (!Bukkit.isPrimaryThread())
+			throw new IllegalStateException("cleanDisplays() must be called from the main thread!");
+		synchronized (this) {
+			List<TextDisplay> targets = world.getEntitiesByClass(TextDisplay.class)
+					.stream()
+					.filter(t -> t.getPersistentDataContainer().has(KeyUtils.get("stock_display")))
+					.toList();
+
+			targets.forEach(Entity::remove);
+			return targets.size();
+		}
+	}
 
 	public Collection<StockDisplay> snapshot() {
 		return Collections.unmodifiableCollection(displays);
@@ -25,34 +56,52 @@ public class StockDisplayManager {
 	}
 
 	public boolean add(StockDisplay display) {
-		display.spawn();
+		runOnMainThread(display::spawn);
 		return displays.add(display);
 	}
 
 	public <C extends Collection<StockDisplay>> boolean addAll(C values) {
-		values.forEach(StockDisplay::spawn);
+		runOnMainThread(() -> values.forEach(StockDisplay::spawn));
 		return displays.addAll(values);
 	}
 
 	public boolean remove(StockDisplay display) {
-		display.remove();
+		runOnMainThread(display::remove);
 		return displays.remove(display);
 	}
 
 	public boolean removeRecent() {
 		if (displays.isEmpty()) return false;
 		var recent = displays.getLast();
-		recent.remove();
+		runOnMainThread(recent::remove);
 
 		return displays.remove(recent);
 	}
 
-	public void clear() {
+	/**
+	 * Must be called from the main thread (e.g. during plugin disable).
+	 * Synchronously removes all display entities and clears the internal list.
+	 */
+	public void clearSync() {
+		if (!Bukkit.isPrimaryThread())
+			throw new IllegalStateException("clearSync() must be called from the main thread!");
 		displays.forEach(StockDisplay::remove);
 		displays.clear();
 	}
 
+	/** @deprecated Use clearSync() when on main thread to guarantee entity removal. */
+	@Deprecated
+	public void clear() {
+		runOnMainThread(() -> displays.forEach(StockDisplay::remove));
+		displays.clear();
+	}
+
 	public void updateAll() {
-		displays.forEach(StockDisplay::update);
+		runOnMainThread(() -> displays.forEach(StockDisplay::update));
+	}
+
+	private void runOnMainThread(Runnable runnable) {
+		if (Bukkit.isPrimaryThread()) runnable.run();
+		else Bukkit.getScheduler().runTask(plugin, runnable);
 	}
 }

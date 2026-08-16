@@ -59,13 +59,20 @@ public class StockDisplayConfig implements Initiator {
 		}
 
 		createDefaultConfig();
-		loadAll().join();
+		int count = sdm.cleanDisplays(sm.getWorld());
+		log.info("{} displays were cleaned.", count);
+		// loadAll: config 읽기(비동기) → spawn(메인스레드) 순서로 실행됨
+		// join()은 메인스레드 블로킹 + 메인스레드에서 spawn 대기 → 데드락 위험으로 제거
+		loadAll().whenComplete((result, ex) -> {
+			if (ex != null) log.error("Failed to load stock displays.", ex);
+			else log.info("Stock displays load completed: {} entries scheduled.", result == null ? 0 : result.size());
+		});
 	}
 
 	@Override
 	public void close() {
 		saveSync();
-		sdm.clear();
+		sdm.clearSync();
 	}
 
 	private void createDefaultConfig() {
@@ -125,9 +132,7 @@ public class StockDisplayConfig implements Initiator {
 				}
 
 				if (!stockList.isEmpty()) {
-					StockDisplay display = new StockDisplay(loc, stockList.toArray(new Stock[0]));
-					result.add(display);
-					Bukkit.getScheduler().runTask(plugin, () -> sdm.add(display));
+					result.add(new StockDisplay(loc, stockList.toArray(new Stock[0])));
 				}
 			}
 			return result;
@@ -135,7 +140,14 @@ public class StockDisplayConfig implements Initiator {
 	}
 
 	public CompletableFuture<Collection<StockDisplay>> loadAll() {
-		return CompletableFuture.supplyAsync(this::loadSync);
+		// 1. config 읽기는 비동기에서 수행
+		return CompletableFuture.supplyAsync(this::loadSync)
+				// 2. 실제 spawn(sdm.addAll)은 반드시 메인 스레드에서 수행
+				.thenApplyAsync(loaded -> {
+					sdm.addAll(loaded);
+					log.info("Loaded and spawned {} stock displays.", loaded.size());
+					return loaded;
+				}, runnable -> Bukkit.getScheduler().runTask(plugin, runnable));
 	}
 }
 
