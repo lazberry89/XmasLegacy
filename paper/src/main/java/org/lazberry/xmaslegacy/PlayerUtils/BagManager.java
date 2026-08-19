@@ -22,10 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class BagManager implements Initiator {
-	private final @NotNull Map<UUID, TempBag> bags = new HashMap<>();
+	private final @NotNull Map<UUID, TempBag> bags = new ConcurrentHashMap<>();
 	private final @NotNull XmasLegacy plugin;
 
 	@Inject
@@ -79,7 +80,6 @@ public class BagManager implements Initiator {
 		}
 	}
 
-	@SuppressWarnings("SuspiciousToArrayCall")
 	public void loadAllBags() {
 		File file = new File(plugin.getDataFolder(), "bags.yml");
 		if (!file.exists()) return;
@@ -91,7 +91,7 @@ public class BagManager implements Initiator {
 			List<?> list = config.getList(uuidStr);
 			if (list == null) continue;
 
-			ItemStack[] contents = list.toArray(new ItemStack[0]);
+			ItemStack[] contents = list.toArray(ItemStack[]::new);
 
 			TempBag bag = new TempBag(uuid);
 			bag.getInventory().clear();

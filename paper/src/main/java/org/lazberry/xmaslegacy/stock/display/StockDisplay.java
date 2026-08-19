@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.stock.display;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Display;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Utils.Axiom;
+import org.lazberry.xmaslegacy.Utils.GlowUtils;
 import org.lazberry.xmaslegacy.Utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.stock.Stock;
@@ -39,11 +41,13 @@ public class StockDisplay {
 			t.setBackgroundColor(Color.fromARGB(100, 0, 0, 0));
 			t.setAlignment(TextDisplay.TextAlignment.CENTER);
 			t.text(buildText());
+			GlowUtils.glow(t, NamedTextColor.YELLOW);
 		});
 		return this.display;
 	}
 
 	public void update() {
+		if (!location.isChunkLoaded()) return;
 		if (this.display == null || !this.display.isValid()) {
 			spawn();
 			return;
@@ -52,11 +56,11 @@ public class StockDisplay {
 	}
 
 	private Component buildText() {
-		Component txt = ColorUtils.chat("&8&m━━━━━━━━━━━━━━&r &e&l📈 주식 현황 &r&8&m━━━━━━━━━━━━━━");
+		Component txt =                  ColorUtils.chat("&8&m━━━━━━━━━━&r &e&l📈 주식 현황 &r&8&m━━━━━━━━━━");
 		for (Stock stock : stocks) {
 			Component line = stock.getFormatComponentMessage()
 					.append(ColorUtils.chat(String.format(" &7| &e%,.0f원", stock.getCurrentPrice())));
-			txt = txt.appendNewline().append(line);
+			txt = txt.appendNewline().appendNewline().append(line);
 		}
 		txt = txt.appendNewline().append(ColorUtils.chat("&8&m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
 		return txt;

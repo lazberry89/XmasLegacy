@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.Env.Cookie;
+import org.lazberry.xmaslegacy.Env.AgeableCrops;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.ArrayList;
@@ -26,15 +26,16 @@ import java.util.UUID;
 public class TempBag implements InventoryHolder {
 	private final @NotNull Inventory inv;
 	@EqualsAndHashCode.Include
-	private final @NotNull @Getter UUID owner;
+	private final @Getter UUID owner;
 
-	public TempBag(@NotNull UUID uuid) {
+	public TempBag(UUID uuid) {
 		this.owner = uuid;
 		this.inv = Bukkit.createInventory(this, Constants.BAG_SIZE,ColorUtils.chat("&c&l[임시 보관함]"));
 		this.inv.setItem(0, basicFood());
 	}
+
 	public @NotNull ItemStack basicFood() {
-		return Cookie.cookie(Constants.FREE_COOKIE_COUNT);
+		return AgeableCrops.SunFlowerBread();
 	}
 
 	@Override

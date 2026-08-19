@@ -61,12 +61,7 @@ public class StockDisplayConfig implements Initiator {
 		createDefaultConfig();
 		int count = sdm.cleanDisplays(sm.getWorld());
 		log.info("{} displays were cleaned.", count);
-		// loadAll: config 읽기(비동기) → spawn(메인스레드) 순서로 실행됨
-		// join()은 메인스레드 블로킹 + 메인스레드에서 spawn 대기 → 데드락 위험으로 제거
-		loadAll().whenComplete((result, ex) -> {
-			if (ex != null) log.error("Failed to load stock displays.", ex);
-			else log.info("Stock displays load completed: {} entries scheduled.", result == null ? 0 : result.size());
-		});
+		sdm.addAll(loadSync());
 	}
 
 	@Override
@@ -140,9 +135,7 @@ public class StockDisplayConfig implements Initiator {
 	}
 
 	public CompletableFuture<Collection<StockDisplay>> loadAll() {
-		// 1. config 읽기는 비동기에서 수행
 		return CompletableFuture.supplyAsync(this::loadSync)
-				// 2. 실제 spawn(sdm.addAll)은 반드시 메인 스레드에서 수행
 				.thenApplyAsync(loaded -> {
 					sdm.addAll(loaded);
 					log.info("Loaded and spawned {} stock displays.", loaded.size());
