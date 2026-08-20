@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.ServerRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.settings.Annotation.Document;
@@ -70,7 +70,7 @@ public class User {
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
     public boolean ifWantsCookie() {return this.wantsCookie;}
     public void addExp(double amount) {this.exp += amount;}
-    public boolean hasRole() {return !BasicRoles.USER.equals(this.role);}
+    public boolean hasRole() {return !ServerRoles.USER.equals(this.role);}
     public void addRoleExp(double amount) {this.roleExp += amount;}
     public void addLevel(int amount) {this.level += amount;}
 	public boolean addPrefix(@NotNull ServerPrefix prefix) {

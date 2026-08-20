@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.ServerRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -23,6 +23,10 @@ public class UserManager implements Initiator {
 	@Inject
 	public UserManager(@NotNull File rootDataFolder) {
 		this.rootDataFolder = rootDataFolder;
+	}
+
+	public Optional<User> getOptionalUser(UUID uuid) {
+		return Optional.ofNullable(getUser(uuid));
 	}
 
 	@Override
@@ -64,12 +68,12 @@ public class UserManager implements Initiator {
 		return null;
 	}
 
-	public boolean startRole(@NotNull UUID uuid, @NotNull BasicRoles role) {
+	public boolean startRole(@NotNull UUID uuid, @NotNull ServerRoles role) {
 		User user = getUser(uuid);
 		if (user == null) return false;
 
 		Role getRole = user.getRole();
-		if (BasicRoles.USER.equals(getRole)) {
+		if (ServerRoles.USER.equals(getRole)) {
 			user.setRole(role);
 			return true;
 		}

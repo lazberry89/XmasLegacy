@@ -22,7 +22,7 @@ public class RuleCommandRemove implements SubCommand {
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
         if (args.length >= 2) {
             if (rm.getBadWordList().contains(args[1])) {
-                rm.removeBadWordList(args[1]);
+                rm.remove(args[1]);
                 player.playSound(player, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
             } else {
                 player.sendMessage(ColorUtils.chat(Alert.RED + " 존재하지 않는 항목입니다."));

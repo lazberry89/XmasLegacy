@@ -1,71 +1,31 @@
 package org.lazberry.xmaslegacy;
 
-import net.kyori.adventure.text.Component;
-
 import java.util.List;
 
 public class Constants {
 	public static final long USER_SAVE_TASK_DURATION = 20 * 60 * 5;
 
-	//Consumable
 	public static final int COOKIE_COUNT = 16;
 	public static final long COOKIE_TIMER_MINUTE = 60L;
 
-    //Economy
     public static final int TAX_RATE = 3;
-    public static final int CURRENCY_MINIMUM = 100;
     public static final int MAX_CURRENCY_STACK = 99;
 
-    //Region
-    public static final int MINER_MINY = -100;
-    public static final int USER_MINY = 15;
-    public static final int INNER_RANGE = 5;
-    public static final int OUTER_RANGE = 10;
 	public static final int ID_LENGTH = 8;
-	public static final int MAX_HEIGHT = 320;
 
-	//Bag
 	public static final int BAG_SIZE = 27;
 	public static final int FREE_COOKIE_COUNT = 10;
 
-	//User
 	public static final int BASIC_MONEY_MOBILE = 5000;
 	public static final int BASIC_MONEY_NORMAL = 1000;
 
-	//Inquiry
 	public static final int INQUIRY_COOLDOWN = 30;
 
-    //Shop
-    //-Priest
-    public static final int DRAGON_BREATH_PRICE = 200;
-    public static final int HEALER_POTION_PRICE = 900;
-    public static final int PROTECTION_POTION_PRICE = 1700;
-    public static final int SPEAR_POTION_PRICE = 2500;
-    public static final int DEATH_SAVER_PRICE = 7200;
-
-	public static final int DRAGON_POTION_DURATION = 5;
-	public static final int DRAGON_HEAL_AMPLIFIER = 0;
-	public static final int DRAGON_PROTECTION_AMPLIFIER = 0;
-	public static final int DRAGON_SATURATION_AMPLIFIER = 0;
-
-	public static final int HEALER_POTION_DURATION = 5;
-	public static final int HEALER_POTION_AMPLIFIER = 2;
-	public static final int PROTECTION_POTION_DURATION = 7;
-	public static final int DEATH_SAVER_DURATION = 2;
-
-	//Merchant
-	public static final Component PRICE_TITLE = ColorUtils.chat("&6&l상품 등록하기");
-	public static final Component SHOP_TITLE = ColorUtils.chat("&6&l상인 상점");
-	public static final Component PURCHASE_TITLE = ColorUtils.chat("&6&l구매 확인");
-
-	//MagicBook
 	public static final String SELECT_BOOK = "magicbookopened_v2";
 
-	//Emblem
 	public static final String TARGET_EMBLEM = "target_emblem";
 	public static final String RANGE_EMBLEM = "range_emblem";
 
-	//Enchant
 	public static final Double LEVEL1_MULTIPLIER = 1.10;
 	public static final Double LEVEL2_MULTIPLIER = 1.20;
 	public static final Double LEVEL3_MULTIPLIER = 1.35;

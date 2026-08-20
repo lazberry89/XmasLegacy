@@ -1,8 +1,9 @@
 package org.lazberry.xmaslegacy.User;
 
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.ServerRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -16,9 +17,10 @@ import java.io.File;
 import java.sql.*;
 import java.util.UUID;
 
+@Data
 @Registry.Exclude(type = ServerType.LOBBY)
 public class SqlUserRepository implements UserRepository {
-	private final @NotNull String url;
+	private final String url;
 	private final String user = "root";
 	private final String password = "your_password";
 
@@ -74,7 +76,7 @@ public class SqlUserRepository implements UserRepository {
 
 			if (rs.next()) { // 데이터가 존재한다면
 				String name = rs.getString("name");
-				Role role = Role.parseRole(rs.getString("role"), BasicRoles.USER);
+				Role role = Role.parseRole(rs.getString("role"), ServerRoles.USER);
 
 				User loadedUser = new User(uuid, role, name);
 				loadedUser.setDollars(rs.getInt("dollars"));

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.ServerRoles;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
@@ -42,6 +42,10 @@ public class UserSaveManager implements Initiator {
         });
     }
 
+    public CompletableFuture<Void> saveAsyncAll() {
+        return CompletableFuture.runAsync(this::saveAll);
+    }
+
     @NonBlocking
     @Contract("_, _, _ -> new")
     public @NotNull CompletableFuture<User> onJoinAsync(@NotNull UUID uuid, @NotNull String name, boolean isFloodgate) {
@@ -57,7 +61,7 @@ public class UserSaveManager implements Initiator {
             }
 
             if (loaded == null) {
-                loaded = new User(uuid, BasicRoles.USER, name);
+                loaded = new User(uuid, ServerRoles.USER, name);
                 loaded.setNewUser(true);
 
                 if (isFloodgate) loaded.addDollars(5000);
@@ -92,7 +96,7 @@ public class UserSaveManager implements Initiator {
         } else loaded = repository.loadUser(uuid);
 
         if (loaded == null) {
-            loaded = new User(uuid, BasicRoles.USER, name);
+            loaded = new User(uuid, ServerRoles.USER, name);
             loaded.setNewUser(true);
             synchronized (loaded.getLock()) {
                 repository.saveUser(loaded);

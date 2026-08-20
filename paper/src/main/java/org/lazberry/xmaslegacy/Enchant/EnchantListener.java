@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.ServerRoles;
 import org.lazberry.xmaslegacy.User.UserManager;
 import org.lazberry.xmaslegacy.Utils.StunUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -213,10 +213,10 @@ public class EnchantListener implements Listener {
 			if (user == null) return;
 			Role role = user.getRole();
 
-			if (BasicRoles.USER.equals(role)) return;
+			if (ServerRoles.USER.equals(role)) return;
 			if (random.nextInt(20) == 1) {
-                if (role instanceof BasicRoles basicRoles) {
-					switch (basicRoles) {
+                if (role instanceof ServerRoles serverRoles) {
+					switch (serverRoles) {
 						case WARRIOR -> {
 							Vector vector = p.getLocation().getDirection();
 							Vector velocity = vector.normalize().multiply(1.3);
@@ -246,7 +246,7 @@ public class EnchantListener implements Listener {
 								var userT = um.getUser(s.getUniqueId());
 								if (userT == null) return false;
 								Role t = userT.getRole();
-								return BasicRoles.KNIGHT.equals(t.parent()) || BasicRoles.KNIGHT.equals(t);
+								return ServerRoles.KNIGHT.equals(t.parent()) || ServerRoles.KNIGHT.equals(t);
 							}).count();
 							AttributeInstance amo = p.getAttribute(Attribute.MAX_HEALTH);
 							if (amo == null) return;

@@ -3,9 +3,6 @@ package org.lazberry.xmaslegacy.Roles;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.settings.SkillSet;
-
-import java.util.List;
 
 public interface Role {
 
@@ -22,43 +19,6 @@ public interface Role {
     @NotNull String name();
 
     /**
-     * Besides BasicRole(located lowest at Tree, don't have parent.), Each Role level has role before them.
-     * @return role value of current role's parent.
-     */
-    @Nullable Role parent();
-
-    /**
-     * Indicated where the role locates in the Tree Structure.
-     * @return int value that indicated where the role is.
-     */
-    int getTier();
-
-    /**
-     * Role system has Tree Structure. So this method indicates which role locates next from current.
-     * @return Some role has a several selections to change role. So returns as list.
-     */
-    @NotNull List<Role> next();
-
-    /**
-     * Target emblem must, always binds a single skill.
-     * @return bind skill of target emblem.
-     */
-    @NotNull SkillSet bindTarget();
-
-    /**
-     * Range emblem binds several skillSets if role implements Unpromotable interface.
-     * Unpromotable role has 1 more skill, so range skill binds totally 2 skills.
-     * @return Available skill List.
-     */
-    @NotNull List<SkillSet> bindRange();
-
-    /**
-     * Defines count of dash that each role can use.
-     * @return count of dash that target role can use.
-     */
-    int getDashCount();
-
-    /**
      * This interface is implemented by all role enums, so this method helps parse string to Role enum instance.
      * <pre>{@code
      * try {
@@ -71,9 +31,7 @@ public interface Role {
      */
     @Contract(value = "_ -> !null", pure = true)
     static @NotNull Role valueOf(@NotNull String name) throws IllegalArgumentException {
-        try { return BasicRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
-        try { return SecondaryRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
-        try { return ThirdRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
+        try { return ServerRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         try { return HiddenRoles.valueOf(name); } catch (IllegalArgumentException ignored) {}
         throw new IllegalArgumentException("No Role constant found with name: " + name);
     }

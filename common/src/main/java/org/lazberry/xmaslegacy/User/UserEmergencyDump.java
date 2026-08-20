@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.User;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.Roles.BasicRoles;
+import org.lazberry.xmaslegacy.Roles.ServerRoles;
 import org.lazberry.xmaslegacy.Roles.Role;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -72,7 +72,7 @@ public class UserEmergencyDump {
             props.load(in);
             String name = props.getProperty("name", "Unknown");
 
-	        Role role = Role.parseRole(props.getProperty("role"), BasicRoles.USER);
+	        Role role = Role.parseRole(props.getProperty("role"), ServerRoles.USER);
             User recoveredUser = new User(uuid, role, name);
 
             recoveredUser.setDollars(Integer.parseInt(props.getProperty("dollars", "0")));
