@@ -42,7 +42,7 @@ public class ExpManager {
         return Tier.VISITOR;
     }
 
-    public boolean addExp(@Nullable Player player, double amount) {
+    public boolean addExp(@Nullable Player player, int amount) {
         if (player == null) return false;
 
         User user = um.getUser(player.getUniqueId());
@@ -63,7 +63,7 @@ public class ExpManager {
 
     private void checkLevelUp(Player player, User user) {
         while (user.getExp() >= getRequiredExpForNextLevel(user.getLevel())) {
-            double required = getRequiredExpForNextLevel(user.getLevel());
+            int required = getRequiredExpForNextLevel(user.getLevel());
             user.addExp(-required);
             user.addLevel(1);
 
@@ -92,7 +92,7 @@ public class ExpManager {
         return RoleMastery.BEGINNER;
     }
 
-    public boolean addRoleExp(@Nullable Player player, double amount) {
+    public boolean addRoleExp(@Nullable Player player, int amount) {
         if (player == null) return false;
 
         User user = um.getUser(player.getUniqueId());

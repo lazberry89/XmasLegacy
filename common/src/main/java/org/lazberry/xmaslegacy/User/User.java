@@ -69,9 +69,9 @@ public class User {
     public void addPlayTime(int playTime) {this.playTime += playTime;}
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
     public boolean ifWantsCookie() {return this.wantsCookie;}
-    public void addExp(double amount) {this.exp += amount;}
+    public void addExp(int amount) {this.exp += amount;}
     public boolean hasRole() {return !ServerRoles.USER.equals(this.role);}
-    public void addRoleExp(double amount) {this.roleExp += amount;}
+    public void addRoleExp(int amount) {this.roleExp += amount;}
     public void addLevel(int amount) {this.level += amount;}
 	public boolean addPrefix(@NotNull ServerPrefix prefix) {
         if (this.availablePrefix.contains(prefix)) return false;
