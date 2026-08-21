@@ -74,7 +74,7 @@ public class UserPartyScoreBoard implements Tasks {
 				b.setLine(3, ColorUtils.chat("&6&l경험치&f " + user.getExp() + " &6Ex"));
 				b.setLine(4, ColorUtils.chat(""));
 				var role = user.getRole();
-				b.setLine(5, ColorUtils.chat("&6&l직업&f " + role.getKor() + ", &c" + role.getTier() + " TIER"));
+				b.setLine(5, ColorUtils.chat("&6&l직업&f " + role.getKor()));
 				b.setLine(6, ColorUtils.chat(""));
 				b.setLine(7, ColorUtils.chat("&6&l직업수치&f " + user.getRoleExp() + " &6Rxp"));
 				b.setLine(8, ColorUtils.chat(""));
