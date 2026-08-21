@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 
 public record DestinationCommandSet(@NotNull DestinationType type, @NotNull SpawnRepository spawnRepo) implements SubCommand {
 

@@ -18,6 +18,8 @@ public interface Role {
      */
     @NotNull String name();
 
+    @NotNull String description();
+
     /**
      * This interface is implemented by all role enums, so this method helps parse string to Role enum instance.
      * <pre>{@code
@@ -44,7 +46,7 @@ public interface Role {
      * @param name wanted value
      * @return target value, null when failed.
      */
-    @Contract(value = "_ -> _", pure = true)
+    @Contract(pure = true)
     static @Nullable Role parseRole(@NotNull String name) {
         return parseRole(name, null);
     }

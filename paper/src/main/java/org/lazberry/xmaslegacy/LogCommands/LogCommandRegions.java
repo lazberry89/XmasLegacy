@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.Region.Region;
-import org.lazberry.xmaslegacy.Region.RegionManager;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.region.Region;
+import org.lazberry.xmaslegacy.region.RegionManager;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 
 import java.util.List;
 

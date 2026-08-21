@@ -14,7 +14,7 @@ import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
-import org.lazberry.xmaslegacy.Utils.ServerUtils;
+import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.ServerType;
 

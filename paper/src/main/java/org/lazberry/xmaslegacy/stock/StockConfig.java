@@ -2,14 +2,13 @@ package org.lazberry.xmaslegacy.stock;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.ParseEnum;
-import org.lazberry.xmaslegacy.Utils.ConfigBuilder;
+import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;

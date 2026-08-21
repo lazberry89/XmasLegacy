@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SavedLocation;
-import org.lazberry.xmaslegacy.Utils.ServerUtils;
+import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;

@@ -1,0 +1,79 @@
+package org.lazberry.xmaslegacy.region.Listeners;
+
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.region.Region;
+import org.lazberry.xmaslegacy.region.RegionManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
+
+@Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
+public class RegionPermissionListener implements Listener {
+	private final @NotNull RegionManager rm;
+
+	@Inject
+	public RegionPermissionListener(@NotNull RegionManager rm) {
+		this.rm = rm;
+	}
+
+	private boolean hasPermission(Player p, Region region) {
+		return p.isOp() || region.getOwner().equals(p.getUniqueId());
+	}
+
+	@EventHandler
+	public void regionEnterEvent(PlayerMoveEvent e) {
+		Region region = rm.getRegionAt(e.getTo());
+		if (region == null) return;
+
+		if (region.isInside(e.getTo())) {
+			Player p = e.getPlayer();
+			if (hasPermission(p, region)) return;
+
+			if (!region.isEntryAllowed()) {
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		if (e.getClickedBlock() == null) return;
+		Region region = rm.getRegionAt(e.getClickedBlock().getLocation());
+		if (region == null || hasPermission(e.getPlayer(), region)) return;
+
+		if (!region.isInteractionAllowed()) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onEntityInteract(PlayerInteractEntityEvent e) {
+		handleEntityInteraction(e.getPlayer(), e.getRightClicked(), e);
+	}
+
+	@EventHandler
+	public void onEntityDamage(EntityDamageByEntityEvent e) {
+		if (e.getDamager() instanceof Player p) {
+			handleEntityInteraction(p, e.getEntity(), e);
+		}
+	}
+
+	private void handleEntityInteraction(Player p, Entity target, org.bukkit.event.Cancellable event) {
+		Region region = rm.getRegionAt(target.getLocation());
+		if (region == null || hasPermission(p, region)) return;
+
+		if (!region.isInteractionAllowed()) {
+			event.setCancelled(true);
+		}
+	}
+}

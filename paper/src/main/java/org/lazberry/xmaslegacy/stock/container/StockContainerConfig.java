@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.lazberry.xmaslegacy.Utils.InventorySerializer;
+import org.lazberry.xmaslegacy.utils.InventorySerializer;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;

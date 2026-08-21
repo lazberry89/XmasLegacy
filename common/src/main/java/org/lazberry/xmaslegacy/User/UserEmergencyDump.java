@@ -78,8 +78,8 @@ public class UserEmergencyDump {
             recoveredUser.setDollars(Integer.parseInt(props.getProperty("dollars", "0")));
             recoveredUser.setInquireCount(Integer.parseInt(props.getProperty("inquireCount", "0")));
             recoveredUser.setPlayTime(Integer.parseInt(props.getProperty("playTime", "0")));
-            recoveredUser.setExp(Double.parseDouble(props.getProperty("Exp", "0.0")));
-            recoveredUser.setRoleExp(Double.parseDouble(props.getProperty("roleExp", "0.0")));
+            recoveredUser.setExp(Integer.parseInt(props.getProperty("Exp", "0")));
+            recoveredUser.setRoleExp(Integer.parseInt(props.getProperty("roleExp", "0")));
             recoveredUser.setLevel(Integer.parseInt(props.getProperty("level", "0")));
             recoveredUser.setNewUser(Boolean.parseBoolean(props.getProperty("isNewUser", "false")));
             recoveredUser.wantsCookie(Boolean.parseBoolean(props.getProperty("wantsCookie", "false")));

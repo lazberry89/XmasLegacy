@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 public class LobbyCommandReload implements SubCommand {

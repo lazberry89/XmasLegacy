@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.PartyCommands;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 
 public class PartyCommandHelp implements SubCommand {
 

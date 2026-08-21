@@ -34,8 +34,8 @@ public class User {
 	private int dollars = 0;
 	private int inquireCount = 0;
 	private int playTime = 0;
-	private double exp = 0.0d;
-	private double roleExp = 0.0d;
+	private int exp = 0;
+	private int roleExp = 0;
 	private int level = 0;
     private @NotNull Tier tier = Tier.VISITOR;
     private @NotNull RoleMastery mastery = RoleMastery.BEGINNER;

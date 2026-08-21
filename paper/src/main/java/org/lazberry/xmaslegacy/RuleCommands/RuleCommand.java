@@ -12,8 +12,8 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 

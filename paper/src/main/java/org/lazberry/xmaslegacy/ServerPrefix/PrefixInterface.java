@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.User.User;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Utils.ItemBuilder;
+import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;

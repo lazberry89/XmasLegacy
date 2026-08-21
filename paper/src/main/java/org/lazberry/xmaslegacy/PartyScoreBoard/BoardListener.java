@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.Utils.BoardUtils;
+import org.lazberry.xmaslegacy.utils.BoardUtils;
 
 @Slf4j
 @Listeners

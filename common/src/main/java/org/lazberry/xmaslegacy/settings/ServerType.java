@@ -8,7 +8,8 @@ public enum ServerType {
 	GLOBAL("global", true),
 	LOBBY("lobby", true),
 	MAIN("main", true),
-	HUNTING("hunting", true);
+	HUNTING("hunting", true),
+	WILD("wild", true);
 
 	private final @NotNull @Getter String name;
 	private final @Getter boolean requiresGlobalInitializer;

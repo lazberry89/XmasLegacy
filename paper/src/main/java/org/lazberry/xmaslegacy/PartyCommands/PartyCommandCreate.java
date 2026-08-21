@@ -4,10 +4,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Party.PartyManager;
 import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
-import org.lazberry.xmaslegacy.Utils.UserHandler;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.UserHandler;
 
 public class PartyCommandCreate implements SubCommand {
 	private final @NotNull UserManager um;

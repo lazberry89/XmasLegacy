@@ -2,8 +2,8 @@ package org.lazberry.xmaslegacy.stock.commands;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.stock.StockManager;
 
 public record StockCommandSell(StockManager sm) implements SubCommand {

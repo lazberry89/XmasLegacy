@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.Inquiry.InquiryStatus;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;

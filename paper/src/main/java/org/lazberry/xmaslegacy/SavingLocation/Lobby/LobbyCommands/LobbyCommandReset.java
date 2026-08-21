@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyCommands;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 
 public class LobbyCommandReset implements SubCommand {
     private final @NotNull LobbyManager lbm;

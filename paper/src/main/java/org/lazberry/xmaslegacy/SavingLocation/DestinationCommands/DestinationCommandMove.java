@@ -12,9 +12,9 @@ import org.lazberry.xmaslegacy.ColorUtils;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.PortVillageManager;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
-import org.lazberry.xmaslegacy.Utils.SubCommand;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.ServerTransfer;
+import org.lazberry.xmaslegacy.utils.SubCommand;
 
 import java.time.Duration;
 

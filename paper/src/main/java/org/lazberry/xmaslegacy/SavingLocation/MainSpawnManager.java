@@ -8,8 +8,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Utils.StunUtils;
-import org.lazberry.xmaslegacy.Utils.TitleUtil;
+import org.lazberry.xmaslegacy.utils.StunUtils;
+import org.lazberry.xmaslegacy.utils.TitleUtil;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 @Slf4j

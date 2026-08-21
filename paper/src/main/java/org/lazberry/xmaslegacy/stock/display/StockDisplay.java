@@ -11,9 +11,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Utils.Axiom;
-import org.lazberry.xmaslegacy.Utils.GlowUtils;
-import org.lazberry.xmaslegacy.Utils.KeyUtils;
+import org.lazberry.xmaslegacy.utils.Axiom;
+import org.lazberry.xmaslegacy.utils.GlowUtils;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.stock.Stock;
 

@@ -6,8 +6,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Utils.InfoUtils;
-import org.lazberry.xmaslegacy.Utils.ServerTransfer;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.ServerTransfer;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 import java.util.Objects;

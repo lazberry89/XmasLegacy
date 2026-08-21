@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.SavingLocation;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
-import org.lazberry.xmaslegacy.Utils.ServerUtils;
+import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;

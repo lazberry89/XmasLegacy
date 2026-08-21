@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.ConfigValue;
-import org.lazberry.xmaslegacy.Utils.ServerUtils;
+import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.CircularDependencyException;
 import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.NotCompatibleWithServerException;
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Lazberry (LRF Architecture Team)
  * @see PackageScanner
- * @see org.lazberry.xmaslegacy.Utils.ServerUtils
+ * @see org.lazberry.xmaslegacy.utils.ServerUtils
  * @see LrfInitializer
  */
 @Slf4j

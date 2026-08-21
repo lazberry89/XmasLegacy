@@ -1,7 +1,5 @@
 package org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation;
 
-import org.lazberry.xmaslegacy.settings.PlayerSkills;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

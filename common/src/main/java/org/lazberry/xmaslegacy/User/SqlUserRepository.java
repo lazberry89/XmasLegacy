@@ -44,8 +44,8 @@ public class SqlUserRepository implements UserRepository {
 				"dollars INT, " +
 				"inquireCount INT, " +
 				"playTime INT, " +
-				"Exp DOUBLE, " +
-				"roleExp DOUBLE," +
+				"Exp INT, " +
+				"roleExp INT," +
 				"level INT," +
 				"isNewUser BOOLEAN, " +
 				"wantsCookie BOOLEAN, " +
@@ -82,8 +82,8 @@ public class SqlUserRepository implements UserRepository {
 				loadedUser.setDollars(rs.getInt("dollars"));
 				loadedUser.setInquireCount(rs.getInt("inquireCount"));
 				loadedUser.setPlayTime(rs.getInt("playTime"));
-				loadedUser.setExp(rs.getDouble("Exp"));
-				loadedUser.setRoleExp(rs.getDouble("roleExp"));
+				loadedUser.setExp(rs.getInt("Exp"));
+				loadedUser.setRoleExp(rs.getInt("roleExp"));
 				loadedUser.setLevel(rs.getInt("level"));
 				loadedUser.setNewUser(rs.getBoolean("isNewUser"));
 				loadedUser.wantsCookie(rs.getBoolean("wantsCookie"));
@@ -149,8 +149,8 @@ public class SqlUserRepository implements UserRepository {
 			pstmt.setInt(4, user.getDollars());
 			pstmt.setInt(5, user.getInquireCount());
 			pstmt.setInt(6, user.getPlayTime());
-			pstmt.setDouble(7, user.getExp());
-			pstmt.setDouble(8, user.getRoleExp());
+			pstmt.setInt(7, user.getExp());
+			pstmt.setInt(8, user.getRoleExp());
 			pstmt.setInt(9, user.getLevel());
 			pstmt.setBoolean(10, user.isNewUser());
 			pstmt.setBoolean(11, user.ifWantsCookie());
