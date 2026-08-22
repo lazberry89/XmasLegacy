@@ -16,6 +16,10 @@ public abstract class PassiveListeners {
     private final Role role;
     private final UserManager um;
 
+    protected UserManager userManager() {
+        return um;
+    }
+
     protected PassiveListeners(Role role, UserManager um) {
         this.role = role;
         this.um = um;

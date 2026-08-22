@@ -8,9 +8,11 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 public class RoleManager {
     private final Farmer farmer = new Farmer();
     private final Miner miner = new Miner();
+    private final Fisherman fisherman = new Fisherman();
 
     public Farmer farmer() { return farmer; }
     public Miner miner() { return miner; }
+    public Fisherman fisherman() { return fisherman; }
 
     @Data
     public static class Farmer {
@@ -41,5 +43,26 @@ public class RoleManager {
         private double searchChance = 0.4;
         private int searchRadius = 2;
         private int glowDuration = 2;
+    }
+
+    @Data
+    public static class Fisherman {
+        private int expCodMin = 5;
+        private int expCodMax = 10;
+        private int expSalmonMin = 10;
+        private int expSalmonMax = 18;
+        private int expPufferfishMin = 20;
+        private int expPufferfishMax = 30;
+        private int expTropicalFishMin = 35;
+        private int expTropicalFishMax = 50;
+        private int expJunkMin = 2;
+        private int expJunkMax = 5;
+        private int expTreasureMin = 40;
+        private int expTreasureMax = 60;
+        private double cookChance = 0.3;
+        private int junkDollarMin = 1000;
+        private int junkDollarMax = 2500;
+        private int treasureDollarMin = 5000;
+        private int treasureDollarMax = 15000;
     }
 }

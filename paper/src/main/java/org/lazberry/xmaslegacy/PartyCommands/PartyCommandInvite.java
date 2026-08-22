@@ -1,11 +1,13 @@
 package org.lazberry.xmaslegacy.PartyCommands;
 
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +25,7 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 public class PartyCommandInvite implements SubCommand {
     private final @NotNull UserManager um;
     private final @NotNull PartyManager pm;
@@ -66,13 +69,16 @@ public class PartyCommandInvite implements SubCommand {
                 return;
             }
             var plugin = XmasLegacy.getInstance();
-            if (targetUser.isMobile())
+            if (targetUser.isMobile()) {
+                target.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     var floodgatePlayer = FloodgateApi.getInstance().getPlayer(target.getUniqueId());
                     if (floodgatePlayer != null) {
                         floodgatePlayer.sendForm(inviteComp(current, target));
-                    }
+                    } else log.error("Failed to find mobile player: {}", target.getName());
                 }, 5L);
+            }
             else Bukkit.getScheduler().runTaskLater(plugin, () -> target.sendMessage(inviteComp(current)), 2L);
             InfoUtils.info(player, "파티 초대 요청을 보냈습니다.");
         } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");

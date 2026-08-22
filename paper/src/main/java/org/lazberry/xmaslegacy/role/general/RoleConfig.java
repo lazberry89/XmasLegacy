@@ -81,6 +81,24 @@ public class RoleConfig implements Initiator {
                 .setDefault("miner.search-radius", 2)
                 .setDefault("miner.search-chance", 0.4)
                 .setDefault("miner.glow-duration", 2)
+                //Fisherman
+                .setDefault("fisherman.exp.cod.min", 5)
+                .setDefault("fisherman.exp.cod.max", 10)
+                .setDefault("fisherman.exp.salmon.min", 10)
+                .setDefault("fisherman.exp.salmon.max", 18)
+                .setDefault("fisherman.exp.pufferfish.min", 20)
+                .setDefault("fisherman.exp.pufferfish.max", 30)
+                .setDefault("fisherman.exp.tropical-fish.min", 35)
+                .setDefault("fisherman.exp.tropical-fish.max", 50)
+                .setDefault("fisherman.exp.junk.min", 2)
+                .setDefault("fisherman.exp.junk.max", 5)
+                .setDefault("fisherman.exp.treasure.min", 40)
+                .setDefault("fisherman.exp.treasure.max", 60)
+                .setDefault("fisherman.cook-chance", 0.3)
+                .setDefault("fisherman.junk-dollar.min", 1000)
+                .setDefault("fisherman.junk-dollar.max", 2500)
+                .setDefault("fisherman.treasure-dollar.min", 5000)
+                .setDefault("fisherman.treasure-dollar.max", 15000)
                 .save(file)
                 .build();
     }
@@ -96,6 +114,7 @@ public class RoleConfig implements Initiator {
     public void saveSync() {
         RoleManager.Farmer f = rm.farmer();
         RoleManager.Miner m = rm.miner();
+        RoleManager.Fisherman fm = rm.fisherman();
 
         synchronized (this) {
             config.set("farmer.additional-drops.min", f.getAdditionalDropsMin());
@@ -124,6 +143,25 @@ public class RoleConfig implements Initiator {
             config.set("miner.search-chance", m.getSearchChance());
             config.set("miner.glow-duration", m.getGlowDuration());
 
+            // Fisherman
+            config.set("fisherman.exp.cod.min", fm.getExpCodMin());
+            config.set("fisherman.exp.cod.max", fm.getExpCodMax());
+            config.set("fisherman.exp.salmon.min", fm.getExpSalmonMin());
+            config.set("fisherman.exp.salmon.max", fm.getExpSalmonMax());
+            config.set("fisherman.exp.pufferfish.min", fm.getExpPufferfishMin());
+            config.set("fisherman.exp.pufferfish.max", fm.getExpPufferfishMax());
+            config.set("fisherman.exp.tropical-fish.min", fm.getExpTropicalFishMin());
+            config.set("fisherman.exp.tropical-fish.max", fm.getExpTropicalFishMax());
+            config.set("fisherman.exp.junk.min", fm.getExpJunkMin());
+            config.set("fisherman.exp.junk.max", fm.getExpJunkMax());
+            config.set("fisherman.exp.treasure.min", fm.getExpTreasureMin());
+            config.set("fisherman.exp.treasure.max", fm.getExpTreasureMax());
+            config.set("fisherman.cook-chance", fm.getCookChance());
+            config.set("fisherman.junk-dollar.min", fm.getJunkDollarMin());
+            config.set("fisherman.junk-dollar.max", fm.getJunkDollarMax());
+            config.set("fisherman.treasure-dollar.min", fm.getTreasureDollarMin());
+            config.set("fisherman.treasure-dollar.max", fm.getTreasureDollarMax());
+
             saveConfig();
         }
     }
@@ -137,6 +175,7 @@ public class RoleConfig implements Initiator {
             this.config = YamlConfiguration.loadConfiguration(file);
             RoleManager.Farmer f = rm.farmer();
             RoleManager.Miner m = rm.miner();
+            RoleManager.Fisherman fm = rm.fisherman();
 
             f.setAdditionalDropsMin(config.getInt("farmer.additional-drops.min", 1));
             f.setAdditionalDropsMax(config.getInt("farmer.additional-drops.max", 3));
@@ -162,6 +201,24 @@ public class RoleConfig implements Initiator {
             m.setSearchRadius(config.getInt("miner.search-radius", 2));
             m.setSearchChance(config.getDouble("miner.search-chance", 0.4));
             m.setGlowDuration(config.getInt("miner.glow-duration", 2));
+
+            fm.setExpCodMin(config.getInt("fisherman.exp.cod.min", 5));
+            fm.setExpCodMax(config.getInt("fisherman.exp.cod.max", 10));
+            fm.setExpSalmonMin(config.getInt("fisherman.exp.salmon.min", 10));
+            fm.setExpSalmonMax(config.getInt("fisherman.exp.salmon.max", 18));
+            fm.setExpPufferfishMin(config.getInt("fisherman.exp.pufferfish.min", 20));
+            fm.setExpPufferfishMax(config.getInt("fisherman.exp.pufferfish.max", 30));
+            fm.setExpTropicalFishMin(config.getInt("fisherman.exp.tropical-fish.min", 35));
+            fm.setExpTropicalFishMax(config.getInt("fisherman.exp.tropical-fish.max", 50));
+            fm.setExpJunkMin(config.getInt("fisherman.exp.junk.min", 2));
+            fm.setExpJunkMax(config.getInt("fisherman.exp.junk.max", 5));
+            fm.setExpTreasureMin(config.getInt("fisherman.exp.treasure.min", 40));
+            fm.setExpTreasureMax(config.getInt("fisherman.exp.treasure.max", 60));
+            fm.setCookChance(config.getDouble("fisherman.cook-chance", 0.3));
+            fm.setJunkDollarMin(config.getInt("fisherman.junk-dollar.min", 1000));
+            fm.setJunkDollarMax(config.getInt("fisherman.junk-dollar.max", 2500));
+            fm.setTreasureDollarMin(config.getInt("fisherman.treasure-dollar.min", 5000));
+            fm.setTreasureDollarMax(config.getInt("fisherman.treasure-dollar.max", 15000));
         }
     }
 

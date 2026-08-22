@@ -39,7 +39,7 @@ public final class GlowUtils {
 			team.color(color);
 		}
 
-		team.addEntity(entity);
+		team.addEntry(entity.getUniqueId().toString());
 		entity.setGlowing(true);
 	}
 
