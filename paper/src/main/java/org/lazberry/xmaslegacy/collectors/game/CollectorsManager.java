@@ -1,5 +1,6 @@
-package org.lazberry.xmaslegacy.collectors;
+package org.lazberry.xmaslegacy.collectors.game;
 
+import org.lazberry.xmaslegacy.collectors.field.Field;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 

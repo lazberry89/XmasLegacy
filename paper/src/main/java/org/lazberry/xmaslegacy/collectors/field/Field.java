@@ -1,8 +1,9 @@
-package org.lazberry.xmaslegacy.collectors;
+package org.lazberry.xmaslegacy.collectors.field;
 
 import lombok.Data;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;

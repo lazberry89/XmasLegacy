@@ -370,7 +370,7 @@ public final class ItemBuilder {
 	 * @return builder instance
 	 */
 	@Contract("_, _ -> this")
-	public ItemBuilder setTag(@NotNull String key, @NotNull Double value) {
+	public ItemBuilder setTag(@NotNull String key, double value) {
 		if (meta != null) {
 			NamespacedKey nsk = new NamespacedKey(this.plugin, key);
 			meta.getPersistentDataContainer().set(nsk, PersistentDataType.DOUBLE, value);
@@ -379,9 +379,25 @@ public final class ItemBuilder {
 	}
 
 	@Contract("_, _ -> this")
-	public ItemBuilder setTag(@NotNull NamespacedKey key, @NotNull Double value) {
+	public ItemBuilder setTag(@NotNull NamespacedKey key, double value) {
 		if (meta != null) {
 			meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, value);
+		}
+		return this;
+	}
+
+	@Contract("_, _ -> this")
+	public ItemBuilder setTag(@NotNull NamespacedKey key, boolean value) {
+		if (meta != null) {
+			meta.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, value);
+		}
+		return this;
+	}
+
+	@Contract("_, _, _ -> this")
+	public <K, V> ItemBuilder setTag(@NotNull NamespacedKey key, PersistentDataType<K, V> type, V value) {
+		if (meta != null) {
+			meta.getPersistentDataContainer().set(key, type, value);
 		}
 		return this;
 	}

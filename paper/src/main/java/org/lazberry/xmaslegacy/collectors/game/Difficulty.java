@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.collectors;
+package org.lazberry.xmaslegacy.collectors.game;
 
 import lombok.Getter;
 

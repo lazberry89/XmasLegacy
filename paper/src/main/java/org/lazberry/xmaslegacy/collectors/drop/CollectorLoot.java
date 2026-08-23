@@ -32,7 +32,7 @@ public enum CollectorLoot {
 
 	private final String name;
 	private final Material material;
-	private final Value tier;
+	private final Value value;
 	private final int weight;
 	private final int price;
 }
