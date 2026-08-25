@@ -22,6 +22,9 @@ public enum Difficulty {
 	public int getRandomHit() {
 		return ThreadLocalRandom.current().nextInt(minimumHit, maximumHit + 1);
 	}
+	public int getDropCount() {
+		return ThreadLocalRandom.current().nextInt(dropCount - 2, dropCount + 2);
+	}
 
 	Difficulty(int dropCount, int minHit, int maxHit, long duration, BossBar.Color color, Sound overSound) {
 		this.dropCount = dropCount;

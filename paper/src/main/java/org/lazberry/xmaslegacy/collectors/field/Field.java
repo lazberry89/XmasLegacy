@@ -69,6 +69,28 @@ public class Field {
 		return remainingHealth != null ? remainingHealth : 0;
 	}
 
+	public void replenishDropContainers(int maxCount) {
+		int currentCount = spawnedDropContainerLocations.size();
+		if (currentCount >= maxCount) return;
+
+		int toSpawn = maxCount - currentCount;
+
+		List<Location> availableLocs = new ArrayList<>(potentialDropLocations);
+		availableLocs.removeIf(loc -> spawnedDropContainerLocations.containsKey(loc.toBlockLocation()));
+
+		if (availableLocs.isEmpty()) return;
+
+		Collections.shuffle(availableLocs);
+		for (int i = 0; i < Math.min(toSpawn, availableLocs.size()); i++) {
+			var loc = availableLocs.get(i);
+			loc.getBlock().setType(Material.DECORATED_POT, true);
+			world.spawnParticle(Particle.END_ROD, loc, 7, 0.2, 0.2, 0.2, 0.01);
+			world.playSound(loc, Sound.BLOCK_DECORATED_POT_PLACE, 1.0f, 1.0f);
+
+			spawnedDropContainerLocations.put(loc.toBlockLocation(), difficulty.getRandomHit());
+		}
+	}
+
 	public int getPotHealth(Block block) {
 		return spawnedDropContainerLocations.getOrDefault(block.getLocation(), 0);
 	}

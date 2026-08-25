@@ -16,10 +16,7 @@ import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.InventorySerializer;
-import org.lazberry.xmaslegacy.utils.OptionalUtils;
-import org.lazberry.xmaslegacy.utils.UserHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,20 +72,9 @@ public class CollectorsManager implements Initiator {
 		config.saveSync(serializedBackup);
 	}
 
-	public void join(Player player) {
-		OptionalUtils.ifNotNullOrElse(um.getUser(player.getUniqueId()),
-				u -> {
-					var ticket = player.getInventory().getItemInMainHand();
-					Difficulty difficulty = tr.getDifficultyByTicket(ticket);
-					if (difficulty == null) {
-						InfoUtils.error(player, "티켓이 아닙니다!");
-						return;
-					}
-				}, () -> UserHandler.loadUser(player, true));
-	}
-
 	public Session getOrCreateSession(Difficulty difficulty) {
 		var field = fm.getField(difficulty);
+
         return field.map(value -> sessionByDifficulty.computeIfAbsent(difficulty,
                 diff -> new Session(value, this))).orElse(null);
     }
