@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.SavingLocation.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;

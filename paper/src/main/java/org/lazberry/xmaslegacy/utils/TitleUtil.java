@@ -5,7 +5,6 @@ import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
 
 import java.time.Duration;
 

@@ -11,7 +11,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.food.AgeableCrops;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;

@@ -6,8 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.ParseEnum;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ParseEnum;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -46,7 +46,6 @@ public class StockConfig implements Initiator {
 			return;
 		}
 
-		// 1. 파일 생성 + 기본값 보장 + 저장 + 로드를 단 한 번에 처리
 		this.config = ConfigBuilder.of(file)
 				.setDefault("settings.icon", "&#FF4545[&#F86E31주&#F1971D식&#EAC009]")
 				.setDefault("settings.certificate-item", "FLOW_BANNER_PATTERN")

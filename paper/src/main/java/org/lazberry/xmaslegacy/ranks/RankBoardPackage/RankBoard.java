@@ -11,10 +11,10 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.ranks.RankManager;
-import org.lazberry.xmaslegacy.User.RankType;
-import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.user.RankType;
+import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.List;

@@ -39,6 +39,10 @@ public class FieldManager {
         getField(difficulty).ifPresent(consumer);
     }
 
+    public void clear() {
+        fieldByDifficulty.clear();
+    }
+
     @Unmodifiable
     public Collection<Field> snapshot() {
         return Collections.unmodifiableCollection(fieldByDifficulty.values());

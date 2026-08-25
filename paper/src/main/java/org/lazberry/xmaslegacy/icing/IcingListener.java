@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;

@@ -6,7 +6,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SavedLocation;
 import org.lazberry.xmaslegacy.utils.ServerUtils;

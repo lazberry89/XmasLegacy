@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.stock.commands;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.stock.Stock;

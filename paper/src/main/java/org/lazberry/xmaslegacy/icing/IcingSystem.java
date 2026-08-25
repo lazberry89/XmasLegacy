@@ -11,8 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -93,6 +93,9 @@ public class IcingSystem implements Tasks {
         if (this.task == null) return;
         this.task.cancel();
         this.task = null;
+
+		Bukkit.getOnlinePlayers().stream()
+						.filter(Player::isValid).forEach(bar::removeBar);
 
 		log.warn("Icing Scheduler stopped. Check if it's valid.");
     }

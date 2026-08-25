@@ -1,0 +1,205 @@
+package org.lazberry.xmaslegacy.user;
+
+import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.roles.ServerRoles;
+import org.lazberry.xmaslegacy.roles.Role;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.RoleMastery;
+import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.settings.Tier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.sql.*;
+import java.util.UUID;
+
+@Data
+@Registry.Exclude(type = ServerType.LOBBY)
+public class SqlUserRepository implements UserRepository {
+	private final String url;
+	private final String user = "root";
+	private final String password = "your_password";
+
+	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
+
+	@Inject
+	public SqlUserRepository(@NotNull File rootDataFolder) {
+		this.url = "jdbc:sqlite:" + new File(rootDataFolder, "database.db").getAbsolutePath();
+		createTable();
+	}
+
+	private @NotNull Connection getConnection() throws SQLException {
+		return DriverManager.getConnection(url, user, password);
+	}
+
+	private void createTable() {
+		String sql = "CREATE TABLE IF NOT EXISTS users (" +
+				"uuid VARCHAR(36) PRIMARY KEY, " +
+				"name VARCHAR(16), " +
+				"role VARCHAR(20), " +
+				"dollars INT, " +
+				"inquireCount INT, " +
+				"playTime INT, " +
+				"Exp INT, " +
+				"roleExp INT," +
+				"level INT," +
+				"isNewUser BOOLEAN, " +
+				"wantsCookie BOOLEAN, " +
+				"tier VARCHAR(20), " +
+				"mastery VARCHAR(20), " +
+				"isImmuneToIcing BOOLEAN, " +
+				"icingState INT, " +
+				"showBoard BOOLEAN" +
+				");";
+
+		try (Connection conn = getConnection();
+		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+			 stmt.execute();
+		} catch (SQLException e) {
+			log.error("Error occurred while Creating Table Task -> {}", e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public @Nullable User loadUser(@NotNull UUID uuid) {
+		String sql = "SELECT * FROM users WHERE uuid = ?";
+
+		try (Connection conn = getConnection();
+		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, uuid.toString());
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) { // 데이터가 존재한다면
+				String name = rs.getString("name");
+				Role role = Role.parseRole(rs.getString("role"), ServerRoles.USER);
+
+				User loadedUser = new User(uuid, role, name);
+				loadedUser.setDollars(rs.getInt("dollars"));
+				loadedUser.setInquireCount(rs.getInt("inquireCount"));
+				loadedUser.setPlayTime(rs.getInt("playTime"));
+				loadedUser.setExp(rs.getInt("Exp"));
+				loadedUser.setRoleExp(rs.getInt("roleExp"));
+				loadedUser.setLevel(rs.getInt("level"));
+				loadedUser.setNewUser(rs.getBoolean("isNewUser"));
+				loadedUser.wantsCookie(rs.getBoolean("wantsCookie"));
+
+				Tier tier = Tier.valueOf(rs.getString("tier"));
+				RoleMastery mastery = RoleMastery.valueOf(rs.getString("mastery"));
+				loadedUser.setTier(tier);
+				loadedUser.setMastery(mastery);
+				loadedUser.setImmuneToIcing(rs.getBoolean("isImmuneToIcing"));
+				loadedUser.setIcingState(rs.getInt("icingState"));
+				loadedUser.setShowBoard(rs.getBoolean("showBoard"));
+
+				return loadedUser;
+			}
+		} catch (SQLException e) {
+			log.error("Sql error while loading User '{}' -> {}", uuid, e.getMessage(), e);
+		}
+		return null;
+	}
+	//for mongoDB
+	/*
+	@Override
+	public void saveUser(User user) {
+		String sql = "INSERT INTO users (uuid, name, role, dollars, inquireCount, playTime, isNewUser, wantsCookie) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+				"ON DUPLICATE KEY UPDATE " +
+				"name=VALUES(name), role=VALUES(role), dollars=VALUES(dollars), " +
+				"inquireCount=VALUES(inquireCount), playTime=VALUES(playTime), " +
+				"isNewUser=VALUES(isNewUser), wantsCookie=VALUES(wantsCookie)";
+
+		try (Connection conn = getConnection();
+		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			// ? 자리에 값 채워넣기
+			pstmt.setString(1, user.getUUID().toString());
+			pstmt.setString(2, user.getName());
+			pstmt.setString(3, user.getRole() != null ? user.getRole().name() : Roles.USER.name());
+			pstmt.setInt(4, user.getDollars());
+			pstmt.setInt(5, user.getInquireCount());
+			pstmt.setInt(6, user.getPlayTime());
+			pstmt.setBoolean(7, user.isNewUser());
+			pstmt.setBoolean(8, user.ifWantsCookie());
+
+			pstmt.executeUpdate(); // 실행!
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	*/
+	@Override
+	public void saveUser(@NotNull User user) {
+		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
+		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		try (Connection conn = getConnection();
+		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, user.getUniqueId().toString());
+			pstmt.setString(2, user.getName());
+			pstmt.setString(3, user.getRole().name());
+			pstmt.setInt(4, user.getDollars());
+			pstmt.setInt(5, user.getInquireCount());
+			pstmt.setInt(6, user.getPlayTime());
+			pstmt.setInt(7, user.getExp());
+			pstmt.setInt(8, user.getRoleExp());
+			pstmt.setInt(9, user.getLevel());
+			pstmt.setBoolean(10, user.isNewUser());
+			pstmt.setBoolean(11, user.ifWantsCookie());
+			pstmt.setString(12, user.getTier().name());
+			pstmt.setString(13, user.getMastery().name());
+			pstmt.setBoolean(14, user.isImmuneToIcing());
+			pstmt.setInt(15, user.getIcingState());
+			pstmt.setBoolean(16, user.isShowBoard());
+
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			log.error("sql error while saving User -> {}", e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public int getRank(@NotNull UUID uuid) {
+		String sql = "SELECT rank FROM ( " +
+				"    SELECT uuid, RANK() OVER (ORDER BY Exp DESC) AS rank " +
+				"    FROM users " +
+				") WHERE uuid = ?";
+
+		try (Connection conn = getConnection();
+		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, uuid.toString());
+
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt("rank");
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Error while finding user Rank (UUID: {}) -> {}", uuid, e.getMessage());
+		}
+		return -1;
+	}
+
+	@Override
+	public boolean exist(@NotNull UUID uuid) {
+		String sql = "SELECT 1 FROM users WHERE uuid = ? LIMIT 1";
+		try (Connection conn = getConnection();
+		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, uuid.toString());
+			ResultSet rs = pstmt.executeQuery();
+			return rs.next();
+		} catch (SQLException e) {
+			log.error("Sql error during exist -> {}", e.getMessage(), e);
+			return false;
+		}
+	}
+}

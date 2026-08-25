@@ -2,10 +2,10 @@ package org.lazberry.xmaslegacy.role.passive.listeners;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Roles.Role;
-import org.lazberry.xmaslegacy.User.User;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.roles.Role;
+import org.lazberry.xmaslegacy.user.User;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;

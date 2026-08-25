@@ -4,9 +4,9 @@ import lombok.Data;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
+import org.lazberry.xmaslegacy.utils.Axiom;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 public class Field {
@@ -25,6 +25,10 @@ public class Field {
 		this.pos2 = pos2;
 		this.spawn = spawn;
 		this.world = spawn.getWorld();
+	}
+
+	public boolean isInside(Location location) {
+		return Axiom.isInBoundingBox(location, pos1, pos2);
 	}
 
 	public boolean addDropLocation(Location location) {
@@ -50,9 +54,19 @@ public class Field {
 			world.spawnParticle(Particle.END_ROD, loc, 7, 0.2, 0.2, 0.2, 0.01);
 			world.playSound(loc, Sound.BLOCK_DECORATED_POT_PLACE, 1.0f, 1.0f);
 
-			spawnedDropContainerLocations.put(loc.toBlockLocation(), ThreadLocalRandom.current()
-					.nextInt(difficulty.getMinimumHit(), difficulty.getMaximumHit() + 1));
+			spawnedDropContainerLocations.put(loc.toBlockLocation(), difficulty.getRandomHit());
 		}
+	}
+
+	public int reducePotHealth(Location block) {
+		Location blockLoc = block.toBlockLocation();
+		if (!isDropContainer(blockLoc)) return -1;
+
+		Integer remainingHealth = spawnedDropContainerLocations.computeIfPresent(
+				blockLoc, (loc, health) -> (health - 1 > 0) ? health - 1 : null
+		);
+
+		return remainingHealth != null ? remainingHealth : 0;
 	}
 
 	public int getPotHealth(Block block) {

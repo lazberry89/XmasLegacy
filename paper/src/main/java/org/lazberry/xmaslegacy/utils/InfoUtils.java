@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Utility;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
 import org.slf4j.helpers.MessageFormatter;
 
 @Slf4j

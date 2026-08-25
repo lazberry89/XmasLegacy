@@ -3,7 +3,6 @@ package org.lazberry.xmaslegacy.utils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
 
 @UtilityClass
 public final class Documents {

@@ -10,7 +10,7 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.Axiom;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;

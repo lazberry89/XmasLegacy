@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.region.Region;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;

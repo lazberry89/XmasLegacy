@@ -20,9 +20,8 @@ import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.party.PartyManager;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -35,9 +34,9 @@ import java.util.UUID;
  * packet-byte message to Velocity. Also handles Party logics like moving another members if target player
  * is party leader. Also have option to hide where to go, force or not player to move.
  * @see org.bukkit.plugin.messaging.Messenger
- * @see org.lazberry.xmaslegacy.Party.Party
+ * @see org.lazberry.xmaslegacy.party.Party
  * @see org.bukkit.Server
- * @see org.lazberry.xmaslegacy.User.User
+ * @see org.lazberry.xmaslegacy.user.User
  */
 @Slf4j
 @UtilityClass
@@ -67,7 +66,7 @@ public final class ServerTransfer {
 
     /**
      * Transports target player to {@link Location} that is previously set. Giving {@link Sound}, visual effect
-     * to player and applying delay to make teleport most dramatic. Also, {@link org.lazberry.xmaslegacy.User.User} instance must be loaded if player want to
+     * to player and applying delay to make teleport most dramatic. Also, {@link org.lazberry.xmaslegacy.user.User} instance must be loaded if player want to
      * teleport. if not loaded, sends reload alert.
      * <pre>{@code
      * Player p = e.getPlayer();
@@ -122,7 +121,7 @@ public final class ServerTransfer {
      * Main transport logic. Transfers target player to intended server. The Channel on
      * {@link org.bukkit.plugin.messaging.Messenger#registerOutgoingPluginChannel(Plugin, String)} at "bungeecord:main" should be
      * opened in {@link org.lazberry.xmaslegacy.PluginUtils.Initializer.GlobalInitializer}. Also, when player is in party, two cases.
-     * First, as general member, leaves {@link org.lazberry.xmaslegacy.Party.Party} and transfers server. Second, as Leader of a party, brings all party member with him/her.
+     * First, as general member, leaves {@link org.lazberry.xmaslegacy.party.Party} and transfers server. Second, as Leader of a party, brings all party member with him/her.
      * But fails when user info is not loaded, not sending any notice.(Should handle this case.)
      * <pre>{@code
      * if (ServerTransfer.transfer(ServerType.HUNTING, p)) {
@@ -134,8 +133,8 @@ public final class ServerTransfer {
      * @param toServer target server as destination
      * @param player target player to move
      * @return false when fails, true.
-     * @see org.lazberry.xmaslegacy.Party.Party
-     * @see org.lazberry.xmaslegacy.User.User
+     * @see org.lazberry.xmaslegacy.party.Party
+     * @see org.lazberry.xmaslegacy.user.User
      * @see ServerTransfer#transfer(ServerType, Player, boolean, boolean)
      * @see ServerTransfer#transfer(ServerType, Player...)
      */

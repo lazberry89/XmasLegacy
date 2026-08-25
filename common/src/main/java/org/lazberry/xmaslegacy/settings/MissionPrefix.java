@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 public enum MissionPrefix implements ServerPrefix {
 	FIRST_JOINER("FIRST JOINER"),

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
 
 /**

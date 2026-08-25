@@ -8,14 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
-import org.lazberry.xmaslegacy.User.UserManager;
-import org.lazberry.xmaslegacy.User.UserSaveManager;
+import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.user.UserSaveManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;

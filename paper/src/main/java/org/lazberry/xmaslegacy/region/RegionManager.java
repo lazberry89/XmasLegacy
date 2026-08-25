@@ -15,7 +15,7 @@ import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.region.Events.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.region.Events.RegionGenerateEvent;

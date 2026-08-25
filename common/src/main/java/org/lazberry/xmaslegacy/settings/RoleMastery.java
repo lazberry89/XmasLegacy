@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 public enum RoleMastery implements ServerPrefix {
     BEGINNER("&7⫝ BEGINNER"),

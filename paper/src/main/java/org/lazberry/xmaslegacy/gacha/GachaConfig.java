@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.lazberry.xmaslegacy.ParseEnum;
+import org.lazberry.xmaslegacy.utils.ParseEnum;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;

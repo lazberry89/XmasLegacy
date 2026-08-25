@@ -48,6 +48,7 @@ public record ConfigBuilder(FileConfiguration file) {
 				case Long ignored -> { return (T) Long.valueOf(num.longValue()); }
 				case Integer ignored -> { return (T) Integer.valueOf(num.intValue()); }
 				case Double ignored -> { return (T) Double.valueOf(num.doubleValue()); }
+				case Short ignored -> { return (T) Short.valueOf(num.shortValue()); }
 				default -> {}
 			}
 		}

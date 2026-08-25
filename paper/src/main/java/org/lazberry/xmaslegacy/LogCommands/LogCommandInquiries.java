@@ -5,8 +5,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
-import org.lazberry.xmaslegacy.Inquiry.InquiryManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.inquiry.InquiryManager;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 
 import java.util.Map;

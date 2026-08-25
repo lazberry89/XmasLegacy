@@ -16,7 +16,7 @@ import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;

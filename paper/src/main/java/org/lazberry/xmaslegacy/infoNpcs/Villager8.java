@@ -1,7 +1,7 @@
 package org.lazberry.xmaslegacy.infoNpcs;
 
 import org.bukkit.Sound;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 import java.util.List;
 

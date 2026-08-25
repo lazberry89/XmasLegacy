@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.ranks.RankingCommands;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.User.RankType;
+import org.lazberry.xmaslegacy.user.RankType;
 import org.lazberry.xmaslegacy.ranks.RankingTask;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;

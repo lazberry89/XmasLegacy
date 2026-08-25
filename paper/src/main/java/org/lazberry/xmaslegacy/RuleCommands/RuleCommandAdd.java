@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.RuleCommands;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.utils.InfoUtils;

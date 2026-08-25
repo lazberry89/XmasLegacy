@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.lazberry.xmaslegacy.User.User;
+import org.lazberry.xmaslegacy.user.User;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

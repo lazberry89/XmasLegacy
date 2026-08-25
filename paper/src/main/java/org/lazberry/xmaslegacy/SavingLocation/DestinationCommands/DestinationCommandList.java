@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.SavingLocation.DestinationCommands;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.utils.SubCommand;

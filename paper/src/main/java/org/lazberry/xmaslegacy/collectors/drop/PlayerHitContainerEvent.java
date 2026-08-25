@@ -1,0 +1,48 @@
+package org.lazberry.xmaslegacy.collectors.drop;
+
+import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.collectors.game.Session;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+public class PlayerHitContainerEvent extends Event {
+    private static final HandlerList handler = new HandlerList();
+    private final List<LivingEntity> affectedEntity = new ArrayList<>();
+    private final NamespacedKey key;
+    private final Session session;
+    private final Player player;
+    private final Location location;
+    private final int containerHealth;
+
+    public PlayerHitContainerEvent(Session session, Player player, Location location, int containerHealth) {
+        this.session = session;
+        this.key = KeyUtils.get(session.getDifficulty().name() + "_hunter");
+        this.player = player;
+        this.location = location;
+        this.containerHealth = containerHealth;
+        affectedEntity.addAll(location.getNearbyEntitiesByType(LivingEntity.class, 5, 5,
+                e -> e.getPersistentDataContainer().has(key)));
+    }
+
+    public <T extends LivingEntity> boolean isAffected(T entity) {
+        return affectedEntity.contains(entity);
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return handler;
+    }
+    public static HandlerList getHandlerList() {
+        return handler;
+    }
+}

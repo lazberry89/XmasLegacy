@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.region.Gui.RegionCreateInterface;
 import org.lazberry.xmaslegacy.region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.region.RegionManager;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;

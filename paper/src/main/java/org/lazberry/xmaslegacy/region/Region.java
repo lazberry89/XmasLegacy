@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.IDGenerator;
+import org.lazberry.xmaslegacy.utils.IDGenerator;
 
 import java.util.*;
 

@@ -2,8 +2,8 @@ package org.lazberry.xmaslegacy;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.User.User;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.user.User;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;

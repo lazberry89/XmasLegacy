@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.utils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -11,7 +12,7 @@ public class OptionalUtils {
 
     public static <T> void ifNotNullOrElse(
             @Nullable T value,
-            Consumer<? super T> onPresent,
+            Consumer<? super @NotNull T> onPresent,
             Runnable onEmpty
     ) {
         Objects.requireNonNull(onPresent, "onPresent consumer must not be null");

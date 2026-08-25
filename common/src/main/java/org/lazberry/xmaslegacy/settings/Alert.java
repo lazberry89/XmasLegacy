@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.settings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 public enum Alert {
 	XmasLegacy("&c&l[&a&lX&c&lm&a&la&c&ls&a&lL&c&le&a&lg&c&la&a&lc&c&ly&a&l]&r&f", ColorUtils.chat("&c&l[&a&lX&c&lm&a&la&c&ls&a&lL&c&le&a&lg&c&la&a&lc&c&ly&a&l]&r&f")),

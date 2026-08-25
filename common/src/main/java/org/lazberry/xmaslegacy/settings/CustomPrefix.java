@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 @Slf4j

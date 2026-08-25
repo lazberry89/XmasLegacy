@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.huntingZone.ZoneCommands;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.huntingZone.HuntingZoneManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;

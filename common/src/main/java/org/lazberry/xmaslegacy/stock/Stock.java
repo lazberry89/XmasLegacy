@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.stock;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kyori.adventure.text.Component;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
 @Data

@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.settings.*;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;

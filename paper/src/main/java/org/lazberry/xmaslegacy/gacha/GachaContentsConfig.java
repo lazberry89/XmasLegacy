@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.lazberry.xmaslegacy.ParseEnum;
+import org.lazberry.xmaslegacy.utils.ParseEnum;
 import org.lazberry.xmaslegacy.utils.InventorySerializer;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;

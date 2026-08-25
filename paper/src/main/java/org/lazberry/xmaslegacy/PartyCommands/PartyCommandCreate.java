@@ -2,8 +2,8 @@ package org.lazberry.xmaslegacy.PartyCommands;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.Party.PartyManager;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.party.PartyManager;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.utils.UserHandler;

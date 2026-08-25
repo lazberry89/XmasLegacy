@@ -4,9 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.ranks.RankManager;
-import org.lazberry.xmaslegacy.User.RankType;
-import org.lazberry.xmaslegacy.User.User;
-import org.lazberry.xmaslegacy.User.UserManager;
+import org.lazberry.xmaslegacy.user.RankType;
+import org.lazberry.xmaslegacy.user.User;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 

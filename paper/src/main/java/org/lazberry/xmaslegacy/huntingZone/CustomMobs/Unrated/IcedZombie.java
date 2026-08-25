@@ -10,7 +10,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.CustomMob;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.MobKey;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
