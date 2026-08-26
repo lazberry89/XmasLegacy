@@ -22,6 +22,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DropsManager {
     private final DropsRepository dr;
 
+    public DropsRepository getRepository() { return dr; }
+
     @Inject
     public DropsManager(DropsRepository dr) {
         this.dr = dr;
@@ -56,6 +58,14 @@ public class DropsManager {
             var event = new PlayerHitContainerEvent(session, player, loc, current);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
+    }
+
+    public int calculatePriceOfInventory(Player player) {
+        ItemStack[] contents = player.getInventory().getContents();
+        return Arrays.stream(contents)
+                .filter(dr::isLootItem)
+                .mapToInt(dr::getPrice)
+                .sum();
     }
 
     public int weightOfInventory(Player player) {

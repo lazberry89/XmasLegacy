@@ -16,7 +16,10 @@ import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.InventorySerializer;
+import org.lazberry.xmaslegacy.utils.OptionalUtils;
+import org.lazberry.xmaslegacy.utils.UserHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,7 +75,58 @@ public class CollectorsManager implements Initiator {
 		config.saveSync(serializedBackup);
 	}
 
-	public Session getOrCreateSession(Difficulty difficulty) {
+	public void join(Player player) {
+		ItemStack item = player.getInventory().getItemInMainHand();
+		UUID uuid = player.getUniqueId();
+		if (!tr.isTicket(item)) {
+			InfoUtils.error(player, "&6참가 티켓&f을 들고있어야합니다!");
+			return;
+		}
+		Difficulty difficulty = tr.getDifficultyByTicket(item);
+		if (difficulty == null) {
+			InfoUtils.error(player, "티켓이 &c손상&f되었습니다. 관리자에게 문의해주세요.");
+			return;
+		}
+		Session session = getOrCreateSession(difficulty);
+		if (session == null) {
+			InfoUtils.error(player, "아직 필드가 설정되지 않았습니다. 기다려주세요!");
+			return;
+		}
+		OptionalUtils.ifNotNullOrElse(um.getUser(uuid), u -> {
+			if (sessionMap.containsKey(u)) {
+				InfoUtils.error(player, "이미 세션에 참가중입니다. 퇴장 후 다시 입장해주세요!");
+				return;
+			}
+			if (session.addUser(u)) {
+				InfoUtils.info(player, "게임에 참가했습니다.");
+				item.setAmount(0);
+				sessionMap.put(u, session);
+			}
+			else InfoUtils.error(player, "유저가 너무 많습니다! 조금만 기다려주세요. &c{}/{}",
+					session.getPlayingUsers().size(), session.getMAX_PLAYERS());
+		}, () -> {
+			InfoUtils.error(player, "참가에 실패했습니다.");
+			UserHandler.loadUser(player, true);
+		});
+	}
+
+	public void leave(Player player) {
+		UUID uuid = player.getUniqueId();
+		OptionalUtils.ifNotNullOrElse(um.getUser(uuid), u -> {
+			Session session = getSession(u);
+			if (session == null || !session.removeUser(u)) {
+				InfoUtils.error(player, "현재 참여중인 게임이 없습니다!");
+				return;
+			}
+			sessionMap.remove(u);
+			InfoUtils.info(player, "게임에서 퇴장했습니다.");
+		}, () -> {
+			InfoUtils.error(player, "퇴장 중 오류가 발생했습니다.");
+			UserHandler.loadUser(player, true);
+		});
+	}
+
+	public @Nullable Session getOrCreateSession(Difficulty difficulty) {
 		var field = fm.getField(difficulty);
 
         return field.map(value -> sessionByDifficulty.computeIfAbsent(difficulty,
@@ -85,6 +139,10 @@ public class CollectorsManager implements Initiator {
 
 	public int getWeight(Player player) {
 		return dm.weightOfInventory(player);
+	}
+
+	public int getPrice(Player player) {
+		return dm.calculatePriceOfInventory(player);
 	}
 
 	public void applyWeightSlowness(Player player) {

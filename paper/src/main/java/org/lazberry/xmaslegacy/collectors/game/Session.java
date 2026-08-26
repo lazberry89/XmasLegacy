@@ -3,16 +3,17 @@ package org.lazberry.xmaslegacy.collectors.game;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmaslegacy.collectors.field.Field;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
+import org.lazberry.xmaslegacy.utils.ServerTransfer;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Getter
@@ -23,6 +24,7 @@ public class Session {
 	private final Difficulty difficulty;
 	private final Field field;
 	private final Set<User> playingUsers = new HashSet<>();
+	private final Map<User, Location> originLocation = new HashMap<>();
 
 	private BukkitTask loopTask;
 	private final int MAX_PLAYERS = 10;
@@ -48,35 +50,44 @@ public class Session {
 	public boolean addUser(User user) {
 		if (playingUsers.size() >= MAX_PLAYERS) return false;
 
-		OptionalUtils.ifNotNullOrElse(Bukkit.getPlayer(user.getUniqueId()),
-				p -> {
+		boolean entry = playingUsers.add(user);
+		if (!entry) return false;
+
+		OptionalUtils.ifNotNullOrElse(Bukkit.getPlayer(user.getUniqueId()), p -> {
+					originLocation.put(user, p.getLocation());
 					cm.addBackup(p, p.getInventory().getContents());
 					p.getInventory().clear();
-					p.teleport(field.getSpawn());
-					// TODO: 던전 스폰 위치로 텔레포트 필요 (예: p.teleport(field.getSpawn());)
+					ServerTransfer.dramaticTeleport(p, field.getSpawn());
 				}, () -> {});
-		return playingUsers.add(user);
+		return true;
 	}
 
 	public boolean removeUser(User user) {
-		OptionalUtils.ifNotNullOrElse(Bukkit.getPlayer(user.getUniqueId()),
-				p -> {
-					cm.applyBackup(p);
-					p.setWalkSpeed(0.2f);
-					p.sendActionBar(ColorUtils.chat(" "));
-					// TODO: 로비로 텔레포트 필요
-				}, () -> {});
-		return playingUsers.remove(user);
+		if (!playingUsers.remove(user)) return false;
+
+		OptionalUtils.ifNotNullOrElse(Bukkit.getPlayer(user.getUniqueId()), p -> {
+			cm.applyBackup(p);
+			p.setWalkSpeed(0.2f);
+			p.sendActionBar(ColorUtils.chat(" "));
+			Location origin = originLocation.get(user);
+
+			if (origin == null) {
+				InfoUtils.error(p, "돌아갈 위치가 설정되지 않았습니다. 서버 스폰으로 이동합니다.");
+				p.teleport(field.getWorld().getSpawnLocation());
+				return;
+			}
+			p.teleport(origin);
+		}, () -> {});
+		originLocation.remove(user);
+		return true;
 	}
 
 	public boolean isSessionUser(User user) {
 		return playingUsers.contains(user);
 	}
 
-	// 서버가 켜질 때 실행되는 무한 던전 가동기
 	public void startLoop() {
 		if (loopTask != null || field.isRunning()) return;
-
 		field.setRunning(true);
 
 		loopTask = Bukkit.getScheduler().runTaskTimer(cm.getPlugin(), () -> {

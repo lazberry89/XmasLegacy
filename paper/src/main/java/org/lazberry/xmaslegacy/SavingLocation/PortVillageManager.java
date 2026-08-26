@@ -34,6 +34,5 @@ public final class PortVillageManager extends SavedLocation {
                     });
             return;
         }
-        ServerTransfer.dramaticTeleport(player, to, 60L);
     }
 }

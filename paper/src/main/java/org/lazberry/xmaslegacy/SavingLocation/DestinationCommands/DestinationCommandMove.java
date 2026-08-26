@@ -34,7 +34,6 @@ public record DestinationCommandMove(@NotNull DestinationType type, @NotNull Spa
             InfoUtils.error(player, "위치가 설정되지 않은 목적지입니다. 설정 후 사용해주세요.");
             return;
         }
-        ServerTransfer.dramaticTeleport(player, to);
         ClickCallback.Options option = ClickCallback.Options.builder()
                 .uses(1)
                 .lifetime(Duration.ofMinutes(5))
@@ -46,7 +45,7 @@ public record DestinationCommandMove(@NotNull DestinationType type, @NotNull Spa
                             ServerTransfer.dramaticTeleport(player, from);
                             InfoUtils.info(player, "기존 위치로 돌아갔습니다.");
                         }, option));
-	    Bukkit.getScheduler().runTaskLater(value.getPlugin(), () ->
-        InfoUtils.info(player, ColorUtils.chat("이동하였습니다.").appendSpace().append(back)), 60L);
+        ServerTransfer.dramaticTeleport(player, to, () ->
+                InfoUtils.info(player, ColorUtils.chat("이동하였습니다.").appendSpace().append(back)));
     }
 }

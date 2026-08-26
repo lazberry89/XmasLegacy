@@ -27,6 +27,8 @@ import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -41,6 +43,7 @@ import java.util.UUID;
 @Slf4j
 @UtilityClass
 public final class ServerTransfer {
+	private static final Set<UUID> transferring = new HashSet<>();
 	private static @Setter UserManager um;
 	private static @Setter PartyManager pm;
 
@@ -64,6 +67,10 @@ public final class ServerTransfer {
 		dramaticTeleport(player, to, 40L);
 	}
 
+	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, Runnable runnable) {
+		dramaticTeleport(player, to, 40L, runnable);
+	}
+
     /**
      * Transports target player to {@link Location} that is previously set. Giving {@link Sound}, visual effect
      * to player and applying delay to make teleport most dramatic. Also, {@link org.lazberry.xmaslegacy.user.User} instance must be loaded if player want to
@@ -79,7 +86,7 @@ public final class ServerTransfer {
      * @see UserHandler#sendReloadNotice(Player)
      * @see Location
      */
-	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, long duration) {
+	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, long duration, Runnable runnable) {
 		var uuid = player.getUniqueId();
 		var user = um.getUser(uuid);
 		if (user == null) {
@@ -87,6 +94,9 @@ public final class ServerTransfer {
 			log.error("Failed to move {} to target Location.(User info not loaded)", player.getName());
 			return;
 		}
+
+		if (transferring.contains(uuid)) return;
+		transferring.add(uuid);
 
 		player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, (int) duration, 2, true, false, false));
 		StunUtils.stun(uuid, "이동");
@@ -101,7 +111,15 @@ public final class ServerTransfer {
 				InfoUtils.error(player, "서버 이동에 실패하였습니다. 재시도 해주세요.");
 			}
 		}, duration / 2 );
-		Bukkit.getScheduler().runTaskLater(plugin(), () -> StunUtils.release(uuid), duration);
+		Bukkit.getScheduler().runTaskLater(plugin(), () -> {
+			StunUtils.release(uuid);
+			transferring.remove(uuid);
+			runnable.run();
+		}, duration);
+	}
+
+	public void dramaticTeleport(@NotNull Player player, @NotNull Location to, long duration) {
+		dramaticTeleport(player, to, duration, () -> {});
 	}
 
     public boolean transfer(@NotNull ServerType toServer, @NotNull Player... players) {
@@ -232,6 +250,9 @@ public final class ServerTransfer {
 
 					floodgatePlayer.sendForm(form);
 				});
+			} else {
+				InfoUtils.error(p, "모바일 유저 객체를 가져오지 못했습니다. 관리자에게 문의해주세요.");
+				log.error("Failed to load mobile player instance. Player: {}", p.getName());
 			}
 			return ColorUtils.chat(Alert.XmasLegacy + " &6서버이동&f 제안이 왔습니다. 화면의 팝업창을 확인해주세요!");
 		}
