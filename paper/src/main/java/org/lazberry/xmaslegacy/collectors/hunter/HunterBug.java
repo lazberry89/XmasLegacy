@@ -6,6 +6,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
@@ -20,7 +22,9 @@ public class HunterBug implements Hunter {
 
     @Override
     public void attack(Player target) {
-
+		if (ThreadLocalRandom.current().nextDouble() < data.hunterBug().getDebuffChance()) {
+			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 10, 1, true, false, false));
+		}
     }
 
     @Override
