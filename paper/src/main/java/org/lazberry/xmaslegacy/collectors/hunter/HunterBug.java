@@ -41,7 +41,9 @@ public class HunterBug implements Hunter {
         Class<? extends LivingEntity> lv = type.getEntityClass().asSubclass(LivingEntity.class);
         return loc.getWorld().spawn(loc, lv, b -> {
             GlowUtils.glow(b, NamedTextColor.GRAY);
-            KeyUtils.set(b, key(), "HUNTER_BUG");
+            KeyUtils.set(b, key(), true);
+            b.setInvulnerable(true);
+            b.setCollidable(false);
         });
     }
 }

@@ -14,6 +14,7 @@ import org.lazberry.xmaslegacy.utils.OptionalUtils;
 import org.lazberry.xmaslegacy.utils.ServerTransfer;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 @Getter
@@ -24,6 +25,7 @@ public class Session {
 	private final Difficulty difficulty;
 	private final Field field;
 	private final Set<User> playingUsers = new HashSet<>();
+	private final Set<UUID> activeHunters = ConcurrentHashMap.newKeySet();
 	private final Map<User, Location> originLocation = new HashMap<>();
 
 	private BukkitTask loopTask;
@@ -36,6 +38,26 @@ public class Session {
 		this.field = field;
 		this.difficulty = field.getDifficulty();
 		this.MAX_POTS = difficulty.getDropCount();
+	}
+
+	public boolean addHunter(UUID uuid) {
+		return activeHunters.add(uuid);
+	}
+
+	public boolean removeHunter(UUID uuid) {
+		return activeHunters.remove(uuid);
+	}
+
+	public void clearHunters() {
+		snapshotOfActiveHunters().forEach(u -> {
+			var entity = Bukkit.getEntity(u);
+			if (entity != null && entity.isValid()) entity.remove();
+		});
+		activeHunters.clear();
+	}
+
+	public Set<UUID> snapshotOfActiveHunters() {
+		return Collections.unmodifiableSet(activeHunters);
 	}
 
 	private Stream<Player> playerStream() {
@@ -112,6 +134,7 @@ public class Session {
 		}
 		field.setRunning(false);
 		field.cleanDropContainers();
+		clearHunters();
 		new HashSet<>(playingUsers).forEach(this::removeUser);
 	}
 }

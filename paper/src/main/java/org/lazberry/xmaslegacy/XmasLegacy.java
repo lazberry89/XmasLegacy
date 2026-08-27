@@ -1,15 +1,13 @@
 package org.lazberry.xmaslegacy;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Reflections;
 
-@Slf4j
 public final class XmasLegacy extends JavaPlugin {
 
-	private @Getter static XmasLegacy instance;
+	private volatile @Getter static XmasLegacy instance = null;
 
 	public XmasLegacy() {
 		instance = this;
