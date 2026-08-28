@@ -66,6 +66,10 @@ public abstract class HunterHandler implements Initiator {
         return true;
     }
 
+	protected void removeHunterFromSession(Hunter hunter) {
+		Session session = cm.getOrCreateSession(difficulty);
+	}
+
     public abstract boolean spawnHunter(Location location);
     protected abstract void removeHunters();
 }
