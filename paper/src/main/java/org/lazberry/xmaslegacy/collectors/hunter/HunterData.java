@@ -24,6 +24,8 @@ public class HunterData {
         private EntityType hunterType2 = EntityType.ENDERMITE;
         private double hunter2chance = 0.5;
         private double debuffChance = 0.4;
+        private int randomSpawnMin = 0;
+        private int randomSpawnMax = 3;
     }
 
     @Data

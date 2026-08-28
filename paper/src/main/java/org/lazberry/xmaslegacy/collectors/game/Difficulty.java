@@ -4,9 +4,9 @@ import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Sound;
 import org.lazberry.xmaslegacy.collectors.hunter.Hunter;
-import org.lazberry.xmaslegacy.collectors.hunter.HunterBug;
-import org.lazberry.xmaslegacy.collectors.hunter.PhaseHunter;
-import org.lazberry.xmaslegacy.collectors.hunter.Silence;
+import org.lazberry.xmaslegacy.collectors.hunter.peaceful.HunterBug;
+import org.lazberry.xmaslegacy.collectors.hunter.exciting.PhaseHunter;
+import org.lazberry.xmaslegacy.collectors.hunter.horror.Silence;
 
 import java.util.concurrent.ThreadLocalRandom;
 

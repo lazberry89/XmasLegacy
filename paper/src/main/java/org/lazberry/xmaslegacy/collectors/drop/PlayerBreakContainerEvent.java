@@ -15,22 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class PlayerHitContainerEvent extends Event {
+public class PlayerBreakContainerEvent extends Event {
     private static final HandlerList handler = new HandlerList();
     private final List<LivingEntity> affectedEntities = new ArrayList<>();
     private final NamespacedKey key;
     private final Session session;
     private final Player player;
     private final Location location;
-    private final int containerHealth;
 
-    public PlayerHitContainerEvent(Session session, Player player, Location location, int containerHealth) {
+    public PlayerBreakContainerEvent(Session session, Player player, Location location) {
         this.session = session;
         this.key = KeyUtils.get(session.getDifficulty().name() + "_hunter");
         this.player = player;
         this.location = location;
-        this.containerHealth = containerHealth;
-        affectedEntities.addAll(location.getNearbyEntitiesByType(LivingEntity.class, 5, 5,
+        affectedEntities.addAll(location.getNearbyEntitiesByType(LivingEntity.class, 7, 7,
                 e -> e.getPersistentDataContainer().has(key)));
     }
 

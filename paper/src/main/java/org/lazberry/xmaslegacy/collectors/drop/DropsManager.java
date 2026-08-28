@@ -54,6 +54,8 @@ public class DropsManager {
                 drops.forEach(i ->
                     GlowUtils.glow(world.dropItemNaturally(loc, i), NamedTextColor.RED)
                 );
+                var breakEvent = new PlayerBreakContainerEvent(session, player, loc);
+                Bukkit.getServer().getPluginManager().callEvent(breakEvent);
             }
             var event = new PlayerHitContainerEvent(session, player, loc, current);
             Bukkit.getServer().getPluginManager().callEvent(event);
