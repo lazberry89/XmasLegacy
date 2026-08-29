@@ -46,7 +46,7 @@ public class CollectorsManager implements Initiator {
 	@Inject
 	public CollectorsManager(XmasLegacy plugin,
 	                         CollectorsConfig config,
-	                         TicketRepository tr,
+							 TicketRepository tr,
 	                         DropsManager dm,
 	                         UserManager um,
 	                         PartyManager pm,
@@ -132,6 +132,10 @@ public class CollectorsManager implements Initiator {
         return field.map(value -> sessionByDifficulty.computeIfAbsent(difficulty,
                 diff -> new Session(value, this))).orElse(null);
     }
+
+	public @Nullable Session getSession(Difficulty difficulty) {
+		return sessionByDifficulty.get(difficulty);
+	}
 
 	public @Nullable Session getSession(User user) {
 		return sessionMap.get(user);

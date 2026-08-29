@@ -2,12 +2,10 @@ package org.lazberry.xmaslegacy.collectors.hunter.peaceful;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.collectors.game.CollectorsManager;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
-import org.lazberry.xmaslegacy.collectors.game.Session;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterHandler;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterRepository;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -32,7 +30,7 @@ public class PeacefulHunterHandler extends HunterHandler {
 	public PeacefulHunterHandler(XmasLegacy plugin, HunterRepository repository, CollectorsManager cm) {
 		super(cm, repository, Difficulty.PEACEFUL);
 		this.plugin = plugin;
-    }
+	}
 
 	@Override
 	public void init() {
@@ -41,28 +39,27 @@ public class PeacefulHunterHandler extends HunterHandler {
 
 	private void startDespawnTimer() {
 		if (task == null) {
-			task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-
-				long now = System.currentTimeMillis();
-
-				while (!despawnQueue.isEmpty()) {
-					DespawnEntry entry = despawnQueue.peek();
-					if (entry == null || entry.expireTime() > now) break;
-					UUID uuid = entry.uuid();
-
-					despawnQueue.poll();
-					hunters.remove(uuid);
-
-					Entity entity = Bukkit.getEntity(uuid);
-					Session session = cm().getOrCreateSession(Difficulty.PEACEFUL);
-					if (session != null) {
-						session.removeHunter(uuid);
-					}
-					if (entity != null && entity.isValid()) {
-						entity.remove();
-					}
+			synchronized (this) {
+				if (task == null) {
+					task = Bukkit.getScheduler().runTaskTimer(plugin, this::processDespawnQueue, 20L, 20L);
 				}
-			}, 20L, 20L);
+			}
+		}
+	}
+
+	private void processDespawnQueue() {
+		long now = System.currentTimeMillis();
+
+		while (!despawnQueue.isEmpty()) {
+			DespawnEntry entry = despawnQueue.peek();
+			if (entry == null || entry.expireTime() > now) break;
+
+			despawnQueue.poll();
+			UUID uuid = entry.uuid();
+			hunters.remove(uuid);
+
+			removeHunterFromSession(uuid);
+			removeEntitySafely(uuid);
 		}
 	}
 
@@ -73,8 +70,9 @@ public class PeacefulHunterHandler extends HunterHandler {
 		}
 	}
 
+	@Override
 	protected void removeHunters() {
-		hunters.forEach(action());
+		hunters.forEach(this::removeEntitySafely);
 		despawnQueue.clear();
 		hunters.clear();
 	}

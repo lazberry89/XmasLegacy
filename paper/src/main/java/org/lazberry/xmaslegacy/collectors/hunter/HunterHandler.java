@@ -13,6 +13,7 @@ import org.lazberry.xmaslegacy.collectors.hunter.horror.Silence;
 import org.lazberry.xmaslegacy.collectors.hunter.peaceful.HunterBug;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
+import org.lazberry.xmaslegacy.utils.OptionalUtils;
 
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -25,7 +26,10 @@ public abstract class HunterHandler implements Initiator {
     private final NamespacedKey key;
     private final Consumer<UUID> action = uuid -> {
         Entity entity = Bukkit.getEntity(uuid);
-        if (entity != null && entity.isValid()) entity.remove();
+        if (entity != null && entity.isValid()) {
+            removeHunterFromSession(uuid);
+            entity.remove();
+        }
     };
 
     protected HunterHandler(CollectorsManager cm, HunterRepository repository, Difficulty difficulty) {
@@ -66,9 +70,26 @@ public abstract class HunterHandler implements Initiator {
         return true;
     }
 
-	protected void removeHunterFromSession(Hunter hunter) {
-		Session session = cm.getOrCreateSession(difficulty);
+	protected void removeHunterFromSession(UUID uuid) {
+        OptionalUtils.ifNotNull(cm.getSession(difficulty),
+                s -> s.removeHunter(uuid));
 	}
+
+    protected void removeEntitySafely(UUID uuid) {
+        Entity entity = Bukkit.getEntity(uuid);
+        if (entity != null) {
+            if (entity.isValid()) {
+                entity.remove();
+            }
+        } else {
+            Bukkit.getWorlds().forEach(world -> {
+                Entity loadedEntity = world.getEntity(uuid);
+                if (loadedEntity != null) {
+                    loadedEntity.remove();
+                }
+            });
+        }
+    }
 
     public abstract boolean spawnHunter(Location location);
     protected abstract void removeHunters();

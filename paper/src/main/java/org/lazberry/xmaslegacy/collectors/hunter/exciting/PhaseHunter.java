@@ -19,12 +19,12 @@ public record PhaseHunter(HunterData data) implements Hunter {
     private static final NamespacedKey key = KeyUtils.get("phase");
 
     @Override
-    public void attack(Player target) {
+    public void attack(Player target) {}
 
-    }
-
-    public void phase(WitherSkeleton hunter) {
+    public void phase(LivingEntity entity) { // Ghost form
+        if (!(entity instanceof WitherSkeleton hunter)) return;
         if (!isEntity(hunter) || isPhase(hunter)) return;
+
         GlowUtils.clearGlow(hunter);
         KeyUtils.set(hunter, key, true);
         hunter.getEquipment().clear();
@@ -32,12 +32,15 @@ public record PhaseHunter(HunterData data) implements Hunter {
         hunter.setInvisible(true);
     }
 
-    public void dephase(WitherSkeleton hunter) {
+    public void dephase(LivingEntity entity) { // Hunter form
+        if (!(entity instanceof WitherSkeleton hunter)) return;
         if (!isEntity(hunter) || !isPhase(hunter)) return;
+
         KeyUtils.set(hunter, key, false);
         GlowUtils.glow(hunter, NamedTextColor.BLACK);
         hunter.getEquipment().setItemInMainHand(new ItemStack(Material.NETHERITE_SWORD));
         hunter.setRemoveWhenFarAway(false);
+        hunter.setSilent(false);
         hunter.setInvisible(false);
     }
 
@@ -46,9 +49,9 @@ public record PhaseHunter(HunterData data) implements Hunter {
                 lv.getPersistentDataContainer().has(KeyUtils.get(Difficulty.EXCITING.name() + "_hunter"));
     }
 
-    public static boolean isPhase(WitherSkeleton skeleton) {
-        return isEntity(skeleton)
-                && Boolean.TRUE.equals(skeleton.getPersistentDataContainer().get(key, PersistentDataType.BOOLEAN));
+    public static boolean isPhase(LivingEntity entity) {
+        return isEntity(entity)
+                && Boolean.TRUE.equals(entity.getPersistentDataContainer().get(key, PersistentDataType.BOOLEAN));
     }
 
     @Override
@@ -57,8 +60,6 @@ public record PhaseHunter(HunterData data) implements Hunter {
             KeyUtils.set(w, key(Difficulty.EXCITING), true);
             w.setInvulnerable(true);
             KeyUtils.set(w, key, false);
-            GlowUtils.glow(w, NamedTextColor.BLACK);
-            w.getEquipment().setItemInMainHand(new ItemStack(Material.NETHERITE_SWORD));
             w.setRemoveWhenFarAway(false);
             AttributeInstance speed = w.getAttribute(Attribute.MOVEMENT_SPEED);
             if (speed != null) speed.setBaseValue(0.4);

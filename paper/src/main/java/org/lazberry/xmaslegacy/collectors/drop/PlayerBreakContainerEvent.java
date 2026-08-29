@@ -12,6 +12,7 @@ import org.lazberry.xmaslegacy.collectors.game.Session;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -30,6 +31,11 @@ public class PlayerBreakContainerEvent extends Event {
         this.location = location;
         affectedEntities.addAll(location.getNearbyEntitiesByType(LivingEntity.class, 7, 7,
                 e -> e.getPersistentDataContainer().has(key)));
+    }
+
+    public Collection<LivingEntity> getAffectedEntities(int distance) {
+        return location.getNearbyEntitiesByType(LivingEntity.class, distance, distance,
+                e -> e.getPersistentDataContainer().has(key));
     }
 
     public <T extends LivingEntity> boolean isAffected(T entity) {
