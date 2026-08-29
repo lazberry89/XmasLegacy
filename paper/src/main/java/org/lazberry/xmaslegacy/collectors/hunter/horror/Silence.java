@@ -25,15 +25,22 @@ public class Silence implements Hunter {
 
     }
 
-    public static boolean isEntity(Entity entity) {
-        return entity instanceof Warden w &&
-                w.getPersistentDataContainer().has(KeyUtils.get(Difficulty.HORROR.name() + "_hunter"));
-    }
+	public static boolean isEntity(Entity entity) {
+		return entity instanceof Warden w &&
+				w.getPersistentDataContainer().has(KeyUtils.get(Difficulty.HORROR.name() + "_hunter"));
+	}
 
-    public static boolean isFurious(Entity entity) {
-        return entity instanceof Warden w &&
-                Boolean.TRUE.equals(w.getPersistentDataContainer().get(rage, PersistentDataType.BOOLEAN));
-    }
+	public static boolean isFurious(Entity entity) {
+		return isEntity(entity) &&
+				Boolean.TRUE.equals(entity.getPersistentDataContainer().get(rage, PersistentDataType.BOOLEAN));
+	}
+
+	public static void setFurious(Entity entity, boolean furious) {
+		if (!isEntity(entity)) return;
+		if (isFurious(entity) == furious) return;
+
+		KeyUtils.set(entity, rage, furious);
+	}
 
     @Override
     public LivingEntity spawn(Location loc) {
