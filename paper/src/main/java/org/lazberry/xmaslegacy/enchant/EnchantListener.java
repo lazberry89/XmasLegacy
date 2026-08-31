@@ -216,53 +216,7 @@ public class EnchantListener implements Listener {
 			if (ServerRoles.USER.equals(role)) return;
 			if (random.nextInt(20) == 1) {
                 if (role instanceof ServerRoles serverRoles) {
-					switch (serverRoles) {
-						case WARRIOR -> {
-							Vector vector = p.getLocation().getDirection();
-							Vector velocity = vector.normalize().multiply(1.3);
-							velocity.setY(0.4f);
 
-							victim.setVelocity(velocity);
-							Bukkit.getScheduler().runTaskLater(plugin, () -> {
-								if (victim.isValid()) {
-									victim.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, victim.getLocation(), 1, 0, 0, 0, 0);
-									victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
-									StunUtils.stun(victim.getUniqueId(), 15, "강화된 검");
-								}
-							}, 15L);
-						}
-                        case ROGUE -> {
-                            for (int i = 0; i < 3; i++)
-								Bukkit.getScheduler().runTaskLater(plugin, () -> sem.knockbackEntity(p, victim, 1.3, 0.2), (i + 1) * 3L);
-                        }
-						case MAGE -> sem.castSkill(p);
-						case KNIGHT -> {
-							SkillEffectManager.startHakiWave(plugin, victim.getLocation().clone().add(0, 1, 0), "howling");
-							p.getWorld().playSound(victim, Sound.BLOCK_SAND_BREAK, 0.5f, 1.7f);
-							List<LivingEntity> leList = p.getWorld().getNearbyEntitiesByType(LivingEntity.class, victim.getLocation(), 5, 5, 5, le -> !le.equals(p))
-									.stream().toList();
-							leList.forEach(i -> sem.knockbackEntity(p, i, 2.0, 0.8));
-							long amount = leList.stream().filter(s -> {
-								var userT = um.getUser(s.getUniqueId());
-								if (userT == null) return false;
-								Role t = userT.getRole();
-								return ServerRoles.KNIGHT.equals(t.parent()) || ServerRoles.KNIGHT.equals(t);
-							}).count();
-							AttributeInstance amo = p.getAttribute(Attribute.MAX_HEALTH);
-							if (amo == null) return;
-							double healAmount = (amount * 2.0) + 2.0;
-
-							double maxHealth = amo.getValue();
-							double currentHealth = p.getHealth();
-							double safeHeal = Math.min(healAmount, maxHealth - currentHealth);
-
-							if (safeHeal > 0) p.heal(safeHeal);
-						}
-						case ARCHER -> StunUtils.stun(victim.getUniqueId(), 40L, "아처의 강화된 무기");
-						case PRIEST -> {
-
-						}
-                    }
 				}
             }
 		}

@@ -23,7 +23,7 @@ public class RuleCommandAdd implements SubCommand {
                 player.sendMessage(ColorUtils.chat(Alert.RED + " 이미 존재하는 항목입니다."));
                 player.playSound(player, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             } else {
-                rm.addBadWordList(args[1]);
+                rm.add(args[1]);
                 player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 추가되었습니다. /filter list로 확인"));
                 player.playSound(player, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
             }

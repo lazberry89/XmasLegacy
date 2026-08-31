@@ -77,7 +77,8 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("remove")) {
                 return rm.getBadWordList().stream()
                         .filter(word -> word.toLowerCase().startsWith(args[1].toLowerCase()))
-                        .toList();
+                        .map(Object::toString)
+		                .toList();
             }
 
             if (args[0].equalsIgnoreCase("add")) {

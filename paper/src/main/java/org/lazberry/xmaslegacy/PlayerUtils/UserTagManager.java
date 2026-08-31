@@ -89,8 +89,6 @@ public class UserTagManager {
     }
 
     private static String getColor(Role role) {
-        if (role instanceof SecondaryRoles) return "&6";
-        if (role instanceof ThirdRoles) return "&c";
         if (role instanceof HiddenRoles) return "&d";
         else return "&a";
     }

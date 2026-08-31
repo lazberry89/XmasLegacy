@@ -9,4 +9,9 @@ public enum HiddenRoles implements Role {
 	public @NotNull String getKor() {
 		return "";
 	}
+
+	@Override
+	public @NotNull String description() {
+		return "";
+	}
 }
