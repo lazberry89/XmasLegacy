@@ -18,7 +18,7 @@ public class TeleporterConfig extends AbstractDataProcessor {
 
     @Inject
     public TeleporterConfig(XmasLegacy plugin, TeleporterManager tm) {
-        super(plugin, "teleporter_config.yml");
+        super(plugin, "teleporter_config");
         this.tm = tm;
     }
 

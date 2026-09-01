@@ -134,4 +134,6 @@ commands:
   display:
     description: spawning stock indicating display
 
+  wild:
+
 
