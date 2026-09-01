@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Include(type = ServerType.WILD)
+@Registry.Include(type = ServerType.GLOBAL)
 public class RoleConfig implements Initiator {
     private final RoleManager rm;
     private final File dataFolder;

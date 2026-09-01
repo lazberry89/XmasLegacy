@@ -4,7 +4,7 @@ import lombok.Data;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Registry.Include(type = ServerType.WILD)
+@Registry.Include(type = ServerType.GLOBAL)
 public class RoleManager {
     private final Farmer farmer = new Farmer();
     private final Miner miner = new Miner();
