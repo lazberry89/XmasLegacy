@@ -135,5 +135,8 @@ commands:
     description: spawning stock indicating display
 
   wild:
+    description: test command for server transfer
 
+  mine:
+    description: setting mine
 
