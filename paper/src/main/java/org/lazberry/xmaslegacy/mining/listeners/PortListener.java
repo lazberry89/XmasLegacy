@@ -53,14 +53,14 @@ public class PortListener implements Listener {
         if (mm.getWorld() == null || !player.getWorld().equals(mm.getWorld())) {
             return;
         }
-        if (!mm.canInteractOnPort(player) && !player.isOp()) {
+        if (!mm.isInsideInternalField(player) && !player.isOp()) {
             InfoUtils.error(player, "여기선 블록을 캘 수 없어요!");
             e.setCancelled(true);
             return;
         }
 
         Block broken = e.getBlock();
-        if (mm.isBreakable(broken.getType())) {
+        if (mm.isBreakable(broken.getType()) && mm.isInsideInternalField(player)) {
             Location loc = broken.getLocation();
             Bukkit.getScheduler().runTask(plugin, () ->
                 loc.getBlock().setType(mm.randomOreByChance()));
@@ -71,7 +71,9 @@ public class PortListener implements Listener {
                 InfoUtils.warn(player, "강제로 로드를 시도합니다.");
                 UserHandler.loadUser(player, false);
             });
-        } else e.setCancelled(true);
+        } else if (!player.isOp()) {
+		    e.setCancelled(true);
+	    }
     }
 
 	@EventHandler

@@ -48,10 +48,9 @@ public class MineManager {
                 .build();
     }
 
-    public boolean canInteractOnPort(Player player) {
+    public boolean isInsideInternalField(Player player) {
         if (!player.getWorld().equals(world)) return true;
-        return player.isOp() ||
-                internalMine != null && internalMine.isInside(player.getLocation());
+        return internalMine != null && internalMine.isInside(player.getLocation());
     }
 
     public boolean registerExternal(MineField field) {
