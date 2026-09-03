@@ -17,20 +17,19 @@ public class TeleportalCreateManager {
 
     public TeleportalCreateManager() {}
 
-    public void setFirstLoc(Player p, Location loc) {
-        firstLoc.put(p.getUniqueId(), loc);
+    public void setFirstLoc(UUID uuid, Location loc) {
+        firstLoc.put(uuid, loc);
     }
 
-    public void setSecondLoc(Player p, Location loc) {
-        secondLoc.put(p.getUniqueId(), loc);
+    public void setSecondLoc(UUID uuid, Location loc) {
+        secondLoc.put(uuid, loc);
     }
 
-    public void setSpawnLoc(Player p, Location loc) {
-        spawnLoc.put(p.getUniqueId(), loc);
+    public void setSpawnLoc(UUID uuid, Location loc) {
+        spawnLoc.put(uuid, loc);
     }
 
-    public void clearSelection(Player p) {
-        var uuid = p.getUniqueId();
+    public void clearSelection(UUID uuid) {
         firstLoc.remove(uuid);
         secondLoc.remove(uuid);
         spawnLoc.remove(uuid);

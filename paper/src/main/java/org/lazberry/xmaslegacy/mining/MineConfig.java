@@ -67,13 +67,13 @@ public class MineConfig extends AbstractDataProcessor {
             Location internalLoc1 = builder.getValue(path + "locations.internal.loc1", Location.class);
             Location internalLoc2 = builder.getValue(path + "locations.internal.loc2", Location.class);
             if (internalLoc1 != null && internalLoc2 != null) {
-                mm.registerInternal(new MineField(internalLoc1, internalLoc2));
+                mm.forceInternal(new MineField(internalLoc1, internalLoc2));
             }
 
             Location externalLoc1 = builder.getValue(path + "locations.external.loc1", Location.class);
             Location externalLoc2 = builder.getValue(path + "locations.external.loc2", Location.class);
             if (externalLoc1 != null && externalLoc2 != null) {
-                mm.registerExternal(new MineField(externalLoc1, externalLoc2));
+                mm.forceExternal(new MineField(externalLoc1, externalLoc2));
             }
 
 

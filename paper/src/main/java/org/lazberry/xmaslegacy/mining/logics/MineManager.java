@@ -3,20 +3,25 @@ package org.lazberry.xmaslegacy.mining.logics;
 import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.mining.MineField;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.ItemBuilder;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 
-import java.lang.invoke.VolatileCallSite;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 @Registry.Include(type = ServerType.MAIN)
 public class MineManager {
+    public static final NamespacedKey key = KeyUtils.get("mine_tool");
+
     private final XmasLegacy plugin;
     private volatile World world;
     private volatile MineField externalMine;
@@ -36,6 +41,13 @@ public class MineManager {
         this.world = Bukkit.getWorld("port");
     }
 
+    public ItemStack tool() {
+        return ItemBuilder.of(plugin, Material.IRON_PICKAXE)
+                .setTag(key, true)
+                .setUnbreakable()
+                .build();
+    }
+
     public boolean canInteractOnPort(Player player) {
         if (!player.getWorld().equals(world)) return true;
         return player.isOp() ||
@@ -51,6 +63,10 @@ public class MineManager {
         return false;
     }
 
+    public void forceExternal(MineField field) {
+        externalMine = field;
+    }
+
     public boolean registerInternal(MineField field) {
         if (externalMine == null ||
                 field.sizeHorizontal() < externalMine.sizeHorizontal()) {
@@ -58,6 +74,10 @@ public class MineManager {
             return true;
         }
         return false;
+    }
+
+    public void forceInternal(MineField field) {
+        internalMine = field;
     }
 
     public Material randomOreByChance() {
