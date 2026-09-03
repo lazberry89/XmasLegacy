@@ -4,18 +4,25 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.ItemBuilder;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Registry.Include(type = ServerType.GLOBAL)
 public class TeleporterManager implements Initiator {
+	public static final NamespacedKey key = KeyUtils.get("teleporter");
+
     private @Getter @Setter long COOLDOWN_MILLIS = 3000L;
     private final Map<String, PortalEntry> teleporter = new ConcurrentHashMap<>();
     private final Map<UUID, Long> cooldown = new ConcurrentHashMap<>();
@@ -31,6 +38,13 @@ public class TeleporterManager implements Initiator {
     public void init() {
         startEffectTask();
     }
+
+	public ItemStack tool() {
+		return ItemBuilder.of(plugin, Material.SPECTRAL_ARROW)
+				.setTag(key, true)
+				.setUnbreakable()
+				.build();
+	}
 
     public Collection<PortalEntry> snapshot() {
         return Collections.unmodifiableCollection(teleporter.values());

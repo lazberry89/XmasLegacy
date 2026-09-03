@@ -2,12 +2,15 @@ package org.lazberry.xmaslegacy.mining.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.exp.ExpManager;
 import org.lazberry.xmaslegacy.mining.logics.MineManager;
@@ -15,10 +18,12 @@ import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 
+@Listeners
 @Registry.Include(type = ServerType.MAIN)
 public class PortListener implements Listener {
     private final MineManager mm;
@@ -36,9 +41,9 @@ public class PortListener implements Listener {
 
     @EventHandler
     public void rejectInteractOnPort(PlayerInteractEvent e) {
-        if (!e.hasBlock()) return;
+        if (e.hasBlock()) return;
         var player = e.getPlayer();
-        if (!mm.canInteractOnPort(player)) {
+        if (!mm.canInteractOnPort(player) && !player.isOp()) {
             e.setCancelled(true);
         }
     }
@@ -55,11 +60,9 @@ public class PortListener implements Listener {
     @EventHandler
     public void cancelBlockBreaking(BlockBreakEvent e) {
         var player = e.getPlayer();
-
         if (mm.getWorld() == null || !player.getWorld().equals(mm.getWorld())) {
             return;
         }
-
         if (!mm.canInteractOnPort(player)) {
             InfoUtils.error(player, "여기선 블록을 캘 수 없어요!");
             e.setCancelled(true);
@@ -80,4 +83,13 @@ public class PortListener implements Listener {
             });
         } else e.setCancelled(true);
     }
+
+	@EventHandler
+	public void onWorldLoad(WorldLoadEvent e) {
+		World w = e.getWorld();
+		if (w.getName().equalsIgnoreCase("port")) {
+			mm.setWorld(w);
+			Bukkit.broadcast(ColorUtils.chat("World settings to port!"));
+		}
+	}
 }

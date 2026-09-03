@@ -36,9 +36,14 @@ public class MineConfig extends AbstractDataProcessor {
             var external = mm.getExternalMine();
             var internal = mm.getInternalMine();
             String chancePath = path + "chance.";
-            ConfigBuilder.of(getConfig())
-                    .set(path + "world", world != null ? world.getName() : "world")
-                    .set(path + "locations." + "external." + "loc1", external == null ? null : external.loc1())
+
+            var builder = ConfigBuilder.of(getConfig());
+			if (world == null) {
+				log.error("Skipping world setting process..");
+			} else {
+				builder.set(path + "world", world.getName());
+			}
+			builder.set(path + "locations." + "external." + "loc1", external == null ? null : external.loc1())
                     .set(path + "locations." + "external." + "loc2", external == null ? null : external.loc2())
                     .set(path + "locations." + "internal." + "loc1", internal == null ? null : internal.loc1())
                     .set(path + "locations." + "internal." + "loc2", internal == null ? null : internal.loc2())
@@ -59,7 +64,7 @@ public class MineConfig extends AbstractDataProcessor {
             var builder = ConfigBuilder.of(getConfig());
             String path = "settings.";
 
-            String worldName = builder.getValue(path + "world", "world");
+            String worldName = builder.getValue(path + "world", "port");
             World world = Bukkit.getWorld(worldName);
             if (world != null) {
                 mm.setWorld(world);
