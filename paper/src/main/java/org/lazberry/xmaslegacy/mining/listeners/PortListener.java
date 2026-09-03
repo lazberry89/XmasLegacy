@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -38,15 +37,6 @@ public class PortListener implements Listener {
         this.em = em;
         this.plugin = plugin;
     }
-
-    @EventHandler
-    public void rejectInteractOnPort(PlayerInteractEvent e) {
-        if (e.hasBlock()) return;
-        var player = e.getPlayer();
-        if (!mm.canInteractOnPort(player) && !player.isOp()) {
-            e.setCancelled(true);
-        }
-    }
     
     @EventHandler
     public void cancelBlockPlacing(BlockPlaceEvent e) {
@@ -63,7 +53,7 @@ public class PortListener implements Listener {
         if (mm.getWorld() == null || !player.getWorld().equals(mm.getWorld())) {
             return;
         }
-        if (!mm.canInteractOnPort(player)) {
+        if (!mm.canInteractOnPort(player) && !player.isOp()) {
             InfoUtils.error(player, "여기선 블록을 캘 수 없어요!");
             e.setCancelled(true);
             return;
