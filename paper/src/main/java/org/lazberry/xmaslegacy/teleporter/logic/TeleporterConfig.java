@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.teleporter;
+package org.lazberry.xmaslegacy.teleporter.logic;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Color;
@@ -37,7 +37,6 @@ public class TeleporterConfig extends AbstractDataProcessor {
                 String path = "portals." + entry.id() + ".";
                 builder.set(path + "entrance-teleporter.loc1", entry.entrance().getLoc1());
                 builder.set(path + "entrance-teleporter.loc2", entry.entrance().getLoc2());
-                builder.set(path + "entrance-teleporter.spawn", entry.entrance().getSpawn());
                 builder.set(path + "entrance-teleporter.color", entry.entrance().getColor());
                 builder.set(path + "destination", entry.destination());
             }
@@ -59,17 +58,16 @@ public class TeleporterConfig extends AbstractDataProcessor {
             for (String key : section.getKeys(false)) {
                 Location loc1 = section.getLocation(key + ".entrance-teleporter.loc1");
                 Location loc2 = section.getLocation(key + ".entrance-teleporter.loc2");
-                Location spawn = section.getLocation(key + ".entrance-teleporter.spawn");
                 Color color = section.getColor(key + ".entrance-teleporter.color", Color.GRAY);
 
                 Location destination = section.getLocation(key + ".destination");
 
-                if (loc1 == null || loc2 == null || spawn == null || destination == null) {
+                if (loc1 == null || loc2 == null || destination == null) {
                     log.error("Portal info [{}] is damaged. Skipping...", key);
                     continue;
                 }
 
-                Teleporter teleporter = new Teleporter(loc1, loc2, spawn, color);
+                Teleporter teleporter = new Teleporter(loc1, loc2, color);
                 if (!tm.registerWay(key, teleporter, destination)) {
                     log.error("Failed to register portal instance [{}] to Manager.", key);
                 }

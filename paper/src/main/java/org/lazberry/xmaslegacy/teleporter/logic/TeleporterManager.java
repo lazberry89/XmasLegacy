@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.teleporter;
+package org.lazberry.xmaslegacy.teleporter.logic;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -45,6 +47,14 @@ public class TeleporterManager implements Initiator {
 				.setUnbreakable()
 				.build();
 	}
+
+    public boolean isTool(@Nullable ItemStack item) {
+        return item != null && item.getPersistentDataContainer().has(key, PersistentDataType.BOOLEAN);
+    }
+
+    public List<String> identityList() {
+        return List.copyOf(teleporter.keySet());
+    }
 
     public Collection<PortalEntry> snapshot() {
         return Collections.unmodifiableCollection(teleporter.values());

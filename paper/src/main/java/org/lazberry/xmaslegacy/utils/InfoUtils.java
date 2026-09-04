@@ -40,7 +40,7 @@ public final class InfoUtils {
     }
 
     public void traceException(@NotNull Throwable e) {
-        log.error("Cause : {}\n\n Full Message : {}", e.getCause(), e.getMessage());
+        log.error("Error occurred: ", e);
     }
 
     private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull Component message) {

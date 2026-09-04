@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.teleporter;
+package org.lazberry.xmaslegacy.teleporter.listener;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -10,6 +10,7 @@ import org.bukkit.util.Vector;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.teleporter.logic.TeleporterManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.Optional;

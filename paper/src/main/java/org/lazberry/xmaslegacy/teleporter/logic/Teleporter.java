@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.teleporter;
+package org.lazberry.xmaslegacy.teleporter.logic;
 
 import lombok.Getter;
 import org.bukkit.Color;
@@ -14,14 +14,12 @@ import java.util.function.Consumer;
 public class Teleporter {
     private final Location loc1;
     private final Location loc2;
-    private final Location spawn;
     private final Color color;
     private final Particle.DustOptions option;
 
-    public Teleporter(Location loc1, Location loc2, Location spawn, Color color) {
+    public Teleporter(Location loc1, Location loc2, Color color) {
         this.loc1 = loc1;
         this.loc2 = loc2;
-        this.spawn = spawn;
         this.color = color;
         this.option = new Particle.DustOptions(color, 0.6f);
     }

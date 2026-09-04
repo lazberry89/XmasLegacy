@@ -46,10 +46,6 @@ commands:
   cos: #0
     usage: /cos <add | remove | equip | unequip> <Name>
     description: 치장을 관리합니다.
-
-  상점: #0
-    usage: /상점
-    description: 공용 상점을 여는 명령어에요.
   
   직업선택: #0
     usage: /직업선택
@@ -81,18 +77,6 @@ commands:
 
   head:
     description: 손의 아이템을 머리에 씌운다.
-
-  test:
-    description: 1차직업 무기, 책 아이템 꺼내기용 명령어
-
-  potion:
-    description: 성직자의 포션을 꺼낸다.
-
-  system:
-    description: 테스트용 상점 명령어. 적극 수정 필요
-
-  shop:
-    description: 상점을 연다.
 
   book:
     description: 직업 선택 책 아이템 디스플레이를 생성한다.
@@ -139,4 +123,8 @@ commands:
 
   mine:
     description: setting mine
+
+  portal:
+    usage: /portal <create | remove> <id>
+    description: Linking location with portal
 
