@@ -184,18 +184,18 @@ public class Axiom {
 	}
 
 	public static boolean isInBoundingBox(Location target, Location loc1, Location loc2) {
-		if (target.getWorld() != loc1.getWorld() || target.getWorld() != loc2.getWorld()) return false;
+		if (target.getWorld() != loc1.getWorld()) return false;
 
 		double minX = Math.min(loc1.getX(), loc2.getX());
-		double maxX = Math.max(loc1.getX(), loc2.getX());
+		double maxX = Math.max(loc1.getX(), loc2.getX()) + 1.0;
 		double minY = Math.min(loc1.getY(), loc2.getY());
-		double maxY = Math.max(loc1.getY(), loc2.getY());
+		double maxY = Math.max(loc1.getY(), loc2.getY()) + 1.5;
 		double minZ = Math.min(loc1.getZ(), loc2.getZ());
-		double maxZ = Math.max(loc1.getZ(), loc2.getZ());
+		double maxZ = Math.max(loc1.getZ(), loc2.getZ()) + 1.0;
 
-		return target.getX() >= minX && target.getX() <= maxX &&
-				target.getY() >= minY && target.getY() <= maxY &&
-				target.getZ() >= minZ && target.getZ() <= maxZ;
+		return target.getX() >= minX && target.getX() < maxX &&
+				target.getY() >= minY && target.getY() < maxY &&
+				target.getZ() >= minZ && target.getZ() < maxZ;
 	}
 
 	public static long secondsToTicks(double seconds) {

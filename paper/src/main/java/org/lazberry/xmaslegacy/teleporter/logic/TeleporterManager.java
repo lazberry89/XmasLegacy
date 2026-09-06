@@ -63,12 +63,6 @@ public class TeleporterManager implements Initiator {
     public boolean canTeleport(Location from, Location to) {
         if (from == null || to == null) return false;
 
-        if (from.getBlockX() == to.getBlockX() &&
-                from.getBlockY() == to.getBlockY() &&
-                from.getBlockZ() == to.getBlockZ()) {
-            return false;
-        }
-
         if (getDestination(from).isPresent()) {
             return false;
         }

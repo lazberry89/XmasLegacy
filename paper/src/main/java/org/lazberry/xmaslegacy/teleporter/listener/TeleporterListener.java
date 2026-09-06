@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -15,6 +16,7 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.Optional;
 
+@Listeners
 @Registry.Include(type = ServerType.GLOBAL)
 public class TeleporterListener implements Listener {
     private final TeleporterManager tm;
@@ -29,7 +31,13 @@ public class TeleporterListener implements Listener {
         Player player = e.getPlayer();
         Location to = e.getTo();
         Location from = e.getFrom();
-        if (!e.hasChangedBlock()) return;
+
+	    if (from.getBlockX() == to.getBlockX()
+			    && from.getBlockY() == to.getBlockY()
+			    && from.getBlockZ() == to.getBlockZ()) {
+		    return;
+	    }
+
         if (tm.canTeleport(from, to)) {
             if (tm.isCooldown(player.getUniqueId())) {
                 Vector moveDirection = to.toVector().subtract(from.toVector()).normalize();

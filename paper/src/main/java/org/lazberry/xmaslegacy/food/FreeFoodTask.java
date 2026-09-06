@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.PlayerUtils.BagManager;
+import org.lazberry.xmaslegacy.PlayerUtils.bag.BagManager;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;

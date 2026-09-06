@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils;
+package org.lazberry.xmaslegacy.PlayerUtils.bag;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils;
+package org.lazberry.xmaslegacy.PlayerUtils.bag;
 
 import com.google.common.collect.Lists;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;

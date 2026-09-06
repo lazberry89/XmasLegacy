@@ -27,15 +27,14 @@ import java.util.Optional;
 @Registry.Include(type = ServerType.GLOBAL)
 public class TeleporterCommand implements CommandExecutor, TabCompleter {
     private final Map<String, SubCommand> commands;
-    private final TeleporterCreateManager tcm;
     private final TeleporterManager tm;
 
     @Inject
     public TeleporterCommand(TeleporterCreateManager tcm, TeleporterManager tm) {
-        this.tcm = tcm;
         this.tm = tm;
         this.commands = Map.of(
-                "create", new TeleporterCommandCreate(tm, tcm)
+                "create", new TeleporterCommandCreate(tm, tcm),
+		        "remove", new TeleporterCommandRemove(tm)
         );
     }
 
