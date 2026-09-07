@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils.knockout;
+package org.lazberry.xmaslegacy.playerUtils.knockout;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

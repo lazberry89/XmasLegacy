@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils.bag;
+package org.lazberry.xmaslegacy.playerUtils.bag;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.Sound;

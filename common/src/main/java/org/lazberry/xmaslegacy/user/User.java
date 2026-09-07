@@ -36,13 +36,14 @@ public class User {
 	private int playTime = 0;
 	private int exp = 0;
 	private int roleExp = 0;
-	private int level = 0;
+	private int sinPoints = 0;
+	private @Deprecated int level = 0;
     private @NotNull Tier tier = Tier.VISITOR;
     private @NotNull RoleMastery mastery = RoleMastery.BEGINNER;
     private boolean isMobile = false;
 	private boolean isNewUser = false;
 	private boolean wantsCookie = true;
-	private final @NotNull List<ServerPrefix> availablePrefix = new ArrayList<>(List.of(Tier.VISITOR, Tier.USER));
+	private final @NotNull List<ServerPrefix> availablePrefix = new ArrayList<>(List.of(Tier.VISITOR, Tier.USER, RoleMastery.BEGINNER));
 	private @Nullable ServerPrefix equipPrefix = Tier.VISITOR;
     private boolean isImmuneToIcing = false;
 	private int icingState = 100;
@@ -55,6 +56,12 @@ public class User {
 		this.name = name;
     }
 
+	public void addSinPoints(int amount) {
+		this.sinPoints = Math.max(0, this.sinPoints + amount);
+	}
+	public void reduceSinPoints(int amount) {
+		this.sinPoints = Math.max(0, this.sinPoints - amount);
+	}
 	public void addIcingState(int icingState) {
 		this.icingState = Math.clamp(this.icingState + icingState, 0, 100);
 	}

@@ -46,6 +46,7 @@ public class UserEmergencyDump {
         props.setProperty("playTime", String.valueOf(user.getPlayTime()));
         props.setProperty("Exp", String.valueOf(user.getExp()));
         props.setProperty("roleExp", String.valueOf(user.getRoleExp()));
+        props.setProperty("sinPoints", String.valueOf(user.getSinPoints()));
         props.setProperty("level", String.valueOf(user.getLevel()));
         props.setProperty("isNewUser", String.valueOf(user.isNewUser()));
         props.setProperty("wantsCookie", String.valueOf(user.ifWantsCookie()));
@@ -80,6 +81,7 @@ public class UserEmergencyDump {
             recoveredUser.setPlayTime(Integer.parseInt(props.getProperty("playTime", "0")));
             recoveredUser.setExp(Integer.parseInt(props.getProperty("Exp", "0")));
             recoveredUser.setRoleExp(Integer.parseInt(props.getProperty("roleExp", "0")));
+            recoveredUser.setSinPoints(Integer.parseInt(props.getProperty("sinPoints", "0")));
             recoveredUser.setLevel(Integer.parseInt(props.getProperty("level", "0")));
             recoveredUser.setNewUser(Boolean.parseBoolean(props.getProperty("isNewUser", "false")));
             recoveredUser.wantsCookie(Boolean.parseBoolean(props.getProperty("wantsCookie", "false")));

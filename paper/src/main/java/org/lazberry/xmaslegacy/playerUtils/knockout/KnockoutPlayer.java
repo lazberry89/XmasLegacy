@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils.knockout;
+package org.lazberry.xmaslegacy.playerUtils.knockout;
 
 import lombok.Data;
 import net.kyori.adventure.text.format.NamedTextColor;

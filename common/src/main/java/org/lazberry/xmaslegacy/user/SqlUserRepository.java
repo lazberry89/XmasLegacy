@@ -46,6 +46,7 @@ public class SqlUserRepository implements UserRepository {
 				"playTime INT, " +
 				"Exp INT, " +
 				"roleExp INT," +
+				"sinPoints INT," +
 				"level INT," +
 				"isNewUser BOOLEAN, " +
 				"wantsCookie BOOLEAN, " +
@@ -84,6 +85,7 @@ public class SqlUserRepository implements UserRepository {
 				loadedUser.setPlayTime(rs.getInt("playTime"));
 				loadedUser.setExp(rs.getInt("Exp"));
 				loadedUser.setRoleExp(rs.getInt("roleExp"));
+				loadedUser.setSinPoints(rs.getInt("sinPoints"));
 				loadedUser.setLevel(rs.getInt("level"));
 				loadedUser.setNewUser(rs.getBoolean("isNewUser"));
 				loadedUser.wantsCookie(rs.getBoolean("wantsCookie"));
@@ -137,8 +139,8 @@ public class SqlUserRepository implements UserRepository {
 	@Override
 	public void saveUser(@NotNull User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
-		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -151,14 +153,15 @@ public class SqlUserRepository implements UserRepository {
 			pstmt.setInt(6, user.getPlayTime());
 			pstmt.setInt(7, user.getExp());
 			pstmt.setInt(8, user.getRoleExp());
-			pstmt.setInt(9, user.getLevel());
-			pstmt.setBoolean(10, user.isNewUser());
-			pstmt.setBoolean(11, user.ifWantsCookie());
-			pstmt.setString(12, user.getTier().name());
-			pstmt.setString(13, user.getMastery().name());
-			pstmt.setBoolean(14, user.isImmuneToIcing());
-			pstmt.setInt(15, user.getIcingState());
-			pstmt.setBoolean(16, user.isShowBoard());
+			pstmt.setInt(9, user.getSinPoints());
+			pstmt.setInt(10, user.getLevel());
+			pstmt.setBoolean(11, user.isNewUser());
+			pstmt.setBoolean(12, user.ifWantsCookie());
+			pstmt.setString(13, user.getTier().name());
+			pstmt.setString(14, user.getMastery().name());
+			pstmt.setBoolean(15, user.isImmuneToIcing());
+			pstmt.setInt(16, user.getIcingState());
+			pstmt.setBoolean(17, user.isShowBoard());
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
