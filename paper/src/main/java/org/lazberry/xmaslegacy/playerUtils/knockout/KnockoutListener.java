@@ -31,10 +31,11 @@ public class KnockoutListener implements Listener {
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if (!pm.isInParty(uuid) || KnockoutPlayer.isKnockedOut(player)) return;
-
-        e.setCancelled(true);
-        km.knockdownPlayer(player);
+        if (!pm.isInParty(uuid)) return;
+		if (!KnockoutPlayer.isKnockedOut(player)) {
+			e.setCancelled(true);
+			km.knockdownPlayer(player);
+		}
     }
 
     @EventHandler

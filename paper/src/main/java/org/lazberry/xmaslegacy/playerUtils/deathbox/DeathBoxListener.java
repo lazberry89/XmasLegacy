@@ -16,6 +16,7 @@ import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.List;
@@ -60,8 +61,10 @@ public class DeathBoxListener implements Listener {
         Player player = e.getPlayer();
         var rightClicked = e.getClickedBlock();
         if (rightClicked != null && rightClicked.getType() == Material.CHEST) {
-            Location loc = rightClicked.getLocation();
+            Location loc = rightClicked.getLocation().toBlockLocation();
             dm.getDeathBox(loc).ifPresent(b -> {
+				player.sendMessage(ColorUtils.chat("찾음!"));
+
                 e.setCancelled(true);
                 player.openInventory(b.getInventory());
             });
