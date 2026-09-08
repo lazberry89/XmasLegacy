@@ -50,7 +50,7 @@ public class DeathBoxManager implements Initiator {
             if (e == null) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     l.forEach(d -> {
-                        deathBoxes.put(d.getLocation().toBlockLocation(), d);
+                        deathBoxes.put(d.getLocation(), d);
                         boxQueue.add(d);
                     });
                     expireClearTask();
@@ -94,14 +94,14 @@ public class DeathBoxManager implements Initiator {
 
     public void dropDeathBox(Player dead, List<ItemStack> drops) {
         var box = new DeathBox(dead, drops.toArray(ItemStack[]::new), expireTime, hideName);
-        deathBoxes.put(dead.getLocation().toBlockLocation(), box);
+        deathBoxes.put(box.getLocation(), box);
         boxQueue.add(box);
 
         drops.clear();
     }
 
     public void removeDeathBox(Location loc) {
-        removeDeathBox(deathBoxes.get(loc.toBlockLocation()));
+        removeDeathBox(deathBoxes.get(loc.getBlock().getLocation()));
     }
 
     public void removeDeathBox(DeathBox box) {
@@ -113,7 +113,7 @@ public class DeathBoxManager implements Initiator {
     }
 
     public Optional<DeathBox> getDeathBox(Location loc) {
-        return Optional.ofNullable(deathBoxes.get(loc.toBlockLocation()));
+        return Optional.ofNullable(deathBoxes.get(loc.getBlock().getLocation()));
     }
 
     public List<DeathBox> queueSnapshot() {

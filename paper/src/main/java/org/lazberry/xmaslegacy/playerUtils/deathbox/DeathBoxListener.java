@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -16,7 +17,6 @@ import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.List;
@@ -54,22 +54,19 @@ public class DeathBoxListener implements Listener {
                 loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName());
     }
 
-    @EventHandler
-    public void openDeathBox(PlayerInteractEvent e) {
-        if (!e.getAction().isRightClick()) return;
+	@EventHandler
+	public void openDeathBox(PlayerInteractEvent e) {
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		var clickedBlock = e.getClickedBlock();
+		if (clickedBlock == null || clickedBlock.getType() != Material.CHEST) return;
 
-        Player player = e.getPlayer();
-        var rightClicked = e.getClickedBlock();
-        if (rightClicked != null && rightClicked.getType() == Material.CHEST) {
-            Location loc = rightClicked.getLocation().toBlockLocation();
-            dm.getDeathBox(loc).ifPresent(b -> {
-				player.sendMessage(ColorUtils.chat("찾음!"));
+		Location loc = clickedBlock.getLocation();
 
-                e.setCancelled(true);
-                player.openInventory(b.getInventory());
-            });
-        }
-    }
+		dm.getDeathBox(loc).ifPresent(box -> {
+			e.setCancelled(true);
+			e.getPlayer().openInventory(box.getInventory());
+		});
+	}
 
     @EventHandler
     public void removeDeathBoxWhenEmpty(InventoryCloseEvent e) {

@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.playerUtils.knockout.KnockoutPlayer;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
@@ -128,9 +129,10 @@ public class UserPartyScoreBoard implements Tasks {
 		int emptyCount = 10 - filledCount;
 
 		StringBuilder bar = new StringBuilder("&7&l[&r");
+		String color = KnockoutPlayer.isKnockedOut(player) ? "&e" : "&c";
 
 		if (filledCount > 0) {
-			bar.append("&c");
+			bar.append(color);
 			bar.repeat("■", filledCount);
 		}
 

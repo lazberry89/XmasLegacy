@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.playerUtils.knockout;
 
 import lombok.Data;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -11,10 +12,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Data
@@ -31,6 +29,10 @@ public class KnockoutManager {
 		this.pm = pm;
 	}
 
+	public Optional<KnockoutPlayer> getKnockoutPlayer(UUID uuid) {
+		return Optional.ofNullable(knockoutPlayers.get(uuid));
+	}
+
 	protected Collection<UUID> getKnockoutPlayerId() {
 		return Collections.unmodifiableCollection(knockoutPlayers.keySet());
 	}
@@ -39,10 +41,22 @@ public class KnockoutManager {
 		return Collections.unmodifiableCollection(knockoutPlayers.values());
 	}
 
+	public void removeKnockoutPlayer(Player player) {
+		var uuid = player.getUniqueId();
+		getKnockoutPlayer(uuid).ifPresent(KnockoutPlayer::cleanup);
+		knockoutPlayers.remove(uuid);
+	}
+
+	public void removeKnockoutPlayer(@NotNull KnockoutPlayer player) {
+		if (knockoutPlayers.containsValue(player)) {
+			knockoutPlayers.remove(player.getUuid());
+		}
+		player.cleanup();
+	}
+
 	public void knockdownPlayer(@Nullable Player player) {
 		if (player == null || !player.isOnline() || !player.isValid()) return;
 		var uuid = player.getUniqueId();
-		if (!pm.isInParty(uuid)) return;
 
 		KnockoutPlayer kp = knockoutPlayers.computeIfAbsent(uuid,
 				u -> new KnockoutPlayer(player, reviveCount, reviveHealth));

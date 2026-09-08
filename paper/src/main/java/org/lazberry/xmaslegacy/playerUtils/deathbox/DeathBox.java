@@ -57,7 +57,7 @@ public class DeathBox implements InventoryHolder {
     public DeathBox(@NotNull Player player, @Nullable ItemStack[] contents, long expireTime, boolean hide) {
         if (contents == null || contents.length == 0) setExpired(true);
         this.uuid = player.getUniqueId();
-        this.location = player.getLocation().toBlockLocation();
+        this.location = player.getLocation().getBlock().getLocation();
         this.world = location.getWorld();
         this.previousBlock = location.getBlock().getType();
         this.spawnedTime = System.currentTimeMillis();
@@ -69,7 +69,7 @@ public class DeathBox implements InventoryHolder {
                     this.contents.add(item.clone());
             }
         }
-        String format = hide ? "&c&l" : "&c&k";
+        String format = !hide ? "&c&l" : "&c&k";
 
         int invSize = this.contents.size() > 27 ? 36 : 27;
         this.inv = Bukkit.createInventory(this, invSize, ColorUtils.chat(format + player.getName() + "&r&c&l의 시체상자"));

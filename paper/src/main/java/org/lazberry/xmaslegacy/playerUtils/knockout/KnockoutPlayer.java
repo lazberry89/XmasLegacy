@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
+import org.lazberry.xmaslegacy.utils.StunUtils;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class KnockoutPlayer {
 		return Optional.ofNullable(Bukkit.getPlayer(uuid));
 	}
 
-	protected KnockoutPlayer(Player player, int reviveCount, double reviveHealth) {
+	public KnockoutPlayer(Player player, int reviveCount, double reviveHealth) {
 		this.uuid = player.getUniqueId();
 		this.reviveHealth = reviveHealth;
 		this.reviveCount = reviveCount;
@@ -50,33 +51,41 @@ public class KnockoutPlayer {
 		}
 		GlowUtils.glow(player, NamedTextColor.WHITE);
 		KeyUtils.set(player, key, true);
-		player.setPose(Pose.SWIMMING, true);
-		player.addPotionEffect(new PotionEffect(
-				PotionEffectType.SLOWNESS, Integer.MAX_VALUE, 2, true, false, false));
+		StunUtils.stun(player.getUniqueId(), "기절");
+		player.setPose(Pose.SLEEPING, true);
 		player.addPotionEffect(new PotionEffect(
 				PotionEffectType.DARKNESS, Integer.MAX_VALUE, 2, true, false, false));
 		player.addPotionEffect(new PotionEffect(
-				PotionEffectType.WITHER, Integer.MAX_VALUE, 1, true, false, false));
+				PotionEffectType.WITHER, Integer.MAX_VALUE, 2, true, false, false));
 	}
 
 	public void revive() {
 		OptionalUtils.ifNotNull(Bukkit.getPlayer(uuid), player -> {
 			if (!player.isValid() || !player.isOnline()) return;
 
-			var world = player.getWorld();
-			var loc = player.getLocation();
-			GlowUtils.clearGlow(player);
-			if (player.getPersistentDataContainer().has(key))
-				player.getPersistentDataContainer().remove(key);
-			player.removePotionEffect(PotionEffectType.SLOWNESS);
-			player.removePotionEffect(PotionEffectType.DARKNESS);
-			player.removePotionEffect(PotionEffectType.WITHER);
-			player.setPose(Pose.STANDING, false);
+			cleanup();
 
 			player.setHealth(reviveHealth);
-			player.setPose(Pose.STANDING, true);
+
+			var world = player.getWorld();
+			var loc = player.getLocation();
 			world.spawnParticle(Particle.HAPPY_VILLAGER, loc, 10, 0.5, 0.5, 0.5, 0.01);
 			world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1.0f);
+		});
+	}
+
+	public void cleanup() {
+		OptionalUtils.ifNotNull(Bukkit.getPlayer(uuid), player -> {
+			GlowUtils.clearGlow(player);
+			StunUtils.release(player.getUniqueId());
+
+			if (player.getPersistentDataContainer().has(key)) {
+				player.getPersistentDataContainer().remove(key);
+			}
+
+			player.removePotionEffect(PotionEffectType.DARKNESS);
+			player.removePotionEffect(PotionEffectType.WITHER);
+			player.setPose(Pose.STANDING, true);
 		});
 	}
 

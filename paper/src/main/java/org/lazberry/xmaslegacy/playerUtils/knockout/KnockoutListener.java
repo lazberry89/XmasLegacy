@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
@@ -26,17 +27,18 @@ public class KnockoutListener implements Listener {
         this.pm = pm;
     }
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void knockdownWhenDeadIfHasParty(PlayerDeathEvent e) {
-        Player player = e.getPlayer();
-        UUID uuid = player.getUniqueId();
+	@EventHandler(priority = EventPriority.LOW)
+	public void knockdownWhenDeadIfHasParty(EntityDamageEvent e) {
+		if (!(e.getEntity() instanceof Player player)) return;
+		UUID uuid = player.getUniqueId();
 
-        if (!pm.isInParty(uuid)) return;
-		if (!KnockoutPlayer.isKnockedOut(player)) {
+		if (!pm.isInParty(uuid) || KnockoutPlayer.isKnockedOut(player)) return;
+
+		if (player.getHealth() - e.getFinalDamage() <= 0) {
 			e.setCancelled(true);
 			km.knockdownPlayer(player);
 		}
-    }
+	}
 
     @EventHandler
     public void revivePartyPlayer(PlayerInteractEntityEvent e) {
@@ -52,4 +54,15 @@ public class KnockoutListener implements Listener {
             km.clickProcess(helper, downed);
         }
     }
+
+	@EventHandler
+	public void ifDeadWhenKnockedDown(PlayerDeathEvent e) {
+		if (e.isCancelled()) return;
+		Player player = e.getPlayer();
+		UUID uuid = player.getUniqueId();
+
+		if (KnockoutPlayer.isKnockedOut(player)) {
+			km.getKnockoutPlayer(uuid).ifPresent(km::removeKnockoutPlayer);
+		}
+	}
 }
