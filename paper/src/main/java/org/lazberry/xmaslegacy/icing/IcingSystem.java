@@ -57,11 +57,16 @@ public class IcingSystem implements Tasks {
 
                 int amount = user.getIcingState();
 				int nextAmount = Math.max(0, amount - 1);
-                user.setIcingState(nextAmount);
+				var event = new PlayerIcingStateReduceEvent(p, user, amount, nextAmount);
+				Bukkit.getPluginManager().callEvent(event);
 
-                bar.updateBar(p, nextAmount);
+				if (event.isCancelled()) return;
+				var resetAmount = event.getNextAmount();
+                user.setIcingState(resetAmount);
 
-                sendWarnAndAction(p, nextAmount);
+                bar.updateBar(p, resetAmount);
+
+                sendWarnAndAction(p, resetAmount);
             }), 0L, 20 * 3);
     }
 

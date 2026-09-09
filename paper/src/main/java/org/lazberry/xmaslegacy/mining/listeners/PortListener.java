@@ -4,12 +4,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
+import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.exp.ExpManager;
 import org.lazberry.xmaslegacy.mining.logics.MineManager;
@@ -25,13 +29,15 @@ import org.lazberry.xmaslegacy.utils.UserHandler;
 @Listeners
 @Registry.Include(type = ServerType.MAIN)
 public class PortListener implements Listener {
+    private final SpawnRepository sr;
     private final MineManager mm;
     private final UserManager um;
     private final ExpManager em;
     private final XmasLegacy plugin;
 
     @Inject
-    public PortListener(MineManager mm, UserManager um, ExpManager em, XmasLegacy plugin) {
+    public PortListener(SpawnRepository sr, MineManager mm, UserManager um, ExpManager em, XmasLegacy plugin) {
+        this.sr = sr;
         this.mm = mm;
         this.um = um;
         this.em = em;
@@ -84,4 +90,16 @@ public class PortListener implements Listener {
 			Bukkit.broadcast(ColorUtils.chat("World settings to port!"));
 		}
 	}
+
+    @EventHandler
+    public void whenDeadAndTeleport(PlayerRespawnEvent e) {
+        Player player = e.getPlayer();
+        Location loc = sr.get(DestinationType.PORT).getSpawn();
+        if (loc == null) {
+            InfoUtils.error(player, "스폰이 설정되지 않았습니다. 자동으로 문의됩니다.");
+            player.performCommand("inquiry 항구 스폰설정이 되지 않았습니다.");
+            return;
+        }
+        player.teleport(loc);
+    }
 }

@@ -22,25 +22,26 @@ import java.util.UUID;
 @Data
 public class KnockoutPlayer {
 	public static final NamespacedKey key = KeyUtils.get("knockdown");
+	public static final NamespacedKey left = KeyUtils.get("left_knocked");
+
+	public static boolean isKnockedOut(Player player) {
+		return player.getPersistentDataContainer().has(key);
+	}
 
 	private final UUID uuid;
 	private final double reviveHealth;
 	private int reviveCount;
 	private long lastClickedMillis = 0;
 
-	public static boolean isKnockedOut(Player player) {
-		return player.getPersistentDataContainer().has(key);
-	}
-
-	public Optional<Player> getPlayer() {
-		return Optional.ofNullable(Bukkit.getPlayer(uuid));
-	}
-
 	public KnockoutPlayer(Player player, int reviveCount, double reviveHealth) {
 		this.uuid = player.getUniqueId();
 		this.reviveHealth = reviveHealth;
 		this.reviveCount = reviveCount;
 		knockdown(player);
+	}
+
+	public Optional<Player> getPlayer() {
+		return Optional.ofNullable(Bukkit.getPlayer(uuid));
 	}
 
 	private void knockdown(Player player) {

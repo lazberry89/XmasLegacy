@@ -1,10 +1,11 @@
 package org.lazberry.xmaslegacy.utils;
 
+import io.papermc.paper.persistence.PersistentDataViewHolder;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus;
@@ -12,6 +13,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
+
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public final class KeyUtils {
@@ -38,38 +41,69 @@ public final class KeyUtils {
     }
 
     @Contract("null, _, _ -> null")
-    public static <V> @Nullable V get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull Class<V> clazz) {
-        if (item == null) return null;
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return null;
+    public static <V> @Nullable V get(@Nullable PersistentDataHolder holder, @NotNull NamespacedKey key, @NotNull Class<V> clazz) {
+        if (holder == null) return null;
 
         PersistentDataType<?, V> type = getDataType(clazz);
-        return meta.getPersistentDataContainer().get(key, type);
+        return get(holder, key, type);
     }
 
     @Contract("null, _, _ -> null")
-    public static <V> @Nullable V get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull PersistentDataType<?, V> type) {
-        if (item == null) return null;
+    public static <V> @Nullable V get(@Nullable PersistentDataHolder holder, @NotNull NamespacedKey key, @NotNull PersistentDataType<?, V> type) {
+        if (holder == null) return null;
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return null;
-        return meta.getPersistentDataContainer().get(key, type);
+        return holder.getPersistentDataContainer().get(key, type);
     }
 
     @Contract("null, _, _ -> param3")
-    public static <T> @NotNull T get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull T def) {
-        T value = get(item, key, (Class<T>) def.getClass());
+    public static <T> @NotNull T get(@Nullable PersistentDataHolder holder, @NotNull NamespacedKey key, @NotNull T def) {
+        T value = get(holder, key, (Class<T>) def.getClass());
         return value == null ? def : value;
+    }
+
+    @Contract("null, _, _ -> null")
+    public static <V> @Nullable V get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull Class<V> clazz) {
+        if (item == null || item.getType().isAir()) return null;
+        return get(item.getItemMeta(), key, clazz);
+    }
+
+    @Contract("null, _, _ -> null")
+    public static <V> @Nullable V get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull PersistentDataType<?, V> container) {
+        if (item == null || item.getType().isAir()) return null;
+        return get(item.getItemMeta(), key, container);
+    }
+
+    @Contract("null, _ -> false")
+    public static boolean hasKey(@Nullable PersistentDataViewHolder viewHolder, @NotNull NamespacedKey key) {
+        if (viewHolder == null) return false;
+
+        return viewHolder.getPersistentDataContainer().has(key);
     }
 
     @Contract("null, _ -> false")
     public static boolean hasKey(@Nullable ItemStack item, @NotNull NamespacedKey key) {
-        if (item == null) return false;
-        var meta = item.getItemMeta();
+        if (item == null || item.getType().isAir()) return false;
+        return hasKey(item.getItemMeta(), key);
+    }
 
-        return meta != null
-                && meta.getPersistentDataContainer().has(key);
+    @Contract("null, _, _, _ -> false")
+    public static <T, V> boolean hasKey(@Nullable ItemStack item, @NotNull NamespacedKey key, PersistentDataType<T, V> type, V value) {
+        if (item == null) return false;
+
+        var meta = item.getItemMeta();
+        if (meta == null) return false;
+
+        var container = meta.getPersistentDataContainer();
+
+        if (!container.has(key, type)) return false;
+
+        V actualValue = container.get(key, type);
+        return Objects.equals(value, actualValue);
+    }
+
+    public static void remove(@Nullable PersistentDataHolder holder, NamespacedKey key) {
+        if (holder == null) return;
+        holder.getPersistentDataContainer().remove(key);
     }
 
     private static <V> PersistentDataType<?, V> getDataType(Class<V> clazz) {
@@ -89,9 +123,9 @@ public final class KeyUtils {
         throw new IllegalArgumentException("지원하지 않는 PDC 데이터 타입입니다: " + clazz.getName());
     }
 
-    public static <V> void set(@Nullable Entity entity, @NotNull NamespacedKey key, @NotNull V value) {
-        if (entity == null) return;
-        PersistentDataContainer container = entity.getPersistentDataContainer();
+    public static <V> void set(@Nullable PersistentDataHolder holder, @NotNull NamespacedKey key, @NotNull V value) {
+        if (holder == null) return;
+        PersistentDataContainer container = holder.getPersistentDataContainer();
         PersistentDataType<?, V> type = getDataType((Class<V>) value.getClass());
         container.set(key, type, value);
     }
@@ -106,20 +140,5 @@ public final class KeyUtils {
         container.set(key, type, value);
 
         item.setItemMeta(meta);
-    }
-
-    @Contract("null, _, _, _ -> false")
-    public static <T, V> boolean hasKey(@Nullable ItemStack item, @NotNull NamespacedKey key, PersistentDataType<T, V> type, V value) {
-        if (item == null) return false;
-
-        var meta = item.getItemMeta();
-        if (meta == null) return false;
-
-        var container = meta.getPersistentDataContainer();
-
-        if (!container.has(key, type)) return false;
-
-        V actualValue = container.get(key, type);
-        return value.equals(actualValue);
     }
 }
