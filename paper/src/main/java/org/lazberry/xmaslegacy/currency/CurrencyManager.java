@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.currency;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
@@ -36,7 +37,9 @@ public class CurrencyManager {
 
 	public void currencyToBank(@NotNull UUID uuid, @NotNull ItemStack money) {
 		var key = KeyUtils.get("money");
-		int value = KeyUtils.get(money, key, 0);
+		int value = 0;
+		Integer nullableValue = KeyUtils.get(money, key, PersistentDataType.INTEGER);
+		if (nullableValue != null) value = nullableValue;
 		int count = money.getAmount();
 
 		if (value == 100)

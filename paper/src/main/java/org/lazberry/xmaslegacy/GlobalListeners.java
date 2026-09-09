@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -14,12 +13,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.enchant.EnchantUserInterface;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.List;
 
@@ -73,42 +71,6 @@ public class GlobalListeners implements Listener {
         if (isCombatItem(item)) {
             e.setCancelled(true);
             InfoUtils.warn(p, "꼼수 ㄴㄴ");
-        }
-    }
-
-    @EventHandler
-    public void blockInventoryClick(InventoryClickEvent e) {
-        Inventory topInv = e.getView().getTopInventory();
-
-        if (topInv.getType() == InventoryType.PLAYER
-                || topInv.getType() == InventoryType.CRAFTING
-                || topInv.getHolder() instanceof EnchantUserInterface) return; //TODO 이후 상점 혹은 강화 인터페이스만 허용(getHolder()사용)
-
-        Player p = (Player) e.getWhoClicked();
-        ItemStack current = e.getCurrentItem();
-        ItemStack cursor = e.getCursor();
-
-        if (e.getClickedInventory() == e.getView().getBottomInventory()) {
-            if (e.getClick().isShiftClick() && isCombatItem(current)) {
-                e.setCancelled(true);
-                InfoUtils.warn(p, "직업 아이템은 다른 보관함에 넣을 수 없습니다.");
-            }
-            return;
-        }
-
-        if (e.getClickedInventory() == topInv) {
-            if (isCombatItem(cursor)) {
-                e.setCancelled(true);
-                InfoUtils.warn(p, "직업 item은 다른 보관함에 넣을 수 없습니다.");
-                return;
-            }
-            if (e.getClick() == org.bukkit.event.inventory.ClickType.NUMBER_KEY) {
-                org.bukkit.inventory.ItemStack hotbarItem = p.getInventory().getItem(e.getHotbarButton());
-                if (isCombatItem(hotbarItem)) {
-                    e.setCancelled(true);
-                    InfoUtils.warn(p, "직업 아이템은 다른 보관함에 넣을 수 없습니다.");
-                }
-            }
         }
     }
 

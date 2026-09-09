@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.playerUtils.bag.BagManager;
+import org.lazberry.xmaslegacy.playerUtils.bags.BagManager;
 import org.lazberry.xmaslegacy.food.AgeableCrops;
 import org.lazberry.xmaslegacy.user.SqlUserRepository;
 import org.lazberry.xmaslegacy.user.UserManager;

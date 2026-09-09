@@ -23,7 +23,7 @@ import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.playerUtils.bag.BagManager;
+import org.lazberry.xmaslegacy.playerUtils.bags.BagManager;
 import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
