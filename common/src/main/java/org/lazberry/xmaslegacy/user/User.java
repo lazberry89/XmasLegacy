@@ -37,7 +37,7 @@ public class User {
 	private int exp = 0;
 	private int roleExp = 0;
 	private int sinPoints = 0;
-	private @Deprecated int level = 0;
+	private int level = 0;
     private @NotNull Tier tier = Tier.VISITOR;
     private @NotNull RoleMastery mastery = RoleMastery.BEGINNER;
     private boolean isMobile = false;

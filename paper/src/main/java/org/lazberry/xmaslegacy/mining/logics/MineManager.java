@@ -1,10 +1,7 @@
 package org.lazberry.xmaslegacy.mining.logics;
 
 import lombok.Data;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -48,9 +45,9 @@ public class MineManager {
                 .build();
     }
 
-    public boolean isInsideInternalField(Player player) {
-        if (!player.getWorld().equals(world)) return true;
-        return internalMine != null && internalMine.isInside(player.getLocation());
+    public boolean isInsideInternalField(Location loc) {
+        if (!loc.getWorld().equals(world)) return true;
+        return internalMine != null && internalMine.isInside(loc);
     }
 
     public boolean registerExternal(MineField field) {

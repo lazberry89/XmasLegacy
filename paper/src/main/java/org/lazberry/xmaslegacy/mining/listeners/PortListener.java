@@ -56,17 +56,17 @@ public class PortListener implements Listener {
     @EventHandler
     public void cancelBlockBreaking(BlockBreakEvent e) {
         var player = e.getPlayer();
+        Block broken = e.getBlock();
+        Location brokenLocation = broken.getLocation();
         if (mm.getWorld() == null || !player.getWorld().equals(mm.getWorld())) {
             return;
         }
-        if (!mm.isInsideInternalField(player) && !player.isOp()) {
+        if (!mm.isInsideInternalField(brokenLocation) && !player.isOp()) {
             InfoUtils.error(player, "여기선 블록을 캘 수 없어요!");
             e.setCancelled(true);
             return;
         }
-
-        Block broken = e.getBlock();
-        if (mm.isBreakable(broken.getType()) && mm.isInsideInternalField(player)) {
+        if (mm.isBreakable(broken.getType()) && mm.isInsideInternalField(brokenLocation)) {
             Location loc = broken.getLocation();
             Bukkit.getScheduler().runTask(plugin, () ->
                 loc.getBlock().setType(mm.randomOreByChance()));
