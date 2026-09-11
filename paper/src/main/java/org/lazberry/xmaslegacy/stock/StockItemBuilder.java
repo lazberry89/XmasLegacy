@@ -43,8 +43,17 @@ public class StockItemBuilder {
 				.build();
 	}
 
+	public ItemStack createStockShowItem(Stock stock) {
+		return ItemBuilder.of(plugin, cert)
+				.setName(ColorUtils.chat("&6" + stock.getName()))
+				.setLore(stock.getInfoMessage())
+				.setTag(keyStockId, stock.getName())
+				.setGlint(true)
+				.build();
+	}
+
 	public boolean isStockItem(@Nullable ItemStack item) {
 		if (item == null || !item.hasItemMeta()) return false;
-		return item.getItemMeta().getPersistentDataContainer().has(keyStockId, PersistentDataType.STRING);
+		return KeyUtils.hasKey(item, keyStockId);
 	}
 }

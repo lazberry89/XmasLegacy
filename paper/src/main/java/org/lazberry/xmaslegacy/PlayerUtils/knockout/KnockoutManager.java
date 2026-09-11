@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.playerUtils.knockout;
+package org.lazberry.xmaslegacy.PlayerUtils.knockout;
 
 import lombok.Data;
 import org.bukkit.entity.Player;

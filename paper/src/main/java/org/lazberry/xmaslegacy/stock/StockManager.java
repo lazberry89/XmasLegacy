@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.stock;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -49,6 +50,11 @@ public class StockManager {
         this.um = um;
         this.plugin = plugin;
     }
+
+	public StockItemBuilder getBuilder() {
+		if (builder == null) return new StockItemBuilder(plugin, certificateItem);
+		return builder;
+	}
 
 	public void setWorld(String name) {
 		var world = Bukkit.getWorld(name);

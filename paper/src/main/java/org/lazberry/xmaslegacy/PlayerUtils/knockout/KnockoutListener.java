@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.playerUtils.knockout;
+package org.lazberry.xmaslegacy.PlayerUtils.knockout;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -8,8 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -47,11 +49,25 @@ public class KnockoutListener implements Listener {
 		}
 	}
 
+	@EventHandler
+	public void banInteractionWhileKnockout(PlayerInteractEvent e) {
+		var player = e.getPlayer();
+		if (KnockoutPlayer.isKnockedOut(player)) {
+			e.setCancelled(true);
+			InfoUtils.error(player, "기절한 상태에서는 불가합니다.");
+		}
+	}
+
     @EventHandler
     public void revivePartyPlayer(PlayerInteractEntityEvent e) {
+		if (e.getHand() == EquipmentSlot.OFF_HAND) return;
+
         Player helper = e.getPlayer();
         UUID uuid = helper.getUniqueId();
 
+		if (KnockoutPlayer.isKnockedOut(helper)) {
+			InfoUtils.error(helper, "당신도 기절한 상태입니다!");
+		}
         if (!(e.getRightClicked() instanceof Player downed)) return;
         if (!KnockoutPlayer.isKnockedOut(downed)) return;
 
