@@ -10,7 +10,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.currency.CurrencyManager;
-import org.lazberry.xmaslegacy.playerUtils.bags.BagManager;
+import org.lazberry.xmaslegacy.bags.BagManager;
 import org.lazberry.xmaslegacy.food.AgeableCrops;
 import org.lazberry.xmaslegacy.utils.Documents;
 import org.lazberry.xmaslegacy.utils.FloodgateUtils;
