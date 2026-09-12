@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,19 @@ public class StockShop implements InventoryHolder {
             var item = stocks.get(i);
             this.inv.setItem(i, item);
             this.stockBySlot[i] = item;
+        }
+    }
+
+    public void replaceInternalItem(List<ItemStack> replacements) {
+        Arrays.fill(stockBySlot, null);
+        inv.clear();
+
+        if (replacements == null || replacements.isEmpty()) return;
+
+        for (int i = 0; i < Math.min(replacements.size(), 54); i++) {
+            var item = replacements.get(i);
+            inv.setItem(i, item);
+            stockBySlot[i] = item;
         }
     }
 

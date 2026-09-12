@@ -35,11 +35,7 @@ public class StockShopManager {
 				.toList();
 
 		Inventory inv = this.shop.getInventory();
-
-		for (int i = 0; i < inv.getSize(); i++) {
-			ItemStack item = (i < currentStockItems.size()) ? currentStockItems.get(i) : null;
-			inv.setItem(i, item);
-		}
+		shop.replaceInternalItem(currentStockItems);
 
 		for (var human : List.copyOf(inv.getViewers())) {
 			if (human instanceof Player p) {
@@ -48,10 +44,9 @@ public class StockShopManager {
 		}
 	}
 
-	public StockShop openShop(Player viewer) {
+	public void openShop(Player viewer) {
 		updateShop();
 		viewer.openInventory(shop.getInventory());
-		return shop;
 	}
 
 	public void select(Player viewer, ItemStack selected) {

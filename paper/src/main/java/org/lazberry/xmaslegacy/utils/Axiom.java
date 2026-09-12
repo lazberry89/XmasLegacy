@@ -1,10 +1,13 @@
 package org.lazberry.xmaslegacy.utils;
 
 import org.bukkit.Location;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Axiom {
@@ -183,19 +186,12 @@ public class Axiom {
 		}
 	}
 
-	public static boolean isInBoundingBox(Location target, Location loc1, Location loc2) {
-		if (target.getWorld() != loc1.getWorld()) return false;
+	public static boolean isInBoundingBox(@Nullable Location target, @Nullable Location loc1, @Nullable Location loc2) {
+		if (target == null || loc1 == null || loc2 == null) return false;
+		if (!Objects.equals(target.getWorld(), loc1.getWorld())) return false;
 
-		double minX = Math.min(loc1.getX(), loc2.getX());
-		double maxX = Math.max(loc1.getX(), loc2.getX()) + 1.0;
-		double minY = Math.min(loc1.getY(), loc2.getY());
-		double maxY = Math.max(loc1.getY(), loc2.getY()) + 1.5;
-		double minZ = Math.min(loc1.getZ(), loc2.getZ());
-		double maxZ = Math.max(loc1.getZ(), loc2.getZ()) + 1.0;
-
-		return target.getX() >= minX && target.getX() < maxX &&
-				target.getY() >= minY && target.getY() < maxY &&
-				target.getZ() >= minZ && target.getZ() < maxZ;
+		return BoundingBox.of(loc1.getBlock(), loc2.getBlock())
+				.contains(target.toVector());
 	}
 
 	public static long secondsToTicks(double seconds) {
@@ -215,5 +211,26 @@ public class Axiom {
 
 	public static double yawToRadian(float yaw) {
 		return Math.toRadians(-yaw - 90);
+	}
+
+	@Contract(value = "null -> null", pure = true)
+	public static Location toCenterLocation(Location loc) {
+		if (loc == null) return null;
+
+		Location center = loc.clone();
+		center.setX(loc.getBlockX() + 0.5);
+		center.setZ(loc.getBlockZ() + 0.5);
+		return center;
+	}
+
+	@Contract(value = "null -> null", pure = true)
+	public static Location toExactCenterLocation(Location loc) {
+		if (loc == null) return null;
+
+		Location center = loc.clone();
+		center.setX(loc.getBlockX() + 0.5);
+		center.setY(loc.getBlockY() + 0.5);
+		center.setZ(loc.getBlockZ() + 0.5);
+		return center;
 	}
 }

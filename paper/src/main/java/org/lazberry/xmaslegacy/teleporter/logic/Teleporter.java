@@ -18,8 +18,8 @@ public class Teleporter {
     private final Particle.DustOptions option;
 
     public Teleporter(Location loc1, Location loc2, Color color) {
-        this.loc1 = loc1;
-        this.loc2 = loc2;
+        this.loc1 = Axiom.toExactCenterLocation(loc1);
+        this.loc2 = Axiom.toExactCenterLocation(loc2);
         this.color = color;
         this.option = new Particle.DustOptions(color, 0.6f);
     }
