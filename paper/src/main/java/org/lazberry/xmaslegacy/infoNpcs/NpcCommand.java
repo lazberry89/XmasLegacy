@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.PlayerUtils.bags.BagManager;
+import org.lazberry.xmaslegacy.playerUtils.bags.BagManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;

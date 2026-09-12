@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.stock.shop;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -15,59 +16,62 @@ import java.util.*;
 
 @Registry.Include(type = ServerType.MAIN)
 public class StockShopManager {
-    private final StockManager sm;
-    private final XmasLegacy plugin;
-    private volatile StockShop shop;
+	private final StockManager sm;
+	private final XmasLegacy plugin;
+	private final StockShop shop;
 
-    @Inject
-    public StockShopManager(StockManager sm, XmasLegacy plugin) {
-        this.sm = sm;
-        this.plugin = plugin;
-    }
+	@Inject
+	public StockShopManager(StockManager sm, XmasLegacy plugin) {
+		this.sm = sm;
+		this.plugin = plugin;
+		this.shop = new StockShop(Collections.emptyList());
+	}
 
-    public void updateShop() {
-        var builder = sm.getBuilder();
-        List<ItemStack> currentStockItems = sm.getStocks().stream()
-                .filter(Objects::nonNull)
-                .map(builder::createStockShowItem)
-                .toList();
+	public void updateShop() {
+		var builder = sm.getBuilder();
+		List<ItemStack> currentStockItems = sm.getStocks().stream()
+				.filter(Objects::nonNull)
+				.map(builder::createStockShowItem)
+				.toList();
 
-        StockShop oldShop = this.shop;
-        this.shop = new StockShop(currentStockItems);
+		Inventory inv = this.shop.getInventory();
 
-        if (oldShop != null) {
-            for (var human : oldShop.getInventory().getViewers()) {
-                if (human instanceof Player p) {
-                    p.openInventory(this.shop.getInventory());
-                }
-            }
-        }
-    }
+		for (int i = 0; i < inv.getSize(); i++) {
+			ItemStack item = (i < currentStockItems.size()) ? currentStockItems.get(i) : null;
+			inv.setItem(i, item);
+		}
 
-    public StockShop openShop(Player viewer) {
-        updateShop();
-        viewer.openInventory(shop.getInventory());
-        return shop;
-    }
+		for (var human : List.copyOf(inv.getViewers())) {
+			if (human instanceof Player p) {
+				p.updateInventory();
+			}
+		}
+	}
 
-    public void select(Player viewer, ItemStack selected) {
-        Optional<Stock> optional = sm.parseStockFromCertificate(selected);
-        if (optional.isEmpty()) {
-            InfoUtils.error(viewer, "유효하지 않은 주식입니다.");
-            return;
-        }
-        Stock stock = optional.get();
-        var result = new StockSelectedShop(stock, sm.getBuilder(), plugin);
+	public StockShop openShop(Player viewer) {
+		updateShop();
+		viewer.openInventory(shop.getInventory());
+		return shop;
+	}
 
-        viewer.openInventory(result.getInventory());
-    }
+	public void select(Player viewer, ItemStack selected) {
+		Optional<Stock> optional = sm.parseStockFromCertificate(selected);
+		if (optional.isEmpty()) {
+			InfoUtils.error(viewer, "유효하지 않은 주식입니다.");
+			return;
+		}
+		Stock stock = optional.get();
+		var result = new StockSelectedShop(stock, sm.getBuilder(), plugin);
 
-    public void updateSelectionInv() {
-        Bukkit.getOnlinePlayers().forEach(p -> {
-            if (p.getOpenInventory().getTopInventory().getHolder() instanceof StockSelectedShop sel) {
-                sel.update();
-                p.updateInventory();
-            }
-        });
-    }
+		viewer.openInventory(result.getInventory());
+	}
+
+	public void updateSelectionInv() {
+		Bukkit.getOnlinePlayers().forEach(p -> {
+			if (p.getOpenInventory().getTopInventory().getHolder() instanceof StockSelectedShop sel) {
+				sel.update();
+				p.updateInventory();
+			}
+		});
+	}
 }

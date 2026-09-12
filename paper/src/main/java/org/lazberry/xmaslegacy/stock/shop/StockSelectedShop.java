@@ -18,7 +18,7 @@ public class StockSelectedShop implements InventoryHolder {
     private final StockItemBuilder builder;
     private final @Getter Stock stock;
     private final XmasLegacy plugin;
-    private int amount = 1;
+    private @Getter int amount = 1;
 
     public StockSelectedShop(Stock selected, StockItemBuilder builder, XmasLegacy plugin) {
         this.builder = builder;

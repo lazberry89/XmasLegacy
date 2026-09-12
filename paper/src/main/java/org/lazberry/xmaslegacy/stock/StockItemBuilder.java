@@ -46,7 +46,7 @@ public class StockItemBuilder {
 	public ItemStack createStockShowItem(Stock stock) {
 		return ItemBuilder.of(plugin, cert)
 				.setName(ColorUtils.chat("&6" + stock.getName()))
-				.setLore(stock.getInfoMessage())
+				.setLore(stock.getLoreComponents())
 				.setTag(keyStockId, stock.getName())
 				.setGlint(true)
 				.build();

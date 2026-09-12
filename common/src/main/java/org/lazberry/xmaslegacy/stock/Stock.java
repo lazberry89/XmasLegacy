@@ -6,6 +6,8 @@ import net.kyori.adventure.text.Component;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
 
+import java.util.List;
+
 @Data
 @ConsumableClass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -99,5 +101,30 @@ public class Stock {
 				maxPrice,
 				minPrice
 		));
+	}
+
+	public List<Component> getLoreComponents() {
+		String changeSymbol = switch (defineChange()) {
+			case RISE -> "&c▲";
+			case DESCENT -> "&9▼";
+			case STABLE -> "&7-";
+		};
+
+		String changeColor = switch (defineChange()) {
+			case RISE -> "&c";
+			case DESCENT -> "&9";
+			case STABLE -> "&7";
+		};
+
+		return List.of(
+				ColorUtils.chat("&7&m--------------------------------"),
+				ColorUtils.chat(String.format("&f• 현재 주가 : &e%,.0f원 &7(%s%s %.2f%%&7)", currentPrice, changeColor, changeSymbol, Math.abs(getChangeRate()))),
+				ColorUtils.chat(String.format("&f• 전일 주가 : &7%,.0f원", previousPrice)),
+				ColorUtils.chat(String.format("&f• 상장 주가 : &7%,.0f원", initPrice)),
+				ColorUtils.chat(""),
+				ColorUtils.chat(String.format("&f• 상한가 : &c%,.0f원", maxPrice)),
+				ColorUtils.chat(String.format("&f• 하한가 : &9%,.0f원", minPrice)),
+				ColorUtils.chat("&7&m--------------------------------")
+		);
 	}
 }

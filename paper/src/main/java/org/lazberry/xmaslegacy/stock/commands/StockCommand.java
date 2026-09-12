@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.stock.shop.StockShopManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -27,13 +28,14 @@ public class StockCommand implements CommandExecutor, TabCompleter {
 	private final StockManager sm;
 
 	@Inject
-	public StockCommand(StockManager sm, StockConfig sc) {
+	public StockCommand(StockManager sm, StockShopManager ssm, StockConfig sc) {
 		this.sm = sm;
 		var sell = new StockCommandSell(sm);
 		var list = new StockCommandList(sm);
 		var buy = new StockCommandBuy(sm);
 		var info = new StockCommandInfo(sm);
 		var admin = new StockCommandAdmin(sm, sc);
+		var shop = new StockCommandShop(ssm, sm);
 		commands.put("sell", sell);
 		commands.put("판매", sell);
 		commands.put("list", list);
@@ -44,6 +46,8 @@ public class StockCommand implements CommandExecutor, TabCompleter {
 		commands.put("정보", info);
 		commands.put("admin", admin);
 		commands.put("관리", admin);
+		commands.put("shop", shop);
+		commands.put("상점", shop);
 	}
 
 	@Override
@@ -67,8 +71,8 @@ public class StockCommand implements CommandExecutor, TabCompleter {
 		List<String> result = new ArrayList<>();
 		boolean en = command.getName().equalsIgnoreCase("stock");
 		if (args.length == 1)
-			if (en) result.addAll(List.of("help", "sell", "buy", "list", "admin", "info"));
-			else result.addAll(List.of("판매", "구매", "목록", "관리", "정보"));
+			if (en) result.addAll(List.of("help", "sell", "buy", "list", "admin", "info", "shop"));
+			else result.addAll(List.of("판매", "구매", "목록", "관리", "정보", "상점"));
 		if (args.length == 2) {
 			var str = args[0].toLowerCase();
 			if (str.equalsIgnoreCase("buy") || str.equals("구매"))

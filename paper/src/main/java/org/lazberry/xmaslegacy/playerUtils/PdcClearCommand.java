@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils;
+package org.lazberry.xmaslegacy.playerUtils;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

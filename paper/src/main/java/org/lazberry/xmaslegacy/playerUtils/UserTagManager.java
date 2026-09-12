@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PlayerUtils;
+package org.lazberry.xmaslegacy.playerUtils;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

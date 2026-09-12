@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.stock.shop.StockShopManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
@@ -23,15 +24,17 @@ public class StockMarketTask implements Tasks {
 	private final StockManager sm;
 	private final StockConfig sc;
 	private final StockDisplayManager sdm;
+	private final StockShopManager ssm;
 	private @Nullable BukkitTask task;
 	private @Getter boolean isOpen = false;
 
 	@Inject
-	public StockMarketTask(StockManager sm, StockConfig sc, StockDisplayManager sdm) {
+	public StockMarketTask(StockManager sm, StockConfig sc, StockDisplayManager sdm, StockShopManager ssm) {
 		this.sm = sm;
         this.sc = sc;
 		this.sdm = sdm;
-    }
+		this.ssm = ssm;
+	}
 
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {
@@ -47,6 +50,8 @@ public class StockMarketTask implements Tasks {
 			if (currentTime >= sc.getMinimumStartTime() && currentTime < sc.getMaximumStartTime()) {
 				sm.updateAllPrices();
 				sdm.updateAll();
+				ssm.updateShop();
+				ssm.updateSelectionInv();
 				if (!isOpen) {
 					isOpen = true;
 					sm.setOpen(true);
