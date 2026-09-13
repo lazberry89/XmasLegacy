@@ -91,6 +91,7 @@ public class SlotAnimationController {
 
         Location center = Axiom.toExactCenterLocation(loc);
         BlockDisplay bd = (BlockDisplay) center.getWorld().spawnEntity(center, EntityType.BLOCK_DISPLAY);
+        bd.setPersistent(false);
         bd.setBlock(Symbol.NO_LUCK.getShowMaterial().createBlockData());
         return bd;
     }

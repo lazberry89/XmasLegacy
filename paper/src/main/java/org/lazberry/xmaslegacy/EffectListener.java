@@ -73,10 +73,12 @@ public class EffectListener implements Listener {
             Location from = e.getFrom();
             Location to = e.getTo();
 
-            if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
-                Location newTo = from.clone();
-                newTo.setYaw(to.getYaw());
-                newTo.setPitch(to.getPitch());
+            if (from.getX() != to.getX() || from.getZ() != to.getZ()) {
+                Location newTo = to.clone();
+
+                newTo.setX(from.getX());
+                newTo.setZ(from.getZ());
+
                 e.setTo(newTo);
             }
 

@@ -1,37 +1,39 @@
 package org.lazberry.xmaslegacy.casino.games.SlotMachine;
 
+import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.casino.Casino;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.lazberry.xmaslegacy.casino.Casino.countCoins;
 
+@Data
+@Registry.Include(type = ServerType.MAIN)
 public class SlotMachineManager {
 	private final Map<String, SlotMachine> machines = new ConcurrentHashMap<>();
 	private final Map<String, SlotAnimationController> controllers = new ConcurrentHashMap<>();
 	private final Set<String> activeRunningMachines = ConcurrentHashMap.newKeySet();
-
-	private final double diamondChance;
-	private final double goldChance;
-	private final double silverChance;
-	private final double noLuckChance;
 	private final XmasLegacy plugin;
 
-	public SlotMachineManager(double diamondChance, double goldChance, double silverChance, double noLuckChance, XmasLegacy plugin) {
-		this.diamondChance = diamondChance;
-		this.goldChance = goldChance;
-		this.silverChance = silverChance;
-		this.noLuckChance = noLuckChance;
+	private double diamondChance;
+	private double goldChance;
+	private double silverChance;
+	private double noLuckChance;
+
+	@Inject
+	public SlotMachineManager(XmasLegacy plugin) {
 		this.plugin = plugin;
 	}
 
@@ -39,13 +41,22 @@ public class SlotMachineManager {
 		return Optional.ofNullable(machines.get(id));
 	}
 
-	public Optional<SlotAnimationController> getaMachineController(String id) {
+	public Optional<SlotAnimationController> getMachineController(String id) {
 		return Optional.ofNullable(controllers.get(id));
 	}
 
-	public void createSlotMachine(String id, Location slot1, Location slot2, Location slot3, int neededCoin,
+	public Optional<SlotMachine> getMachineByTrigger(Location loc) {
+		if (loc == null) return Optional.empty();
+
+		return machines.values().stream()
+				.filter(m -> m.getTriggerLocation() != null)
+				.filter(m -> Objects.equals(m.getTriggerLocation(), loc.getBlock().getLocation()))
+				.findFirst();
+	}
+
+	public void createSlotMachine(String id, Location slot1, Location slot2, Location slot3, Location triggerLocation, int neededCoin,
 	                              double multipliesForSilver, double multipliesForGold, double multipliesForDiamond) {
-		SlotMachine newMachine = new SlotMachine(id, slot1, slot2, slot3, neededCoin, multipliesForSilver, multipliesForGold, multipliesForDiamond);
+		SlotMachine newMachine = new SlotMachine(id, slot1, slot2, slot3, triggerLocation, neededCoin, multipliesForSilver, multipliesForGold, multipliesForDiamond);
 		SlotAnimationController controller = new SlotAnimationController(plugin, newMachine);
 		machines.put(id, newMachine);
 		controllers.put(id, controller);
@@ -71,7 +82,8 @@ public class SlotMachineManager {
 			activeRunningMachines.remove(id);
 			return;
 		}
-		consumeCoins(player, neededCoins);
+		Casino.removeCoins(player, neededCoins);
+		setLeverPowered(machine.getTriggerLocation(), true);
 
 		Symbol s1 = drawRandomSymbol();
 		Symbol s2 = drawRandomSymbol();
@@ -106,6 +118,7 @@ public class SlotMachineManager {
 					player.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 				}
 			} finally {
+				setLeverPowered(machine.getTriggerLocation(), false);
 				activeRunningMachines.remove(machineId);
 			}
 		};
@@ -124,21 +137,13 @@ public class SlotMachineManager {
 		return Symbol.NO_LUCK;
 	}
 
-	private void consumeCoins(Player player, int amount) {
-		int left = amount;
-		var inv = player.getInventory();
-		for (int i = 0; i < inv.getSize(); i++) {
-			var item = inv.getItem(i);
-			if (Casino.isCoin(item)) {
-				if (item.getAmount() <= left) {
-					left -= item.getAmount();
-					inv.setItem(i, null);
-				} else {
-					item.setAmount(item.getAmount() - left);
-					break;
-				}
-			}
-			if (left <= 0) break;
+	private void setLeverPowered(Location loc, boolean powered) {
+		if (loc == null) return;
+		var block = loc.getBlock();
+		if (block.getBlockData() instanceof Switch lever) {
+			lever.setPowered(powered);
+			block.setBlockData(lever);
+			loc.getWorld().playSound(loc, Sound.BLOCK_LEVER_CLICK, 0.6f, powered ? 0.5f : 0.7f);
 		}
 	}
 }
