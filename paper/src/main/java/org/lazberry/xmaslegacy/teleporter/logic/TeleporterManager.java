@@ -6,11 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
@@ -49,7 +51,7 @@ public class TeleporterManager implements Initiator {
 	}
 
     public boolean isTool(@Nullable ItemStack item) {
-        return item != null && item.getPersistentDataContainer().has(key, PersistentDataType.BOOLEAN);
+        return KeyUtils.hasKey(item, key, PersistentDataType.BOOLEAN, true);
     }
 
     public List<String> identityList() {
@@ -70,10 +72,30 @@ public class TeleporterManager implements Initiator {
         return getDestination(to).isPresent();
     }
 
+    public boolean checkEnterCasino(Player player, Location to) {
+        var optional = getPortalEntry(to);
+        if (optional.isEmpty()) return false;
+
+        PortalEntry portal = optional.get();
+        String id = portal.id();
+        if (id.equalsIgnoreCase("hallToCasino")) {
+            return Casino.hasTicket(player);
+        }
+        return true;
+    }
+
     public boolean registerWay(String id, Teleporter entrance, Location destination) {
         if (teleporter.containsKey(id)) return false;
         teleporter.put(id, new PortalEntry(id, entrance, destination));
         return true;
+    }
+
+    public Optional<PortalEntry> getPortalEntry(Location loc) {
+        if (teleporter.isEmpty()) return Optional.empty();
+        return teleporter.values().stream()
+                .filter(Objects::nonNull)
+                .filter(p -> p.entrance().isInside(loc))
+                .findFirst();
     }
 
     public Optional<Location> getDestination(Location loc) {

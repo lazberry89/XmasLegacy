@@ -39,6 +39,14 @@ public class TeleporterListener implements Listener {
 	    }
 
         if (tm.canTeleport(from, to)) {
+            if (!tm.checkEnterCasino(player, to)) {
+                Vector bounceVelocity = to.toVector().subtract(from.toVector()).normalize().multiply(-1.2).setY(0.25);
+                player.setVelocity(bounceVelocity);
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.8f, 1.0f);
+                InfoUtils.error(player, "카지노 입장에 필요한 티켓을 소지하고 있지 않습니다!");
+                return;
+            }
+
             if (tm.isCooldown(player.getUniqueId())) {
                 Vector moveDirection = to.toVector().subtract(from.toVector()).normalize();
 

@@ -83,10 +83,8 @@ public final class Casino {
 		if (currentCount == targetAmount) return;
 
 		if (currentCount > targetAmount) {
-			// 목표량보다 많으면 초과분만큼 차감
 			removeCoins(player, currentCount - targetAmount);
 		} else {
-			// 목표량보다 적으면 부족분만큼 추가 (인벤토리 가득 찰 시 가방 오버플로우 처리)
 			int toAdd = targetAmount - currentCount;
 			Map<Integer, ItemStack> leftOver = player.getInventory().addItem(coin(toAdd));
 			if (!leftOver.isEmpty() && bm != null) {
@@ -118,4 +116,26 @@ public final class Casino {
 	public static void sendIconAlert(Player player, String message) {
 		player.sendMessage(icon.appendSpace().append(ColorUtils.chat(message)));
 	}
+
+	public static ItemStack entranceTicket() {
+		io.th0rgal.oraxen.items.ItemBuilder builder = OraxenItems.getItemById("casino_ticket");
+		return ItemBuilder.of(XmasLegacy.getInstance(), builder != null ? builder.build() : new ItemStack(Material.PAPER))
+				.setName(ColorUtils.chat("&a&l입장권"))
+				.setLore(ColorUtils.chat("&7영구성 티켓으로, 카지노에 참가하기 위해서는\n소지하고 있어야 합니다."))
+				.setTag(key(), "ticket")
+				.setGlint(true)
+				.hideAllFlags()
+				.setMaxStackSize(1)
+				.build();
+	}
+
+	public static boolean isTicket(ItemStack item) {
+		return KeyUtils.hasKey(item, key(), PersistentDataType.STRING, "ticket");
+	}
+
+	public static boolean hasTicket(Player player) {
+		return Arrays.stream(player.getInventory().getContents())
+				.anyMatch(Casino::isTicket);
+	}
 }
+
