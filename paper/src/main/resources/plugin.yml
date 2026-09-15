@@ -128,3 +128,6 @@ commands:
     usage: /portal <create | remove> <id>
     description: Linking location with portal
 
+  casino:
+    description: casino setting commands
+

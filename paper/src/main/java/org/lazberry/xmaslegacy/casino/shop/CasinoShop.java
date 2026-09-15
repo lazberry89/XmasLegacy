@@ -6,7 +6,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -16,10 +15,12 @@ public class CasinoShop implements InventoryHolder {
     private final Inventory inv;
     private final XmasLegacy plugin;
     private final ItemStack[] plans;
+    private final int[] prices;
 
     public CasinoShop(XmasLegacy plugin) {
         this.plugin = plugin;
         this.plans = new ItemStack[]{plan1(), plan2(), plan3(), plan4(), plan5(), plan6(), plan7()};
+        this.prices = new int[]{13_000, 60_000, 115_000, 220_000, 520_000, 980_000, 2_300_000};
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&c&l카지노 상점"));
         this.inv.setItem(0, Casino.entranceTicket());
         this.inv.setItem(1, bg());
@@ -28,11 +29,16 @@ public class CasinoShop implements InventoryHolder {
         }
     }
 
-    @Range(from = 0, to = 250)
-    public int getAmountBySlot(int slot) {
-        if (slot < 2 || slot > 8) return 0;
-        ItemStack item = plans[slot - 2];
-        return item != null ? item.getAmount() : 0;
+    public int getPriceBySlot(int slot) {
+        if (slot == 1 || slot < 0 || slot > 8) return 0;
+        if (slot == 0) return 5200;
+
+        return prices[slot - 2];
+    }
+
+    public ItemStack getItemBySlot(int slot) {
+        if (slot < 2 || slot > 8) return null;
+        return plans[slot - 2];
     }
 
     private ItemStack plan1() {
