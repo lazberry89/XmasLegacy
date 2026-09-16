@@ -46,7 +46,7 @@ public final class Casino {
                 .build();
     }
 
-    public static boolean applyCoin(User user, int amount) {
+    public static boolean buyCoin(User user, int amount) {
         if (user == null || amount <= 0) return false;
 
         Player player = Bukkit.getPlayer(user.getUniqueId());
@@ -56,12 +56,16 @@ public final class Casino {
         if (user.getDollars() < neededMoney) return false;
         user.addDollars(-neededMoney);
 
-        Map<Integer, ItemStack> leftOver = player.getInventory().addItem(coin(amount));
-        if (!leftOver.isEmpty()) {
-            leftOver.values().forEach(i -> bm.addItem(player, i));
-        }
+        giveCoin(player, amount);
         return true;
     }
+
+	public static void giveCoin(Player player, int amount) {
+		Map<Integer, ItemStack> leftOver = player.getInventory().addItem(coin(amount));
+		if (!leftOver.isEmpty()) {
+			leftOver.values().forEach(i -> bm.addItem(player, i));
+		}
+	}
 
 	public static int countCoins(Player player) {
 		return Arrays.stream(player.getInventory().getContents())

@@ -72,12 +72,12 @@ public class UserPartyScoreBoard implements Tasks {
 			BoardUtils.getOrCreate(player, ColorUtils.chat("&6&l" + player.getName()), b -> {
 				b.setLine(1, ColorUtils.chat("&6&l소지금&f " + user.getDollars() + " &6$"));
 				b.setLine(2, ColorUtils.chat(""));
-				b.setLine(3, ColorUtils.chat("&6&l경험치&f " + user.getExp() + " &6Ex"));
+				b.setLine(3, ColorUtils.chat("&6&l경험치&f " + user.getExp() + " &6&l레벨 " + user.getLevel()));
 				b.setLine(4, ColorUtils.chat(""));
 				var role = user.getRole();
 				b.setLine(5, ColorUtils.chat("&6&l직업&f " + role.getKor()));
 				b.setLine(6, ColorUtils.chat(""));
-				b.setLine(7, ColorUtils.chat("&6&l직업수치&f " + user.getRoleExp() + " &6Rxp"));
+				b.setLine(7, ColorUtils.chat("&6&l직업 경험치&f " + user.getRoleExp() + " &6Rxp"));
 				b.setLine(8, ColorUtils.chat(""));
 				b.setLine(9, IceLogo().appendSpace().append(ColorUtils.chat("&b빙결수치")));
 				b.setLine(10, IceLogo().appendSpace().append(iceStateBar(user)));
