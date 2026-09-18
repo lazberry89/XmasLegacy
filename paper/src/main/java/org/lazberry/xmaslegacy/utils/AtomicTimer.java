@@ -14,7 +14,7 @@ public class AtomicTimer {
     private final AtomicInteger remainingSeconds;
     private final Consumer<AtomicTimer> onTick;
     private final Runnable onExpire;
-    private BukkitTask task;
+    private volatile BukkitTask task;
     private @Getter boolean running = false;
     private @Setter boolean paused = false;
 
@@ -47,7 +47,7 @@ public class AtomicTimer {
                     onTick.accept(AtomicTimer.this);
                 }
             }
-        }.runTaskTimer(plugin, 0L, 20L); // 20틱 = 1초
+        }.runTaskTimer(plugin, 0L, 20L);
     }
 
     public int overtime(int seconds) {

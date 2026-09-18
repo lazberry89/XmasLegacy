@@ -18,6 +18,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,6 +57,16 @@ public class BagManager implements Initiator {
 		}
         return result;
 	}
+
+	public void addAll(Player p, Collection<ItemStack> items) {
+		if (items.isEmpty()) return;
+		for (var item : items) {
+			var cloned = item.clone();
+			List<ItemStack> remain = getUserBags(p).addItem(cloned);
+			remain.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
+		}
+	}
+
     @Contract(pure = true)
 	public ItemStack[] getPlayerBag(@NotNull Player p) {
 		return getUserBags(p).getInventory().getContents();

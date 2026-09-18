@@ -21,6 +21,7 @@ public class VersusField {
     private final Location redSpawn;
     private final Location blueWaitingRoom;
     private final Location redWaitingRoom;
+    private final Location entrance;
     private final Set<Location> breakableFences = ConcurrentHashMap.newKeySet();
     private final Set<Location> spectatorSpawn = ConcurrentHashMap.newKeySet();
     private UUID redFighter;
@@ -28,12 +29,26 @@ public class VersusField {
     private boolean running;
     private Material restoreMaterial = Material.IRON_BARS;
 
-    public VersusField(Location blueSpawn, Location redSpawn, Location blueWaitingRoom, Location redWaitingRoom, XmasLegacy plugin) {
+    public VersusField(Location blueSpawn, Location redSpawn, Location blueWaitingRoom, Location redWaitingRoom, Location entrance, XmasLegacy plugin) {
         this.plugin = plugin;
         this.blueSpawn = blueSpawn;
         this.redSpawn = redSpawn;
         this.blueWaitingRoom = blueWaitingRoom;
         this.redWaitingRoom = redWaitingRoom;
+        this.entrance = entrance;
+    }
+
+    public boolean teleportWaitingRoom() {
+        if (isFull()) {
+            var p1 = Bukkit.getPlayer(blueFighter);
+            var p2 = Bukkit.getPlayer(redFighter);
+
+            if (p1 == null || p2 == null) return false;
+            p1.teleport(blueWaitingRoom);
+            p2.teleport(redWaitingRoom);
+            return true;
+        }
+        return false;
     }
 
     public boolean isFull() {

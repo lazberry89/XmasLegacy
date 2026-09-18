@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.casino.versus.bet;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,10 +13,16 @@ import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class BetInterface implements InventoryHolder {
-    private final Inventory inv;
+import java.util.UUID;
 
-    public BetInterface(Player fighter1, Player fighter2, XmasLegacy plugin) {
+public class VersusBetInterface implements InventoryHolder {
+    private final Inventory inv;
+    private final @Getter UUID fighter1;
+    private final @Getter UUID fighter2;
+
+    public VersusBetInterface(Player fighter1, Player fighter2, XmasLegacy plugin) {
+        this.fighter1 = fighter1.getUniqueId();
+        this.fighter2 = fighter2.getUniqueId();
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&c&l인게임 베팅"));
         var bg = bg(plugin);
         for (int i = 0; i < inv.getSize(); i++) {
@@ -32,6 +39,10 @@ public class BetInterface implements InventoryHolder {
                 .setLore(ColorUtils.chat(""))
                 .hideAllFlags()
                 .build();
+    }
+
+    public void clearBettingSlot() {
+        inv.clear(4);
     }
 
     private ItemStack headCreator(XmasLegacy plugin, Player player) {
