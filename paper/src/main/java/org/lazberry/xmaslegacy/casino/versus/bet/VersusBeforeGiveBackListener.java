@@ -36,7 +36,7 @@ public class VersusBeforeGiveBackListener implements Listener {
 				InfoUtils.error(p, "매치가 &6무승부&f로 종료되었습니다. 베팅한 코인의 &650%&f가 반환됩니다.");
 				InfoUtils.warn(p, "코인이 반환되지 않았다면 '/가방'을 확인하거나, 문의하세요.");
 			});
-			vbm.coinApplyProcessByResult(result);
+			//vbm.coinApplyProcessByResult(result);
 			vbm.clearBets();
 		}
 	}

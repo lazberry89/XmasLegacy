@@ -39,6 +39,10 @@ public class BagManager implements Initiator {
 				TempBag::new);
 	}
 
+	public @NotNull TempBag getUserBags(Player p) {
+		return getUserBags(p.getUniqueId());
+	}
+
 	public @NotNull TempBag getBag(@NotNull UUID uuid) {
 		return bags.computeIfAbsent(uuid, TempBag::new);
 	}
