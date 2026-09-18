@@ -40,7 +40,7 @@ public final class Casino {
         return ItemBuilder.of(XmasLegacy.getInstance(), item)
                 .setName(ColorUtils.chat("&6&l카지노 코인"))
                 .setLore(ColorUtils.chat("&7카지노의 베팅시스템에 사용되는 코인입니다."))
-                .setMaxStackSize(16)
+                .setMaxStackSize(99)
                 .setTag(key(), "coin")
                 .setAmount(amount)
                 .build();
@@ -125,7 +125,7 @@ public final class Casino {
 		io.th0rgal.oraxen.items.ItemBuilder builder = OraxenItems.getItemById("casino_ticket");
 		return ItemBuilder.of(XmasLegacy.getInstance(), builder != null ? builder.build() : new ItemStack(Material.PAPER))
 				.setName(ColorUtils.chat("&a&l입장권"))
-				.setLore(ColorUtils.chat("&7영구성 티켓으로, 카지노에 참가하기 위해서는\n소지하고 있어야 합니다."))
+				.setLore(ColorUtils.chat("&7영구성 티켓으로, 카지노에 참가하기 위해서는 소지하고 있어야 합니다."))
 				.setTag(key(), "ticket")
 				.setGlint(true)
 				.hideAllFlags()
