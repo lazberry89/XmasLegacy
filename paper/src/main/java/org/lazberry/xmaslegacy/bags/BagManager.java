@@ -34,8 +34,8 @@ public class BagManager implements Initiator {
 		this.plugin = plugin;
 	}
 
-	public @NotNull TempBag getUserBags(@NotNull Player p) {
-		return bags.computeIfAbsent(p.getUniqueId(),
+	public @NotNull TempBag getUserBags(UUID uuid) {
+		return bags.computeIfAbsent(uuid,
 				TempBag::new);
 	}
 
@@ -46,7 +46,7 @@ public class BagManager implements Initiator {
     @CanIgnoreReturnValue
 	public List<ItemStack> addItem(@NotNull Player p, @NotNull ItemStack item) {
 		ItemStack clone = item.clone();
-		List<ItemStack> result = getUserBags(p).addItem(clone);
+		List<ItemStack> result = getUserBags(p.getUniqueId()).addItem(clone);
 		if (!result.isEmpty()) {
 			p.sendMessage(ColorUtils.chat(Alert.RED + " 가방이 가득 찼습니다!"));
             result.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
@@ -58,18 +58,24 @@ public class BagManager implements Initiator {
         return result;
 	}
 
+	public boolean addItem(UUID uuid, @NotNull ItemStack item) {
+		var clone = item.clone();
+		List<ItemStack> result = getUserBags(uuid).addItem(clone);
+		return result.isEmpty();
+	}
+
 	public void addAll(Player p, Collection<ItemStack> items) {
 		if (items.isEmpty()) return;
 		for (var item : items) {
 			var cloned = item.clone();
-			List<ItemStack> remain = getUserBags(p).addItem(cloned);
+			List<ItemStack> remain = getUserBags(p.getUniqueId()).addItem(cloned);
 			remain.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
 		}
 	}
 
     @Contract(pure = true)
 	public ItemStack[] getPlayerBag(@NotNull Player p) {
-		return getUserBags(p).getInventory().getContents();
+		return getUserBags(p.getUniqueId()).getInventory().getContents();
 	}
 
 	public void saveAllBags() {

@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.casino.versus.bet.VersusBetInterface;
-import org.lazberry.xmaslegacy.casino.versus.bet.VersusBetManager;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusResetEvent;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -22,6 +21,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.utils.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Data
 @Slf4j
@@ -268,13 +268,22 @@ public class VersusManager {
         else InfoUtils.error(player, "퇴장할 수 없습니다.");
     }
 
+	private UUID getWinnerByResult(GameResult result, UUID blue, UUID red) {
+		return switch (result) {
+			case RED -> red;
+			case BLUE -> blue;
+			default -> null;
+		};
+	}
+
     public void reset(GameResult result) {
         synchronized (this) {
             OptionalUtils.ifNotNull(field, f -> {
                 f.setRunning(false);
                 var blueUuid = f.getBlueFighter();
                 var redUuid = f.getRedFighter();
-                Bukkit.getPluginManager().callEvent(new VersusResetEvent(blueUuid, redUuid, result));
+                Bukkit.getPluginManager().callEvent(new VersusResetEvent(
+						blueUuid, redUuid, getWinnerByResult(result, blueUuid, redUuid), result));
 
                 if (blueUuid != null) {
                     OptionalUtils.ifNotNull(Bukkit.getPlayer(blueUuid), p -> {
