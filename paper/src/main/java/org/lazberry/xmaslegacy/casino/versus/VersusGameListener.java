@@ -58,17 +58,19 @@ public class VersusGameListener implements Listener {
     @EventHandler
     public void versusResultEffectsAndClear(VersusResetEvent e) {
         var result = e.getResult();
-        var blue = e.getBlueTeamFighter();
-        var red = e.getRedTeamFighter();
 
         var winner = e.getWinner();
         var loser = e.getLoser();
 
         vm.whenFieldExists(f -> {
-            if (winner == null) return;
+            if (winner == null || loser == null) return;
+            var titleWin = TitleUtil.create("&6&l승리!", "5초뒤 복귀합니다.");
+            var titleLose = TitleUtil.create("&c&l패배", "5초뒤 복귀합니다.");
 
-            var title = TitleUtil.create("&6&l승리!", "5초뒤 복귀합니다.");
+			OptionalUtils.ifNotNull(Bukkit.getPlayer(winner), w -> {
 
+			});
+			OptionalUtils.ifNotNull(Bukkit.getPlayer(loser), r -> {});
         });
     }
 }
