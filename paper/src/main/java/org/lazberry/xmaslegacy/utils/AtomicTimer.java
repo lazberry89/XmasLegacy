@@ -30,22 +30,21 @@ public class AtomicTimer {
         running = true;
 
         this.task = new BukkitRunnable() {
+
             @Override
             public void run() {
                 if (paused) return;
 
-                int current = remainingSeconds.get();
-
-                if (current <= 0) {
+                if (remainingSeconds.get() <= 0) {
                     stop();
                     if (onExpire != null) onExpire.run();
                     return;
                 }
 
-                remainingSeconds.decrementAndGet();
                 if (onTick != null) {
                     onTick.accept(AtomicTimer.this);
                 }
+                remainingSeconds.decrementAndGet();
             }
         }.runTaskTimer(plugin, 0L, 20L);
     }

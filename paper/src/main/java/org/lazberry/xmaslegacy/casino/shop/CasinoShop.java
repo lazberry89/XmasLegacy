@@ -38,50 +38,27 @@ public class CasinoShop implements InventoryHolder {
 
     public ItemStack getItemBySlot(int slot) {
         if (slot < 2 || slot > 8) return null;
-        return plans[slot - 2];
+        var amount = plans[slot - 2].getAmount();
+
+        return Casino.coin(amount);
     }
 
-    private ItemStack plan1() {
-        return ItemBuilder.of(plugin, Casino.coin(1))
-                .setLore(ColorUtils.chat("&7가격: 13000원"))
+    private ItemStack createPlan(int amount, String original, String discounted) {
+        String lore = original.equals(discounted)
+                ? "&7가격: " + original + "원"
+                : "&7가격: &m" + original + "원&r&7 " + discounted + "원";
+        return ItemBuilder.of(plugin, Casino.coin(amount))
+                .setLore(ColorUtils.chat(lore))
                 .build();
     }
 
-    private ItemStack plan2() {
-        return ItemBuilder.of(plugin, Casino.coin(5))
-                .setLore(ColorUtils.chat("&7가격: &m65000원&r&7 60000원"))
-                .build();
-    }
-
-    private ItemStack plan3() {
-        return ItemBuilder.of(plugin, Casino.coin(10))
-                .setLore(ColorUtils.chat("&7가격: &m130000원&r&7 115000원"))
-                .build();
-    }
-
-    private ItemStack plan4() {
-        return ItemBuilder.of(plugin, Casino.coin(20))
-                .setLore(ColorUtils.chat("&7가격: &m260000원&r&7 220000원"))
-                .build();
-    }
-
-    private ItemStack plan5() {
-        return ItemBuilder.of(plugin, Casino.coin(50))
-                .setLore(ColorUtils.chat("&7가격: &m650000원&r&7 520000원"))
-                .build();
-    }
-
-    private ItemStack plan6() {
-        return ItemBuilder.of(plugin, Casino.coin(100))
-                .setLore(ColorUtils.chat("&7가격: &m1300000원&r&7 980000원"))
-                .build();
-    }
-
-    private ItemStack plan7() {
-        return ItemBuilder.of(plugin, Casino.coin(250))
-                .setLore(ColorUtils.chat("&7가격: &m3250000원&r&7 2300000원"))
-                .build();
-    }
+    private ItemStack plan1() { return createPlan(1, "13000", "13000"); }
+    private ItemStack plan2() { return createPlan(5, "65000", "60000"); }
+    private ItemStack plan3() { return createPlan(10, "130000", "115000"); }
+    private ItemStack plan4() { return createPlan(20, "260000", "220000"); }
+    private ItemStack plan5() { return createPlan(40, "520000", "420000"); }
+    private ItemStack plan6() { return createPlan(64, "832000", "630000"); }
+    private ItemStack plan7() { return createPlan(99, "1287000", "900000"); }
 
     private ItemStack bg() {
         return ItemBuilder.of(plugin, Material.GRAY_STAINED_GLASS_PANE)

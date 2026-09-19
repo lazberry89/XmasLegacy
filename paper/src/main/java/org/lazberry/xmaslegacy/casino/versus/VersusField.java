@@ -26,7 +26,8 @@ public class VersusField {
     private final Set<Location> spectatorSpawn = ConcurrentHashMap.newKeySet();
     private UUID redFighter;
     private UUID blueFighter;
-    private boolean running;
+    private boolean running = false;
+    private boolean canStart = true;
     private Material restoreMaterial = Material.IRON_BARS;
 
     public VersusField(Location blueSpawn, Location redSpawn, Location blueWaitingRoom, Location redWaitingRoom, Location entrance, XmasLegacy plugin) {

@@ -15,13 +15,15 @@ public class VersusResetEvent extends Event {
     private final UUID blueTeamFighter;
     private final UUID redTeamFighter;
 	private final @Nullable UUID winner;
+    private final @Nullable UUID loser;
     private final GameResult result;
 
-    public VersusResetEvent(UUID blueTeamFighter, UUID redTeamFighter, @Nullable UUID winner, GameResult result) {
+    public VersusResetEvent(UUID blueTeamFighter, UUID redTeamFighter, @Nullable UUID winner, @Nullable UUID loser, GameResult result) {
         this.blueTeamFighter = blueTeamFighter;
         this.redTeamFighter = redTeamFighter;
 	    this.winner = winner;
-	    this.result = result;
+        this.loser = loser;
+        this.result = result;
     }
 
     public static HandlerList getHandlerList() {

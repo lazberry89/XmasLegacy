@@ -2,12 +2,14 @@ package org.lazberry.xmaslegacy.casino.versus.bet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.bags.BagManager;
 import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.casino.versus.GameResult;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,26 +54,51 @@ public class VersusBetManager {
 		});
 	}
 
-	public void coinApplyProcessByResult(GameResult result, UUID winner) {
+	public void coinApplyProcessByResult(GameResult result, @Nullable UUID winner) {
 		if (betRepository.isEmpty()) return;
+
+		if (result == GameResult.ERROR) {
+			giveBack();
+			clearBets();
+			return;
+		}
+
 		betRepository.forEach((uuid, record) -> {
 			int amount = record.amount();
 			if (amount <= 0) return;
 			var select = record.selected();
 
-			boolean win = Objects.equals(select, winner);
+			var player = Bukkit.getPlayer(uuid);
+			boolean isOnline = player != null && player.isOnline();
+
 			switch (result) {
 				case RED, BLUE -> {
-					int giveAmount;
+					boolean win = Objects.equals(select, winner);
 					if (win) {
-						giveAmount = amount * 2;
+						int giveAmount = amount * 2;
+						payout(uuid, player, giveAmount);
+						if (isOnline) Casino.sendIconAlert(player, "베팅한 플레이어가 승리하였습니다! 지급된 코인을 확인하세요.");
 					} else {
-						giveAmount = amount / 2;
+						if (isOnline) InfoUtils.error(player, "베팅한 플레이어가 패배하였습니다.");
 					}
-					bm.addItem(uuid, Casino.coin(giveAmount));
+				}
+				case DRAW -> {
+					int giveAmount = amount / 2;
+					if (giveAmount > 0) payout(uuid, player, giveAmount);
+					if (isOnline) InfoUtils.warn(player, "경기가 무승부로 끝나 베팅 코인의 절반이 반환되었습니다.");
 				}
 			}
 		});
+		clearBets();
+	}
+
+	private void payout(UUID uuid, Player player, int amount) {
+		if (player != null && player.isOnline()) {
+			var remains = player.getInventory().addItem(Casino.coin(amount));
+			if (!remains.isEmpty()) bm.addAll(player, remains.values());
+		} else {
+			bm.addItem(uuid, Casino.coin(amount));
+		}
 	}
 
     public void remove(UUID uuid) {

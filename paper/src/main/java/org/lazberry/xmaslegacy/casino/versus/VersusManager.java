@@ -22,6 +22,7 @@ import org.lazberry.xmaslegacy.utils.*;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Data
 @Slf4j
@@ -43,6 +44,12 @@ public class VersusManager {
         return Optional.ofNullable(field);
     }
 
+    public void whenFieldExists(Consumer<VersusField> onExists, Runnable... fail) {
+        var f = field;
+        if (f != null) onExists.accept(f);
+        else for (var runnable : fail) runnable.run();
+    }
+
     public void registerField(Location blue, Location red, Location blueRoom, Location redRoom, Location entrance, boolean force) {
         if (field == null || force) {
             synchronized (this) {
@@ -55,9 +62,7 @@ public class VersusManager {
 
     public void removeField() {
         synchronized (this) {
-            if (field != null) {
-                field = null;
-            }
+            field = null;
         }
     }
 
@@ -77,7 +82,7 @@ public class VersusManager {
         }
         synchronized (f) {
             var uuid = player.getUniqueId();
-            if (f.getBlueFighter().equals(uuid) || f.getRedFighter().equals(uuid)) {
+            if (f.isFighter(uuid)) {
                 InfoUtils.warn(player, "이미 경기에 참가하였습니다.");
                 return;
             }
@@ -93,13 +98,15 @@ public class VersusManager {
                 if (f.teleportWaitingRoom()) {
                     startBetting();
                 } else reset(GameResult.ERROR);
-            } else reset(GameResult.LEAVE);
+            }
         }
     }
 
     private void startBetting() {
         synchronized (this) {
             OptionalUtils.ifNotNullOrElse(field, f -> {
+                if (!f.isCanStart()) return;
+
                 setCanBet(true);
                 f.setRunning(false);
                 Bukkit.broadcast(betComponent(f));
@@ -220,8 +227,8 @@ public class VersusManager {
 
     private String titleMaker(int time) {
         if (time <= 3) return "&c&l" + time;
-        else if (time <= 7) return "&6&l" + time;
-        else return "&e&l" + time;
+        if (time <= 7) return "&6&l" + time;
+        return "&e&l" + time;
     }
 
     private Component betComponent(VersusField f) {
@@ -245,15 +252,9 @@ public class VersusManager {
 
     public void leave(Player player) {
         if (player == null || !player.isValid()) return;
-        var uuid = player.getUniqueId();
 
-        var optional = getField();
-        if (optional.isEmpty()) {
-            InfoUtils.error(player, "게임에 참여하지 않았습니다.");
-            return;
-        }
-        var f = optional.get();
-        if (!f.isFighter(uuid)) {
+        var f = field;
+        if (f == null || !f.isFighter(player.getUniqueId())) {
             InfoUtils.error(player, "게임에 참여하지 않았습니다.");
             return;
         }
@@ -261,47 +262,46 @@ public class VersusManager {
             InfoUtils.error(player, "경기중에는 퇴장할 수 없습니다!");
             return;
         }
-        if (f.leave(uuid)) {
+        if (f.leave(player.getUniqueId())) {
             InfoUtils.info(player, "퇴장하였습니다.");
             GlowUtils.clearGlow(player);
+        } else {
+            InfoUtils.error(player, "퇴장할 수 없습니다.");
         }
-        else InfoUtils.error(player, "퇴장할 수 없습니다.");
     }
 
-	private UUID getWinnerByResult(GameResult result, UUID blue, UUID red) {
-		return switch (result) {
-			case RED -> red;
-			case BLUE -> blue;
-			default -> null;
-		};
-	}
+    private UUID getResultPlayer(GameResult result, UUID blue, UUID red, boolean isWinner) {
+        return switch (result) {
+            case RED -> isWinner ? red : blue;
+            case BLUE -> isWinner ? blue : red;
+            default -> null;
+        };
+    }
 
     public void reset(GameResult result) {
+        VersusResetEvent resetEvent = null;
+
         synchronized (this) {
-            OptionalUtils.ifNotNull(field, f -> {
-                f.setRunning(false);
-                var blueUuid = f.getBlueFighter();
-                var redUuid = f.getRedFighter();
-                Bukkit.getPluginManager().callEvent(new VersusResetEvent(
-						blueUuid, redUuid, getWinnerByResult(result, blueUuid, redUuid), result));
+            if (field != null) {
+                field.setRunning(false);
+                var blueUuid = field.getBlueFighter();
+                var redUuid = field.getRedFighter();
+                var winner = getResultPlayer(result, blueUuid, redUuid, true);
+                var loser = getResultPlayer(result, blueUuid, redUuid, false);
 
-                if (blueUuid != null) {
-                    OptionalUtils.ifNotNull(Bukkit.getPlayer(blueUuid), p -> {
-                        p.teleport(f.getEntrance());
-                        GlowUtils.clearGlow(p);
-                    });
-                }
-                if (redUuid != null) {
-                    OptionalUtils.ifNotNull(Bukkit.getPlayer(redUuid), p -> {
-                        p.teleport(f.getEntrance());
-                        GlowUtils.clearGlow(p);
-                    });
-                }
+                resetEvent = new VersusResetEvent(blueUuid, redUuid, winner, loser, result);
 
-                f.setBlueFighter(null);
-                f.setRedFighter(null);
-                f.restoreFences();
-            });
+                if (blueUuid != null) OptionalUtils.ifNotNull(Bukkit.getPlayer(blueUuid), GlowUtils::clearGlow);
+                if (redUuid != null) OptionalUtils.ifNotNull(Bukkit.getPlayer(redUuid), GlowUtils::clearGlow);
+
+                field.setBlueFighter(null);
+                field.setRedFighter(null);
+                field.restoreFences();
+            }
+        }
+
+        if (resetEvent != null) {
+            Bukkit.getPluginManager().callEvent(resetEvent);
         }
     }
 }
