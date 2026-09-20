@@ -19,11 +19,13 @@ public class VersusBetInterface implements InventoryHolder {
     private final Inventory inv;
     private final @Getter UUID fighter1;
     private final @Getter UUID fighter2;
+    private final int maxBetAmount;
 
-    public VersusBetInterface(Player fighter1, Player fighter2, XmasLegacy plugin) {
+    public VersusBetInterface(Player fighter1, Player fighter2, XmasLegacy plugin, int maxBetAmount) {
         this.fighter1 = fighter1.getUniqueId();
         this.fighter2 = fighter2.getUniqueId();
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&c&l인게임 베팅"));
+        this.maxBetAmount = maxBetAmount;
         var bg = bg(plugin);
         for (int i = 0; i < inv.getSize(); i++) {
             inv.setItem(i, bg);
@@ -55,7 +57,7 @@ public class VersusBetInterface implements InventoryHolder {
 
     public int getBetAmount() {
         ItemStack item = this.inv.getItem(4);
-        if (Casino.isCoin(item)) return item.getAmount();
+        if (Casino.isCoin(item)) return Math.min(item.getAmount(), maxBetAmount);
         return 0;
     }
 

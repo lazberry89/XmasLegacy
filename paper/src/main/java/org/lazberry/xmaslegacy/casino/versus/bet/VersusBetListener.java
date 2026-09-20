@@ -7,10 +7,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.bags.BagManager;
 import org.lazberry.xmaslegacy.casino.Casino;
+import org.lazberry.xmaslegacy.casino.versus.VersusManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -20,12 +22,14 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 @Registry.Include(type = ServerType.MAIN)
 public class VersusBetListener implements Listener {
     private final VersusBetManager vbm;
+    private final VersusManager vm;
     private final BagManager bm;
     private final XmasLegacy plugin;
 
     @Inject
-    public VersusBetListener(VersusBetManager vbm, BagManager bm, XmasLegacy plugin) {
+    public VersusBetListener(VersusBetManager vbm, VersusManager vm, BagManager bm, XmasLegacy plugin) {
         this.vbm = vbm;
+        this.vm = vm;
         this.bm = bm;
         this.plugin = plugin;
     }
@@ -44,6 +48,10 @@ public class VersusBetListener implements Listener {
         e.setCancelled(slot != 4);
 
         if (slot == 3 || slot == 5) {
+            if (amount > vm.getMaxBetAmount()) {
+                InfoUtils.error(p, "베팅 최대 갯수는 &6{}개&f 입니다.", vm.getMaxBetAmount());
+                return;
+            }
             if (amount == 0) {
                 InfoUtils.error(p, "빈칸에 베팅할 카지노 코인을 올려주세요!");
                 return;
@@ -71,11 +79,12 @@ public class VersusBetListener implements Listener {
         if (!(e.getInventory().getHolder() instanceof VersusBetInterface bet)) return;
         if (e.getReason() == InventoryCloseEvent.Reason.PLUGIN) return;
 
-        int amount = bet.getBetAmount();
-        if (amount == 0) return;
+        ItemStack item = bet.getInventory().getItem(4);
+        if (item == null || item.getType().isAir()) return;
 
-        var remains = p.getInventory().addItem(Casino.coin(amount));
+        var remains = p.getInventory().addItem(item);
         if (!remains.isEmpty()) bm.addAll(p, remains.values());
-        InfoUtils.warn(p, "코인이 회수되었습니다.");
+        bet.clearBettingSlot();
+        InfoUtils.warn(p, "올려둔 아이템이 회수되었습니다.");
     }
 }

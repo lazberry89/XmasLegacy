@@ -34,6 +34,8 @@ public class VersusManager {
     private boolean canBet = false;
     private int betAvailableSeconds = 10;
     private int beforeFightSeconds = 3;
+    private int joinCoinAmount = 15;
+    private int maxBetAmount = 10;
 
     @Inject
     public VersusManager(XmasLegacy plugin) {
