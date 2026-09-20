@@ -243,7 +243,7 @@ public class VersusManager {
         var clickable = ColorUtils.chat("&6&l[베팅하기]").clickEvent(ClickEvent.callback(audience -> {
                     if (audience instanceof Player p) {
                         if (isCanBet())
-                            p.openInventory(new VersusBetInterface(blue, red, plugin).getInventory());
+                            p.openInventory(new VersusBetInterface(blue, red, plugin, maxBetAmount).getInventory());
                         else InfoUtils.error(p, "베팅 세션이 종료되었습니다.");
                     }
                 }))
