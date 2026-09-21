@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.casino.versus.bet.VersusBetInterface;
+import org.lazberry.xmaslegacy.casino.versus.event.VersusJoinEvent;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusResetEvent;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -82,6 +83,11 @@ public class VersusManager {
             InfoUtils.error(player, "이미 경기가 시작되었습니다!");
             return;
         }
+
+        if (Casino.countCoins(player) < joinCoinAmount) {
+            InfoUtils.error(player, "경기에 참가하기 위해서는 &6{}&f개의 코인이 필요합니다.", joinCoinAmount);
+            return;
+        }
         synchronized (f) {
             var uuid = player.getUniqueId();
             if (f.isFighter(uuid)) {
@@ -92,9 +98,15 @@ public class VersusManager {
                 InfoUtils.error(player, "이미 모든 참가자가 배정되었습니다.");
                 return;
             }
+            var event = new VersusJoinEvent(player, f);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) return;
             f.joinRandomly(uuid);
+            Casino.removeCoins(player, joinCoinAmount);
             InfoUtils.info(player, "게임에 참가했습니다. 시작 시 자동으로 이동됩니다.");
             GlowUtils.glow(player, NamedTextColor.GOLD);
+
 
             if (f.isFull()) {
                 if (f.teleportWaitingRoom()) {
@@ -267,6 +279,7 @@ public class VersusManager {
         if (f.leave(player.getUniqueId())) {
             InfoUtils.info(player, "퇴장하였습니다.");
             GlowUtils.clearGlow(player);
+            Casino.giveCoin(player, joinCoinAmount);
         } else {
             InfoUtils.error(player, "퇴장할 수 없습니다.");
         }

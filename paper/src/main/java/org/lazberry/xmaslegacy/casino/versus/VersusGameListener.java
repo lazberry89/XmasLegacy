@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusResetEvent;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -80,7 +81,10 @@ public class VersusGameListener implements Listener {
                 }, 20 * 2L);
             });
 
-            OptionalUtils.ifNotNull(Bukkit.getPlayer(winner), w -> w.showTitle(titleWin));
+            OptionalUtils.ifNotNullOrElse(Bukkit.getPlayer(winner), w -> {
+                w.showTitle(titleWin);
+                Casino.giveCoin(w, vm.getJoinCoinAmount() * 2);
+            }, () -> {});
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 OptionalUtils.ifNotNull(Bukkit.getPlayer(winner), rw -> {
