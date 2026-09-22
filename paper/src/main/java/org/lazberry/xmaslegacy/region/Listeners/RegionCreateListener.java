@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
@@ -44,11 +45,22 @@ public class RegionCreateListener implements Listener {
 				rm.addRegion(p, region);
 				InfoUtils.info(p, "구역이 성공적으로 생성되었습니다!");
 				p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-				p.closeInventory();
+				p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
 			} else {
 				InfoUtils.error(p, "구역을 생성할 수 없습니다! 이미 구역이 존재하거나 청크가 생성되지 않았습니다.");
 				p.closeInventory();
 			}
+		}
+	}
+
+	@EventHandler
+	public void rollBackItem(InventoryCloseEvent e) {
+		if (!(e.getPlayer() instanceof Player p)) return;
+
+		var inv = e.getInventory();
+		if (!(inv.getHolder() instanceof RegionCreateInterface)) return;
+		if (e.getReason() != InventoryCloseEvent.Reason.PLUGIN) {
+			p.getInventory().addItem(RegionManager.RegionTicket());
 		}
 	}
 }
