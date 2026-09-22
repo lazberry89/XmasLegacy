@@ -38,23 +38,27 @@ public class MaterialContainer implements InventoryHolder {
         inv.setItem(5, showItem());
     }
 
-    public void giveBackSavedItem(Player p, Material material) {
-        if (bluePrint.isBuildingMaterial(material)) {
-            InfoUtils.error(p, "돌려받을 수 없는 재료입니다.");
-            return;
-        }
-        int amount = bluePrint.getRemainingAmount(material);
-        if (amount <= 0) {
-            InfoUtils.error(p, "남아있는 재료가 없습니다.");
-            return;
-        }
-        bluePrint.addBuildingMaterial(material, bluePrint.getRemainingAmount(material));
+	public void giveBackSavedItem(Player p, Material material) {
+		if (!bluePrint.isBuildingMaterial(material)) {
+			InfoUtils.error(p, "돌려받을 수 없는 재료입니다.");
+			return;
+		}
 
-        var giveBack = new ItemStack(material);
-        giveBack.setAmount(amount);
+		int amount = bluePrint.getRemainingAmount(material);
+		if (amount <= 0) {
+			InfoUtils.error(p, "남아있는 재료가 없습니다.");
+			return;
+		}
 
-        p.getInventory().addItem(giveBack);
-    }
+		bluePrint.consumeMaterial(material, amount);
+
+		var giveBack = new ItemStack(material, amount);
+		p.getInventory().addItem(giveBack);
+
+		if (currentItem == material) {
+			updateShowItem();
+		}
+	}
 
     private ItemStack save() {
         return ItemBuilder.of(plugin, Material.GREEN_STAINED_GLASS_PANE)
@@ -74,21 +78,25 @@ public class MaterialContainer implements InventoryHolder {
                 .build();
     }
 
-    public boolean saveMaterial(ItemStack item) {
-        if (item == null || item.getType().isAir()
-                || item.getAmount() == 0) return false;
-        int amount = item.getAmount();
-        Material type = item.getType();
+	public boolean saveMaterial(ItemStack item) {
+		if (item == null || item.getType().isAir() || item.getAmount() == 0) return false;
 
-        if (currentItem != type) return false;
-        int remaining = bluePrint.addBuildingMaterial(type, amount);
-        if (remaining > 0) {
-            var giveBack = item.clone();
-            giveBack.setAmount(remaining);
-            inv.setItem(4, item.clone());
-        }
-        return true;
-    }
+		Material type = item.getType();
+		if (currentItem != type) return false;
+
+		int amount = item.getAmount();
+		int remaining = bluePrint.addBuildingMaterial(type, amount);
+
+		if (remaining > 0) {
+			var giveBack = item.clone();
+			giveBack.setAmount(remaining);
+			inv.setItem(4, giveBack);
+		} else {
+			inv.setItem(4, null);
+		}
+		updateShowItem();
+		return true;
+	}
 
     private ItemStack createShowItem(Material material, int maxAmount, int currentProcess) {
         var key = material.getItemTranslationKey();
@@ -127,6 +135,13 @@ public class MaterialContainer implements InventoryHolder {
                 .hideAllFlags()
                 .build();
     }
+
+	private void updateShowItem() {
+		if (currentItem == null) return;
+		int maxAmount = bluePrint.getNeededAmount(currentItem);
+		int currentProcess = Math.max(0, bluePrint.getRemainingAmount(currentItem));
+		inv.setItem(5, createShowItem(currentItem, maxAmount, currentProcess));
+	}
 
     @Override
     public @NotNull Inventory getInventory() {
