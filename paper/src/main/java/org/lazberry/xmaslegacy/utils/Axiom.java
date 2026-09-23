@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.utils;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
 public class Axiom {
 	private static final String[] SUFFIXES = {"", "k", "M", "B", "T", "P", "E"};
@@ -27,6 +29,33 @@ public class Axiom {
 		else if (angle >= 45 && angle < 135) return 90f;
 		else if (angle >= 135 && angle < 225) return 180f;
 		else return -90f;
+	}
+
+	public static void loopArea(Location loc1, Location loc2, Consumer<Location> action) {
+		if (loc1 == null || loc2 == null || action == null) return;
+
+		World world = loc1.getWorld();
+		if (world == null || !world.equals(loc2.getWorld())) return;
+
+		int minX = Math.min(loc1.getBlockX(), loc2.getBlockX());
+		int maxX = Math.max(loc1.getBlockX(), loc2.getBlockX());
+		int minY = Math.min(loc1.getBlockY(), loc2.getBlockY());
+		int maxY = Math.max(loc1.getBlockY(), loc2.getBlockY());
+		int minZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
+		int maxZ = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
+
+		Location current = new Location(world, 0, 0, 0);
+
+		for (int x = minX; x <= maxX; x++) {
+			for (int y = minY; y <= maxY; y++) {
+				for (int z = minZ; z <= maxZ; z++) {
+					current.setX(x);
+					current.setY(y);
+					current.setZ(z);
+					action.accept(current);
+				}
+			}
+		}
 	}
 
 	public static Location snapDegrees(Location location) {

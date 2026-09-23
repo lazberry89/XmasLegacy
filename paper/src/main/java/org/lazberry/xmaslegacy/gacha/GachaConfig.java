@@ -76,7 +76,6 @@ public class GachaConfig implements Initiator {
         return CompletableFuture.runAsync(() -> {
             synchronized (this) {
                 applySettings();
-
             }
         });
     }

@@ -1,11 +1,20 @@
 package org.lazberry.xmaslegacy.blueprint;
 
+import com.google.gson.Gson;
+import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.ItemBuilder;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -13,16 +22,43 @@ import java.util.function.Consumer;
 @Getter
 @ConsumableClass
 public class BluePrint {
+    private static final Gson GSON = new com.google.gson.GsonBuilder().create();
+    private static final NamespacedKey key = KeyUtils.get("blueprint");
+
+    public static boolean isBluePrint(ItemStack item) {
+        return KeyUtils.hasKey(item, key);
+    }
+
+    public static String getNameByItem(ItemStack item) {
+        if (!isBluePrint(item)) return "";
+        return KeyUtils.get(item, key, PersistentDataType.STRING);
+    }
+
     private final String structureName;
     private final Map<Material, Integer> neededMaterial = new HashMap<>();
     private final Map<Material, Integer> remainingMaterial = new HashMap<>();
     private final Set<Material> materialTypes = new HashSet<>();
     private final List<RelativeBlock> blocks = new ArrayList<>();
+    private transient boolean lock = false;
     private int process = 0;
-    private boolean lock = false;
 
     public BluePrint(String structureName) {
         this.structureName = structureName;
+    }
+
+    public ItemStack getItem() {
+        var builder = OraxenItems.getItemById("blueprint");
+        var item = builder == null ? new ItemStack(Material.PAPER) : builder.build();
+
+        return ItemBuilder.of(XmasLegacy.getInstance(), item)
+                .setName(ColorUtils.chat("&9&l건축물 도면"))
+                .setLore(
+                        ColorUtils.chat("&7건축물: " + structureName),
+                        ColorUtils.chat("&7우클릭 시 재료 보관함이 열리고, 수집 완료 후 우클릭 시"),
+                        ColorUtils.chat("&7건축을 시작합니다."))
+                .setTag(key, PersistentDataType.STRING, structureName)
+                .setMaxStackSize(1)
+                .build();
     }
 
     public int getRemainingAmount(Material material) {
@@ -61,6 +97,11 @@ public class BluePrint {
         remainingMaterial.put(material, current + toAdd);
 
         return amount - toAdd;
+    }
+
+    public boolean isFullyCollected(Material material) {
+        return remainingMaterial.containsKey(material) && neededMaterial.containsKey(material) &&
+                Objects.equals(remainingMaterial.get(material), neededMaterial.get(material));
     }
 
     public boolean isBuildingMaterial(Material material) {
@@ -110,12 +151,81 @@ public class BluePrint {
         Location buildLoc = origin.clone().add(block.getX(), block.getY(), block.getZ());
         var world = buildLoc.getWorld();
 
+        var beforeBlock = buildLoc.getBlock();
+        if (!beforeBlock.getType().isAir())
+            beforeBlock.breakNaturally();
+
         world.setType(buildLoc, block.getMaterial());
         world.getBlockAt(buildLoc).setBlockData(block.getBlockData());
         loc.accept(buildLoc);
     }
 
+    public void forEachVirtualLocation(Location origin, Consumer<Location> action) {
+        if (origin == null || action == null || origin.getWorld() == null) return;
+
+        var world = origin.getWorld();
+        int originX = origin.getBlockX();
+        int originY = origin.getBlockY();
+        int originZ = origin.getBlockZ();
+
+        Location current = new Location(world, 0, 0, 0);
+
+        for (RelativeBlock block : blocks) {
+            if (block == null) continue;
+
+            current.setX(originX + block.getX());
+            current.setY(originY + block.getY());
+            current.setZ(originZ + block.getZ());
+            action.accept(current);
+        }
+    }
+
+    public boolean matchAllVirtualLocations(Location origin, java.util.function.Predicate<Location> condition) {
+        if (origin == null || condition == null || origin.getWorld() == null) return false;
+
+        var world = origin.getWorld();
+        int originX = origin.getBlockX();
+        int originY = origin.getBlockY();
+        int originZ = origin.getBlockZ();
+
+        Location current = new Location(world, 0, 0, 0);
+
+        for (RelativeBlock block : blocks) {
+            if (block == null) continue;
+
+            current.setX(originX + block.getX());
+            current.setY(originY + block.getY());
+            current.setZ(originZ + block.getZ());
+
+            if (!condition.test(current)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public BluePrint copy() {
+        BluePrint copy = new BluePrint(this.structureName);
+
+        copy.blocks.addAll(this.blocks);
+
+        copy.neededMaterial.putAll(this.neededMaterial);
+        copy.remainingMaterial.putAll(this.remainingMaterial);
+        copy.materialTypes.addAll(this.materialTypes);
+
+        return copy;
+    }
+
     public int getProcess() {
         return Math.min(process, blocks.size());
+    }
+
+    public String toJson() {
+        return GSON.toJson(this);
+    }
+
+    public static BluePrint parseInstanceFromJson(String json) {
+        if (json == null || json.isEmpty()) return null;
+        return GSON.fromJson(json, BluePrint.class);
     }
 }

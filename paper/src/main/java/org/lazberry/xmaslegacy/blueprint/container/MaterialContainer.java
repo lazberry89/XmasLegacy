@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.blueprint;
+package org.lazberry.xmaslegacy.blueprint.container;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -11,9 +11,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.blueprint.BluePrint;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.InventoryComponents;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
 @Getter
@@ -28,7 +29,7 @@ public class MaterialContainer implements InventoryHolder {
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&6&l재료함"));
         this.bluePrint = bluePrint;
         this.plugin = plugin;
-        var bg = InventoryComponents.background();
+        var bg = InventoryHelper.background();
         for (int i = 0; i < inv.getSize(); i++) {
             inv.setItem(i, bg);
         }

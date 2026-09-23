@@ -29,24 +29,7 @@ public class Teleporter {
     }
 
     public void forEachLocation(Consumer<Location> action) {
-        if (loc1 == null || loc2 == null) return;
-        World world = loc1.getWorld();
-        if (world == null) return;
-
-        int minX = Math.min(loc1.getBlockX(), loc2.getBlockX());
-        int maxX = Math.max(loc1.getBlockX(), loc2.getBlockX());
-        int minY = Math.min(loc1.getBlockY(), loc2.getBlockY());
-        int maxY = Math.max(loc1.getBlockY(), loc2.getBlockY());
-        int minZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
-        int maxZ = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    action.accept(new Location(world, x, y, z));
-                }
-            }
-        }
+        Axiom.loopArea(loc1, loc2, action);
     }
 
     public void forEachBlock(Consumer<Block> action) {
