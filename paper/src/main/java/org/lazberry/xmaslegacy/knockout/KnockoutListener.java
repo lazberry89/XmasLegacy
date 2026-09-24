@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.playerUtils.knockout;
+package org.lazberry.xmaslegacy.knockout;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;

@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.blueprint;
 import com.google.gson.Gson;
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -40,6 +41,7 @@ public class BluePrint {
     private final Set<Material> materialTypes = new HashSet<>();
     private final List<RelativeBlock> blocks = new ArrayList<>();
     private transient boolean lock = false;
+	private transient BlueprintGrade grade;
     private int process = 0;
 
     public BluePrint(String structureName) {
@@ -49,13 +51,15 @@ public class BluePrint {
     public ItemStack getItem() {
         var builder = OraxenItems.getItemById("blueprint");
         var item = builder == null ? new ItemStack(Material.PAPER) : builder.build();
+		int price = getPrice();
+
+	    Component grade = Component.space().append(BlueprintGrade.fromPrice(price).getDisplayName());
 
         return ItemBuilder.of(XmasLegacy.getInstance(), item)
-                .setName(ColorUtils.chat("&9&l건축물 도면"))
+                .setName(ColorUtils.chat("&9&l건축물 도면").append(grade))
                 .setLore(
-                        ColorUtils.chat("&7건축물: " + structureName),
-                        ColorUtils.chat("&7우클릭 시 재료 보관함이 열리고, 수집 완료 후 우클릭 시"),
-                        ColorUtils.chat("&7건축을 시작합니다."))
+                        ColorUtils.chat("&7건축물: &6" + structureName),
+						ColorUtils.chat("&7가격: &6" + price + "$"))
                 .setTag(key, PersistentDataType.STRING, structureName)
                 .setMaxStackSize(1)
                 .build();
@@ -228,4 +232,38 @@ public class BluePrint {
         if (json == null || json.isEmpty()) return null;
         return GSON.fromJson(json, BluePrint.class);
     }
+
+	private int getBlockPrice(Material material) {
+		if (material == null || !material.isBlock() || material.isAir() || material.getHardness() < 0) {
+			return 0;
+		}
+
+		int basePrice = 500;
+		float hardness = material.getHardness();
+		float resistance = material.getBlastResistance();
+
+		int multiplier = 1;
+		String name = material.name();
+		if (name.contains("NETHERITE")) multiplier = 10;
+		else if (name.contains("ANCIENT_DEBRIS")) multiplier = 12;
+		else if (name.contains("DIAMOND")) multiplier = 5;
+		else if (name.contains("EMERALD")) multiplier = 4;
+		else if (name.contains("GOLD")) multiplier = 3;
+
+		int calculated = (int) Math.round((basePrice + (hardness * 5) + (resistance * 0.5)) * multiplier);
+		return Math.max(calculated, 1);
+	}
+
+	public int getPrice() {
+		int printPrice = 50000;
+		int materialPrice = (int) neededMaterial.entrySet().stream()
+				.mapToDouble(entry -> getBlockPrice(entry.getKey()) * entry.getValue())
+				.sum();
+		return printPrice + materialPrice;
+	}
+
+	public BlueprintGrade getGrade() {
+		if (grade == null) grade = BlueprintGrade.fromPrice(getPrice());
+		return grade;
+	}
 }

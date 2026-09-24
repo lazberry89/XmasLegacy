@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.playerUtils.deathbox;
+package org.lazberry.xmaslegacy.deathbox;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

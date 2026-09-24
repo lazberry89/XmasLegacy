@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.playerUtils.UserTagManager;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
@@ -68,7 +67,6 @@ public final class ServerJoinListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void LeaveMsg(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
-		UserTagManager.removeHoverTag(p);
 
 		e.quitMessage(null);
 		us.onQuitAsync(p.getUniqueId()).whenComplete((u, ex) -> {

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.playerUtils.deathbox;
+package org.lazberry.xmaslegacy.deathbox;
 
 import lombok.Data;
 import org.bukkit.Bukkit;

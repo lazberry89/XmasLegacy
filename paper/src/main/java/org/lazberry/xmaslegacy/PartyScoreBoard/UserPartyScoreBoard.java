@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
-import org.lazberry.xmaslegacy.playerUtils.knockout.KnockoutPlayer;
+import org.lazberry.xmaslegacy.knockout.KnockoutPlayer;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;

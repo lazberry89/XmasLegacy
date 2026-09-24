@@ -131,3 +131,6 @@ commands:
   casino:
     description: casino setting commands
 
+  blueprint:
+    description: blueprint create/manager command
+
