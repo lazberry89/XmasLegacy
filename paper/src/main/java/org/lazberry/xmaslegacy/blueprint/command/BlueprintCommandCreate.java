@@ -1,9 +1,7 @@
 package org.lazberry.xmaslegacy.blueprint.command;
 
-import io.th0rgal.oraxen.utils.InventoryUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.blueprint.BluePrint;
 import org.lazberry.xmaslegacy.blueprint.BluePrintManager;
 import org.lazberry.xmaslegacy.blueprint.selection.BlueprintSelectionManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
@@ -22,7 +20,7 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 			return;
 		}
 		//blueprint create id
-		if (args.length < 3) {
+		if (args.length < 2) {
 			InfoUtils.error(player, "올바르지 않은 명령어입니다.");
 			return;
 		}
@@ -40,13 +38,17 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 			var second = optionalSecond.get();
 
 			var current = player.getLocation();
-			BluePrint bluePrint = manager.createBluePrint(id, current, first, second);
 
-			if (manager.register(bluePrint)) {
-				InfoUtils.info(player, "성공적으로 도면을 완성했습니다.");
-				InventoryHelper.giveItemOrDrop(player, bluePrint.getItem());
-			}
-			else InfoUtils.error(player, "이미 존재하는 아이디입니다. &c({})", id);
+			manager.createAndSave(id, current, first, second).whenComplete((bluePrint, ex) -> {
+				if (bluePrint != null) {
+					InfoUtils.info(player, "성공적으로 도면을 완성했습니다.");
+					InventoryHelper.giveItemOrDrop(player, bluePrint.getItem());
+				} else if (ex != null) {
+					InfoUtils.error(player, "도면 생성에 실패하였습니다.(이미 존재하거나 저장에 실패했습니다.)", ex);
+				}
+			});
+
+
 		} else {
 			if (optionalFirst.isEmpty()) InfoUtils.error(player, "첫번째 위치가 설정되지 않았습니다.");
 			if (optionalSecond.isEmpty()) InfoUtils.error(player, "두번째 위치가 설정되지 않았습니다.");

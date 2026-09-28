@@ -1,89 +1,81 @@
 package org.lazberry.xmaslegacy.blueprint.config;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.blueprint.BluePrint;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
-import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
-public class BlueprintConfig implements Initiator {
-    private final File dataFolder;
-    private @Getter YamlConfiguration config;
-    private File file;
+public class BlueprintConfig {
+	private final File schematicsFolder;
 
-    @Inject
-    public BlueprintConfig(XmasLegacy plugin) {
-        this.dataFolder = plugin.getDataFolder();
-    }
+	@Inject
+	public BlueprintConfig(XmasLegacy plugin) {
+		this.schematicsFolder = new File(plugin.getDataFolder(), "blueprints");
+	}
 
-    @Override
-    public void init() {
-        file = new File(dataFolder, "blueprints.yml");
+	public CompletableFuture<Boolean> saveAsync(BluePrint bluePrint) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				File folder = new File(schematicsFolder, "blueprints");
+				if (!folder.exists()) folder.mkdirs();
 
-        if (!dataFolder.exists() && !dataFolder.mkdirs()) {
-            log.error("Failed to create directories for blueprints.");
-            return;
-        }
+				File file = new File(folder, bluePrint.getStructureName() + ".json");
 
-        if (!file.exists()) {
-            try {
-                if (file.createNewFile()) {
-                    log.info("Successfully created blueprints files.");
-                }
-            } catch (IOException e) {
-                log.error("Exception occurred while initiating blueprints files.", e);
-            }
-        }
-        this.config = YamlConfiguration.loadConfiguration(file);
-    }
-
-    public void saveSync(Map<String, BluePrint> saves) {
-        synchronized (this) {
-            var builder = ConfigBuilder.create();
-            for (BluePrint print : saves.values()) {
-				if (print == null) continue;
-                String path = print.getStructureName();
-                builder.set(path, print.toJson());
-            }
-            this.config = builder.save(file).build();
-        }
-    }
-
-	public CompletableFuture<Void> saveAsync(Map<String, BluePrint> saves) {
-		return CompletableFuture.runAsync(() -> saveSync(saves));
+				String json = bluePrint.toJson();
+				Files.writeString(file.toPath(), json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+				return true;
+			} catch (Exception e) {
+				log.error("Failed to save blueprint file: {}", bluePrint.getStructureName(), e);
+				return false;
+			}
+		});
 	}
 
 	public Map<String, BluePrint> loadSync() {
-		final Map<String, BluePrint> loaded = new ConcurrentHashMap<>();
-		if (config == null) return loaded;
+		Map<String, BluePrint> result = new HashMap<>();
 
-		synchronized (this) {
-			for (String key : config.getKeys(false)) {
-				String json = config.getString(key);
-				if (json == null || json.isEmpty()) continue;
-				BluePrint print = BluePrint.parseInstanceFromJson(json);
-				if (print != null) {
-					loaded.put(key, print);
+		if (!schematicsFolder.exists()) {
+			schematicsFolder.mkdirs();
+			return result;
+		}
+
+		File[] files = schematicsFolder.listFiles((dir, name) -> name.endsWith(".schem") || name.endsWith(".schematic"));
+		if (files != null) {
+			for (File file : files) {
+				String id = file.getName().substring(0, file.getName().lastIndexOf('.'));
+				BluePrint bp = BlueprintSchematicManager.loadAndCreateBlueprint(file, id, 0f);
+				if (bp != null) {
+					result.put(id, bp);
 				}
 			}
 		}
-		return loaded;
+		return result;
 	}
 
-	public CompletableFuture<Map<String, BluePrint>> loadAsync() {
-		return CompletableFuture.supplyAsync(this::loadSync);
+	public CompletableFuture<Void> deleteAsync(String id) {
+		return CompletableFuture.runAsync(() -> {
+			File file = new File(schematicsFolder, id + ".schem");
+			if (!file.exists()) {
+				file = new File(schematicsFolder, id + ".schematic");
+			}
+			if (file.exists() && !file.delete()) {
+				log.warn("Failed to delete schematic file: {}", file.getName());
+			}
+		});
+	}
+
+	public File getSchematicFile(String id) {
+		return new File(schematicsFolder, id + ".schem");
 	}
 }

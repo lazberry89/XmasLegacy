@@ -36,6 +36,8 @@ public class BlueprintCommand implements CommandExecutor, TabCompleter {
 		commands.put("create", new BlueprintCommandCreate(manager, selectionManager));
 		commands.put("give", new BlueprintCommandGive(manager));
 		commands.put("build", new BlueprintCommandBuild(manager));
+		commands.put("shop",  new BlueprintCommandShop(manager));
+		commands.put("remove",  new BlueprintCommandRemove(manager));
 	}
 
 	@Override
@@ -58,10 +60,10 @@ public class BlueprintCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		return switch (args.length) {
-			case 1 -> List.of("create", "give", "build");
+			case 1 -> List.of("create", "give", "build", "shop", "remove");
 			case 2 -> {
 				String sub = args[0].toLowerCase();
-				if (sub.equals("give") || sub.equals("build")) {
+				if (sub.equals("give") || sub.equals("build") || sub.equals("remove")) {
 					var list = manager.getBluePrints();
 					if (list.isEmpty()) yield List.of();
 

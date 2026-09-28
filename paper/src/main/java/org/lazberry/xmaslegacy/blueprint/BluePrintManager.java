@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.blueprint;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -12,7 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintConfig;
+import org.lazberry.xmaslegacy.blueprint.config.BlueprintSchematicManager;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintTaskRecordConfig;
+import org.lazberry.xmaslegacy.blueprint.shop.BlueprintShop;
 import org.lazberry.xmaslegacy.region.RegionManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -25,9 +28,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+@Slf4j
 @Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class BluePrintManager implements Initiator {
     private final Map<String, BluePrint> bluePrints = new ConcurrentHashMap<>();
@@ -73,6 +78,20 @@ public class BluePrintManager implements Initiator {
         return Optional.ofNullable(bluePrints.get(structureName));
     }
 
+	public CompletableFuture<BluePrint> createAndSave(String id, Location origin, Location loc1, Location loc2) {
+		if (exists(id)) return CompletableFuture.completedFuture(null);
+
+		BluePrint bluePrint = createBluePrint(id, origin, loc1, loc2);
+
+		return config.saveAsync(bluePrint).thenApply(success -> {
+			if (success) {
+				register(bluePrint);
+				return bluePrint;
+			}
+			return null;
+		});
+	}
+
     public BluePrint createBluePrint(String id, Location origin, Location loc1, Location loc2) {
         BluePrint bluePrint = new BluePrint(id);
         Axiom.loopArea(loc1, loc2, l -> {
@@ -81,6 +100,8 @@ public class BluePrintManager implements Initiator {
 
             bluePrint.addBlock(origin, l, block);
         });
+	    float originYaw = Axiom.snapDegrees(origin.getYaw());
+	    if (originYaw != 0f) return rotate(bluePrint, -originYaw);
         return bluePrint;
     }
 
@@ -116,12 +137,12 @@ public class BluePrintManager implements Initiator {
 			return;
 		}
 
-		if (canBuild(value, builder, startLoc)) {
+		BluePrint session = rotate(value, startLoc.getYaw());
+		if (canBuild(session, builder, startLoc)) {
 			long expectedTime = value.getMaxProcess() * delayPerBlock;
 			InfoUtils.info(builder, "건축이 시작됩니다. &6(예상시간: {})",
 					Axiom.formatTicksToMMSS(expectedTime));
 
-			BluePrint session = value.copy();
 			var current = System.currentTimeMillis();
 			var task = new BukkitRunnable() {
 
@@ -161,6 +182,12 @@ public class BluePrintManager implements Initiator {
         return stoppedTaskRecords.containsKey(uuid);
     }
 
+	public void openShop(Player player) {
+		var shop = new BlueprintShop(plugin, getBluePrints());
+		player.openInventory(shop.getInventory());
+		player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+	}
+
 	public void resumeBuilding() {
 		if (stoppedTaskRecords.isEmpty()) return;
 
@@ -174,7 +201,7 @@ public class BluePrintManager implements Initiator {
 			var startLoc = record.startLocation();
 			if (startLoc == null || startLoc.getWorld() == null) return;
 
-			BluePrint session = value.copy();
+			BluePrint session = rotate(value, startLoc.getYaw());
 			int maxProcess = session.getMaxProcess();
 			int startProcess = record.process();
 
@@ -235,13 +262,23 @@ public class BluePrintManager implements Initiator {
 		    stoppedTaskRecords.put(uuid, activeTask.toTaskRecord(uuid));
 	    });
 	    buildTasks.clear();
-
-	    config.saveSync(bluePrints);
 	    bluePrints.clear();
 
 	    taskConfig.saveSync(stoppedTaskRecords);
 	    stoppedTaskRecords.clear();
     }
+
+	public boolean removeBlueprint(String id) {
+		if (!bluePrints.containsKey(id)) return false;
+		bluePrints.remove(id);
+		config.deleteAsync(id).whenComplete((v, e) ->
+				log.warn("Completely removed blueprint json file. ({})", id));
+		return true;
+	}
+
+	public BluePrint rotate(BluePrint bluePrint, float angle) {
+		return BlueprintSchematicManager.getRotatedBlueprint(bluePrint, angle);
+	}
 
 	private record ActiveTask(
 			BukkitTask task,
