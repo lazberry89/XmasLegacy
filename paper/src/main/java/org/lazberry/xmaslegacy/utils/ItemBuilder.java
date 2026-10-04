@@ -82,13 +82,29 @@ public final class ItemBuilder {
 	 */
 	@Contract("_ -> this")
 	public ItemBuilder setLore(@NotNull Component... lore) {
-		return setLore(List.of(lore));
+		return setLore(Arrays.asList(lore));
 	}
 
 	@Contract("_ -> this")
 	public ItemBuilder setLore(@NotNull List<Component> lore) {
 		if (meta != null) {
 			meta.lore(lore);
+		}
+		return this;
+	}
+
+	@Contract("_ -> this")
+	public ItemBuilder addLore(@NotNull Component... lore) {
+		return addLore(Arrays.asList(lore));
+	}
+
+	@Contract("_ -> this")
+	public ItemBuilder addLore(@NotNull List<Component> lore) {
+		if (meta != null) {
+			List<Component> currentLore = meta.lore();
+			List<Component> newLore = (currentLore == null) ? new ArrayList<>() : new ArrayList<>(currentLore);
+			newLore.addAll(lore);
+			meta.lore(newLore);
 		}
 		return this;
 	}

@@ -8,15 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.currency.CurrencyManager;
-import org.lazberry.xmaslegacy.bags.BagManager;
-import org.lazberry.xmaslegacy.food.AgeableCrops;
-import org.lazberry.xmaslegacy.utils.Documents;
-import org.lazberry.xmaslegacy.utils.FloodgateUtils;
-import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.currency.CurrencyManager;
+import org.lazberry.xmaslegacy.food.AgeableCrops;
+import org.lazberry.xmaslegacy.utils.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +29,6 @@ public abstract class AbstractNpc {
 	protected final @NotNull Map<UUID, Long> lastTalkTime = new HashMap<>();
 	private final @Getter NamespacedKey checkKey;
 	private final @Getter NamespacedKey foodKey;
-	private final @Getter NamespacedKey bookKey;
 	private static final long DIALOGUE_TIMEOUT = 20000L;
 
     public AbstractNpc(@NotNull List<String> cap, @NotNull Component name, @NotNull Sound conversationSound, @NotNull NpcType type) {
@@ -46,10 +40,9 @@ public abstract class AbstractNpc {
 		this.conversationSound = conversationSound;
 		this.checkKey = KeyUtils.get("check");
 		this.foodKey = KeyUtils.get("foodKey");
-		this.bookKey = KeyUtils.get("bookKey");
     }
 
-	protected @NotNull String next(@NotNull Player player, @NotNull BagManager bm) {
+	protected @NotNull String next(@NotNull Player player) {
 		var uuid = player.getUniqueId();
 		long currentTime = System.currentTimeMillis();
 
@@ -72,22 +65,10 @@ public abstract class AbstractNpc {
 			num = 0;
 			this.lastTalkTime.remove(uuid);
 			if (type == NpcType.MAIN) provideMoney(player);
-			else if (type == NpcType.BOOK) provideStolenBook(player, bm);
 		}
 
 		this.playerCaption.put(uuid, num);
 		return currentCaption;
-	}
-
-	private void provideStolenBook(@NotNull Player player, @NotNull BagManager bm) {
-		if (catchKey(player, bookKey)) {
-			Map<Integer, ItemStack> remain = player.getInventory().addItem(Documents.StolenBook());
-			if (!remain.isEmpty()) {
-				remain.values().forEach(i ->
-						bm.addItem(player, i));
-				InfoUtils.warn(player, "인벤토리가 가득 찼습니다. 가방을 확인하세요.");
-			}
-		}
 	}
 
 	private void provideMoney(@NotNull Player player) {
@@ -119,9 +100,9 @@ public abstract class AbstractNpc {
 		return false;
 	}
 
-    protected void sendCaption(@NotNull Player player, @NotNull BagManager bm) {
+    protected void sendCaption(@NotNull Player player) {
 	    player.playSound(player, this.conversationSound, 1.0f, 1.0f);
-	    Component txt = this.name.append(ColorUtils.chat(" &f" + next(player, bm)));
+	    Component txt = this.name.append(ColorUtils.chat(" &f" + next(player)));
 	    player.sendActionBar(txt);
 	    if (FloodgateUtils.isFloodgate(player.getUniqueId())) player.sendMessage(txt);
     }

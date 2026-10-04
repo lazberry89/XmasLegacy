@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Commands(command = "blueprint")
+@Commands(command = "blueprint", aliases = "bp")
 @Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class BlueprintCommand implements CommandExecutor, TabCompleter {
 	private final Map<String, SubCommand> commands = new HashMap<>();

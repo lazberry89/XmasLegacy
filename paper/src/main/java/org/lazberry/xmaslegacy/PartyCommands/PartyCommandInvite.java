@@ -77,7 +77,7 @@ public class PartyCommandInvite implements SubCommand {
                     if (floodgatePlayer != null) {
                         floodgatePlayer.sendForm(inviteComp(current, target));
                     } else log.error("Failed to find mobile player: {}", target.getName());
-                }, 5L);
+                }, 15L);
             }
             else Bukkit.getScheduler().runTaskLater(plugin, () -> target.sendMessage(inviteComp(current)), 2L);
             InfoUtils.info(player, "파티 초대 요청을 보냈습니다.");

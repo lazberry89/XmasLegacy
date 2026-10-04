@@ -2,19 +2,8 @@ package org.lazberry.xmaslegacy.infoNpcs;
 
 public enum NpcType {
     MAIN,
-    LOBBY,
     ROLE,
-	WITCH,
-	WANDER,
 	LIBRARIAN,
-	VILLAGER1,
-	VILLAGER2,
-	VILLAGER3,
-	VILLAGER4,
-	VILLAGER5,
-	VILLAGER6,
-	VILLAGER7,
-	VILLAGER8,
-	VILLAGER9,
 	BOOK,
+	COSMETIC,
 }

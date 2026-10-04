@@ -134,3 +134,9 @@ commands:
   blueprint:
     description: blueprint create/manager command
 
+  bp:
+    description: blueprint create/manager command
+
+  goods:
+    description: register/remove goods
+

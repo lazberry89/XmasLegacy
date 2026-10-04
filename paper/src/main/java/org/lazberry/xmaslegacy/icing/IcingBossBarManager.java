@@ -1,21 +1,30 @@
 package org.lazberry.xmaslegacy.icing;
 
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.bossbar.BossBar;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Registry.Exclude(type = ServerType.LOBBY)
-public class IcingBossBarManager {
-    private final @NotNull Map<UUID, BossBar> bars = new HashMap<>();
+public class IcingBossBarManager implements Initiator {
+    private final Map<UUID, BossBar> bars = new HashMap<>();
 
     public IcingBossBarManager() {}
+
+	@Override
+	public void init() {
+		log.info("Icing manager started.");
+	}
 
     public void updateBar(@NotNull Player p, int amount) {
         UUID uuid = p.getUniqueId();
@@ -47,4 +56,18 @@ public class IcingBossBarManager {
         BossBar bar = bars.remove(p.getUniqueId());
         if (bar != null) bar.removeViewer(p);
     }
+
+	public void clearAll() {
+		Bukkit.getOnlinePlayers().forEach(p -> {
+			UUID uuid = p.getUniqueId();
+			BossBar bar = bars.get(uuid);
+			if (bar != null) bar.removeViewer(p);
+		});
+		bars.clear();
+	}
+
+	@Override
+	public void close() {
+		clearAll();
+	}
 }

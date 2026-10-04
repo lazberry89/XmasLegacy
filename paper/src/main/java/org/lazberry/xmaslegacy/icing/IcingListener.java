@@ -9,25 +9,24 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.utils.KeyUtils;
-import org.lazberry.xmaslegacy.utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
+import org.lazberry.xmaslegacy.utils.UserHandler;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
 public class IcingListener implements Listener {
-	private final @NotNull UserManager um;
-	private final @NotNull IcingBossBarManager bm;
+	private final UserManager um;
+	private final IcingBossBarManager bm;
 
 	@Inject
-	public IcingListener(@NotNull UserManager um, @NotNull IcingBossBarManager bm) {
+	public IcingListener(UserManager um, IcingBossBarManager bm) {
 		this.um = um;
 		this.bm = bm;
 	}

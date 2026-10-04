@@ -39,7 +39,7 @@ public final class GlowUtils {
 			team.color(color);
 		}
 
-		team.addEntry(entity.getUniqueId().toString());
+		team.addEntity(entity);
 		entity.setGlowing(true);
 	}
 
@@ -50,16 +50,16 @@ public final class GlowUtils {
 	 * }</pre>
 	 * @param entity target entity.
 	 */
-    public static void clearGlow(@NotNull Entity entity) {
-        entity.setGlowing(false);
+	public static void clearGlow(@NotNull Entity entity) {
+		entity.setGlowing(false);
 
-        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        Team team = scoreboard.getEntryTeam(entity.getUniqueId().toString());
+		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		Team team = scoreboard.getEntityTeam(entity);
 
-        if (team != null) {
-            team.removeEntry(entity.getUniqueId().toString());
-        }
-    }
+		if (team != null) {
+			team.removeEntity(entity);
+		}
+	}
 
 	/**
 	 * This method glows block. Spawns invisible shulker and give it a glow removed in selected ticks.

@@ -8,31 +8,29 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.Slime;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.utils.GlowUtils;
-import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.GlowUtils;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 @Data
 @Registry.Include(type = ServerType.MAIN)
 public class MagicBook {
-	private final NamespacedKey key;
+	public static final NamespacedKey key = KeyUtils.get("book");
     private @Nullable ItemDisplay display;
-	private @Nullable Slime slime;
+	private @Nullable Interaction interaction;
 
-	public MagicBook() {
-		key = KeyUtils.get("book");
-	}
+	public MagicBook() {}
 
 	@Contract(pure = true)
     private @NotNull ItemStack magicBook() {
@@ -43,7 +41,7 @@ public class MagicBook {
     }
 
 	public boolean exists() {
-		return display != null && slime != null;
+		return display != null && interaction != null;
 	}
 
     public ItemDisplay BookStand(@NotNull Location loc) {
@@ -62,11 +60,10 @@ public class MagicBook {
 
 	public void spawn(Location loc) {
 		BookStand(loc);
-		loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), Slime.class, i -> {
-			i.setInvisible(true);
-			i.setSize(2);
-			i.setAI(false);
-			i.setSilent(true);
+		loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), Interaction.class, i -> {
+			i.setResponsive(true);
+			i.setInteractionWidth(0.8f);
+			i.setInteractionHeight(1.2f);
 			KeyUtils.set(i, key, "rpgbook");
 		});
 	}
@@ -76,9 +73,9 @@ public class MagicBook {
 			display.remove();
 			display = null;
 		}
-		if (slime != null) {
-			slime.remove();
-			slime = null;
+		if (interaction != null) {
+			interaction.remove();
+			interaction = null;
 		}
     }
 }

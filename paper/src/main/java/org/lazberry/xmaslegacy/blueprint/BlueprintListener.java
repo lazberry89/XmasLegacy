@@ -20,6 +20,18 @@ public class BlueprintListener implements Listener {
 
 	@EventHandler
 	public void whenClickBlueprint(PlayerInteractEvent e) {
+		var p = e.getPlayer();
+		if (e.getAction().isLeftClick()) return;
 
+		var item = e.getItem();
+		if (item == null || item.getType().isAir()) return;
+		if (!BluePrint.isBluePrint(item)) return;
+
+		var name = BluePrint.getNameByItem(item);
+		if (name == null) return;
+
+		blueprintManager.getBluePrint(name).ifPresent(blueprint -> {
+			if (blueprintManager.startBuilding(blueprint.getStructureName(), p, () -> {})) item.setAmount(0);
+		});
 	}
 }

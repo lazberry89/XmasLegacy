@@ -37,7 +37,6 @@ public class BluePrint {
 
     private final String structureName;
     private final Map<Material, Integer> neededMaterial = new HashMap<>();
-    private final Map<Material, Integer> remainingMaterial = new HashMap<>();
     private final Set<Material> materialTypes = new HashSet<>();
     private final List<RelativeBlock> blocks = new ArrayList<>();
     private transient boolean lock = false;
@@ -54,19 +53,17 @@ public class BluePrint {
 		int price = getPrice();
 
 	    Component grade = Component.space().append(BlueprintGrade.fromPrice(price).getDisplayName());
+		List<Component> lore = new ArrayList<>();
+		lore.add(ColorUtils.chat("&7건축물: &6" + structureName));
+		lore.add(ColorUtils.chat("&7가격: &6" + price + "$"));
+		lore.addAll(getChunkMapLore());
 
         return ItemBuilder.of(XmasLegacy.getInstance(), item)
                 .setName(ColorUtils.chat("&9&l건축물 도면").append(grade))
-                .setLore(
-                        ColorUtils.chat("&7건축물: &6" + structureName),
-						ColorUtils.chat("&7가격: &6" + price + "$"))
+                .setLore(lore)
                 .setTag(key, PersistentDataType.STRING, structureName)
                 .setMaxStackSize(1)
                 .build();
-    }
-
-    public int getRemainingAmount(Material material) {
-        return remainingMaterial.getOrDefault(material, -1);
     }
 
     public int getNeededAmount(Material material) {
@@ -88,48 +85,12 @@ public class BluePrint {
         materialTypes.add(material);
     }
 
-    public int addBuildingMaterial(Material material, int amount) {
-        if (!isBuildingMaterial(material) || amount <= 0) return amount;
-
-        int max = getNeededAmount(material);
-        int current = remainingMaterial.getOrDefault(material, 0);
-        int space = max - current;
-
-        if (space <= 0) return amount;
-
-        int toAdd = Math.min(space, amount);
-        remainingMaterial.put(material, current + toAdd);
-
-        return amount - toAdd;
-    }
-
-    public boolean isFullyCollected(Material material) {
-        return remainingMaterial.containsKey(material) && neededMaterial.containsKey(material) &&
-                Objects.equals(remainingMaterial.get(material), neededMaterial.get(material));
-    }
-
     public boolean isBuildingMaterial(Material material) {
         return neededMaterial.containsKey(material);
     }
 
-    public boolean isMaterialFullyCollected() {
-        return neededMaterial.equals(remainingMaterial);
-    }
-
     public int getMaxProcess() {
         return blocks.size();
-    }
-
-    public void consumeMaterial(Material material) {
-        remainingMaterial.computeIfPresent(material, (mat, count) -> count > 1 ? count - 1 : null);
-    }
-
-    public void consumeMaterial(Material material, int amount) {
-        remainingMaterial.computeIfPresent(material, (mat, count) -> count > amount ? count - amount : null);
-    }
-
-    public boolean isFullySupplied() {
-        return remainingMaterial.isEmpty();
     }
 
     public ArrayList<Material> getOrderedMaterialList() {
@@ -214,7 +175,6 @@ public class BluePrint {
         copy.blocks.addAll(this.blocks);
 
         copy.neededMaterial.putAll(this.neededMaterial);
-        copy.remainingMaterial.putAll(this.remainingMaterial);
         copy.materialTypes.addAll(this.materialTypes);
 
         return copy;
@@ -266,4 +226,60 @@ public class BluePrint {
 		if (grade == null) grade = BlueprintGrade.fromPrice(getPrice());
 		return grade;
 	}
+
+	public Set<ChunkPos> getOccupiedChunks() {
+		if (blocks.isEmpty()) return Set.of();
+
+		int minX = Integer.MAX_VALUE;
+		int minZ = Integer.MAX_VALUE;
+		for (RelativeBlock block : blocks) {
+			if (block.getX() < minX) minX = block.getX();
+			if (block.getZ() < minZ) minZ = block.getZ();
+		}
+
+		Set<ChunkPos> chunks = new HashSet<>();
+		for (RelativeBlock block : blocks) {
+			int normX = block.getX() - minX;
+			int normZ = block.getZ() - minZ;
+			chunks.add(new ChunkPos(normX >> 4, normZ >> 4));
+		}
+		return chunks;
+	}
+
+	public List<Component> getChunkMapLore() {
+		Set<ChunkPos> chunks = getOccupiedChunks();
+		if (chunks.isEmpty()) return List.of();
+
+		int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
+		int minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE;
+
+		for (ChunkPos pos : chunks) {
+			minX = Math.min(minX, pos.x());
+			maxX = Math.max(maxX, pos.x());
+			minZ = Math.min(minZ, pos.z());
+			maxZ = Math.max(maxZ, pos.z());
+		}
+
+		int width = maxX - minX + 1;
+		int height = maxZ - minZ + 1;
+
+		List<Component> lore = new ArrayList<>();
+		lore.add(ColorUtils.chat("&7필요 청크: &a" + chunks.size() + "개 &8(" + width + "x" + height + " 범위)"));
+
+		for (int z = minZ; z <= maxZ; z++) {
+			StringBuilder row = new StringBuilder("&8  ");
+			for (int x = minX; x <= maxX; x++) {
+				if (chunks.contains(new ChunkPos(x, z))) {
+					row.append("&a■ ");
+				} else {
+					row.append("&7□ ");
+				}
+			}
+			lore.add(ColorUtils.chat(row.toString().trim()));
+		}
+
+		return lore;
+	}
+
+	public record ChunkPos(int x, int z) {}
 }

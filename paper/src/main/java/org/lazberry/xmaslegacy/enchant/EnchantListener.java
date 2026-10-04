@@ -15,41 +15,35 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.roles.Role;
-import org.lazberry.xmaslegacy.roles.ServerRoles;
-import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.bags.BagManager;
-import org.lazberry.xmaslegacy.SkillEffectManager;
-import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Random;
 
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantListener implements Listener {
-	private final @NotNull XmasLegacy plugin;
-	private final @NotNull EnchantManager ecm;
-	private final @NotNull SkillEffectManager sem;
-	private final @NotNull UserManager um;
-	private final @NotNull BagManager bm;
+	private final XmasLegacy plugin;
+	private final EnchantManager ecm;
+	private final UserManager um;
 
 	@Inject
-	public EnchantListener(@NotNull XmasLegacy plugin, @NotNull EnchantManager ecm, @NotNull SkillEffectManager sem, @NotNull UserManager um, @NotNull BagManager bm) {
+	public EnchantListener(XmasLegacy plugin, EnchantManager ecm, UserManager um) {
 		this.plugin = plugin;
 		this.ecm = ecm;
-		this.sem = sem;
 		this.um = um;
-		this.bm = bm;
 	}
 
 	@EventHandler
@@ -162,14 +156,8 @@ public class EnchantListener implements Listener {
 		if (!(topInv.getHolder() instanceof EnchantUserInterface)) return;
 		ItemStack item = topInv.getItem(13);
 		if (item != null && item.getType() != Material.AIR) {
-			HashMap<Integer, ItemStack> remain = p.getInventory().addItem(item);
-			if (!remain.isEmpty()) {
-				remain.values().forEach(i -> bm.addItem(p, i));
-				p.sendMessage(ColorUtils.chat(Alert.GREEN + " 나머지는 가방에 보관되었어요."));
-			}
-
+			InventoryHelper.giveItemOrKeep(p, item);
 			topInv.setItem(13, null);
-			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 장비 가져가셔야죠?"));
 		}
 	}
 
@@ -190,30 +178,7 @@ public class EnchantListener implements Listener {
 
 		if (value < 1 || value - 1 >= Constants.ENCHANT_MULTIPLIERS.size()) return;
 
-		double damage = e.getFinalDamage();
-		Double multiple = Constants.ENCHANT_MULTIPLIERS.get(value - 1);
-		if (multiple == null) return;
-
-		double finalDamage = damage * multiple;
-		e.setDamage(finalDamage);
-
 		Random random = new Random();
 		if (value >= 8) if (random.nextInt(3) == 0) victim.setFireTicks(40);
-		if (value >= 10) {
-			if (random.nextInt(10) == 1) {
-				victim.damage(random.nextInt(10));
-				victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.5f);
-			}
-			var user = um.getUser(p.getUniqueId());
-			if (user == null) return;
-			Role role = user.getRole();
-
-			if (ServerRoles.USER.equals(role)) return;
-			if (random.nextInt(20) == 1) {
-                if (role instanceof ServerRoles serverRoles) {
-
-				}
-            }
-		}
 	}
 }

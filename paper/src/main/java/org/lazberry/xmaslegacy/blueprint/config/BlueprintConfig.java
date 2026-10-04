@@ -17,20 +17,19 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class BlueprintConfig {
-	private final File schematicsFolder;
+	private final File blueprintFolder;
 
 	@Inject
 	public BlueprintConfig(XmasLegacy plugin) {
-		this.schematicsFolder = new File(plugin.getDataFolder(), "blueprints");
+		this.blueprintFolder = new File(plugin.getDataFolder(), "blueprints");
 	}
 
 	public CompletableFuture<Boolean> saveAsync(BluePrint bluePrint) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				File folder = new File(schematicsFolder, "blueprints");
-				if (!folder.exists()) folder.mkdirs();
+				if (!blueprintFolder.exists()) blueprintFolder.mkdirs();
 
-				File file = new File(folder, bluePrint.getStructureName() + ".json");
+				File file = new File(blueprintFolder, bluePrint.getStructureName() + ".json");
 
 				String json = bluePrint.toJson();
 				Files.writeString(file.toPath(), json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -45,18 +44,24 @@ public class BlueprintConfig {
 	public Map<String, BluePrint> loadSync() {
 		Map<String, BluePrint> result = new HashMap<>();
 
-		if (!schematicsFolder.exists()) {
-			schematicsFolder.mkdirs();
+		if (!blueprintFolder.exists()) {
+			blueprintFolder.mkdirs();
 			return result;
 		}
 
-		File[] files = schematicsFolder.listFiles((dir, name) -> name.endsWith(".schem") || name.endsWith(".schematic"));
+		File[] files = blueprintFolder.listFiles((dir, name) -> name.endsWith(".json"));
 		if (files != null) {
 			for (File file : files) {
-				String id = file.getName().substring(0, file.getName().lastIndexOf('.'));
-				BluePrint bp = BlueprintSchematicManager.loadAndCreateBlueprint(file, id, 0f);
-				if (bp != null) {
-					result.put(id, bp);
+				try {
+					String id = file.getName().substring(0, file.getName().lastIndexOf('.'));
+					String json = Files.readString(file.toPath());
+
+					BluePrint bp = BluePrint.parseInstanceFromJson(json);
+					if (bp != null) {
+						result.put(id, bp);
+					}
+				} catch (Exception e) {
+					log.error("Failed to load blueprint json file: {}", file.getName(), e);
 				}
 			}
 		}
@@ -65,17 +70,14 @@ public class BlueprintConfig {
 
 	public CompletableFuture<Void> deleteAsync(String id) {
 		return CompletableFuture.runAsync(() -> {
-			File file = new File(schematicsFolder, id + ".schem");
-			if (!file.exists()) {
-				file = new File(schematicsFolder, id + ".schematic");
-			}
+			File file = new File(blueprintFolder, id + ".json");
 			if (file.exists() && !file.delete()) {
-				log.warn("Failed to delete schematic file: {}", file.getName());
+				log.warn("Failed to delete blueprint json file: {}", file.getName());
 			}
 		});
 	}
 
-	public File getSchematicFile(String id) {
-		return new File(schematicsFolder, id + ".schem");
+	public File getBlueprintFile(String id) {
+		return new File(blueprintFolder, id + ".json");
 	}
 }

@@ -8,25 +8,22 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.bags.BagManager;
-import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "guide")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Registry.Include(type = ServerType.GLOBAL)
 public class NpcCommand implements CommandExecutor, TabCompleter {
-    private final @NotNull NpcManager ncm;
-	private final @NotNull BagManager bm;
+    private final NpcManager ncm;
 
 	@Inject
-    public NpcCommand(@NotNull NpcManager ncm, @NotNull BagManager bm) {
+    public NpcCommand(NpcManager ncm) {
 		this.ncm = ncm;
-		this.bm = bm;
     }
 
     @Override
@@ -38,7 +35,7 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
 			try {
 				NpcType type = NpcType.valueOf(args[0].toUpperCase());
 				npc = ncm.getNpcInstance(type);
-				npc.sendCaption(p, bm);
+				npc.sendCaption(p);
 			} catch (IllegalArgumentException e) {
 				InfoUtils.error(p, "등록되지 않은 가이드이거나 잘못된 명령어입니다.");
 				return true;

@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintConfig;
-import org.lazberry.xmaslegacy.blueprint.config.BlueprintSchematicManager;
+import org.lazberry.xmaslegacy.blueprint.config.BlueprintRotator;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintTaskRecordConfig;
 import org.lazberry.xmaslegacy.blueprint.shop.BlueprintShop;
 import org.lazberry.xmaslegacy.region.RegionManager;
@@ -122,19 +122,19 @@ public class BluePrintManager implements Initiator {
         });
     }
 
-	public void startBuilding(String id, Player builder, Runnable done) {
+	public boolean startBuilding(String id, Player builder, Runnable done) {
 		var startLoc = builder.getLocation();
 		var uuid = builder.getUniqueId();
 
 		BluePrint value = bluePrints.get(id);
 		if (value == null) {
 			InfoUtils.error(builder, "존재하지 않는 건축물 이름입니다.");
-			return;
+			return false;
 		}
 		if (buildTasks.containsKey(uuid)) {
 			InfoUtils.error(builder, "이미 진행중인 건축물이 있습니다.");
 			InfoUtils.warn(builder, "완료 후 다른 작업이 가능합니다.");
-			return;
+			return false;
 		}
 
 		BluePrint session = rotate(value, startLoc.getYaw());
@@ -171,7 +171,11 @@ public class BluePrintManager implements Initiator {
 			}.runTaskTimer(plugin, 0L, delayPerBlock);
 			ActiveTask activeTask = new ActiveTask(task, session, startLoc, current, 0L);
 			buildTasks.put(uuid, activeTask);
-		} else InfoUtils.error(builder, "본인 소유의 구역 내부에서만 건축이 가능합니다.");
+		} else {
+			InfoUtils.error(builder, "본인 소유의 구역 내부에서만 건축이 가능합니다.");
+			return false;
+		}
+		return true;
 	}
 
     public boolean hasBuildTask(UUID uuid) {
@@ -277,7 +281,7 @@ public class BluePrintManager implements Initiator {
 	}
 
 	public BluePrint rotate(BluePrint bluePrint, float angle) {
-		return BlueprintSchematicManager.getRotatedBlueprint(bluePrint, angle);
+		return BlueprintRotator.getRotatedBlueprint(bluePrint, angle);
 	}
 
 	private record ActiveTask(
