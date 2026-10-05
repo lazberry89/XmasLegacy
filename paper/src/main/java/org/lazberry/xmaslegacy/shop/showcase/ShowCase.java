@@ -6,14 +6,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Light;
 import org.bukkit.entity.*;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.lazberry.xmaslegacy.shop.goods.Goods;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
 
@@ -87,7 +88,14 @@ public class ShowCase {
 			i.setGravity(false);
 			i.setVelocity(new Vector(0, 0, 0));
 			KeyUtils.set(i, key, goods.getName());
-			GlowUtils.glow(i, goods.getColorByRate());
+			Block block = loc.getBlock();
+			block.setType(Material.LIGHT);
+
+			if (block.getBlockData() instanceof Light light) {
+				light.setLevel(13);
+				block.setBlockData(light);
+			}
+			//GlowUtils.glow(i, goods.getColorByRate());
 			spawnedItem = i.getUniqueId();
 		});
 	}

@@ -32,6 +32,8 @@ public class GoodsCommand implements CommandExecutor, TabCompleter {
 		this.commands.put("create", new GoodsCommandCreate(showcaseManager));
 		this.commands.put("remove", new GoodsCommandRemove(showcaseManager));
 		this.commands.put("showcase", new GoodsCommandShowcase(showcaseManager));
+		this.commands.put("info_display", new GoodsCommandInfo(showcaseManager));
+		this.commands.put("hide_display", new GoodsCommandHide(showcaseManager));
 	}
 
 	@Override
@@ -52,7 +54,7 @@ public class GoodsCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
-		if (args.length == 1) return List.of("create", "remove", "showcase");
+		if (args.length == 1) return List.of("create", "remove", "showcase", "info_display", "hide_display");
 		if (args.length == 2 &&
 				(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("showcase"))) {
 			return showcaseManager.getGoods().stream()

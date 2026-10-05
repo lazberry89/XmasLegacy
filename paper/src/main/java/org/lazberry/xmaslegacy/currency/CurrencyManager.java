@@ -35,6 +35,10 @@ public class CurrencyManager {
 				.build().clone();
 	}
 
+	public static boolean isMoney(ItemStack item) {
+		return KeyUtils.hasKey(item, KeyUtils.get("money"));
+	}
+
 	public void currencyToBank(@NotNull UUID uuid, @NotNull ItemStack money) {
 		var key = KeyUtils.get("money");
 		int value = 0;

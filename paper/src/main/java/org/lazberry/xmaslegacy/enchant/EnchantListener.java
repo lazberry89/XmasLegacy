@@ -7,9 +7,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,12 +38,14 @@ import java.util.Random;
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantListener implements Listener {
 	private final XmasLegacy plugin;
+	private final EnchantifyEffectManager effectManager;
 	private final EnchantManager ecm;
 	private final UserManager um;
 
 	@Inject
-	public EnchantListener(XmasLegacy plugin, EnchantManager ecm, UserManager um) {
+	public EnchantListener(XmasLegacy plugin, EnchantifyEffectManager effectManager, EnchantManager ecm, UserManager um) {
 		this.plugin = plugin;
+		this.effectManager = effectManager;
 		this.ecm = ecm;
 		this.um = um;
 	}
@@ -180,5 +184,20 @@ public class EnchantListener implements Listener {
 
 		Random random = new Random();
 		if (value >= 8) if (random.nextInt(3) == 0) victim.setFireTicks(40);
+	}
+
+	@EventHandler
+	public void startEnchantWithAnvil(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
+		var block = e.getClickedBlock();
+		if (block == null) return;
+
+		var loc = block.getLocation();
+		if (Objects.equals(loc, effectManager.getAnvilLoc())) {
+			e.setCancelled(true);
+			effectManager.startEnchant(p);
+		}
 	}
 }

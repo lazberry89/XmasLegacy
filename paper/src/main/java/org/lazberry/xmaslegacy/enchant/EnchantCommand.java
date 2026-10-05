@@ -9,6 +9,7 @@ import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 @Commands(command = "강화")
 @Registry.Exclude(type = ServerType.LOBBY)
@@ -34,6 +35,14 @@ public class EnchantCommand implements CommandExecutor {
 			ecm.setEnchantable(item);
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
 			effectManager.playEnchantifyEffect(p, p.getLocation());
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("here")) {
+			var block = p.getTargetBlockExact(10);
+			if (block == null) {
+				InfoUtils.error(p, "블록을 보고 사용해주세요.");
+				return true;
+			}
+			var loc = block.getLocation();
+			effectManager.setAnvilLocation(loc);
 		} else {
 			if (p.isOp()) p.getInventory().addItem(EnchantMaterial.PrismFractal());
 		}

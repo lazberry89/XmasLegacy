@@ -37,8 +37,10 @@ public class Teleporter {
     }
 
     public void playParticleEffect() {
-        forEachBlock(b ->
-            b.getWorld().spawnParticle(Particle.DUST, b.getLocation(),
-                    3, 0.3, 0.3, 0.3, 0.01, option));
+        forEachBlock(b -> {
+			World world = b.getWorld();
+			Location loc = b.getLocation().add(0.5, 0.5, 0.5);
+			world.spawnParticle(Particle.TRIAL_SPAWNER_DETECTION, loc, 1, 0.2, 0.2, 0.2, 0.01);
+        });
     }
 }

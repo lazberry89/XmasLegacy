@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.enchant;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
@@ -21,28 +22,42 @@ import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Slf4j
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantifyEffectManager implements Initiator {
-	private final Map<UUID, ItemStack> backUp = new ConcurrentHashMap<>();
 	private final EnchantManager enchantManager;
+	private final EnchantConfig config;
 	private final XmasLegacy plugin;
-	private Location anvilLoc;
+	private @Getter Location anvilLoc;
 	private BukkitTask task;
 
 	@Inject
-	public EnchantifyEffectManager(EnchantManager enchantManager, XmasLegacy plugin) {
+	public EnchantifyEffectManager(EnchantManager enchantManager, EnchantConfig config, XmasLegacy plugin) {
 		this.enchantManager = enchantManager;
+		this.config = config;
 		this.plugin = plugin;
 	}
 
 	@Override
 	public void init() {
+		anvilLoc = config.loadSync();
+	}
 
+	@Override
+	public void close() {
+		if (task != null) {
+			task.cancel();
+			task = null;
+		}
+		config.saveSync(anvilLoc);
+	}
+
+	public void setAnvilLocation(Location loc) {
+		this.anvilLoc = loc;
+	}
+
+	public boolean startEnchant(Player p) {
+		return playEnchantifyEffect(p, anvilLoc.clone().add(0.5, 1, 0.5));
 	}
 
 	private ItemDisplay createEffectDisplay(ItemStack item, Location loc) {
@@ -52,11 +67,13 @@ public class EnchantifyEffectManager implements Initiator {
 			Transformation transformation = new Transformation(
 					new Vector3f(0, 0, 0),
 					new AxisAngle4f((float) Math.toRadians(-45), 0f, 0f, 1f),
-					new Vector3f(1.5f, 1.5f, 1.5f),
+					new Vector3f(1.2f, 1.2f, 1.2f),
 					new AxisAngle4f(0, 0, 0, 1)
 			);
 			d.setTransformation(transformation);
 			d.setBrightness(new Display.Brightness(15, 5));
+			d.setInterpolationDuration(1);
+			d.setInterpolationDelay(0);
 		});
 	}
 
@@ -66,8 +83,8 @@ public class EnchantifyEffectManager implements Initiator {
 		world.spawnParticle(
 				Particle.TRIAL_SPAWNER_DETECTION_OMINOUS, loc, 30, 0.15, 0.15, 0.15, 0.01);
 		world.spawnParticle(Particle.END_ROD, loc, 20, 0.3, 0.3, 0.3, 0.25);
-		world.playSound(loc, Sound.BLOCK_AMETHYST_BLOCK_FALL, 1.5f, 0.3f);
-		world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.7f, 1.0f);
+		world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.4f, 1.0f);
+		world.playSound(loc, Sound.BLOCK_AMETHYST_BLOCK_FALL, 2f, 0.3f);
 	}
 
 	public boolean playEnchantifyEffect(Player player, Location loc) {
@@ -75,20 +92,32 @@ public class EnchantifyEffectManager implements Initiator {
 		Material type = item.getType();
 
 		if (type.isAir()) return false;
-		if (!enchantManager.isEnchantableMaterial(type)) return false;
-		if (enchantManager.isEnchantable(item)) return false;
+		if (!enchantManager.isEnchantableMaterial(type)) {
+			InfoUtils.error(player, "강화 가능한 아이템이 아닙니다.");
+			return false;
+		}
+		if (enchantManager.isEnchantable(item)) {
+			InfoUtils.error(player, "이미 강화를 시작한 아이템입니다.");
+			return false;
+		}
 		if (loc == null) {
+			InfoUtils.error(player, "강화모루의 위치가 정해지지 않았어요!");
 			log.error("Enchantify Effect Location is Missing!");
 			return false;
 		}
-		if (task != null) return false;
+		if (task != null) {
+			InfoUtils.error(player, "이미 누군가가 사용하고 있어요.");
+			return false;
+		}
 
+		World world = loc.getWorld();
 		ItemStack cloned = item.clone();
 		cloned.setAmount(1);
 
 		var display = createEffectDisplay(cloned, loc);
 		item.setAmount(item.getAmount() - 1);
 
+		world.playSound(loc, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 0.5f);
 		task = new BukkitRunnable() {
 			int ticks = 0;
 			final int maxTicks = 100;
@@ -107,6 +136,7 @@ public class EnchantifyEffectManager implements Initiator {
 							InventoryHelper.giveItemOrDrop(player, cloned);
 						} else {
 							InfoUtils.error(player, "해당 무기에 강화를 시작할 수 없어요!");
+							world.playSound(loc, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 1.0f);
 							InventoryHelper.giveItemOrDrop(player, cloned);
 						}
 						display.remove();

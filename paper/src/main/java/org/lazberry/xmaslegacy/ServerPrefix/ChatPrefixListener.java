@@ -52,7 +52,7 @@ public class ChatPrefixListener implements Listener {
 			if (user == null) return Component.text()
 					.append(sourceDisplayName)
 					.append(Component.text(" : "))
-					.append(Component.text(msg))
+					.append(ColorUtils.chat(msg))
 					.build();
 			pfm.removePrefixIfNotValid(user); //청소
 			ServerPrefix prefix = user.getEquipPrefix();
