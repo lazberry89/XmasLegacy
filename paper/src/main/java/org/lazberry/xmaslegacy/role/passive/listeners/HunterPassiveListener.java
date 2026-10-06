@@ -24,14 +24,14 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Listeners
-@Registry.Include(type = ServerType.GLOBAL)
-public class KnightPassiveListener extends PassiveListeners implements Listener {
+@Registry.Exclude(type = ServerType.LOBBY)
+public class HunterPassiveListener extends PassiveListeners implements Listener {
     private final RoleManager rm;
     private final ExpManager em;
 
     @Inject
-    public KnightPassiveListener(UserManager um, RoleManager rm, ExpManager em) {
-        super(ServerRoles.KNIGHT, um);
+    public HunterPassiveListener(UserManager um, RoleManager rm, ExpManager em) {
+        super(ServerRoles.HUNTER, um);
         this.rm = rm;
         this.em = em;
     }
@@ -42,7 +42,6 @@ public class KnightPassiveListener extends PassiveListeners implements Listener 
         Entity entity = e.getAttacked();
 
         if (entity instanceof Player) return;
-
         if (entity instanceof LivingEntity victim)
             canUsePassive(p, u -> {
                 if (ThreadLocalRandom.current().nextDouble() < 0.3) {

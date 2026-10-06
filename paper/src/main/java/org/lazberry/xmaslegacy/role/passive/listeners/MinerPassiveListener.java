@@ -25,7 +25,7 @@ import org.lazberry.xmaslegacy.utils.GlowUtils;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Listeners
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class MinerPassiveListener extends PassiveListeners implements Listener {
     private final ItemStack cobbledDeepslate;
     private final ItemStack netherrack;

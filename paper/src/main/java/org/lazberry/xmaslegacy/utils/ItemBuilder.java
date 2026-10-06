@@ -67,8 +67,17 @@ public final class ItemBuilder {
 	 * @param name display component name to change
 	 * @return builder instance
 	 */
+	@Deprecated
 	@Contract("_ -> this")
 	public ItemBuilder setName(@NotNull Component name) {
+		if (meta != null) {
+			meta.displayName(name);
+		}
+		return this;
+	}
+
+	@Contract("_ -> this")
+	public ItemBuilder name(@NotNull Component name) {
 		if (meta != null) {
 			meta.displayName(name);
 		}
@@ -80,17 +89,32 @@ public final class ItemBuilder {
 	 * @param lore display component of lore to change
 	 * @return builder instance
 	 */
+	@Deprecated
 	@Contract("_ -> this")
 	public ItemBuilder setLore(@NotNull Component... lore) {
 		return setLore(Arrays.asList(lore));
 	}
 
+	@Deprecated
 	@Contract("_ -> this")
 	public ItemBuilder setLore(@NotNull List<Component> lore) {
 		if (meta != null) {
 			meta.lore(lore);
 		}
 		return this;
+	}
+
+	@Contract("_ -> this")
+	public ItemBuilder lore(@NotNull List<Component> lore) {
+		if (meta != null) {
+			meta.lore(lore);
+		}
+		return this;
+	}
+
+	@Contract("_ -> this")
+	public ItemBuilder lore(@NotNull Component... lore) {
+		return setLore(Arrays.asList(lore));
 	}
 
 	@Contract("_ -> this")
@@ -114,8 +138,17 @@ public final class ItemBuilder {
 	 * @param glint glint flag (true to force show, false to force hide)
 	 * @return builder instance
 	 */
+	@Deprecated
 	@Contract("_ -> this")
 	public ItemBuilder setGlint(boolean glint) {
+		if (meta != null) {
+			meta.setEnchantmentGlintOverride(glint);
+		}
+		return this;
+	}
+
+	@Contract("_ -> this")
+	public ItemBuilder glint(boolean glint) {
 		if (meta != null) {
 			meta.setEnchantmentGlintOverride(glint);
 		}

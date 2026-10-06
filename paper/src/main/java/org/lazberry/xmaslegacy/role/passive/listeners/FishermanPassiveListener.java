@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Listeners
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class FishermanPassiveListener extends PassiveListeners implements Listener {
     private final ItemStack cookedCod;
     private final ItemStack cookedSalmon;

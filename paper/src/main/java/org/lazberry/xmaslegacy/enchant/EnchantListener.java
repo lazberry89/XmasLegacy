@@ -96,6 +96,11 @@ public class EnchantListener implements Listener {
 					return;
 				}
 
+				var event = new UserEnchantEvent(p, item, origin, neededAmount);
+				Bukkit.getPluginManager().callEvent(event);
+
+				if (event.isCancelled()) return;
+
 				int leftToRemove = neededAmount;
 				ItemStack[] contents = bottomInv.getContents();
 				for (int i = 0; i < contents.length; i++) {

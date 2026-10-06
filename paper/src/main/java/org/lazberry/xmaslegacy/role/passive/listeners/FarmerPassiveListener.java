@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Listeners
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class FarmerPassiveListener extends PassiveListeners implements Listener {
     private final RoleManager rm;
     private final ExpManager em;

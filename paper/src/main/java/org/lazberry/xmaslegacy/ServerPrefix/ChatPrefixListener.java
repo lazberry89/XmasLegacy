@@ -2,7 +2,6 @@ package org.lazberry.xmaslegacy.ServerPrefix;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +40,7 @@ public class ChatPrefixListener implements Listener {
 	@EventHandler
 	public void onChatPrefix(AsyncChatEvent e) {
 		var p = e.getPlayer();
-		String rawMsg = PlainTextComponentSerializer.plainText().serialize(e.message());
+		String rawMsg = ColorUtils.toLegacy(e.message());
 		String msg;
 		if (rm.checkBadWords(rawMsg)) {
 			msg = rm.hideBadWords(rawMsg);
@@ -54,14 +53,14 @@ public class ChatPrefixListener implements Listener {
 					.append(Component.text(" : "))
 					.append(ColorUtils.chat(msg))
 					.build();
-			pfm.removePrefixIfNotValid(user); //청소
+			pfm.removePrefixIfNotValid(user);
 			ServerPrefix prefix = user.getEquipPrefix();
-			Component equipP = prefix == null ? ColorUtils.chat("") : prefix.prefix().appendSpace();
+			Component equipP = prefix == null ? Component.text("") : prefix.prefix().appendSpace();
 			return Component.text()
 					.append(equipP)
 					.append(sourceDisplayName)
 					.append(Component.text(" : "))
-					.append(Component.text(msg))
+					.append(ColorUtils.chat(msg))
 					.build();
 		});
 	}

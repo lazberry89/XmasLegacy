@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemRarity;
@@ -213,6 +214,10 @@ public class EnchantManager implements Initiator {
         }
 
         return result;
+    }
+
+    public void openInventory(Player p) {
+        p.openInventory(new EnchantUserInterface(this).getInventory());
     }
 
 	@Override
