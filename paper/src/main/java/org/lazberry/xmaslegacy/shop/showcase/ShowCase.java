@@ -74,6 +74,7 @@ public class ShowCase {
 					new org.joml.AxisAngle4f(0, 0, 0, 1)
 			);
 			b.setTransformation(transformation);
+			KeyUtils.set(b, key, goods.getName());
 			glass = b.getUniqueId();
 		});
 
@@ -88,7 +89,7 @@ public class ShowCase {
 			i.setGravity(false);
 			i.setVelocity(new Vector(0, 0, 0));
 			KeyUtils.set(i, key, goods.getName());
-			Block block = loc.getBlock();
+			Block block = spawnLoc.getBlock();
 			block.setType(Material.LIGHT);
 
 			if (block.getBlockData() instanceof Light light) {

@@ -16,6 +16,7 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
@@ -42,25 +43,19 @@ public class RegionCreateListener implements Listener {
 		if (slot == 4) {
 			Region region = new Region(p, p.getLocation());
 			if (region.isValid() && !rm.hasRegion(p.getLocation())) {
-				rm.addRegion(p, region);
-				InfoUtils.info(p, "구역이 성공적으로 생성되었습니다!");
-				p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-				p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+				if (InventoryHelper.removeItem(p, RegionManager.RegionTicket(), 1)) {
+					rm.addRegion(p, region);
+					InfoUtils.info(p, "구역이 성공적으로 생성되었습니다!");
+					p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+					p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+				} else {
+					InfoUtils.error(p, "구역 티켓이 없습니다!");
+					p.closeInventory();
+				}
 			} else {
 				InfoUtils.error(p, "구역을 생성할 수 없습니다! 이미 구역이 존재하거나 청크가 생성되지 않았습니다.");
 				p.closeInventory();
 			}
-		}
-	}
-
-	@EventHandler
-	public void rollBackItem(InventoryCloseEvent e) {
-		if (!(e.getPlayer() instanceof Player p)) return;
-
-		var inv = e.getInventory();
-		if (!(inv.getHolder() instanceof RegionCreateInterface)) return;
-		if (e.getReason() != InventoryCloseEvent.Reason.PLUGIN) {
-			p.getInventory().addItem(RegionManager.RegionTicket());
 		}
 	}
 }

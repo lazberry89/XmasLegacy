@@ -60,13 +60,20 @@ public class EnchantifyEffectManager implements Initiator {
 		return playEnchantifyEffect(p, anvilLoc.clone().add(0.5, 1, 0.5));
 	}
 
+	private boolean isArmor(ItemStack item) {
+		var name = item.getType().name();
+		return name.contains("HELMET") || name.contains("CHESTPLATE") ||
+				name.contains("LEGGINGS") || name.contains("BOOTS");
+	}
+
 	private ItemDisplay createEffectDisplay(ItemStack item, Location loc) {
+		int axis = isArmor(item) ? 0 : -45;
 		return loc.getWorld().spawn(loc.clone().add(0, 1.3, 0), ItemDisplay.class, d -> {
 			GlowUtils.glow(d, NamedTextColor.AQUA);
 			d.setItemStack(item);
 			Transformation transformation = new Transformation(
 					new Vector3f(0, 0, 0),
-					new AxisAngle4f((float) Math.toRadians(-45), 0f, 0f, 1f),
+					new AxisAngle4f((float) Math.toRadians(axis), 0f, 0f, 1f),
 					new Vector3f(1.2f, 1.2f, 1.2f),
 					new AxisAngle4f(0, 0, 0, 1)
 			);

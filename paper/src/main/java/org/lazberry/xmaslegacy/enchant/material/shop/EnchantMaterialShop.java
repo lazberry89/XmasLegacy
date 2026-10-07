@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnchantMaterialShop implements InventoryHolder {
-    private final List<ItemStack> showItems = new ArrayList<>(7);
+    private final List<ItemStack> showItems = new ArrayList<>();
     private final Inventory inv;
     private int currentSlot;
 
@@ -35,12 +35,12 @@ public class EnchantMaterialShop implements InventoryHolder {
     );
 
     public int getAmountBySlot(int slot) {
-        var value = PLANS.get(slot);
+        var value = PLANS.get(slot - 2);
         return value == null ? 0 : value.amount();
     }
 
     public int getPriceBySlot(int slot) {
-        var value = PLANS.get(slot);
+        var value = PLANS.get(slot - 2);
         return value == null ? 0 : value.finalPrice();
     }
 

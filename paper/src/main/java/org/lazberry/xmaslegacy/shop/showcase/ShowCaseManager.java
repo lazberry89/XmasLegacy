@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.shop.showcase;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -181,10 +182,21 @@ public class ShowCaseManager implements Initiator {
 		});
 	}
 
+	private void finalizeCleanUp() {
+		var worlds = Bukkit.getWorlds();
+		if (worlds.isEmpty()) return;
+
+		worlds.forEach(world ->
+			world.getEntities().stream()
+					.filter(e -> KeyUtils.hasKey(e, ShowCase.key))
+					.forEach(Entity::remove));
+	}
+
 	@Override
 	public void close() {
 		caseConfig.saveSync(showCase);
 		goodsConfig.saveSync(goods);
 		cleanUp();
+		finalizeCleanUp();
 	}
 }

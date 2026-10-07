@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
+import org.lazberry.xmaslegacy.enchant.material.shop.EnchantShopManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -15,13 +16,15 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 @Commands(command = "강화")
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantCommand implements CommandExecutor {
-	private final @NotNull EnchantManager ecm;
+	private final EnchantManager ecm;
 	private final EnchantifyEffectManager effectManager;
+	private final EnchantShopManager shopManager;
 
 	@Inject
-	public EnchantCommand(@NotNull EnchantManager ecm, EnchantifyEffectManager effectManager) {
+	public EnchantCommand(@NotNull EnchantManager ecm, EnchantifyEffectManager effectManager, EnchantShopManager shopManager) {
 		this.ecm = ecm;
 		this.effectManager = effectManager;
+		this.shopManager = shopManager;
 	}
 
 	@Override
@@ -44,6 +47,8 @@ public class EnchantCommand implements CommandExecutor {
 			}
 			var loc = block.getLocation();
 			effectManager.setAnvilLocation(loc);
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("shop")) {
+			p.openInventory(shopManager.getMaterialShop().getInventory());
 		} else {
 			if (p.isOp()) p.getInventory().addItem(EnchantMaterial.PrismFractal());
 		}

@@ -68,7 +68,6 @@ public class EnchantItemListener implements Listener {
                     loc.add(0, 1, 0), 15, 0.2, 0.2, 0.2, 0.01);
             world.playSound(loc, Sound.ITEM_TOTEM_USE, 1.0f, 1.0f);
 
-            var originalItem = e.getItem().clone();
             var totem = e.getItem().clone();
             totem.setData(DataComponentTypes.DEATH_PROTECTION, DeathProtection.deathProtection());
             var savedItem = player.getInventory().getItemInMainHand().clone();
@@ -77,8 +76,8 @@ public class EnchantItemListener implements Listener {
             inv.setItemInMainHand(totem);
             player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
+				totem.setAmount(0);
                 inv.setItemInMainHand(savedItem);
-                InventoryHelper.giveItemOrKeep(player, originalItem);
             }, 1L);
             InfoUtils.info(player, "부활의 표식을 사용하여 아이템이 복구됨.");
         } else {

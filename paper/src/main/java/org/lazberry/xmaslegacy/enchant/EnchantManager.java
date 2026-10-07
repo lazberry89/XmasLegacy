@@ -31,7 +31,6 @@ import java.util.List;
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantManager implements Initiator {
     private final NamespacedKey key;
-	private final NamespacedKey damageModifierKey;
 
     private static final Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");
     private static final Component LEVEL_2 = ColorUtils.chat("&e★★☆☆☆☆☆&6☆☆&c☆");
@@ -51,13 +50,54 @@ public class EnchantManager implements Initiator {
 
     public EnchantManager() {
 	    this.key = KeyUtils.get("enchant");
-	    this.damageModifierKey = KeyUtils.get("enchant_damage");
     }
 
 	public boolean isEnchantableMaterial(Material material) {
 		String name = material.name().toLowerCase();
 		return name.contains("pickaxe") || name.contains("sword") || name.contains("axe")
-				|| name.contains("shovel");
+				|| name.contains("shovel") || name.contains("helmet") || name.contains("chestplate")
+				|| name.contains("leggings") || name.contains("boots");
+	}
+
+	private double getBaseArmor(Material material) {
+		String name = material.name();
+		if (name.endsWith("_HELMET")) {
+			if (name.startsWith("LEATHER")) return 2.0;
+			if (name.startsWith("GOLDEN") || name.startsWith("CHAINMAIL") || name.startsWith("IRON") || name.startsWith("TURTLE")) return 3.0;
+			if (name.startsWith("DIAMOND") || name.startsWith("NETHERITE")) return 4.0;
+		} else if (name.endsWith("_CHESTPLATE")) {
+			if (name.startsWith("LEATHER")) return 4.0;
+			if (name.startsWith("GOLDEN") || name.startsWith("CHAINMAIL")) return 6.0;
+			if (name.startsWith("IRON")) return 7.0;
+			if (name.startsWith("DIAMOND") || name.startsWith("NETHERITE")) return 9.0;
+		} else if (name.endsWith("_LEGGINGS")) {
+			if (name.startsWith("LEATHER")) return 3.0;
+			if (name.startsWith("GOLDEN")) return 4.0;
+			if (name.startsWith("CHAINMAIL")) return 5.0;
+			if (name.startsWith("IRON")) return 6.0;
+			if (name.startsWith("DIAMOND") || name.startsWith("NETHERITE")) return 7.0;
+		} else if (name.endsWith("_BOOTS")) {
+			if (name.startsWith("LEATHER") || name.startsWith("GOLDEN") || name.startsWith("CHAINMAIL")) return 2.0;
+			if (name.startsWith("IRON")) return 3.0;
+			if (name.startsWith("DIAMOND") || name.startsWith("NETHERITE")) return 4.0;
+		}
+		return 0.0;
+	}
+
+	private double getBaseToughness(Material material) {
+		String name = material.name();
+		if (name.startsWith("DIAMOND")) return 2.0;
+		if (name.startsWith("NETHERITE")) return 3.0;
+		return 0.0;
+	}
+
+	private EquipmentSlotGroup getArmorSlotGroup(Material material) {
+		String name = material.name();
+		if (name.endsWith("_HELMET")) return EquipmentSlotGroup.HEAD;
+		if (name.endsWith("_CHESTPLATE")) return EquipmentSlotGroup.CHEST;
+		if (name.endsWith("_LEGGINGS")) return EquipmentSlotGroup.LEGS;
+		if (name.endsWith("_BOOTS")) return EquipmentSlotGroup.FEET;
+		return EquipmentSlotGroup.ARMOR;
 	}
 
 	public boolean setEnchantable(ItemStack item) {
@@ -132,10 +172,12 @@ public class EnchantManager implements Initiator {
 
 		Material type = item.getType();
 		String name = type.name();
+		NamespacedKey modifierKey = KeyUtils.get("enchant_" + name.toLowerCase());
 
 		item.editMeta(meta -> {
 			Double multiplier = Constants.ENCHANT_MULTIPLIERS.get(lvl - 1);
 			if (multiplier == null) multiplier = 1.0;
+
 			if (name.endsWith("_SWORD") || name.endsWith("_AXE")) {
 				double baseDamage = getBaseDamage(type);
 				if (baseDamage <= 0) return;
@@ -143,7 +185,7 @@ public class EnchantManager implements Initiator {
 				meta.removeAttributeModifier(Attribute.ATTACK_DAMAGE);
 
 				AttributeModifier modifier = new AttributeModifier(
-						damageModifierKey,
+						modifierKey,
 						(baseDamage * multiplier) - 1,
 						AttributeModifier.Operation.ADD_NUMBER,
 						EquipmentSlotGroup.MAINHAND
@@ -155,12 +197,43 @@ public class EnchantManager implements Initiator {
 				double bonusMiningSpeed = (multiplier - 1.0) * 35.0;
 
 				AttributeModifier modifier = new AttributeModifier(
-						damageModifierKey,
+						modifierKey,
 						bonusMiningSpeed,
 						AttributeModifier.Operation.ADD_NUMBER,
 						EquipmentSlotGroup.MAINHAND
 				);
 				meta.addAttributeModifier(Attribute.MINING_EFFICIENCY, modifier);
+			}
+			else if (name.endsWith("_HELMET") || name.endsWith("_CHESTPLATE") || name.endsWith("_LEGGINGS") || name.endsWith("_BOOTS")) {
+				double baseArmor = getBaseArmor(type);
+				if (baseArmor <= 0) return;
+
+				double multiplierForArmor = multiplier * 1.5;
+
+				meta.removeAttributeModifier(Attribute.ARMOR);
+				meta.removeAttributeModifier(Attribute.ARMOR_TOUGHNESS);
+
+				EquipmentSlotGroup slotGroup = getArmorSlotGroup(type);
+
+				AttributeModifier armorModifier = new AttributeModifier(
+						modifierKey,
+						baseArmor * multiplierForArmor,
+						AttributeModifier.Operation.ADD_NUMBER,
+						slotGroup
+				);
+				meta.addAttributeModifier(Attribute.ARMOR, armorModifier);
+
+				double baseToughness = getBaseToughness(type);
+				if (baseToughness > 0) {
+					NamespacedKey toughnessKey = KeyUtils.get("enchant_toughness_" + name.toLowerCase());
+					AttributeModifier toughnessModifier = new AttributeModifier(
+							toughnessKey,
+							baseToughness * multiplier,
+							AttributeModifier.Operation.ADD_NUMBER,
+							slotGroup
+					);
+					meta.addAttributeModifier(Attribute.ARMOR_TOUGHNESS, toughnessModifier);
+				}
 			}
 		});
 	}

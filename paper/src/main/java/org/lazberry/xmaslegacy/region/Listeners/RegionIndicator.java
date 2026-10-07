@@ -6,24 +6,24 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.Constants;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.region.Events.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.region.Events.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.region.Gui.RegionCreateInterface;
 import org.lazberry.xmaslegacy.region.Gui.RegionSettingInterface;
 import org.lazberry.xmaslegacy.region.RegionManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
@@ -38,10 +38,10 @@ public class RegionIndicator implements Listener {
 	}
 
 	@EventHandler
-	public void UserRegionCreate(PlayerDropItemEvent e) {
+	public void UserRegionCreate(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
-		ItemStack item = e.getItemDrop().getItemStack();
-		if (!rm.isTicket(item)) return;
+		ItemStack item = e.getItem();
+		if (item == null || !rm.isTicket(item)) return;
 
 		var user = um.getUser(p.getUniqueId());
 		var loc = p.getLocation();
@@ -56,7 +56,6 @@ public class RegionIndicator implements Listener {
 		}
 		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 		p.openInventory(new RegionCreateInterface().getInventory());
-		e.getItemDrop().remove();
 	}
 
 	@EventHandler

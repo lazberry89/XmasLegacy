@@ -67,6 +67,7 @@ public class EnchantMaterial {
 				.build();
 
 		return BookUtils.create(
+				book,
 				ColorUtils.chat("&c라즈베리"),
 				ColorUtils.chat("&e&l강화 안내서"),
 
@@ -74,28 +75,28 @@ public class EnchantMaterial {
                 &0&l[ 강화 시스템 안내 ]
 
                 &8■ &1강화 시작하기
-                &f일반 장비는 바로 강화할
-                &f수 없습니다. 대장간을
-                &f방문해 &9[마법강화 적용]&f을
-                &f진행해야 합니다.
+                &8일반 장비는 바로 강화할
+                &8수 없습니다. 대장간을
+                &8방문해 &9[마법강화 적용]&8을
+                &8진행해야 합니다.
 
                 &8■ &1강화 재료
-                &f강화에는 &#C822FF강화 프리즘&f이
-                &f소모됩니다.
+                &8강화에는 &#C822FF강화 프리즘&f이
+                &8소모됩니다.
 
                 &8■ &1강화 효과
-                &f- 무기: 공격력 대폭 증가
-                &f- 도구: 채광 속도 증가
+                &8- 무기: 공격력 대폭 증가
+                &8- 도구: 채광 속도 증가
                 """),
 
 				ColorUtils.chat("""
                 &0&l[ 강화 수치 (1~5강) ]
 
-                &81강&f: 프리즘 1개 | &2100%
-                &82강&f: 프리즘 1개 | &285%
-                &83강&f: 프리즘 1개 | &270%
-                &84강&f: 프리즘 3개 | &255%
-                &85강&f: 프리즘 3개 | &240%
+                &81강: 프리즘 1개 | &2100%
+                &82강: 프리즘 1개 | &285%
+                &83강: 프리즘 1개 | &270%
+                &84강: 프리즘 3개 | &255%
+                &85강: 프리즘 3개 | &240%
 
                 &7(배율: x1.10 ~ x1.65)
 
@@ -106,11 +107,11 @@ public class EnchantMaterial {
 				ColorUtils.chat("""
                 &0&l[ 강화 수치 (6~10강) ]
 
-                &86강&f: 프리즘 7개 | &230% &7(&c파괴 1%&7)
-                &87강&f: 프리즘 7개 | &220% &7(&c파괴 2%&7)
-                &88강&f: 프리즘 15개| &212% &7(&c파괴 3%&7)
-                &89강&f: 프리즘 30개| &25%  &7(&c파괴 5%&7)
-                &810강&f: &#C822FF최대 강화 (x3.50)&r
+                &86강: 프리즘 7개 | &230% &7(&c파괴 1%&7)
+                &87강: 프리즘 7개 | &220% &7(&c파괴 2%&7)
+                &88강: 프리즘 15개| &212% &7(&c파괴 3%&7)
+                &89강: 프리즘 30개| &25%  &7(&c파괴 5%&7)
+                &810강: &#C822FF최대 강화 (x3.50)&r
 
                 &c※ 6강부터 파괴 위험 발생!
                 &c※ 9강 실패 시 2단계 하락!
@@ -121,15 +122,15 @@ public class EnchantMaterial {
                 &0&l[ 무기 초월 시스템 ]
 
                 &8■ &5초월 조건
-                &f- &410강 달성 무기&f만 가능
+                &8- &410강 달성 무기&f만 가능
 
                 &8■ &5초월 파편 획득처
-                &f- 티어 승급 (1~2개 획득)
-                &f- 상점 구매 (재화/결제)
+                &8- 티어 승급 (1~2개 획득)
+                &8- 상점 구매 (재화/결제)
 
                 &8■ &5필요 속성 재료
-                &f메아리조각, 화염구, 돌풍구,
-                &f얼음, 엔더진주
+                &8메아리조각, 화염구, 돌풍구,
+                &8얼음, 엔더진주
                 &7(세부 속성과 능력은 현재
                 &7베일에 싸여 있습니다...)
                 """),
@@ -138,13 +139,13 @@ public class EnchantMaterial {
                 &0&l[ 유료 서비스 약관 ]
 
                 &8■ &0디지털 콘텐츠 규정
-                &f본 서버의 유료 재화 및
-                &f아이템은 전자상거래법상
-                &f디지털 콘텐츠에 해당합니다.
+                &8본 서버의 유료 재화 및
+                &8아이템은 전자상거래법상
+                &8디지털 콘텐츠에 해당합니다.
 
                 &8■ &0청약철회 제한
-                &f구매 즉시 계정에 적용 및
-                &f지급이 완료되므로, 지급 후
+                &8구매 즉시 계정에 적용 및
+                &8지급이 완료되므로, 지급 후
                 &c단순 변심으로 인한 환불은
                 &c법적으로 불가합니다.
                 """),
@@ -153,28 +154,28 @@ public class EnchantMaterial {
                 &0&l[ 환불 규정 및 예외 ]
 
                 &8■ &0환불 가능 조건
-                &f- 시스템 오류로 미지급
-                &f- 중복 결제 오리발생 시
+                &8- 시스템 오류로 미지급
+                &8- 중복 결제 오리발생 시
                 &7(오류 발생 7일 이내 문의)
 
                 &8■ &0미성년자 결제
-                &f법정대리 동의 없는 결제는
-                &f취소 청구가 가능하나, 명의
-                &f도용 시 제한될 수 있습니다.
+                &8법정대리 동의 없는 결제는
+                &8취소 청구가 가능하나, 명의
+                &8도용 시 제한될 수 있습니다.
                 """),
 
 				ColorUtils.chat("""
                 &0&l[ 부정 이용 및 문의 ]
 
                 &8■ &0부정 결제 제재
-                &f강제 환불(차지백) 및 결제
-                &f도용 적발 시 계정 영구
-                &f정지 및 법적 조치됩니다.
+                &8강제 환불(차지백) 및 결제
+                &8도용 적발 시 계정 영구
+                &8정지 및 법적 조치됩니다.
 
                 &8■ &0약관 동의 및 문의
-                &f결제 진행 시 본 약관에
-                &f동의한 것으로 간주합니다.
-                &f문의: 공식 디스코드
+                &8결제 진행 시 본 약관에
+                &8동의한 것으로 간주합니다.
+                &8문의: 공식 디스코드
                 """)
 		);
 	}
@@ -209,6 +210,32 @@ public class EnchantMaterial {
 				.hideAllFlags()
 				.setGlint(true)
 				.setTag(key, "essence_enchant")
+				.build();
+	}
+
+	public static ItemStack BoosterFivePercent() {
+		var builder = OraxenItems.getItemById("booster_five_percent");
+		var item = builder == null ? new ItemStack(Material.PAPER) : builder.build();
+
+		return ItemBuilder.of(XmasLegacy.getInstance(), item)
+				.name(ColorUtils.chat("&9&l확률 강화서"))
+				.lore(ColorUtils.chat("&7인벤토리에 보유시 강화 확률 5% 증가"))
+				.setGlint(true)
+				.hideAllFlags()
+				.setTag(key, "booster_five_percent")
+				.build();
+	}
+
+	public static ItemStack BoosterTenPercent() {
+		var builder = OraxenItems.getItemById("booster_ten_percent");
+		var item = builder == null ? new ItemStack(Material.PAPER) : builder.build();
+
+		return ItemBuilder.of(XmasLegacy.getInstance(), item)
+				.name(ColorUtils.chat("&e&l확률 강화서"))
+				.lore(ColorUtils.chat("&7인벤토리에 보유시 강화 확률 10% 증가"))
+				.setGlint(true)
+				.hideAllFlags()
+				.setTag(key, "booster_ten_percent")
 				.build();
 	}
 

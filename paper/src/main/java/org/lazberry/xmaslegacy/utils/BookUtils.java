@@ -19,13 +19,17 @@ public final class BookUtils {
      */
     public @NotNull ItemStack create(@NotNull Component author, @NotNull Component title, @NotNull Component... pages) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta meta = (BookMeta) book.getItemMeta();
-        if (meta != null) {
-            meta.author(author);
-            meta.title(title);
-            meta.addPages(pages);
-            book.setItemMeta(meta);
-        }
-        return book;
+	    return create(book, author, title, pages);
     }
+
+	public ItemStack create(@NotNull ItemStack book, @NotNull Component author, @NotNull Component title, @NotNull Component... pages) {
+		BookMeta meta = (BookMeta) book.getItemMeta();
+		if (meta != null) {
+			meta.author(author);
+			meta.title(title);
+			meta.addPages(pages);
+			book.setItemMeta(meta);
+		}
+		return book;
+	}
 }
