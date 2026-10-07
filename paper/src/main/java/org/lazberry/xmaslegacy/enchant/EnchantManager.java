@@ -1,13 +1,13 @@
 package org.lazberry.xmaslegacy.enchant;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.Constants;
+import org.lazberry.xmaslegacy.enchant.listener.EnchantBrokenPreventedEvent;
+import org.lazberry.xmaslegacy.enchant.listener.EnchantDowngradePreventEvent;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -182,13 +184,12 @@ public class EnchantManager implements Initiator {
 		updateItemBuffs(item, newLvl);
     }
 
-    public ResultType enchant(@NotNull Inventory inv) {
-        return enchant(inv.getItem(13));
+    public ResultType enchant(Player p, @NotNull ItemStack item) {
+        return enchant(p, item, false, false, 0.0);
     }
 
-    public ResultType enchant(@Nullable ItemStack item) {
-        if (item == null) return ResultType.FAIL;
-        if (!isEnchantable(item)) return ResultType.FAIL;
+    public ResultType enchant(Player p, @Nullable ItemStack item, boolean preventBreak, boolean preventDowngrade, double bonusChance) {
+        if (item == null || !isEnchantable(item)) return ResultType.FAIL;
 
         Integer currentLvl = getEnchantLevel(item);
         if (currentLvl == null || currentLvl >= 10) return ResultType.FAIL;
@@ -198,15 +199,34 @@ public class EnchantManager implements Initiator {
         ResultType result = ResultType.FAIL;
 
         EnchantChance chance = getChanceInfo(currentLvl);
+        double finalSuccess = chance.success() + bonusChance;
 
-        if (rand < chance.success()) {
+        if (rand < finalSuccess) {
             nextLvl = currentLvl + 1;
             result = ResultType.SUCCEED;
-        } else if (rand < chance.success() + chance.fail()) {
-            if (currentLvl >= 8) nextLvl = currentLvl - 2;
-            else if (currentLvl >= 4) nextLvl = currentLvl - 1;
+        } else if (rand < finalSuccess + chance.fail()) {
+            int targetLvl = currentLvl;
+            if (currentLvl >= 9) targetLvl = currentLvl - 2;
+            else if (currentLvl >= 4) targetLvl = currentLvl - 1;
+
+            if (preventDowngrade && targetLvl != currentLvl) {
+                var event = new EnchantDowngradePreventEvent(p, item, currentLvl);
+                Bukkit.getPluginManager().callEvent(event);
+
+                if (event.isCancelled()) {
+                    nextLvl = targetLvl;
+                }
+            } else {
+                nextLvl = targetLvl;
+            }
         } else {
-            result = ResultType.BREAK;
+            if (preventBreak) {
+                var preventEvent = new EnchantBrokenPreventedEvent(p, item, currentLvl);
+                Bukkit.getPluginManager().callEvent(preventEvent);
+                if (preventEvent.isCancelled()) result = ResultType.BREAK;
+            } else {
+                result = ResultType.BREAK;
+            }
         }
 
         if (result != ResultType.BREAK && currentLvl != nextLvl) {
@@ -216,7 +236,7 @@ public class EnchantManager implements Initiator {
         return result;
     }
 
-    public void openInventory(Player p) {
+    public void openInterface(Player p) {
         p.openInventory(new EnchantUserInterface(this).getInventory());
     }
 

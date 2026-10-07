@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.enchant;
+package org.lazberry.xmaslegacy.enchant.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,6 +20,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.enchant.EnchantManager;
+import org.lazberry.xmaslegacy.enchant.EnchantUserInterface;
+import org.lazberry.xmaslegacy.enchant.EnchantifyEffectManager;
+import org.lazberry.xmaslegacy.enchant.ResultType;
+import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
@@ -96,9 +101,9 @@ public class EnchantListener implements Listener {
 					return;
 				}
 
-				var event = new UserEnchantEvent(p, item, origin, neededAmount);
+				//calling event
+				var event = new PlayerEnchantEvent(p, item, origin, neededAmount);
 				Bukkit.getPluginManager().callEvent(event);
-
 				if (event.isCancelled()) return;
 
 				int leftToRemove = neededAmount;
@@ -120,7 +125,13 @@ public class EnchantListener implements Listener {
 					}
 				}
 
-				ResultType result = ecm.enchant(item);
+				ResultType result = ecm.enchant(
+						p,
+						item,
+						event.isPreventBreak(),
+						event.isPreventDowngrade(),
+						event.getBonusChance()
+				);
 				int lvl = Objects.requireNonNullElse(ecm.getEnchantLevel(item), 1);
 				int diff = lvl - origin;
 

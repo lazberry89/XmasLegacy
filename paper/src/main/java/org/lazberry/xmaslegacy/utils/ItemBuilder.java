@@ -10,6 +10,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -138,7 +139,6 @@ public final class ItemBuilder {
 	 * @param glint glint flag (true to force show, false to force hide)
 	 * @return builder instance
 	 */
-	@Deprecated
 	@Contract("_ -> this")
 	public ItemBuilder setGlint(boolean glint) {
 		if (meta != null) {
@@ -299,16 +299,11 @@ public final class ItemBuilder {
 		return this;
 	}
 
-	/**
-	 * Setup default role properties inside PersistentDataContainer.
-	 * Sets higher enchant weight tag if the target role is a HiddenRole.
-	 * @param role target role to bind
-	 * @return builder instance
-	 */
 	@Contract("_ -> this")
-	public ItemBuilder setRoleDefault(@NotNull Role role) {
-		this.setTag("role_id", role.name());
-		this.setTag("enchant", role instanceof HiddenRoles ? 10 : 1);
+	public ItemBuilder setRarity(ItemRarity rarity) {
+		if (meta != null) {
+			meta.setRarity(rarity);
+		}
 		return this;
 	}
 
@@ -332,7 +327,8 @@ public final class ItemBuilder {
 	 * @return builder instance
 	 */
 	public ItemBuilder setAmount(int i) {
-		item.setAmount(i);
+		if (meta != null)
+			item.setAmount(i);
 		return this;
 	}
 
@@ -464,7 +460,7 @@ public final class ItemBuilder {
 		if (meta != null) {
 			item.setItemMeta(meta);
 		}
-		return item;
+		return item.clone();
 	}
 
 	/**

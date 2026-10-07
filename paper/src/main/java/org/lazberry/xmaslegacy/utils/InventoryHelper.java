@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.bags.BagManager;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class InventoryHelper {
@@ -16,8 +15,8 @@ public class InventoryHelper {
 
     public static ItemStack background() {
         return ItemBuilder.of(XmasLegacy.getInstance(), Material.GRAY_STAINED_GLASS_PANE)
-                .setName(ColorUtils.chat(""))
-                .setLore(ColorUtils.chat(""))
+                .name(ColorUtils.chat(""))
+                .lore(ColorUtils.chat(""))
                 .hideAllFlags()
                 .build();
     }
@@ -45,5 +44,52 @@ public class InventoryHelper {
         if (remainItems.isEmpty()) return;
 
         bm.addAll(p, remainItems);
+    }
+
+    public static boolean hasItem(@Nullable Player p, ItemStack target, int amount) {
+        if (p == null || !p.isOnline() || target == null || amount <= 0) return false;
+
+        int count = 0;
+        for (ItemStack item : p.getInventory().getStorageContents()) {
+            if (item != null && item.isSimilar(target)) {
+                count += item.getAmount();
+                if (count >= amount) return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasItem(@Nullable Player p, ItemStack target) {
+        return target != null && hasItem(p, target, target.getAmount());
+    }
+
+    public static boolean removeItem(@Nullable Player p, ItemStack target, int amount) {
+        if (!hasItem(p, target, amount)) return false;
+
+        int remain = amount;
+        var storage = p.getInventory().getStorageContents();
+
+        for (int i = 0; i < storage.length; i++) {
+            ItemStack item = storage[i];
+            if (item == null || !item.isSimilar(target)) continue;
+
+            int count = item.getAmount();
+            if (count <= remain) {
+                remain -= count;
+                storage[i] = null;
+            } else {
+                item.setAmount(count - remain);
+                remain = 0;
+            }
+
+            if (remain <= 0) break;
+        }
+
+        p.getInventory().setStorageContents(storage);
+        return true;
+    }
+
+    public static boolean removeItem(@Nullable Player p, ItemStack target) {
+        return target != null && removeItem(p, target, target.getAmount());
     }
 }

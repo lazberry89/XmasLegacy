@@ -12,7 +12,7 @@ public enum ServerRoles implements Role {
     HUNTER("사냥꾼", "몹을 사냥할 때 추가 아이템과 경험치를 획득합니다.", "타격시 확률적으로 치명타가 발생합니다."),
     BLACKSMITH("대장장이", "무기 강화를 의뢰받거나 직접 어디서든 할 수 있습니다.", "대장간 입장금이 면제됩니다.");
 
-    ServerRoles(String name, String ... description) {
+    ServerRoles(String name, String ...description) {
         this.name = name;
         this.description = String.join("\n", description);
         this.descriptionList = List.of(description);

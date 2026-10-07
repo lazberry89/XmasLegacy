@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;

@@ -1,6 +1,7 @@
-package org.lazberry.xmaslegacy.enchant;
+package org.lazberry.xmaslegacy.enchant.listener;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -8,16 +9,19 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
-public class UserEnchantEvent extends Event implements Cancellable {
+@Getter @Setter
+public class PlayerEnchantEvent extends Event implements Cancellable {
     private static final HandlerList handler = new HandlerList();
     private final Player player;
     private final ItemStack item;
     private final int currentLevel;
     private final int neededAmount;
     private boolean cancelled = false;
+    private boolean preventBreak = false;
+    private boolean preventDowngrade = false;
+    private double bonusChance = 0.0;
 
-    public UserEnchantEvent(Player player, ItemStack item, int currentLevel, int neededAmount) {
+    public PlayerEnchantEvent(Player player, ItemStack item, int currentLevel, int neededAmount) {
         this.player = player;
         this.item = item;
         this.currentLevel = currentLevel;
