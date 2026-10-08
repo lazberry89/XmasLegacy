@@ -21,8 +21,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
-import org.lazberry.xmaslegacy.roles.HiddenRoles;
-import org.lazberry.xmaslegacy.roles.Role;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.ArrayList;
@@ -460,7 +458,7 @@ public final class ItemBuilder {
 		if (meta != null) {
 			item.setItemMeta(meta);
 		}
-		return item.clone();
+		return item;
 	}
 
 	/**

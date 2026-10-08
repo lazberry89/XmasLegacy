@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
@@ -30,10 +31,10 @@ public class EnchantItemListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void addFlagWhenPlayerHasTotems(PlayerEnchantEvent e) {
         var player = e.getPlayer();
-        if (InventoryHelper.hasItem(player, EnchantMaterial.DowngradeProtector(), 1)) {
+        if (InventoryHelper.hasItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "downgrade_protector", 1)) {
             e.setPreventDowngrade(true);
         }
-        if (InventoryHelper.hasItem(player, EnchantMaterial.BreakProtector(), 1)) {
+        if (InventoryHelper.hasItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "break_protector", 1)) {
             e.setPreventBreak(true);
         }
     }
@@ -43,7 +44,7 @@ public class EnchantItemListener implements Listener {
         if (e.isCancelled()) return;
         var player = e.getPlayer();
 
-        if (InventoryHelper.removeItem(player, EnchantMaterial.DowngradeProtector(), 1)) {
+        if (InventoryHelper.removeItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "downgrade_protector", 1)) {
             World world = player.getWorld();
             Location loc = player.getLocation();
             world.playSound(player, Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
@@ -60,7 +61,7 @@ public class EnchantItemListener implements Listener {
         if (e.isCancelled()) return;
         var player = e.getPlayer();
 
-        if (InventoryHelper.removeItem(player, EnchantMaterial.BreakProtector(), 1)) {
+        if (InventoryHelper.removeItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "break_protector", 1)) {
             World world = player.getWorld();
             Location loc = player.getLocation().clone();
             player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);

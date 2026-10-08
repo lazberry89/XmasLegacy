@@ -30,7 +30,7 @@ import java.util.List;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantManager implements Initiator {
-    private final NamespacedKey key;
+    public static final NamespacedKey key = KeyUtils.get("enchant");
 
     private static final Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");
     private static final Component LEVEL_2 = ColorUtils.chat("&e★★☆☆☆☆☆&6☆☆&c☆");
@@ -48,9 +48,7 @@ public class EnchantManager implements Initiator {
             LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10
     );
 
-    public EnchantManager() {
-	    this.key = KeyUtils.get("enchant");
-    }
+    public EnchantManager() {}
 
 	public boolean isEnchantableMaterial(Material material) {
 		String name = material.name().toLowerCase();

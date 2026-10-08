@@ -73,6 +73,12 @@ public final class KeyUtils {
         return get(item.getItemMeta(), key, container);
     }
 
+    @Contract("null, _, _ -> param3")
+    public static <T> @NotNull T get(@Nullable ItemStack item, @NotNull NamespacedKey key, @NotNull T def) {
+        if (item == null || item.getType().isAir()) return def;
+        return get(item.getItemMeta(), key, def);
+    }
+
     @Contract("null, _ -> false")
     public static boolean hasKey(@Nullable PersistentDataViewHolder viewHolder, @NotNull NamespacedKey key) {
         if (viewHolder == null) return false;
@@ -104,6 +110,15 @@ public final class KeyUtils {
     public static void remove(@Nullable PersistentDataHolder holder, NamespacedKey key) {
         if (holder == null) return;
         holder.getPersistentDataContainer().remove(key);
+    }
+
+    public static void remove(@Nullable ItemStack item, NamespacedKey key) {
+        if (item == null || item.getType().isAir()) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        meta.getPersistentDataContainer().remove(key);
+        item.setItemMeta(meta);
     }
 
     private static <V> PersistentDataType<?, V> getDataType(Class<V> clazz) {

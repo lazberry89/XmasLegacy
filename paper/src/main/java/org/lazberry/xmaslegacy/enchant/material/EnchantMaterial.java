@@ -16,6 +16,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 public class EnchantMaterial {
 	public static final NamespacedKey key = KeyUtils.get("enchant_material");
+	public static final NamespacedKey bufferKey = KeyUtils.get("booster");
 
     private EnchantMaterial() {}
 
@@ -200,11 +201,15 @@ public class EnchantMaterial {
 	}
 
 	public static ItemStack EssenceOfEnchant() {
-		return ItemBuilder.of(XmasLegacy.getInstance(), Material.GHAST_TEAR)
+		var builder = OraxenItems.getItemById("essence_enchant");
+		var item = builder == null ? new ItemStack(Material.GHAST_TEAR) : builder.build();
+
+		return ItemBuilder.of(XmasLegacy.getInstance(), item)
 				.name(ColorUtils.chat("강화의 정수"))
 				.lore(
 						ColorUtils.chat("&7강화 도중 발생한 마력 파편."),
-						ColorUtils.chat("&7결합하여 사용자의 도구의 마력을 끌어올려준다."))
+						ColorUtils.chat("&7결합하여 사용자의 도구의 마력을 끌어올려준다.")
+				)
 				.setGlint(true)
 				.setRarity(ItemRarity.UNCOMMON)
 				.hideAllFlags()

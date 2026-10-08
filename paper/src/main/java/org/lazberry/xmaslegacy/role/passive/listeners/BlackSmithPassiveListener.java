@@ -4,6 +4,7 @@ import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.enchant.EnchantManager;
 import org.lazberry.xmaslegacy.enchant.listener.PlayerEnchantEvent;
@@ -38,8 +39,17 @@ public class BlackSmithPassiveListener extends PassiveListeners implements Liste
 
     @EventHandler
     public void whenEnchantTool(PlayerEnchantEvent e) {
+        if (e.isCancelled()) return;
+
         var player = e.getPlayer();
         int currentLevel = e.getCurrentLevel();
+
+        ItemStack giveItem = EnchantMaterial.EssenceOfEnchant();
+        giveItem.setAmount(currentLevel);
+
+        InventoryHelper.giveItemOrDrop(player, giveItem);
+        em.addRoleExp(player, 20);
+        sendExpAlert(player, 20);
     }
 
     @EventHandler
