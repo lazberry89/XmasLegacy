@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
 import java.util.Map;
 
@@ -48,11 +50,7 @@ public class FreeFoodTask implements Tasks {
 				var reward = AgeableCrops.SunFlowerBread();
 				reward.setAmount(5);
 
-				Map<Integer, ItemStack> leftOver = p.getInventory().addItem(reward);
-
-				if (!leftOver.isEmpty()) {
-					leftOver.values().forEach(item -> bm.addItem(p, item));
-				}
+				InventoryHelper.giveItemOrKeep(p, reward);
 			}
 			log.info("Cookies are given to every users. DURATION: {}m", Constants.COOKIE_TIMER_MINUTE);
 		}, 20 * 60 * Constants.COOKIE_TIMER_MINUTE, 20 * 60 * Constants.COOKIE_TIMER_MINUTE);

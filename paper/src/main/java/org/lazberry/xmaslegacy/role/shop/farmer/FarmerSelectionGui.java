@@ -16,12 +16,13 @@ public class FarmerSelectionGui implements InventoryHolder {
 
     // 0 1 2 3 4 5 6 7 8
     public FarmerSelectionGui(XmasLegacy plugin) {
-        inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&7상점선택"));
+        inv = Bukkit.createInventory(this, 9, ColorUtils.chat("상점선택"));
         var bg = InventoryHelper.background();
         for (int i = 0; i < inv.getSize(); i++) {
             inv.setItem(i, bg);
         }
-
+		inv.setItem(2, createSellShopButton(plugin));
+		inv.setItem(6, createBuyCropButton(plugin));
     }
 
     private ItemStack createSellShopButton(XmasLegacy plugin) {
@@ -32,17 +33,13 @@ public class FarmerSelectionGui implements InventoryHolder {
                 .build();
     }
 
-    private ItemStack createSeedShopButton(XmasLegacy plugin) {
-        return ItemBuilder.of(plugin, Material.WHEAT_SEEDS)
-                .name(ColorUtils.chat("&6&l씨앗 상점"))
-                .lore(ColorUtils.chat("&7농사 시작이 어렵다면, 씨앗을 구매하여 쉽게 시작해보세요."))
-                .hideAllFlags().build();
-    }
-
     private ItemStack createBuyCropButton(XmasLegacy plugin) {
         return ItemBuilder.of(plugin, Material.GOLDEN_CARROT)
-                .name(ColorUtils.chat("&6&l작물 구매하기"))
-                .lore(ColorUtils.chat("&7필요한 작물을 구매하여 맛있는 저녁을 만들어보세요!"))
+                .name(ColorUtils.chat("&6&l농부상점"))
+                .lore(
+						ColorUtils.chat("&7필요한 작물을 구매하거나 씨앗을 구매하여"),
+		                ColorUtils.chat("&7농사를 시작해보세요!")
+                )
                 .hideAllFlags().build();
     }
 

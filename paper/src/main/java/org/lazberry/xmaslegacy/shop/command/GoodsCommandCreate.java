@@ -28,6 +28,12 @@ public record GoodsCommandCreate(ShowCaseManager showCaseManager) implements Sub
 			InfoUtils.error(player, "판매할 아이템을 손에 들고있어주세요!");
 			return;
 		}
+		if (args.length >= 4) {
+			boolean changeName = Boolean.parseBoolean(args[3]);
+			showCaseManager.registerGoods(name, item, price, changeName);
+			InfoUtils.info(player, "등록했습니다. &6({})", name);
+			return;
+		}
 		showCaseManager.registerGoods(name, item, price);
 		InfoUtils.info(player, "등록했습니다. &6({})", name);
 	}

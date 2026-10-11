@@ -37,6 +37,11 @@ public class EnchantItemListener implements Listener {
         if (InventoryHelper.hasItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "break_protector", 1)) {
             e.setPreventBreak(true);
         }
+	    if (InventoryHelper.removeItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "booster_ten_percent", 1)) {
+		    e.setBonusChance(10.0);
+	    } else if (InventoryHelper.removeItemByTag(player, EnchantMaterial.key, PersistentDataType.STRING, "booster_five_percent", 1)) {
+			e.setBonusChance(5.0);
+		}
     }
 
     @EventHandler(priority = EventPriority.HIGH)

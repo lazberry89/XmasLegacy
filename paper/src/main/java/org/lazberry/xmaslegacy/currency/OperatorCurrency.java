@@ -8,6 +8,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -15,6 +16,7 @@ import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,9 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
+		if (args.length == 1 && p.isOp()) {
+			InventoryHelper.giveItemOrDrop(p, CurrencyManager.currency(XmasLegacy.getInstance()));
+		}
 		if (!p.isOp()) return true;
 		if (args.length == 3) {
 			Player target = Bukkit.getPlayerExact(args[1]);

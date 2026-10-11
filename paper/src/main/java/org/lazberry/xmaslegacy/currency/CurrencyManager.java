@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.currency;
 
+import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -26,9 +27,12 @@ public class CurrencyManager {
 	}
 
 	public static @NotNull ItemStack currency(@NotNull XmasLegacy plugin) {
-		return ItemBuilder.of(plugin, Material.GOLD_INGOT)
-				.setName(ColorUtils.chat("&6&l100$"))
-				.setLore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다."))
+		var builder = OraxenItems.getItemById("money");
+		var item = builder == null ? new ItemStack(Material.GOLD_INGOT) : builder.build();
+
+		return ItemBuilder.of(plugin, item)
+				.name(ColorUtils.chat("&6&l100$"))
+				.lore(ColorUtils.chat("&7&l현금으로 사용 가능하며, 우클릭시 다시 입금됩니다."))
 				.setGlint(true)
 				.setTag("money", 100)
 				.setMaxStackSize(Constants.MAX_CURRENCY_STACK)

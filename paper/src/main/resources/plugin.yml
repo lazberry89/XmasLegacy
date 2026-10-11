@@ -140,3 +140,6 @@ commands:
   goods:
     description: register/remove goods
 
+  shop:
+    description: test shop open command
+

@@ -12,7 +12,7 @@ import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
 public class ProtectorShop implements InventoryHolder {
-    private final int[] priceBySlot = {0, 1, 0, 0, 10000, 0, 0, 50000, 0};
+    private final int[] priceBySlot = {0, 1, 0, 0, 50000, 0, 0, 200000, 0};
     private final Inventory inv;
 
     public ProtectorShop() {
@@ -23,8 +23,8 @@ public class ProtectorShop implements InventoryHolder {
         }
 
         this.inv.setItem(1, showItemBuilder(EnchantMaterial.InfoBook(), 1));
-        this.inv.setItem(4, showItemBuilder(EnchantMaterial.DowngradeProtector(), 10_000));
-        this.inv.setItem(7, showItemBuilder(EnchantMaterial.BreakProtector(), 50_000));
+        this.inv.setItem(4, showItemBuilder(EnchantMaterial.DowngradeProtector(), 50_000));
+        this.inv.setItem(7, showItemBuilder(EnchantMaterial.BreakProtector(), 200_000));
     }
 
     public ItemStack showItemBuilder(ItemStack item, int price) {

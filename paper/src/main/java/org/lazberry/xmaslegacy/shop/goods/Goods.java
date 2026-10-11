@@ -10,15 +10,21 @@ public class Goods {
 	private final String name;
 	private final ItemStack item;
 	private final int initialPrice;
+	private final boolean changeName;
 	private int price;
 
-	public Goods(String name, ItemStack item, int initialPrice) {
+	public Goods(String name, ItemStack item, int initialPrice, boolean changeName) {
 		this.name = name;
 		this.item = item;
 		this.initialPrice = initialPrice;
 		this.price = initialPrice;
+		this.changeName = changeName;
 
-		item.editMeta(m -> m.displayName(ColorUtils.chat(name)));
+		if (changeName) item.editMeta(m -> m.displayName(ColorUtils.chat(name)));
+	}
+
+	public Goods(String name, ItemStack item, int initialPrice) {
+		this(name, item, initialPrice, false);
 	}
 
 	public boolean isDiscounted() {

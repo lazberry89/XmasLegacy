@@ -4,7 +4,7 @@ import lombok.Data;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class RoleManager {
     private final Farmer farmer = new Farmer();
     private final Miner miner = new Miner();
@@ -41,8 +41,8 @@ public class RoleManager {
         private int expSpecialMin = 40;
         private int expSpecialMax = 60;
         private double searchChance = 0.4;
-        private int searchRadius = 2;
-        private int glowDuration = 2;
+        private int searchRadius = 5;
+        private int glowDuration = 20;
     }
 
     @Data

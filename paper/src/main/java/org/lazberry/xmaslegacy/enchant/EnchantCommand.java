@@ -12,6 +12,7 @@ import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
 @Commands(command = "강화")
 @Registry.Exclude(type = ServerType.LOBBY)
@@ -49,6 +50,9 @@ public class EnchantCommand implements CommandExecutor {
 			effectManager.setAnvilLocation(loc);
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("shop")) {
 			p.openInventory(shopManager.getMaterialShop().getInventory());
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("booster")) {
+			InventoryHelper.giveItemOrDrop(p, EnchantMaterial.BoosterFivePercent());
+			InventoryHelper.giveItemOrDrop(p, EnchantMaterial.BoosterTenPercent());
 		} else {
 			if (p.isOp()) p.getInventory().addItem(EnchantMaterial.PrismFractal());
 		}

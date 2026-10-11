@@ -205,7 +205,7 @@ public class EnchantMaterial {
 		var item = builder == null ? new ItemStack(Material.GHAST_TEAR) : builder.build();
 
 		return ItemBuilder.of(XmasLegacy.getInstance(), item)
-				.name(ColorUtils.chat("강화의 정수"))
+				.name(ColorUtils.chat("&b&l강화의 정수"))
 				.lore(
 						ColorUtils.chat("&7강화 도중 발생한 마력 파편."),
 						ColorUtils.chat("&7결합하여 사용자의 도구의 마력을 끌어올려준다.")

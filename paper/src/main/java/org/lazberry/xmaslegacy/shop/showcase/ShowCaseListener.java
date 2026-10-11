@@ -5,6 +5,7 @@ import org.bukkit.entity.Interaction;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
@@ -25,6 +26,7 @@ public class ShowCaseListener implements Listener {
 
 	@EventHandler
 	public void whenClickInteractionOfPurchase(PlayerInteractEntityEvent event) {
+		if (event.getHand() == EquipmentSlot.OFF_HAND) return;
 		var player = event.getPlayer();
 		var loc = player.getLocation();
 		if (event.getRightClicked() instanceof Interaction interaction) {

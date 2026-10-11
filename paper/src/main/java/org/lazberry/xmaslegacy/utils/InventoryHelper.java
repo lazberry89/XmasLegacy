@@ -18,10 +18,16 @@ public class InventoryHelper {
     public static ItemStack background() {
         return ItemBuilder.of(XmasLegacy.getInstance(), Material.GRAY_STAINED_GLASS_PANE)
                 .name(ColorUtils.chat(""))
-                .lore(ColorUtils.chat(""))
                 .hideAllFlags()
                 .build();
     }
+
+	public static ItemStack back() {
+		return ItemBuilder.of(XmasLegacy.getInstance(), Material.BARRIER)
+				.name(ColorUtils.chat("&c&l뒤로가기"))
+				.lore(ColorUtils.chat("&7클릭하여 뒤로가기"))
+				.hideAllFlags().build();
+	}
 
     public static void giveItemOrDrop(@Nullable Player p, ItemStack... items) {
         if (items.length == 0 || p == null || !p.isOnline()) return;
@@ -135,4 +141,67 @@ public class InventoryHelper {
         }
         return remain;
     }
+
+	public static boolean hasItem(@Nullable Player p, Material material, int amount) {
+		if (p == null || !p.isOnline() || material == null || material.isAir() || amount <= 0) return false;
+
+		int count = 0;
+		for (ItemStack item : p.getInventory().getStorageContents()) {
+			if (item != null && item.getType() == material) {
+				count += item.getAmount();
+				if (count >= amount) return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean hasItem(@Nullable Player p, Material material) {
+		return hasItem(p, material, 1);
+	}
+
+	public static boolean removeItem(@Nullable Player p, Material material, int amount) {
+		if (!hasItem(p, material, amount)) return false;
+
+		int remain = amount;
+		var storage = p.getInventory().getStorageContents();
+
+		for (int i = 0; i < storage.length; i++) {
+			ItemStack item = storage[i];
+			if (item == null || item.getType() != material) continue;
+
+			remain = deductItemAmount(storage, i, remain);
+			if (remain <= 0) break;
+		}
+
+		p.getInventory().setStorageContents(storage);
+		return true;
+	}
+
+	public static boolean removeItem(@Nullable Player p, Material material) {
+		return removeItem(p, material, 1);
+	}
+
+	public static int getItemCount(@Nullable Player p, Material material) {
+		if (p == null || !p.isOnline() || material == null || material.isAir()) return 0;
+
+		int count = 0;
+		for (ItemStack item : p.getInventory().getStorageContents()) {
+			if (item != null && item.getType() == material) {
+				count += item.getAmount();
+			}
+		}
+		return count;
+	}
+
+	public static int getItemCount(@Nullable Player p, ItemStack target) {
+		if (p == null || !p.isOnline() || target == null) return 0;
+
+		int count = 0;
+		for (ItemStack item : p.getInventory().getStorageContents()) {
+			if (item != null && item.isSimilar(target)) {
+				count += item.getAmount();
+			}
+		}
+		return count;
+	}
 }

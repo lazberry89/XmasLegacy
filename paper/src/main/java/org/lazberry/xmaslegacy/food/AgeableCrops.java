@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.food;
 
+import io.th0rgal.oraxen.api.OraxenItems;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -10,44 +12,25 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
+import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
-public final class AgeableCrops {
-
-	@ApiStatus.Internal
-	private AgeableCrops() {
-		throw new UnsupportedOperationException("utility class");
-	}
-
-	public static @NotNull ItemStack SunFlower() {
-		return ItemBuilder.of(XmasLegacy.getInstance(), Material.TORCHFLOWER)
-				.setName(ColorUtils.chat("&6&l태양초"))
-				.setLore(ColorUtils.chat("&7이 세상 모든 &e대백야&7의 사람들이 살아갈 수 있게 해준다."))
-				.hideAllFlags()
-				.setGlint(true)
-				.setTag("farmer", "sunflower")
-				.build()
-				.clone();
-	}
-
-	public static @NotNull ItemStack SunFlowerSeed() {
-		return ItemBuilder.of(XmasLegacy.getInstance(), Material.TORCHFLOWER_SEEDS)
-				.setName(ColorUtils.chat("&6&l태양초 씨앗"))
-				.setLore(ColorUtils.chat("&7태양초를 기를 수 있는 고귀한 재료다."))
-				.setTag("farmer", "sunflowerSeed")
-				.setGlint(true)
-				.hideAllFlags()
-				.build()
-				.clone();
-	}
+@Slf4j
+@Registry.Exclude(type = ServerType.LOBBY)
+public class AgeableCrops implements Initiator {
 
 	public static @NotNull ItemStack SunFlowerBread() {
-		ItemStack bread = ItemBuilder.of(XmasLegacy.getInstance(), Material.BREAD)
-				.setName(ColorUtils.chat("&e&l태양초 빵"))
-				.setLore(ColorUtils.chat("&7농부만이 만들 수 있는 이 세상을 살아갈 식량입니다."))
+		var builder = OraxenItems.getItemById("sunflower_bread");
+		var item = builder == null ? new ItemStack(Material.BREAD) : builder.build();
+
+		ItemStack bread = ItemBuilder.of(XmasLegacy.getInstance(), item)
+				.name(ColorUtils.chat("&e&l태양초 빵"))
+				.lore(ColorUtils.chat("&7농부만이 만들 수 있는 이 세상을 살아갈 식량입니다."))
 				.setTag("farmer", "sunflower_bread")
 				.hideAllFlags()
 				.setGlint(true)
@@ -68,17 +51,26 @@ public final class AgeableCrops {
 		return bread;
 	}
 
-	public static boolean RegisterRecipe() {
+	public boolean registerRecipe() {
 		NamespacedKey key = KeyUtils.get("sunflower_bread");
 
 		if (Bukkit.getRecipe(key) != null) {
 			Bukkit.removeRecipe(key);
 		}
+		ItemStack result = SunFlowerBread();
+		result.setAmount(3);
 
-		ShapedRecipe recipe = new ShapedRecipe(key, SunFlowerBread());
-		recipe.shape(" S ", " S ", " S ");
-		recipe.setIngredient('S', new RecipeChoice.ExactChoice(SunFlower()));
+		ShapedRecipe recipe = new ShapedRecipe(key, result);
+		recipe.shape("WSW");
+		recipe.setIngredient('S', Material.TORCHFLOWER);
+		recipe.setIngredient('W', Material.WHEAT);
 
 		return Bukkit.addRecipe(recipe);
+	}
+
+	@Override
+	public void init() {
+		if (registerRecipe()) log.info("Successfully registered SunflowerBread recipe.");
+		else log.warn("Failed to register SunflowerBread recipe.");
 	}
 }

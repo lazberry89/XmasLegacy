@@ -58,6 +58,7 @@ public class GoodsConfig implements Initiator {
 				String path = "goods." + goods.getName() + ".";
 				builder.set(path + "item", InventorySerializer.serializeContents(goods.getItem()));
 				builder.set(path + "initial-price", goods.getInitialPrice());
+				builder.set(path + "change_name", goods.isChangeName());
 			}
 			this.config = builder.save(file).build();
 		}
@@ -79,7 +80,8 @@ public class GoodsConfig implements Initiator {
 					continue;
 				}
 				int price = config.getInt(path + "initial-price");
-				Goods g = new Goods(key, item[0], price);
+				boolean changeName = config.getBoolean(path + "change_name", false);
+				Goods g = new Goods(key, item[0], price, changeName);
 				result.put(key, g);
 			}
 			return result;

@@ -103,14 +103,14 @@ public class EnchantifyEffectManager implements Initiator {
 			InfoUtils.error(player, "강화 가능한 아이템이 아닙니다.");
 			return false;
 		}
-		if (enchantManager.isEnchantable(item)) {
-			InfoUtils.error(player, "이미 강화를 시작한 아이템입니다.");
-			return false;
-		}
 		if (loc == null) {
 			InfoUtils.error(player, "강화모루의 위치가 정해지지 않았어요!");
 			log.error("Enchantify Effect Location is Missing!");
 			return false;
+		}
+		if (enchantManager.isEnchantable(item)) {
+			enchantManager.openInterface(player);
+			return true;
 		}
 		if (task != null) {
 			InfoUtils.error(player, "이미 누군가가 사용하고 있어요.");

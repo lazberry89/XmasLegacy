@@ -68,6 +68,10 @@ public class ShowCaseManager implements Initiator {
 		goods.putIfAbsent(name, new Goods(name, item, initial));
 	}
 
+	public void registerGoods(String name, ItemStack item, int initial, boolean changeName) {
+		goods.putIfAbsent(name, new Goods(name, item, initial, changeName));
+	}
+
 	public boolean removeGoods(String name) {
 		if (goods.containsKey(name)) {
 			goods.remove(name);

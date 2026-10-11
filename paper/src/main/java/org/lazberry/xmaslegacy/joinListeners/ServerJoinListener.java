@@ -57,10 +57,6 @@ public final class ServerJoinListener implements Listener {
 			MainSpawnManager val = spawnRepo.get(DestinationType.MAIN);
 			val.joinEffect(p);
 			UserHandler.loadUser(p, true);
-		} else {
-			log.warn("알 수 없는 서버 타입입니다: {}", ServerUtils.getServerType(this.plugin));
-			p.kick(ColorUtils.chat("&c올바르지 않은 서버 타입입니다. config.yml을 수정하세요."), PlayerKickEvent.Cause.PLUGIN);
-			Bukkit.getOnlinePlayers().forEach(Player::kick);
 		}
 	}
 

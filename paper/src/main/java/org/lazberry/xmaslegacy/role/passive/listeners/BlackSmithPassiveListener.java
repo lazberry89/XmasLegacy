@@ -20,6 +20,8 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
 public class BlackSmithPassiveListener extends PassiveListeners implements Listener {
@@ -41,15 +43,18 @@ public class BlackSmithPassiveListener extends PassiveListeners implements Liste
     public void whenEnchantTool(PlayerEnchantEvent e) {
         if (e.isCancelled()) return;
 
-        var player = e.getPlayer();
-        int currentLevel = e.getCurrentLevel();
+		var player = e.getPlayer();
+		canUsePassive(player, u -> {
+			if (ThreadLocalRandom.current().nextDouble() < 0.1) {
 
-        ItemStack giveItem = EnchantMaterial.EssenceOfEnchant();
-        giveItem.setAmount(currentLevel);
+				ItemStack giveItem = EnchantMaterial.EssenceOfEnchant();
 
-        InventoryHelper.giveItemOrDrop(player, giveItem);
-        em.addRoleExp(player, 20);
-        sendExpAlert(player, 20);
+				InventoryHelper.giveItemOrDrop(player, giveItem);
+				sendExpAlert(player, 20);
+			}
+			int currentLevel = e.getCurrentLevel();
+			em.addRoleExp(player, currentLevel);
+		});
     }
 
     @EventHandler

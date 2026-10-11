@@ -19,7 +19,7 @@ public final class XmasLegacy extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
-		LazberryRegistryFramework.setDebug(false);
+		LazberryRegistryFramework.setDebug(true);
 		LazberryRegistryFramework.boot(this, XmasLegacy.class);
 		Reflections.runInitializers(true);
 	}

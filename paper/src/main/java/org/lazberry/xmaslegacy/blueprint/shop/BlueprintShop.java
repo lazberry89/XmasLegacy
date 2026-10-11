@@ -83,7 +83,7 @@ public class BlueprintShop implements InventoryHolder {
 	private ItemStack iconBuilder(BlueprintGrade grade) {
 		boolean isCurrent = (this.currentPage == grade);
 		return ItemBuilder.of(plugin, grade.getIcon())
-				.setName(grade.getDisplayName())
+				.name(grade.getDisplayName())
 				.setGlint(isCurrent)
 				.build();
 	}

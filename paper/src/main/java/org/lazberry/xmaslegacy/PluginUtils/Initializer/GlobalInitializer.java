@@ -33,11 +33,6 @@ public class GlobalInitializer implements ServerInitializer {
 	@Override
 	public void initiate(@NotNull XmasLegacy plugin) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "bungeecord:main");
-
-		if (AgeableCrops.RegisterRecipe()) log.info("Recipe Registered!");
-		else log.error("Recipe Not Registered!");
-
-		log.info("XmasLegacy Plugin Enabled!");
 		log.warn("This Christmas will be Perfect!");
 	}
 

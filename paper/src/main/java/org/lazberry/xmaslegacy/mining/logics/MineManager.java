@@ -2,7 +2,6 @@ package org.lazberry.xmaslegacy.mining.logics;
 
 import lombok.Data;
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.mining.MineField;
@@ -24,13 +23,13 @@ public class MineManager {
     private volatile MineField externalMine;
     private volatile MineField internalMine;
 
-    private volatile double chanceOfEmerald = 0.02;
-    private volatile double chanceOfDiamond = 0.04;
-    private volatile double chanceOfLazuli = 0.08;
-    private volatile double chanceOfGold = 0.07;
-    private volatile double chanceOfIron = 0.09;
-    private volatile double chanceOfCoal = 0.1;
-    private volatile double chanceOfStone = 0.6;
+	private volatile double chanceOfEmerald = 0.002;
+	private volatile double chanceOfDiamond = 0.008;
+	private volatile double chanceOfGold    = 0.020;
+	private volatile double chanceOfIron    = 0.050;
+	private volatile double chanceOfLazuli  = 0.020;
+	private volatile double chanceOfCoal    = 0.070;
+	private volatile double chanceOfStone   = 0.830;
 
     @Inject
     public MineManager(XmasLegacy plugin) {
@@ -76,25 +75,26 @@ public class MineManager {
         internalMine = field;
     }
 
-    public Material randomOreByChance() {
-        double totalWeight = chanceOfEmerald + chanceOfDiamond + chanceOfLazuli
-                + chanceOfGold + chanceOfIron + chanceOfCoal + chanceOfStone;
+	public Material randomOreByChance() {
+		double totalWeight = chanceOfEmerald + chanceOfDiamond + chanceOfLazuli
+				+ chanceOfGold + chanceOfIron + chanceOfCoal + chanceOfStone;
 
-        if (totalWeight <= 0) {
-            return Material.STONE;
-        }
+		if (totalWeight <= 0) {
+			return Material.STONE;
+		}
 
-        double randomValue = ThreadLocalRandom.current().nextDouble() * totalWeight;
+		// 오타 수정: * totalWeight 누락 부분 수정
+		double randomValue = ThreadLocalRandom.current().nextDouble() * totalWeight;
 
-        if ((randomValue -= chanceOfEmerald) < 0) return Material.EMERALD_ORE;
-        if ((randomValue -= chanceOfDiamond) < 0) return Material.DIAMOND_ORE;
-        if ((randomValue -= chanceOfLazuli) < 0) return Material.LAPIS_ORE;
-        if ((randomValue -= chanceOfGold) < 0) return Material.GOLD_ORE;
-        if ((randomValue -= chanceOfIron) < 0) return Material.IRON_ORE;
-        if ((randomValue - chanceOfCoal) < 0) return Material.COAL_ORE;
+		if ((randomValue -= chanceOfEmerald) < 0) return Material.EMERALD_ORE;
+		if ((randomValue -= chanceOfDiamond) < 0) return Material.DIAMOND_ORE;
+		if ((randomValue -= chanceOfGold) < 0) return Material.GOLD_ORE;
+		if ((randomValue -= chanceOfIron) < 0) return Material.IRON_ORE;
+		if ((randomValue -= chanceOfLazuli) < 0) return Material.LAPIS_ORE;
+		if ((randomValue -= chanceOfCoal) < 0) return Material.COAL_ORE;
 
-        return Material.STONE;
-    }
+		return Material.STONE;
+	}
 
     public boolean isBreakable(Material material) {
         return material == Material.STONE || material.name().contains("_ORE");
