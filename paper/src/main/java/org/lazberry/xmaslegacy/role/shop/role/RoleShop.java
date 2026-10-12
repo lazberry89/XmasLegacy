@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.role.shop;
+package org.lazberry.xmaslegacy.role.shop.role;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -9,16 +9,21 @@ import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 
 public abstract class RoleShop {
+	private final ShopRecord[] records = new ShopRecord[54];
 
 	public record ShopRecord(Material material, int price) {}
 
-	public void tryPurchase(ShopRecord[] recordArray, @Nullable Player p, @Nullable User user, int slot, boolean shift) {
+	protected void setRecord(int slot, ShopRecord record) {
+		records[slot] = record;
+	}
+
+	public void tryPurchase(@Nullable Player p, @Nullable User user, int slot, boolean shift) {
 		if (p == null) return;
 		if (user == null) {
 			UserHandler.loadUser(p, true);
 			return;
 		}
-		var record = recordArray[slot];
+		var record = records[slot];
 		if (record == null) return;
 
 		Material material = record.material;

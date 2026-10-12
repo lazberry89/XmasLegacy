@@ -1,12 +1,13 @@
-package org.lazberry.xmaslegacy.role.shop;
+package org.lazberry.xmaslegacy.role.shop.role;
 
 import lombok.Data;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.role.shop.farmer.CropSellingShop;
-import org.lazberry.xmaslegacy.role.shop.farmer.FarmPurchaseShop;
-import org.lazberry.xmaslegacy.role.shop.farmer.FarmerSelectionGui;
-import org.lazberry.xmaslegacy.role.shop.fisherman.FishSellingShop;
-import org.lazberry.xmaslegacy.role.shop.miner.MinerSellingShop;
+import org.lazberry.xmaslegacy.role.shop.role.farmer.CropSellingShop;
+import org.lazberry.xmaslegacy.role.shop.role.farmer.FarmPurchaseShop;
+import org.lazberry.xmaslegacy.role.shop.role.farmer.FarmerSelectionGui;
+import org.lazberry.xmaslegacy.role.shop.role.fisherman.FishSellingShop;
+import org.lazberry.xmaslegacy.role.shop.role.hunter.HunterSellingShop;
+import org.lazberry.xmaslegacy.role.shop.role.miner.MinerSellingShop;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -16,6 +17,7 @@ public class RoleShopManager {
 	private final Farmer farmer = new Farmer();
 	private final Fisherman fisherman = new Fisherman();
 	private final Miner miner = new Miner();
+	private final Hunter hunter = new Hunter();
 	private final XmasLegacy plugin;
 
 	@Inject
@@ -31,6 +33,9 @@ public class RoleShopManager {
 	}
 	public Miner miner() {
 		return miner;
+	}
+	public Hunter hunter() {
+		return hunter;
 	}
 
 	@Data
@@ -89,5 +94,25 @@ public class RoleShopManager {
 		private int netheriteIngotPrice = 100000;
 
 		private final MinerSellingShop minerSellingShop = new  MinerSellingShop(plugin, this);
+	}
+
+	@Data
+	public class Hunter {
+		private int rottenFleshPrice = 40;
+		private int bonePrice = 70;
+		private int arrowPrice = 70;
+		private int stringPrice = 80;
+		private int spiderEyePrice = 80;
+		private int gunpowderPrice = 90;
+		private int slimeBallPrice = 130;
+		private int phantomMembranePrice = 220;
+		private int enderPearlPrice = 250;
+		private int magmaCreamPrice = 350;
+		private int witherSkeletonSkullPrice = 3500;
+		private int blazeRodPrice = 600;
+		private int ghastTearPrice = 1200;
+		private int prismarineShardPrice = 180;
+
+		private final HunterSellingShop sellingShop = new HunterSellingShop(plugin, this);
 	}
 }

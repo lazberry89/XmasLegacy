@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.role.shop.miner;
+package org.lazberry.xmaslegacy.role.shop.role.miner;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class MinerShopListener implements Listener {
 				p.playSound(p, Sound.BLOCK_LEVER_CLICK, 1.0f, 1.0f);
 
 			User user = userManager.getUser(p.getUniqueId());
-			shop.tryPurchase(shop.getRecords(), p, user, slot, e.isShiftClick());
+			shop.tryPurchase(p, user, slot, e.isShiftClick());
 		}
 	}
 }

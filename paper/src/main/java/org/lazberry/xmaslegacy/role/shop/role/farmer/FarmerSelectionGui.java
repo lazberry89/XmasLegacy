@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.role.shop.farmer;
+package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

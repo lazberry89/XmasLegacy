@@ -53,7 +53,11 @@ public class BlackSmithPassiveListener extends PassiveListeners implements Liste
 				sendExpAlert(player, 20);
 			}
 			int currentLevel = e.getCurrentLevel();
-			em.addRoleExp(player, currentLevel);
+            float multiplier = 1.0f;
+
+            int amount = Math.round(currentLevel * multiplier);
+			em.addRoleExp(player, amount);
+            sendExpAlert(player, amount);
 		});
     }
 

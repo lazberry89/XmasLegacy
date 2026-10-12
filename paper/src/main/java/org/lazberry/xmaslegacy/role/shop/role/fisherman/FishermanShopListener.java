@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.role.shop.fisherman;
+package org.lazberry.xmaslegacy.role.shop.role.fisherman;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -38,7 +38,7 @@ public class FishermanShopListener implements Listener {
 				case 0 -> p.closeInventory();
 				case 2,3,4,5,6,7,8 -> {
 					var user = userManager.getUser(p.getUniqueId());
-					shop.tryPurchase(shop.getRecords(), p, user, slot, e.isShiftClick());
+					shop.tryPurchase(p, user, slot, e.isShiftClick());
 				}
 			}
 		}

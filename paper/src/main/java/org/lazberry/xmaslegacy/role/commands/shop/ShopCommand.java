@@ -9,10 +9,11 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.role.shop.RoleShopManager;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.List;
 
@@ -35,9 +36,11 @@ public class ShopCommand implements CommandExecutor, TabCompleter {
 				case "farmer" -> roleShopManager.farmer().getSelectionGui().getInventory();
 				case "fisherman" -> roleShopManager.fisherman().getFishSellingShop().getInventory();
 				case "miner" -> roleShopManager.miner().getMinerSellingShop().getInventory();
+				case "hunter" -> roleShopManager.hunter().getSellingShop().getInventory();
 				default -> null;
 			};
 			if (inv != null) p.openInventory(inv);
+			else InfoUtils.error(p, "유효하지 상점이 아닙니다.");
 		}
 		return true;
 	}

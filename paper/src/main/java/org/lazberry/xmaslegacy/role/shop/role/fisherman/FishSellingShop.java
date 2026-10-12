@@ -1,6 +1,5 @@
-package org.lazberry.xmaslegacy.role.shop.fisherman;
+package org.lazberry.xmaslegacy.role.shop.role.fisherman;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -8,16 +7,13 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.role.shop.RoleShop;
-import org.lazberry.xmaslegacy.role.shop.RoleShopManager;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShop;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
 public class FishSellingShop extends RoleShop implements InventoryHolder {
-
-	@Getter
-	private final ShopRecord[] records = new ShopRecord[9];
 	private final XmasLegacy plugin;
 	private final Inventory inv;
 
@@ -44,7 +40,7 @@ public class FishSellingShop extends RoleShop implements InventoryHolder {
 				.hideAllFlags()
 				.build();
 		this.inv.setItem(slot, item);
-		this.records[slot] = new ShopRecord(material, price);
+		setRecord(slot, new ShopRecord(material, price));
 	}
 
 	@Override

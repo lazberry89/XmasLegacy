@@ -1,6 +1,5 @@
-package org.lazberry.xmaslegacy.role.shop.miner;
+package org.lazberry.xmaslegacy.role.shop.role.miner;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -8,21 +7,19 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.role.shop.RoleShop;
-import org.lazberry.xmaslegacy.role.shop.RoleShopManager;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShop;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
 public class MinerSellingShop extends RoleShop implements InventoryHolder {
-	private final @Getter ShopRecord[] records;
 	private final Inventory inv;
 	private final XmasLegacy plugin;
 
 	public MinerSellingShop(XmasLegacy plugin, RoleShopManager.Miner miner) {
 		this.plugin = plugin;
 		this.inv = Bukkit.createInventory(this, 36, ColorUtils.chat("광부상점"));
-		this.records = new ShopRecord[inv.getSize()];
 
 		var bg = InventoryHelper.background();
 		for (int i = 0; i < inv.getSize(); i++) {
@@ -62,7 +59,7 @@ public class MinerSellingShop extends RoleShop implements InventoryHolder {
 				.hideAllFlags()
 				.build();
 		this.inv.setItem(slot, item);
-		this.records[slot] = new ShopRecord(material, price);
+		setRecord(slot, new ShopRecord(material, price));
 	}
 
 	@Override

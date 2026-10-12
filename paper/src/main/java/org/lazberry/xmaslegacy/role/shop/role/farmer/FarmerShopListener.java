@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.role.shop.farmer;
+package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.lazberry.xmaslegacy.role.shop.RoleShopManager;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -66,9 +66,8 @@ public class FarmerShopListener implements Listener {
 
 			switch (slot) {
 				case 0 -> p.openInventory(farmer.getSelectionGui().getInventory());
-				case 2, 3, 4, 5, 6, 7, 8 -> {
-					shop.tryPurchase(p, user, slot, 1, e.isShiftClick());
-				}
+				case 2, 3, 4, 5, 6, 7, 8 ->
+					shop.tryPurchase(p, user, slot, e.isShiftClick());
 			}
 		}
 		if (holder instanceof FarmPurchaseShop shop) {

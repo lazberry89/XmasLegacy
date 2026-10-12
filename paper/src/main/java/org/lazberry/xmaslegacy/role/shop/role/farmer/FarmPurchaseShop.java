@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.role.shop.farmer;
+package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -7,13 +7,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.role.shop.RoleShopManager;
+import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FarmPurchaseShop implements InventoryHolder {
 
