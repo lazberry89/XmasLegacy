@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(project(":common"))
+    implementation("redis.clients:jedis:8.0.2")
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.5-SNAPSHOT")
     compileOnly("org.geysermc.geyser:api:2.4.2-SNAPSHOT")

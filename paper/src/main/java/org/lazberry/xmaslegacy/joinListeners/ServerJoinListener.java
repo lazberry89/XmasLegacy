@@ -1,29 +1,26 @@
 package org.lazberry.xmaslegacy.joinListeners;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.SavingLocation.DestinationType;
 import org.lazberry.xmaslegacy.SavingLocation.MainSpawnManager;
 import org.lazberry.xmaslegacy.SavingLocation.SpawnRepository;
-import org.lazberry.xmaslegacy.user.UserSaveManager;
-import org.lazberry.xmaslegacy.utils.ServerTransfer;
-import org.lazberry.xmaslegacy.utils.ServerUtils;
-import org.lazberry.xmaslegacy.utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.user.UserSaveManager;
+import org.lazberry.xmaslegacy.utils.ServerTransfer;
+import org.lazberry.xmaslegacy.utils.ServerUtils;
+import org.lazberry.xmaslegacy.utils.UserHandler;
 
 /**
  * As not implementing Listeners annotation, this Listener should be
@@ -53,10 +50,13 @@ public final class ServerJoinListener implements Listener {
 		Player p = e.getPlayer();
 		e.joinMessage(null);
 
-		if (ServerUtils.getServerType(this.plugin) == ServerType.MAIN) {
-			MainSpawnManager val = spawnRepo.get(DestinationType.MAIN);
-			val.joinEffect(p);
-			UserHandler.loadUser(p, true);
+		UserHandler.loadUser(p, true);
+		switch (ServerUtils.getServerType(this.plugin)) {
+			case MAIN -> {
+				MainSpawnManager val = spawnRepo.get(DestinationType.MAIN);
+				val.joinEffect(p);
+			}
+			case WILD -> {}
 		}
 	}
 

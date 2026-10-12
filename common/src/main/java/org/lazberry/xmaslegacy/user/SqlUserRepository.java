@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.user;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.roles.Role;
+import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
@@ -13,22 +13,20 @@ import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.sql.*;
 import java.util.UUID;
 
 @Data
 @Registry.Exclude(type = ServerType.LOBBY)
 public class SqlUserRepository implements UserRepository {
-	private final String url;
-	private final String user = "root";
-	private final String password = "your_password";
+	private final String url = "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
+	private final String user = "husksync";
+	private final String password = "husksync";
 
 	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
 
 	@Inject
-	public SqlUserRepository(@NotNull File rootDataFolder) {
-		this.url = "jdbc:sqlite:" + new File(rootDataFolder, "database.db").getAbsolutePath();
+	public SqlUserRepository() {
 		createTable();
 	}
 
@@ -139,7 +137,7 @@ public class SqlUserRepository implements UserRepository {
 	@Override
 	public void saveUser(@NotNull User user) {
 		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
-		String sql = "INSERT OR REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
+		String sql = "REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
@@ -174,7 +172,7 @@ public class SqlUserRepository implements UserRepository {
 		String sql = "SELECT rank FROM ( " +
 				"    SELECT uuid, RANK() OVER (ORDER BY Exp DESC) AS rank " +
 				"    FROM users " +
-				") WHERE uuid = ?";
+				") AS temp WHERE uuid = ?";
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {

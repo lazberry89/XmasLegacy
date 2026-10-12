@@ -12,7 +12,7 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Commands(command = "delstand")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Registry.Include(type = ServerType.MAIN)
 public class DeleteStandCommand implements CommandExecutor {
     private final @NotNull MagicBook mb;
 

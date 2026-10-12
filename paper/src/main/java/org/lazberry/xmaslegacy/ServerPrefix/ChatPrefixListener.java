@@ -9,28 +9,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NonBlocking;
-import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.RuleManager;
-import org.lazberry.xmaslegacy.user.User;
-import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.UserHandler;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.user.User;
+import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.UserHandler;
 
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
 public class ChatPrefixListener implements Listener {
-	private final @NotNull PrefixManager pfm;
-	private final @NotNull RuleManager rm;
-	private final @NotNull UserManager um;
+	private final PrefixManager pfm;
+	private final RuleManager rm;
+	private final UserManager um;
 
 	@Inject
-	public ChatPrefixListener(@NotNull PrefixManager pm, @NotNull RuleManager rm, @NotNull UserManager um) {
+	public ChatPrefixListener(PrefixManager pm, RuleManager rm, UserManager um) {
 		this.pfm = pm;
 		this.rm = rm;
 		this.um = um;
@@ -53,7 +52,6 @@ public class ChatPrefixListener implements Listener {
 					.append(Component.text(" : "))
 					.append(ColorUtils.chat(msg))
 					.build();
-			pfm.removePrefixIfNotValid(user);
 			ServerPrefix prefix = user.getEquipPrefix();
 			Component equipP = prefix == null ? Component.text("") : prefix.prefix().appendSpace();
 			return Component.text()

@@ -65,7 +65,7 @@ public final class Reflections {
 			}
 
 			ServerInitializer specificInit = initializersBean.getInitializer(current);
-			log.info("{} Executing {}Initializer...", icon, current.name());
+			log.info("{} Executing {} Initializer...", icon, current.name());
 			if (on) specificInit.initiate(plugin());
 			else specificInit.shutdown(plugin());
 

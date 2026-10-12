@@ -10,18 +10,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.ServerPrefix.PrefixManager;
-import org.lazberry.xmaslegacy.bags.BagManager;
-import org.lazberry.xmaslegacy.user.User;
-import org.lazberry.xmaslegacy.user.UserSaveManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.user.User;
+import org.lazberry.xmaslegacy.user.UserSaveManager;
 
 import java.util.function.BiConsumer;
 
@@ -88,7 +86,6 @@ public final class UserHandler {
                 if (msg) sendError(player, throwable);
                 return;
             }
-            pfm.removePrefixIfNotValid(user);
             if (msg) sendMsg(player, user);
         });
     }

@@ -12,17 +12,19 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.LOBBY)
+@Registry.Include(type = ServerType.GLOBAL)
 public class Initializers {
 	private final @NotNull Map<ServerType, ServerInitializer> initializers = new EnumMap<>(ServerType.class);
 
 	@Inject
     public Initializers(@NotNull GlobalInitializer globalInitializer, @NotNull MainInitializer mainInitializer,
-	                    @NotNull HuntingInitializer huntingInitializer, @NotNull LobbyInitializer lobbyInitializer) {
+	                    @NotNull HuntingInitializer huntingInitializer, @NotNull LobbyInitializer lobbyInitializer,
+	                    WildInitializer wildInitializer) {
 		this.initializers.put(ServerType.GLOBAL, globalInitializer);
 		this.initializers.put(ServerType.MAIN, mainInitializer);
 		this.initializers.put(ServerType.HUNTING, huntingInitializer);
 		this.initializers.put(ServerType.LOBBY, lobbyInitializer);
+		this.initializers.put(ServerType.WILD, wildInitializer);
 	}
 
 	/**

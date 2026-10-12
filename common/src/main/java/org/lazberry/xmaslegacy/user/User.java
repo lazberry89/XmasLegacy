@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.user;
 
+import com.google.gson.Gson;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,17 @@ import java.util.UUID;
 		emergency dump class's saving method.
 		""")
 public class User {
+	private static final Gson GSON = new com.google.gson.GsonBuilder()
+			.registerTypeAdapter(Role.class, (com.google.gson.JsonSerializer<Role>) (src, typeOfSrc, context) ->
+					new com.google.gson.JsonPrimitive(src.name())
+			)
+			.registerTypeAdapter(Role.class, (com.google.gson.JsonDeserializer<Role>) (json, typeOfT, context) -> Role.parseRole(json.getAsString(), ServerRoles.USER))
+			.registerTypeAdapter(ServerPrefix.class, (com.google.gson.JsonSerializer<ServerPrefix>) (src, typeOfSrc, context) ->
+					new com.google.gson.JsonPrimitive(src.name())
+			)
+			.registerTypeAdapter(ServerPrefix.class, (com.google.gson.JsonDeserializer<ServerPrefix>) (json, typeOfT, context) -> ServerPrefix.parse(json.getAsString(), Tier.VISITOR))
+			.create();
+
     @EqualsAndHashCode.Include
     private final @NotNull UUID uniqueId;
 	private final @NotNull String lock;
@@ -56,8 +68,17 @@ public class User {
 		this.name = name;
     }
 
+	public String toJson() {
+		return GSON.toJson(this);
+	}
+
+	public static User fromJson(String json) {
+		if (json == null || json.isEmpty()) return null;
+		return GSON.fromJson(json, User.class);
+	}
+
 	public void addSinPoints(int amount) {
-		this.sinPoints = Math.max(0, this.sinPoints + amount);
+		this.sinPoints = Math.clamp(this.sinPoints + amount, 0, 100);
 	}
 	public void reduceSinPoints(int amount) {
 		this.sinPoints = Math.max(0, this.sinPoints - amount);
