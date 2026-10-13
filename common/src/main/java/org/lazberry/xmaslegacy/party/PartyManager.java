@@ -2,112 +2,114 @@ package org.lazberry.xmaslegacy.party;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.user.User;
-import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class PartyManager implements Initiator {
-	private final @NotNull UserManager um;
-	private final @NotNull Map<User, Party> partyMap = new ConcurrentHashMap<>();
+	private static final com.google.gson.Gson GSON = new com.google.gson.GsonBuilder().create();
 
-	@Inject
-	public PartyManager(@NotNull UserManager um) {
-		this.um = um;
-	}
+	public PartyManager() {}
 
 	@Override
 	public void init() {}
 
-	public boolean createParty(@NotNull User leader) {
-		if (partyMap.containsKey(leader)) return false;
+	private @Nullable Party getPartyById(@NotNull UUID partyId) {
+		String json = JedisService.getFromJedis("party:" + partyId);
+		return json == null ? null : GSON.fromJson(json, Party.class);
+	}
 
-		Party newParty = new Party(leader);
-		partyMap.put(leader, newParty);
+	private void saveParty(@NotNull Party party) {
+		JedisService.setToJedis("party:" + party.getPartyID(), GSON.toJson(party));
+		for (UUID memberUuid : party.getMembers()) {
+			setParty(memberUuid, party);
+		}
+	}
+
+	public void removeUserPartyMapping(UUID uuid) {
+		JedisService.setToJedis("user:" + uuid + ":party", null);
+	}
+
+	public boolean disbandParty(@NotNull UUID leaderUuid) {
+		Party party = getParty(leaderUuid);
+		if (party == null || !party.getLeader().equals(leaderUuid)) return false;
+
+		deleteParty(party);
 		return true;
 	}
 
-	public boolean joinParty(@NotNull User leader, @NotNull User join) {
-		if (partyMap.containsKey(join)) return false;
+	private void deleteParty(@NotNull Party party) {
+		for (UUID memberUuid : party.getMembers()) {
+			removeUserPartyMapping(memberUuid);
+		}
+		JedisService.setToJedis("party:" + party.getPartyID(), null);
+		party.clearMembers();
+	}
 
-		Party party = partyMap.get(leader);
-		if (party == null) return false;
+	public void setParty(UUID uuid, Party party) {
+		JedisService.setToJedis("user:" + uuid + ":party", party.getPartyID().toString());
+	}
 
-		if (!party.getLeader().equals(leader)) return false;
+	public @Nullable Party getParty(@NotNull UUID uuid) {
+		String partyIdStr = JedisService.getFromJedis("user:" + uuid + ":party");
+		if (partyIdStr == null) return null;
+		return getPartyById(UUID.fromString(partyIdStr));
+	}
 
-		if (party.joinParty(join)) {
-			partyMap.put(join, party);
+	public boolean isInParty(UUID uuid) {
+		return JedisService.getFromJedis("user:" + uuid + ":party") != null;
+	}
+
+	public boolean createParty(@NotNull UUID leaderUuid) {
+		if (isInParty(leaderUuid)) return false;
+
+		Party newParty = new Party(leaderUuid);
+		saveParty(newParty);
+		return true;
+	}
+
+	public boolean joinParty(UUID leaderUuid, UUID joinUuid) {
+		if (isInParty(joinUuid)) return false;
+
+		String partyIdStr = JedisService.getFromJedis("user:" + leaderUuid + ":party");
+		if (partyIdStr == null) return false;
+
+		Party party = getPartyById(UUID.fromString(partyIdStr));
+		if (party == null || !party.getLeader().equals(leaderUuid)) return false;
+
+		if (party.joinParty(joinUuid)) {
+			saveParty(party);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean leaveParty(@NotNull User user) {
-		Party party = partyMap.get(user);
+	public boolean leaveParty(UUID uuid) {
+		Party party = getParty(uuid);
 		if (party == null) return false;
 
-		partyMap.remove(user);
+		removeUserPartyMapping(uuid);
 
-		boolean isStillAlive = party.leaveParty(user);
+		boolean isStillAlive = party.leaveParty(uuid);
 
 		if (!isStillAlive) {
-			party.clearMembers();
+			deleteParty(party);
 		} else {
-			User newLeader = party.getLeader();
-			partyMap.put(newLeader, party);
+			saveParty(party);
 		}
 		return true;
-	}
-
-	public boolean removeParty(@NotNull UUID uuid) {
-		User user = um.getUser(uuid);
-		if (user == null) return false;
-
-		Party currentParty = partyMap.get(user);
-		if (currentParty == null) return false;
-
-		if (!currentParty.getLeader().equals(user)) return false;
-
-		List<User> targets = new ArrayList<>(currentParty.getMembers());
-		for (User target : targets) {
-			partyMap.remove(target);
-		}
-
-		currentParty.clearMembers();
-		return true;
-	}
-
-	public boolean removeParty(@NotNull Party party) {
-		if (party.getMembers().isEmpty()) return false;
-		List<User> targets = new ArrayList<>(party.getMembers());
-
-		for (User target : targets) partyMap.remove(target);
-
-		party.clearMembers();
-		return true;
-	}
-	public @Nullable Party getParty(@NotNull UUID uuid) {
-		User u = um.getUser(uuid);
-		if (u == null) return null;
-		return partyMap.get(u);
-	}
-
-	public boolean isInParty(@NotNull UUID uuid) {
-		User u = um.getUser(uuid);
-		if (u == null) return false;
-		return partyMap.containsKey(u);
 	}
 
 	public boolean isLeader(@NotNull UUID uuid) {
 		Party party = getParty(uuid);
 		if (party == null) return false;
-		return party.getLeader().getUniqueId().equals(uuid);
+		return party.getLeader().equals(uuid);
 	}
 
 	public boolean isParty(@NotNull UUID uuid1, @NotNull UUID uuid2) {
@@ -115,18 +117,14 @@ public class PartyManager implements Initiator {
 		if (party == null) return false;
 
 		return party.getMembers().stream()
-				.anyMatch(user -> user.getUniqueId().equals(uuid2));
+				.anyMatch(user -> user.equals(uuid2));
 	}
 
 	public boolean handOverLeadership(@NotNull UUID currentLeaderUuid, @NotNull UUID newLeaderUuid) {
 		Party party = getParty(currentLeaderUuid);
 		if (party == null) return false;
 
-		if (!party.getLeader().getUniqueId().equals(currentLeaderUuid)) return false;
-
-		User newLeader = um.getUser(newLeaderUuid);
-		if (newLeader == null) return false;
-
-		return party.changeLeader(newLeader);
+		if (!party.getLeader().equals(currentLeaderUuid)) return false;
+		return party.changeLeader(newLeaderUuid);
 	}
 }

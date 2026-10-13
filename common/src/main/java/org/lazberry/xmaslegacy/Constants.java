@@ -19,8 +19,6 @@ public class Constants {
 	public static final int BASIC_MONEY_MOBILE = 5000;
 	public static final int BASIC_MONEY_NORMAL = 1000;
 
-	public static final int INQUIRY_COOLDOWN = 30;
-
 	public static final String SELECT_BOOK = "magicbookopened_v2";
 
 	public static final String TARGET_EMBLEM = "target_emblem";

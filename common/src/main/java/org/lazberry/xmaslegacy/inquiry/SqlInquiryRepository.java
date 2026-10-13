@@ -6,25 +6,25 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Registry.Include(type = ServerType.GLOBAL)
-public class InquiryRepository {
-	private final @NotNull String url = "jdbc:sqlite:plugins/XmasLegacy/database.db";
-	private final @NotNull String user = "root";
-	private final @NotNull String password = "password";
-	private static final @NotNull Logger logger = LoggerFactory.getLogger(InquiryRepository.class);
+public class SqlInquiryRepository {
+	private static final Logger logger = LoggerFactory.getLogger(SqlInquiryRepository.class);
 
-	public InquiryRepository() {
-		createDatabaseFolder();
+	private final String url = "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
+	private final String user = "husksync";
+	private final String password = "husksync";
+
+	public SqlInquiryRepository() {
 		createNewTable();
 	}
 
-	public void saveInquiry(@NotNull UUID uuid, @NotNull String name, @NotNull String message) {
+	public long saveInquiryAndGet(@NotNull UUID uuid, @NotNull String name, @NotNull String message) {
+
 		String sql = "INSERT INTO inquiry_logs (uuid, player_name, message, status) VALUES (?, ?, ?, 'PENDING')";
 		try (Connection conn = DriverManager.getConnection(url, user, password);
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -35,25 +35,17 @@ public class InquiryRepository {
 		} catch (SQLException e) {
 			logger.error("Failed to save inquiry log for UUID: {}", uuid, e);
 		}
-	}
-
-	private void createDatabaseFolder() {
-		File dbFolder = new File("plugins/XmasLegacy");
-		if (!dbFolder.exists()) {
-			if (dbFolder.mkdirs()) {
-				logger.info("[Inquiry] Successfully created database folder directory.");
-			}
-		}
+		return 0; //Auto Increase
 	}
 
 	private void createNewTable() {
 		String sql = """
             CREATE TABLE IF NOT EXISTS inquiry_logs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                uuid TEXT NOT NULL,
-                player_name TEXT NOT NULL,
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                uuid VARCHAR(36) NOT NULL,
+                player_name VARCHAR(16) NOT NULL,
                 message TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'PENDING',
+                status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             """;

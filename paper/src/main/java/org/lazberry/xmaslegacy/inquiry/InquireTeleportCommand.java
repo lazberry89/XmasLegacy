@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.inquiry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -8,8 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.inquiry.InquiryManager;
-import org.lazberry.xmaslegacy.inquiry.InquiryStatus;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;

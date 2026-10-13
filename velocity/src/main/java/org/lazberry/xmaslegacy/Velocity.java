@@ -6,6 +6,6 @@ import javax.inject.Inject;
 
 public class Velocity {
 
-    @Inject
     private Logger logger;
+    private ProxyServer
 }

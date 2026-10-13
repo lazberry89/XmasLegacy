@@ -16,30 +16,34 @@ import java.util.UUID;
 public class Party {
 	@EqualsAndHashCode.Include
 	private final @NotNull UUID partyID;
-	private @Getter User leader;
-	private final @NotNull List<User> members = new ArrayList<>();
+	private @Getter UUID leader;
+	private final @NotNull List<UUID> members = new ArrayList<>();
 
-	public Party(@NotNull User leader) {
+	public Party(@NotNull UUID leader) {
 		this.partyID = UUID.randomUUID();
 		this.leader = leader;
 		this.members.add(leader);
 	}
 
-	public boolean changeLeader(@NotNull User newLeader) {
+	public Party(User user) {
+		this(user.getUniqueId());
+	}
+
+	public boolean changeLeader(UUID newLeader) {
 		if (!members.contains(newLeader)) return false;
 
 		this.leader = newLeader;
 		return true;
 	}
 
-	public boolean joinParty(@NotNull User join) {
+	public boolean joinParty(UUID join) {
 		if (members.contains(join) || isFull()) {
 			return false;
 		}
 		return members.add(join);
 	}
 
-	public boolean leaveParty(@NotNull User leave) {
+	public boolean leaveParty(UUID leave) {
 		if (!members.contains(leave)) return false;
 
 		if (leave.equals(leader)) {
@@ -60,7 +64,7 @@ public class Party {
 		return partyID;
 	}
 
-	public @NotNull List<User> getMembers() {
+	public @NotNull List<UUID> getMembers() {
 		return Collections.unmodifiableList(members);
 	}
 
@@ -68,7 +72,7 @@ public class Party {
 		return members.size() >= 4;
 	}
 
-	public boolean isInParty(@NotNull User user) {
+	public boolean isInParty(UUID user) {
 		return members.contains(user);
 	}
 

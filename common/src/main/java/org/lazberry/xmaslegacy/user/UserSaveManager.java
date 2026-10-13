@@ -95,11 +95,12 @@ public class UserSaveManager implements Initiator {
     }
 
 	@NonBlocking
-	@Contract("_, _, _ -> new")
-	public @NotNull CompletableFuture<User> onJoinAsync(@NotNull UUID uuid, @NotNull String name, boolean isFloodgate) {
+	@Contract("_, _, _, _ -> new")
+	public @NotNull CompletableFuture<User> onJoinAsync(@NotNull UUID uuid, @NotNull String name, String server, boolean isFloodgate) {
 		return CompletableFuture.supplyAsync(() -> {
 			User loaded = loadOrCreateUser(uuid, name, isFloodgate);
 			um.addUser(loaded);
+			JedisService.setUserServer(uuid, server);
 			return loaded;
 		});
 	}
@@ -123,6 +124,7 @@ public class UserSaveManager implements Initiator {
                 synchronized (u.getLock()) {
                     repository.saveUser(u);
 					JedisService.setToJedis("user:" + u.getUniqueId(), u.toJson());
+					JedisService.removeUserServer(uuid);
                     log.info("User {} saved.", uuid);
                 }
             } catch (Exception e) {
