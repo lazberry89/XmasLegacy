@@ -8,7 +8,7 @@ plugins {
 dependencies {
     implementation(project(":common"))
 
-    val velocityVersion = "4.1.0-SNAPSHOT"
+    val velocityVersion = "3.5.0-SNAPSHOT"
     compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
     annotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
 }
