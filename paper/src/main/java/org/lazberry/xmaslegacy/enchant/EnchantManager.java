@@ -31,6 +31,8 @@ import java.util.List;
 @Registry.Exclude(type = ServerType.LOBBY)
 public class EnchantManager implements Initiator {
     public static final NamespacedKey key = KeyUtils.get("enchant");
+	public static final NamespacedKey enchantAmountKey = KeyUtils.get("enchant_amount");
+	public static final NamespacedKey enchantReductionKey = KeyUtils.get("enchant_reduction");
 
     private static final Component LEVEL_1 = ColorUtils.chat("&e★☆☆☆☆☆☆&6☆☆&c☆");
     private static final Component LEVEL_2 = ColorUtils.chat("&e★★☆☆☆☆☆&6☆☆&c☆");
@@ -57,6 +59,34 @@ public class EnchantManager implements Initiator {
 				|| name.contains("leggings") || name.contains("boots");
 	}
 
+	private double getMaxRatio(int lvl) {
+		if (lvl < 1 || lvl - 1 >= Constants.ENCHANT_MULTIPLIERS.size()) return 0.0;
+		double multiplier = Constants.ENCHANT_MULTIPLIERS.get(lvl - 1);
+		return (multiplier - 1.0) / 2.5;
+	}
+
+	public double calculateArmorReduction(Material type, int lvl) {
+		double maxRatio = getMaxRatio(lvl);
+
+		String name = type.name();
+		if (name.endsWith("_CHESTPLATE")) return 20.0 * maxRatio;
+		if (name.endsWith("_LEGGINGS")) return 15.0 * maxRatio;
+		if (name.endsWith("_HELMET")) return 9.35 * maxRatio;
+		if (name.endsWith("_BOOTS")) return 9.35 * maxRatio;
+		return 0.0;
+	}
+
+	public double calculateArmorExtraHealth(Material type, int lvl) {
+		double maxRatio = getMaxRatio(lvl);
+
+		String name = type.name();
+		if (name.endsWith("_CHESTPLATE")) return 6.5 * maxRatio;
+		if (name.endsWith("_LEGGINGS")) return 5.5 * maxRatio;
+		if (name.endsWith("_HELMET")) return 4.0 * maxRatio;
+		if (name.endsWith("_BOOTS")) return 4.0 * maxRatio;
+		return 0.0;
+	}
+
 	private double getBaseArmor(Material material) {
 		String name = material.name();
 		if (name.endsWith("_HELMET")) {
@@ -79,13 +109,6 @@ public class EnchantManager implements Initiator {
 			if (name.startsWith("IRON")) return 3.0;
 			if (name.startsWith("DIAMOND") || name.startsWith("NETHERITE")) return 4.0;
 		}
-		return 0.0;
-	}
-
-	private double getBaseToughness(Material material) {
-		String name = material.name();
-		if (name.startsWith("DIAMOND")) return 2.0;
-		if (name.startsWith("NETHERITE")) return 3.0;
 		return 0.0;
 	}
 
@@ -206,34 +229,49 @@ public class EnchantManager implements Initiator {
 				double baseArmor = getBaseArmor(type);
 				if (baseArmor <= 0) return;
 
-				double multiplierForArmor = multiplier * 1.5;
+				EquipmentSlotGroup slotGroup = getArmorSlotGroup(type);
 
 				meta.removeAttributeModifier(Attribute.ARMOR);
 				meta.removeAttributeModifier(Attribute.ARMOR_TOUGHNESS);
+				meta.removeAttributeModifier(Attribute.MAX_HEALTH);
 
-				EquipmentSlotGroup slotGroup = getArmorSlotGroup(type);
-
-				AttributeModifier armorModifier = new AttributeModifier(
+				meta.addAttributeModifier(Attribute.ARMOR, new AttributeModifier(
 						modifierKey,
-						baseArmor * multiplierForArmor,
+						baseArmor,
 						AttributeModifier.Operation.ADD_NUMBER,
 						slotGroup
-				);
-				meta.addAttributeModifier(Attribute.ARMOR, armorModifier);
+				));
 
 				double baseToughness = getBaseToughness(type);
 				if (baseToughness > 0) {
 					NamespacedKey toughnessKey = KeyUtils.get("enchant_toughness_" + name.toLowerCase());
-					AttributeModifier toughnessModifier = new AttributeModifier(
+					meta.addAttributeModifier(Attribute.ARMOR_TOUGHNESS, new AttributeModifier(
 							toughnessKey,
-							baseToughness * multiplier,
+							baseToughness,
+							AttributeModifier.Operation.ADD_NUMBER,
+							slotGroup
+					));
+				}
+
+				double extraHealth = calculateArmorExtraHealth(type, lvl);
+				if (extraHealth > 0) {
+					AttributeModifier healthModifier = new AttributeModifier(
+							modifierKey,
+							extraHealth,
 							AttributeModifier.Operation.ADD_NUMBER,
 							slotGroup
 					);
-					meta.addAttributeModifier(Attribute.ARMOR_TOUGHNESS, toughnessModifier);
+					meta.addAttributeModifier(Attribute.MAX_HEALTH, healthModifier);
 				}
 			}
 		});
+	}
+
+	private double getBaseToughness(Material material) {
+		String name = material.name();
+		if (name.startsWith("DIAMOND")) return 2.0;
+		if (name.startsWith("NETHERITE")) return 3.0;
+		return 0.0;
 	}
 
     private void applyLevelChange(@NotNull ItemStack item, int newLvl) {

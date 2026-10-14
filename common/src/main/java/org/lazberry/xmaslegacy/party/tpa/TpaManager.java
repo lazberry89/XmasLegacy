@@ -39,7 +39,7 @@ public class TpaManager {
         if (senderServer == null || targetServer == null) return false;
 
         if (senderServer.equals(targetServer)) {
-            executeLocalTeleport(senderUuid, targetUuid);
+            //executeLocalTeleport(senderUuid, targetUuid);
         } else {
             String payload = senderUuid + ":" + targetServer + ":" + targetUuid;
             JedisService.publish("xmas:cross_tp", payload);

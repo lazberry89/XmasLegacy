@@ -81,7 +81,7 @@ public final class UserHandler {
      */
     @NonBlocking
     public static void loadUser(@NotNull Player player, boolean msg) {
-        us.onJoinAsync(player.getUniqueId(), player.getName(), true).whenComplete((user, throwable) -> {
+        us.onJoinAsync(player.getUniqueId(), player.getName(), ServerUtils.getServerType(plugin()).name(), true).whenComplete((user, throwable) -> {
             if (throwable != null || user == null) {
                 if (msg) sendError(player, throwable);
                 return;

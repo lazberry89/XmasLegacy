@@ -12,10 +12,7 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Registry.Include(type = ServerType.GLOBAL)
@@ -57,7 +54,9 @@ public class InquiryManager implements Initiator {
 
 			Inquiry inquiry = new Inquiry(id, uuid, name, message, System.currentTimeMillis());
 			JedisService.setToJedis("id:" + id + ":pending-inquiry", inquiry.toJson());
+
 			JedisService.sadd("inquiry:pending", String.valueOf(id));
+			JedisService.publish("inquiry-channel", "NEW_INQUIRY:" + name + ":" + id);
 
 			log.warn("player {} (uuid: {}) sent inquiry with contents '{}'", name, uuid, message);
 			setInquiryCooldown(uuid);
@@ -66,45 +65,69 @@ public class InquiryManager implements Initiator {
 
 	public void answerInquiry(long id, String answer) {
 		Inquiry inquiry = getInquiry(id);
-		if (inquiry == null) return;
-		if (inquiry.isResolved()) return;
+		if (inquiry == null || inquiry.isResolved()) return;
 
 		inquiry.setAnswer(answer);
-		setInquiryState(id, InquiryStatus.RESOLVED);
+		inquiry.setStatus(InquiryStatus.RESOLVED);
+		persist(inquiry);
 
-		inquiryRepository.updateInquiryResolution(id, answer, InquiryStatus.RESOLVED).exceptionally(e -> {
-			log.error("Failed to update inquiry(id: {}) with database.", id, e);
-			return null;
-		});
 		JedisService.publish("inquiry-channel", "ANSWERED:" + inquiry.getUniqueId() + ":" + id);
+		JedisService.sadd("uuid:" + inquiry.getUniqueId() + ":unread-inquiries", String.valueOf(id));
 	}
 
-	public void setInquiryState(long id, InquiryStatus status) {
-		Inquiry inquiry = getInquiry(id);
-		if (inquiry == null) return;
+	public Set<String> getUnreadInquiryIds(UUID uuid) {
+		String unreadKey = "uuid:" + uuid + ":unread-inquiries";
+		return JedisService.smembers(unreadKey);
+	}
 
-		inquiry.setStatus(status);
+	public Set<Inquiry> getUnreadInquiries(UUID uuid) {
+		Set<String> unreadIds = getUnreadInquiryIds(uuid);
+		Set<Inquiry> result = new HashSet<>();
+
+		for (String idStr : unreadIds) {
+			try {
+				long id = Long.parseLong(idStr);
+				Inquiry inquiry = getInquiry(id);
+				if (inquiry != null) {
+					result.add(inquiry);
+				}
+			} catch (NumberFormatException ignored) {}
+		}
+		return result;
+	}
+
+	public void setInquiryRead(UUID uuid, long id) {
+		String unreadKey = "uuid:" + uuid + ":unread-inquiries";
+		JedisService.srem(unreadKey, String.valueOf(id));
+	}
+
+	public void clearAllUnreadInquiries(UUID uuid) {
+		String unreadKey = "uuid:" + uuid + ":unread-inquiries";
+		JedisService.removeKey(unreadKey);
+	}
+
+	private void persist(Inquiry inquiry) {
+		long id = inquiry.getId();
 		String longId = String.valueOf(id);
 		String json = inquiry.toJson();
 
-
-		if (status == InquiryStatus.PENDING) {
+		if (inquiry.getStatus() == InquiryStatus.PENDING) {
 			JedisService.removeKey("id:" + id + ":resolved-inquiry");
 			JedisService.srem("inquiry:resolved", longId);
-
 			JedisService.setToJedis("id:" + id + ":pending-inquiry", json);
 			JedisService.sadd("inquiry:pending", longId);
 		} else {
 			JedisService.removeKey("id:" + id + ":pending-inquiry");
 			JedisService.srem("inquiry:pending", longId);
-
 			JedisService.setToJedis("id:" + id + ":resolved-inquiry", json);
 			JedisService.sadd("inquiry:resolved", longId);
 		}
-		inquiryRepository.updateInquiryResolution(id, inquiry.getAnswer(), status).exceptionally(e -> {
-			log.error("Failed to update inquiry(id: {}) with database.", id, e);
-			return null;
-		});
+
+		inquiryRepository.updateInquiryResolution(id, inquiry.getAnswer(), inquiry.getStatus())
+				.exceptionally(e -> {
+					log.error("Failed to update inquiry(id: {}) with database.", id, e);
+					return null;
+				});
 	}
 
 	public @Nullable Inquiry getInquiry(long id) {
@@ -114,20 +137,41 @@ public class InquiryManager implements Initiator {
 	}
 
 	public Component inquiryStateText(Inquiry inquiry) {
-		Component name = ColorUtils.chat(inquiry.getName())
-				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&6uuid: " + inquiry.getUniqueId())));
-		Component contents = ColorUtils.chat(ColorUtils.GRAY + "\"" + inquiry.getInquiry() + "\"")
-				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&7문의내용입니다.")));
-		Component pending = ColorUtils.chat(" &c&l[보류중]")
-				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&7아직 해결되지 않은 문의입니다.")
-						.appendNewline().append(ColorUtils.chat("&7명령어를 통해 상태를 변경하거나 답변하세요."))));
-		Component resolved = ColorUtils.chat(" &a&l[해결됨]")
-				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&7답변이 완료되었거나 해결된 문의입니다.")
-						.appendNewline().append(ColorUtils.chat("&724시간 뒤 혹은 서버 종료 시 만료됩니다."))));
-		Component status = inquiry.getStatus() == InquiryStatus.PENDING ? pending :
-				resolved;
-		return Inquiry.icon.appendSpace().append(name).append(ColorUtils.chat(" &e&l| "))
-				.append(contents).append(status);
+		boolean isResolved = inquiry.isResolved();
+		String answer = inquiry.getAnswer();
+
+		Component statusTag = isResolved
+				? ColorUtils.chat("&a&l[답변됨]")
+				: ColorUtils.chat("&c&l[보류중]");
+
+		Component name = ColorUtils.chat("&r&7" + inquiry.getName() + " |")
+				.hoverEvent(HoverEvent.showText(ColorUtils.chat("&6uuid: &f" + inquiry.getUniqueId())));
+
+		Component contents = ColorUtils.chat("&r&7\"" + inquiry.getInquiry() + "\"");
+
+		Component answerHoverText;
+		if (isResolved && answer != null && !answer.isBlank()) {
+			answerHoverText = ColorUtils.chat("&b&l[ 관리자 답변 ]")
+					.appendNewline()
+					.append(ColorUtils.chat("&f" + answer));
+		} else {
+			answerHoverText = ColorUtils.chat("&7답변되지 않은 문의입니다.");
+		}
+
+		Component answerStatus = ColorUtils.chat("&7(답변 확인)")
+				.hoverEvent(HoverEvent.showText(answerHoverText));
+
+		// 출력 조합: [상태] [#ID] 플레이어 | "문의내용" (답변 확인)
+		return Component.empty()
+				.append(statusTag)
+				.appendSpace()
+				.append(ColorUtils.chat("&e#" + inquiry.getId()))
+				.appendSpace()
+				.append(name)
+				.appendSpace()
+				.append(contents)
+				.appendSpace()
+				.append(answerStatus);
 	}
 
 	public Set<Inquiry> getInquiries() {
@@ -143,7 +187,7 @@ public class InquiryManager implements Initiator {
 		idStrings.addAll(JedisService.smembers("inquiry:pending"));
 		idStrings.addAll(JedisService.smembers("inquiry:resolved"));
 
-		Set<Inquiry> inquiries = new HashSet<>();
+		Set<Inquiry> inquiries = new TreeSet<>(Comparator.comparingLong(Inquiry::getId));
 
 		for (String idStr : idStrings) {
 			try {
@@ -154,8 +198,41 @@ public class InquiryManager implements Initiator {
 				}
 			} catch (NumberFormatException ignored) {}
 		}
-
 		return inquiries;
+	}
+
+	public Component getInquiryHistoryText(UUID uuid) {
+		Set<Inquiry> inquiries = getInquiries(uuid);
+		if (inquiries.isEmpty()) {
+			return ColorUtils.chat("&7등록된 문의 내역이 없습니다.");
+		}
+
+		Component result = Component.empty()
+				.append(ColorUtils.chat("&e&l[ 문의 내역 목록 ]"))
+				.appendNewline();
+
+		for (Inquiry inquiry : inquiries) {
+			long id = inquiry.getId();
+			String message = inquiry.getInquiry();
+			String answer = inquiry.getAnswer();
+			boolean isResolved = inquiry.isResolved();
+
+			Component header = isResolved
+					? ColorUtils.chat("&a&l[답변됨] &r&e#" + id + " &f\"" + message + "\"")
+					: ColorUtils.chat("&c&l[보류중] &r&e#" + id + " &f\"" + message + "\"");
+			header = header.hoverEvent(HoverEvent.showText(ColorUtils.chat("&7" + inquiry.getName() + "의 문의")));
+
+			result = result.append(header);
+
+			if (isResolved && answer != null && !answer.isBlank()) {
+				Component answerComponent = ColorUtils.chat("\n  &7└ &b&l답변: &f" + answer);
+				result = result.append(answerComponent);
+			}
+
+			result = result.appendNewline();
+		}
+
+		return result;
 	}
 
 	private void warmUpCache() {

@@ -24,6 +24,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Task
@@ -88,17 +89,17 @@ public class UserPartyScoreBoard implements Tasks {
 				}
 			});
 		} else {
-			List<User> partyUsers = party.getMembers();
+			List<UUID> partyUsers = party.getMembers();
 			BoardUtils.getOrCreate(player, ColorUtils.chat("&6&l[ PARTY ]"), b -> {
 				int line = 1;
 
-				for (User member : partyUsers) {
+				for (UUID member : partyUsers) {
 					if (line > 14) break;
-					Player memberPlayer = Bukkit.getPlayer(member.getUniqueId());
-					String nameStr = (memberPlayer != null) ? memberPlayer.getName() : member.getName();
+					Player memberPlayer = Bukkit.getPlayer(member);
+					String nameStr = (memberPlayer != null) ? memberPlayer.getName() : "&k???";
 
 					String leaderPrefix = "";
-					if (pm.isLeader(member.getUniqueId())) leaderPrefix = "&7&l[&6★&7&l]";
+					if (pm.isLeader(member)) leaderPrefix = "&7&l[&6★&7&l]";
 					b.setLine(line++, ColorUtils.chat(leaderPrefix + "&e" + nameStr));
 
 					if (memberPlayer != null && memberPlayer.isOnline()) b.setLine(line++, healthBar(memberPlayer));

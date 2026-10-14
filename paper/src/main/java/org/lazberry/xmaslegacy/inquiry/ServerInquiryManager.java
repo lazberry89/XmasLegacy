@@ -17,18 +17,13 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @Slf4j
 @Registry.Include(type = ServerType.GLOBAL)
 public class ServerInquiryManager extends AbstractInquirySubscriber implements Initiator {
     private static final NamespacedKey key = KeyUtils.get("inquiry-alert");
-    private final Map<UUID, Set<Long>> unreadAnswers = new ConcurrentHashMap<>();
     private final InquiryManager inquiryManager;
     private final RuleManager ruleManager;
 
@@ -52,6 +47,7 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
                 InfoUtils.error(player, "욕설이 포함된 문의는 제재될 수 있습니다.");
             }
             inquiryManager.sendInquiry(player.getName(), uuid, inquiry);
+	        InfoUtils.info(player, "문의가 접수되었습니다.");
         } else InfoUtils.warn(player, String.format("아직 문의할 수 없습니다. &7(%d초 남음)", (int) inquiryManager.getInquiryCooldown(uuid)));
     }
 
@@ -68,7 +64,7 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
 
     @Override
     protected void onInquiryReceived(String playerName, String ticketId) {
-        Component alert = ColorUtils.chat("&3&l#" + ticketId + " &f" + playerName + "님의 문의");
+        Component alert = ColorUtils.chat("&b#" + ticketId + " &f" + playerName + "님의 문의");
         forEachActiveOperators(p -> {
             if (isAlertBlock(p)) return;
             p.sendMessage(alert);
@@ -83,16 +79,14 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
 
             String message = String.format("문의 &e#%s&f가 답변되었습니다. &6'/문의함'&f에서 확인하세요.", value);
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(userUuid);
-            if (offlinePlayer.isOnline()) {
+            if (offlinePlayer.isOnline() && offlinePlayer.isConnected()) {
                 var player = offlinePlayer.getPlayer();
                 if (player == null) {
-                    unreadAnswers.computeIfAbsent(userUuid, k -> new HashSet<>()).add(value);
+					log.warn("Target player is not valid! Cannot send inquiry alert.");
                     return;
                 }
-
                 InfoUtils.info(player, ColorUtils.chat(message));
-            } else {
-                unreadAnswers.computeIfAbsent(userUuid, k -> new HashSet<>()).add(Long.getLong(ticketId));
+				inquiryManager.setInquiryRead(userUuid, value);
             }
         } catch (NumberFormatException e) {
             log.error("Failed to send inquiry alert to target player. (id: {})", ticketId);
@@ -111,6 +105,7 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
         Bukkit.getOnlinePlayers().stream()
                 .filter(Player::isValid)
                 .filter(Player::isOnline)
+		        .filter(Player::isOp)
                 .forEach(consumer);
     }
 }

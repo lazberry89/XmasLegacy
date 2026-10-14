@@ -11,9 +11,11 @@ commands:
     usage: /문의 <내용>
     description: 문의를 하여 관리자를 호출합니다.
 
-  이동문의: #0
-    usage: /이동문의 <유저>
+  문의함: #0
+    usage: /문의함 <유저>
     description: 문의를 받고 해당 유저로 이동합니다.
+
+  문의답변:
 
   가방: #0
     usage: /가방
@@ -142,4 +144,6 @@ commands:
 
   shop:
     description: test shop open command
+
+
 

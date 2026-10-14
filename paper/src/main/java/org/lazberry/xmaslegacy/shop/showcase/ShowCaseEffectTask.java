@@ -15,7 +15,7 @@ import org.lazberry.xmaslegacy.settings.ServerType;
 
 @Task
 @Slf4j
-@Registry.Exclude(type = ServerType.WILD)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class ShowCaseEffectTask implements Tasks {
 	private final ShowCaseManager showcaseManager;
 	private volatile BukkitTask task;

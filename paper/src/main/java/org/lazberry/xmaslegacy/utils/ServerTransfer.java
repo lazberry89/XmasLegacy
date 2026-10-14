@@ -159,9 +159,6 @@ public final class ServerTransfer {
     @CheckReturnValue
     public boolean transfer(@NotNull ServerType toServer, @NotNull Player player) {
         UUID uuid = player.getUniqueId();
-		var user = um.getUser(uuid);
-		if (user == null) return false;
-
         if (!pm.isInParty(uuid)) return sendBungeePacket(toServer, player);
 
         if (pm.isLeader(uuid)) {
@@ -169,7 +166,7 @@ public final class ServerTransfer {
             if (party == null) return sendBungeePacket(toServer, player);
 
             party.getMembers().stream()
-                    .map(u -> Bukkit.getPlayer(u.getUniqueId()))
+                    .map(Bukkit::getPlayer)
                     .filter(p -> p != null && p.isOnline())
                     .forEach(p -> {
                         if (!p.equals(player)) p.sendMessage(ColorUtils.chat(Alert.GREEN + " 방장을 따라 서버를 이동합니다!"));
@@ -178,7 +175,7 @@ public final class ServerTransfer {
             return true;
         }
 
-        pm.leaveParty(user);
+        pm.leaveParty(uuid);
         player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 파티에서 탈퇴되어 단독으로 서버를 이동합니다."));
 
         return sendBungeePacket(toServer, player);
