@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @Registry.Include(type = ServerType.GLOBAL)
-public class InquiryManager {
+public class InquiryManager implements Initiator {
 	private static final Logger log = LoggerFactory.getLogger(InquiryManager.class);
 	private static final int INQUIRY_COOLDOWN_SECONDS = 30;
 
@@ -29,20 +30,18 @@ public class InquiryManager {
         this.inquiryRepository = inquiryRepository;
     }
 
-	public long getInquiryCooldown(UUID uuid) {
-		String stringValue = JedisService.getFromJedis("uuid:" + uuid + ":inquiry-cooldown");
-		if (stringValue == null) return -1;
-		long resultValue;
-		try {
-			resultValue = Long.parseLong(stringValue);
-		} catch (NumberFormatException e) {
-			return -1;
-		}
-		return resultValue;
+	@Override
+	public void init() {
+		warmUpCache();
 	}
 
 	public void setInquiryCooldown(UUID uuid) {
 		JedisService.setWithExpire("uuid:" + uuid + ":inquiry-cooldown", "1", INQUIRY_COOLDOWN_SECONDS);
+	}
+
+	public long getInquiryCooldown(UUID uuid) {
+		long ttl = JedisService.ttl("uuid:" + uuid + ":inquiry-cooldown");
+		return ttl > 0 ? ttl : -1;
 	}
 
 	public boolean canInquire(UUID uuid) {
@@ -50,21 +49,34 @@ public class InquiryManager {
 	}
 
 	public void sendInquiry(String name, UUID uuid, String message) {
-		long id = inquiryRepository.saveInquiryAndGet(uuid, name, message);
+		inquiryRepository.saveInquiryAndGet(uuid, name, message).whenComplete((id, e) -> {
+			if (e != null) {
+				log.error("Failed to save inquiry for player {} (uuid: {})", name, uuid, e);
+				return;
+			}
 
-		Inquiry inquiry = new Inquiry(id, uuid, name, message, System.currentTimeMillis());
-		JedisService.setToJedis("id:" + id + ":pending-inquiry", inquiry.toJson());
-		JedisService.sadd("inquiry:pending", String.valueOf(id));
+			Inquiry inquiry = new Inquiry(id, uuid, name, message, System.currentTimeMillis());
+			JedisService.setToJedis("id:" + id + ":pending-inquiry", inquiry.toJson());
+			JedisService.sadd("inquiry:pending", String.valueOf(id));
 
-		log.warn("player {} (uuid: {}) sent inquiry with contents '{}'", name, uuid, message);
+			log.warn("player {} (uuid: {}) sent inquiry with contents '{}'", name, uuid, message);
+			setInquiryCooldown(uuid);
+		});
 	}
 
 	public void answerInquiry(long id, String answer) {
 		Inquiry inquiry = getInquiry(id);
 		if (inquiry == null) return;
+		if (inquiry.isResolved()) return;
 
 		inquiry.setAnswer(answer);
 		setInquiryState(id, InquiryStatus.RESOLVED);
+
+		inquiryRepository.updateInquiryResolution(id, answer, InquiryStatus.RESOLVED).exceptionally(e -> {
+			log.error("Failed to update inquiry(id: {}) with database.", id, e);
+			return null;
+		});
+		JedisService.publish("inquiry-channel", "ANSWERED:" + inquiry.getUniqueId() + ":" + id);
 	}
 
 	public void setInquiryState(long id, InquiryStatus status) {
@@ -74,6 +86,7 @@ public class InquiryManager {
 		inquiry.setStatus(status);
 		String longId = String.valueOf(id);
 		String json = inquiry.toJson();
+
 
 		if (status == InquiryStatus.PENDING) {
 			JedisService.removeKey("id:" + id + ":resolved-inquiry");
@@ -88,6 +101,10 @@ public class InquiryManager {
 			JedisService.setToJedis("id:" + id + ":resolved-inquiry", json);
 			JedisService.sadd("inquiry:resolved", longId);
 		}
+		inquiryRepository.updateInquiryResolution(id, inquiry.getAnswer(), status).exceptionally(e -> {
+			log.error("Failed to update inquiry(id: {}) with database.", id, e);
+			return null;
+		});
 	}
 
 	public @Nullable Inquiry getInquiry(long id) {
@@ -139,6 +156,17 @@ public class InquiryManager {
 		}
 
 		return inquiries;
+	}
+
+	private void warmUpCache() {
+		inquiryRepository.getPendingInquiries().thenAccept(pendingList -> {
+			for (Inquiry inquiry : pendingList) {
+				String longId = String.valueOf(inquiry.getId());
+				JedisService.setToJedis("id:" + longId + ":pending-inquiry", inquiry.toJson());
+				JedisService.sadd("inquiry:pending", longId);
+			}
+			log.info("Successfully warmed up {} pending inquiries into Redis cache.", pendingList.size());
+		});
 	}
 }
 

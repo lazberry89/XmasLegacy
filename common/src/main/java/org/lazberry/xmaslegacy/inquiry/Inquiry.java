@@ -10,7 +10,10 @@ import java.util.UUID;
 
 @Data
 public class Inquiry {
-    public static final Component icon = ColorUtils.chat(ColorUtils.YELLOW + ColorUtils.BOLD + "[문의]");
+    public static final Component icon = ColorUtils.chat("&#007AE1&l[&#219AE4&l문&#41B9E6&l의&#62D9E9&l]");
+    public static Component alertMessage(String message) {
+        return icon.appendSpace().append(ColorUtils.chat(message));
+    }
 
     private static final Gson GSON = new GsonBuilder().create();
 
@@ -21,7 +24,7 @@ public class Inquiry {
     private final long createdAt;
 
     private InquiryStatus status = InquiryStatus.PENDING;
-    private String answer = "";
+    private String answer = null;
 
     public Inquiry(long id, UUID uniqueId, String name, String inquiry, long createdAt) {
         this.id = id;
@@ -29,6 +32,10 @@ public class Inquiry {
         this.name = name;
         this.inquiry = inquiry;
         this.createdAt = createdAt;
+    }
+
+    public boolean isResolved() {
+        return this.status == InquiryStatus.RESOLVED || (this.answer != null && !this.answer.isBlank());
     }
 
     public String toJson() {

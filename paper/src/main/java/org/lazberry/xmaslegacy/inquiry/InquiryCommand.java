@@ -1,47 +1,28 @@
 package org.lazberry.xmaslegacy.inquiry;
 
-import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerType;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
+
+import java.util.List;
 
 @Commands(command = "문의")
-@Registry.Exclude(type = ServerType.LOBBY)
-public class InquiryCommand implements CommandExecutor {
-	private final @NotNull InquiryManager im;
+@Registry.Include(type = ServerType.GLOBAL)
+public class InquiryCommand implements CommandExecutor, TabCompleter {
 
-	@Inject
-	public InquiryCommand(@NotNull InquiryManager im) {
-		this.im = im;
-	}
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        return false;
+    }
 
-	@Override
-	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull...args) {
-		if (!(commandSender instanceof Player p)) return true;
-		if (im.checkAndSetCooldown(p.getUniqueId())) {
-			long secondsLeft = im.getRemainingCooldown(p.getUniqueId());
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 아직 문의할 수 없습니다. (" + secondsLeft + "초 남음)"));
-			return true;
-		}
-
-		if (args.length == 0) {
-			p.sendMessage(im.Inquiry(p.getUniqueId(), null));
-			p.sendMessage(ColorUtils.chat(Alert.GREEN + " 운영자를 호출했습니다. 조금만 기다려주세요!"));
-		} else {
-			String content = String.join(" ", args);
-			p.sendMessage(im.Inquiry(p.getUniqueId(), content));
-			p.sendMessage(ColorUtils.chat(Alert.GREEN + " 문의가 접수되었습니다."));
-		}
-		p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
-		return true;
-	}
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        return List.of();
+    }
 }
-

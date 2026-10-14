@@ -7,6 +7,7 @@ import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.RedisClient;
 import redis.clients.jedis.params.SetParams;
 
@@ -62,6 +63,11 @@ public class JedisService implements Initiator {
 		redisClient.publish(channel, message);
 	}
 
+	public static long ttl(String key) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected!");
+		return redisClient.ttl(key);
+	}
+
 	public static Set<String> smembers(String key) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
 		return redisClient.smembers(key);
@@ -84,6 +90,22 @@ public class JedisService implements Initiator {
 	public static void srem(String key, String... members) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
 		redisClient.srem(key, members);
+	}
+
+	public static void subscribe(JedisPubSub jedisPubSub, String... channels) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+
+		Thread.ofVirtual()
+				.name("Redis-Subscriber-Thread")
+				.start(() -> {
+					try {
+						redisClient.subscribe(jedisPubSub, channels);
+					} catch (Exception e) {
+						log.error("Error occurred while subscribing to Redis channels: {}", String.join(", ", channels), e);
+					}
+				});
+
+		log.info("Started Redis subscriber virtual thread for channels: {}", String.join(", ", channels));
 	}
 
 	private static void initiateJedis() {
