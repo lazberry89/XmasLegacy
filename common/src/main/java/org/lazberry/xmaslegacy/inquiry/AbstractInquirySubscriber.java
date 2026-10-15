@@ -22,8 +22,7 @@ public abstract class AbstractInquirySubscriber extends JedisPubSub {
             onInquiryReceived(playerName, idStr);
         }
         else if ("ANSWERED".equals(type)) {
-            // 💡 답변 완료 시 유저 알림 트리거
-            java.util.UUID userUuid = java.util.UUID.fromString(parts[1]);
+            UUID userUuid = UUID.fromString(parts[1]);
             String idStr = parts[2];
             onInquiryAnswered(userUuid, idStr);
         }

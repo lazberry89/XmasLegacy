@@ -22,6 +22,8 @@ public final class XmasLegacy extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
 		LazberryRegistryFramework.setDebug(true);
 		LazberryRegistryFramework.boot(this, XmasLegacy.class);
 		Reflections.runInitializers(true);
