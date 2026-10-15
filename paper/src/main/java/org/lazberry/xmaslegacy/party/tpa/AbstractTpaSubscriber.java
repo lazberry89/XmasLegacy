@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.party;
+package org.lazberry.xmaslegacy.party.tpa;
 
 import lombok.AccessLevel;
 import lombok.extern.slf4j.Slf4j;

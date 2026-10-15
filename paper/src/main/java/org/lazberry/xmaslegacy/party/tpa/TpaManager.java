@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.party;
+package org.lazberry.xmaslegacy.party.tpa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,12 +14,10 @@ import java.util.UUID;
 public class TpaManager {
     private static final long TPA_EXPIRATION_SECONDS = 60L;
 
-    // 1. TPA 요청 보내기 (어느 서버의 유저든 상관없이 Redis에 저장 및 알림 발행 가능)
     public void sendTpaRequest(@NotNull UUID senderUuid, @NotNull UUID targetUuid, @NotNull String senderName, @NotNull String targetServer) {
         String key = "tpa:request:" + targetUuid;
         JedisService.setWithExpire(key, senderUuid.toString(), TPA_EXPIRATION_SECONDS);
 
-        // 네트워크 채널을 통해 타겟에게 실시간 요청 알림 브로드캐스트
         String payload = "REQUEST:" + senderUuid + ":" + senderName + ":" + targetUuid;
         JedisService.publish("xmas:tpa-channel", payload);
     }

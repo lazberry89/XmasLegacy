@@ -9,7 +9,11 @@ public class StockUpdater {
 
 	public void tickPrices(Collection<Stock> stocks, double totalSpread, double negativeOffset) {
 		for (Stock stock : stocks) {
-			double randomRate = (Math.random() * totalSpread) - negativeOffset;
+			double raw = (Math.random() * 2.0) - 1.0;
+			double cubicSpread = Math.pow(raw, 3);
+
+			double randomRate = (cubicSpread * totalSpread) - negativeOffset;
+
 			stock.applyFluctuation(randomRate);
 		}
 	}

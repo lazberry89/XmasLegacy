@@ -1,11 +1,7 @@
-package org.lazberry.xmaslegacy.party;
+package org.lazberry.xmaslegacy.party.tpa;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -18,12 +14,8 @@ import java.util.UUID;
 @Registry.Exclude(type = ServerType.LOBBY)
 public class CrossServerTpaManager extends AbstractTpaSubscriber implements Initiator {
     private static final Logger log = LoggerFactory.getLogger(CrossServerTpaManager.class);
-    private final XmasLegacy plugin;
 
-    @Inject
-    public CrossServerTpaManager(XmasLegacy plugin) {
-        this.plugin = plugin;
-    }
+    public CrossServerTpaManager() {}
 
     @Override
     public void init() {
@@ -34,8 +26,8 @@ public class CrossServerTpaManager extends AbstractTpaSubscriber implements Init
     protected void onTpaRequested(UUID senderUuid, String senderName, UUID targetUuid) {
         Player target = Bukkit.getPlayer(targetUuid);
         if (target != null && target.isOnline()) {
-            InfoUtils.info(target, "");
-        }
+            InfoUtils.info(target, "&6{}&f님의 텔레포트 요청이 도착했습니다. &6'/tpaccept'&f로 수락하세요.");
+        } else log.error("Tpa target player is not valid at all.");
     }
 
     @Override
@@ -44,17 +36,5 @@ public class CrossServerTpaManager extends AbstractTpaSubscriber implements Init
         if (sender == null || !sender.isOnline()) return;
 
         log.info("Cross-server TPA triggered for sender {} to move to server {}", sender.getName(), targetServer);
-
-        try {
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("Connect");
-            out.writeUTF(targetServer);
-
-            sender.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
-            sender.sendMessage("§a요청이 수락되었습니다. 대상 서버로 이동합니다...");
-        } catch (Exception e) {
-            log.error("Failed to send cross-server teleport plugin message for user {}", senderUuid, e);
-            sender.sendMessage("§c서버 이동 중 오류가 발생했습니다.");
-        }
     }
 }

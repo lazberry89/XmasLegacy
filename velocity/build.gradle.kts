@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     implementation(project(":common"))
+    implementation("redis.clients:jedis:8.0.2")
 
     val velocityVersion = "3.5.0-SNAPSHOT"
     compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
