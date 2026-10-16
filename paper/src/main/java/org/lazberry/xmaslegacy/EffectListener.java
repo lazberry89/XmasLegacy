@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
@@ -84,6 +85,31 @@ public class EffectListener implements Listener {
 
             p.sendActionBar(StunUtils.reasonIndicator(uuid, Lang.KOREAN));
             //TODO Roped effect
+        }
+    }
+
+    @EventHandler
+    public void cancelInventoryOpenWhenStunned(InventoryOpenEvent e) {
+        var p = e.getPlayer();
+        var uuid = p.getUniqueId();
+
+        if (StunUtils.isStunned(uuid)) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void cancelInteractionWhenStunned(PlayerInteractEvent e) {
+        var p = e.getPlayer();
+        if (StunUtils.isStunned(p.getUniqueId()))
+            e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void cancelCommandExecutionWhenStunned(PlayerCommandPreprocessEvent e) {
+        var p = e.getPlayer();
+        if (StunUtils.isStunned(p.getUniqueId())) {
+            if (!p.isOp()) e.setCancelled(true);
         }
     }
 

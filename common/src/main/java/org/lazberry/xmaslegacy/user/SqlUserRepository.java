@@ -103,40 +103,9 @@ public class SqlUserRepository implements UserRepository {
 		}
 		return null;
 	}
-	//for mongoDB
-	/*
-	@Override
-	public void saveUser(User user) {
-		String sql = "INSERT INTO users (uuid, name, role, dollars, inquireCount, playTime, isNewUser, wantsCookie) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
-				"ON DUPLICATE KEY UPDATE " +
-				"name=VALUES(name), role=VALUES(role), dollars=VALUES(dollars), " +
-				"inquireCount=VALUES(inquireCount), playTime=VALUES(playTime), " +
-				"isNewUser=VALUES(isNewUser), wantsCookie=VALUES(wantsCookie)";
 
-		try (Connection conn = getConnection();
-		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-			// ? 자리에 값 채워넣기
-			pstmt.setString(1, user.getUUID().toString());
-			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getRole() != null ? user.getRole().name() : Roles.USER.name());
-			pstmt.setInt(4, user.getDollars());
-			pstmt.setInt(5, user.getInquireCount());
-			pstmt.setInt(6, user.getPlayTime());
-			pstmt.setBoolean(7, user.isNewUser());
-			pstmt.setBoolean(8, user.ifWantsCookie());
-
-			pstmt.executeUpdate(); // 실행!
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	*/
 	@Override
 	public void saveUser(@NotNull User user) {
-		// SQLite에서는 INSERT OR REPLACE INTO가 가장 간단합니다.
 		String sql = "REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

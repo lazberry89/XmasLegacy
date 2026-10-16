@@ -13,6 +13,8 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
+import java.util.Objects;
+
 public class MinerSellingShop extends RoleShop implements InventoryHolder {
 	private final Inventory inv;
 	private final XmasLegacy plugin;

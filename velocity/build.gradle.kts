@@ -12,6 +12,8 @@ dependencies {
     val velocityVersion = "3.5.0-SNAPSHOT"
     compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
     annotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
+
+    compileOnly("com.google.inject:guice:5.1.0")
 }
 
 java {

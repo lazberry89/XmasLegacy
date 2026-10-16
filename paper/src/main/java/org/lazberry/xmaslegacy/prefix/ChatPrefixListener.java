@@ -1,0 +1,96 @@
+package org.lazberry.xmaslegacy.prefix;
+
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.jetbrains.annotations.NonBlocking;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.RuleManager;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.settings.Annotation.Registry;
+import org.lazberry.xmaslegacy.settings.ServerPrefix;
+import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.user.User;
+import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.UserHandler;
+
+@Listeners
+@Registry.Exclude(type = ServerType.LOBBY)
+public class ChatPrefixListener implements Listener {
+	private final PrefixManager pfm;
+	private final RuleManager rm;
+	private final UserManager um;
+
+	@Inject
+	public ChatPrefixListener(PrefixManager pm, RuleManager rm, UserManager um) {
+		this.pfm = pm;
+		this.rm = rm;
+		this.um = um;
+	}
+
+	@NonBlocking
+	@EventHandler
+	public void onChatPrefix(AsyncChatEvent e) {
+		var p = e.getPlayer();
+		String rawMsg = ColorUtils.toLegacy(e.message());
+		String msg;
+		if (rm.checkBadWords(rawMsg)) {
+			msg = rm.hideBadWords(rawMsg);
+			InfoUtils.error(p, "욕설이 포함된 메시지는 제재를 받을 수 있습니다.");
+		} else msg = rawMsg;
+		e.renderer((source, sourceDisplayName, message, viewer) -> {
+			User user = um.getUser(source.getUniqueId());
+			if (user == null) return Component.text()
+					.append(sourceDisplayName)
+					.append(Component.text(" : "))
+					.append(ColorUtils.chat(msg))
+					.build();
+			ServerPrefix prefix = user.getEquipPrefix();
+			Component equipP = prefix == null ? Component.text("") : prefix.prefix().appendSpace();
+			return Component.text()
+					.append(equipP)
+					.append(sourceDisplayName)
+					.append(Component.text(" : "))
+					.append(ColorUtils.chat(msg))
+					.build();
+		});
+	}
+
+	@EventHandler
+	public void PrefixGui(InventoryClickEvent e) {
+		if (!(e.getInventory().getHolder() instanceof PrefixInterface pif)) return;
+		var p = (Player) e.getWhoClicked();
+		User user = um.getUser(p.getUniqueId());
+
+		if (user == null) {
+			p.closeInventory(InventoryCloseEvent.Reason.CANT_USE);
+			UserHandler.sendReloadNotice(p);
+			return;
+		}
+
+		e.setCancelled(true);
+		int slot = e.getRawSlot();
+
+		switch (slot) {
+			case 47 -> pif.prevPage(p);
+			case 49 -> p.closeInventory();
+			case 51 -> pif.nextPage(p);
+			default -> {
+				ServerPrefix prefix = pif.getPrefix(slot);
+				if (prefix == null) return;
+				if (!prefix.equals(user.getEquipPrefix())) pfm.equip(p, prefix);
+				else pfm.unequip(p);
+
+				pif.update(p);
+				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+			}
+		}
+	}
+}

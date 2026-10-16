@@ -1,23 +1,13 @@
 package org.lazberry.xmaslegacy.bags;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,108 +16,57 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class BagManager implements Initiator {
-	private final @NotNull Map<UUID, TempBag> bags = new ConcurrentHashMap<>();
-	private final @NotNull XmasLegacy plugin;
+	private final Map<UUID, Bag> bags = new ConcurrentHashMap<>();
 
-	@Inject
-	public BagManager(@NotNull XmasLegacy plugin) {
-		this.plugin = plugin;
+	public BagManager() {}
+
+	@Override
+	public void init() {
+		bags.clear();
 	}
 
-	public @NotNull TempBag getUserBags(UUID uuid) {
-		return bags.computeIfAbsent(uuid,
-				TempBag::new);
+	public void setUserBag(UUID uuid, Bag bag) {
+		bags.put(uuid, bag);
 	}
 
-	public @NotNull TempBag getUserBags(Player p) {
-		return getUserBags(p.getUniqueId());
+	public void removeUserBag(UUID uuid) {
+		bags.remove(uuid);
 	}
 
-	public @NotNull TempBag getBag(@NotNull UUID uuid) {
-		return bags.computeIfAbsent(uuid, TempBag::new);
+	public Bag getBag(UUID uuid) {
+		return bags.computeIfAbsent(uuid, Bag::new);
 	}
 
-    @CanIgnoreReturnValue
-	public List<ItemStack> addItem(@NotNull Player p, @NotNull ItemStack item) {
+	public void addItem(Player p, ItemStack item) {
 		ItemStack clone = item.clone();
-		List<ItemStack> result = getUserBags(p.getUniqueId()).addItem(clone);
+		UUID uuid = p.getUniqueId();
+
+		List<ItemStack> result = getBag(uuid).addItem(clone);
 		if (!result.isEmpty()) {
-			p.sendMessage(ColorUtils.chat(Alert.RED + " 가방이 가득 찼습니다!"));
             result.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 0.6f, 1.0f);
 		} else {
-			p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 가방에 아이템이 추가되었습니다!"));
-			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
+			InfoUtils.info(p, "가방에 아이템이 추가되었습니다.");
 		}
-        return result;
-	}
-
-	public boolean addItem(UUID uuid, @NotNull ItemStack item) {
-		var clone = item.clone();
-		List<ItemStack> result = getUserBags(uuid).addItem(clone);
-		return result.isEmpty();
 	}
 
 	public void addAll(Player p, Collection<ItemStack> items) {
 		if (items.isEmpty()) return;
+
+		var uuid = p.getUniqueId();
 		for (var item : items) {
 			var cloned = item.clone();
-			List<ItemStack> remain = getUserBags(p.getUniqueId()).addItem(cloned);
+			List<ItemStack> remain = getBag(uuid).addItem(cloned);
 			remain.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
 		}
 	}
 
-    @Contract(pure = true)
-	public ItemStack[] getPlayerBag(@NotNull Player p) {
-		return getUserBags(p.getUniqueId()).getInventory().getContents();
-	}
-
-	public void saveAllBags() {
-		File file = new File(plugin.getDataFolder(), "bags.yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-		for (Map.Entry<UUID, TempBag> entry : bags.entrySet()) {
-			UUID uuid = entry.getKey();
-			ItemStack[] contents = entry.getValue().getInventory().getContents();
-
-			config.set(uuid.toString(), contents);
-		}
-
-		try {
-			config.save(file);
-		} catch (IOException e) {
-			plugin.getSLF4JLogger().error("가방 정보를 저장하던 중 오류: {}", e.getMessage(), e);
-		}
-	}
-
-	public void loadAllBags() {
-		File file = new File(plugin.getDataFolder(), "bags.yml");
-		if (!file.exists()) return;
-
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-
-		for (String uuidStr : config.getKeys(false)) {
-			UUID uuid = UUID.fromString(uuidStr);
-			List<?> list = config.getList(uuidStr);
-			if (list == null) continue;
-
-			ItemStack[] contents = list.toArray(ItemStack[]::new);
-
-			TempBag bag = new TempBag(uuid);
-			bag.getInventory().clear();
-			bag.getInventory().setContents(contents);
-
-			bags.put(uuid, bag);
-		}
-	}
-
-	@Override
-	public void init() {
-		loadAllBags();
+	public ItemStack[] getPlayerBag(Player p) {
+		return getBag(p.getUniqueId()).getContents();
 	}
 
 	@Override
 	public void close() {
-		saveAllBags();
+		bags.clear();
 	}
 }

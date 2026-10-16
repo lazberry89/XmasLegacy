@@ -33,7 +33,7 @@ public class BagCommand implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
 		if (!(commandSender instanceof Player p)) return false;
 		if (args.length == 0) {
-			p.openInventory(bm.getUserBags(p).getInventory());
+			p.openInventory(bm.getBag(p.getUniqueId()).getInventory());
 			return true;
 		} else if (args.length == 1) {
 			if (!p.isOp()) {

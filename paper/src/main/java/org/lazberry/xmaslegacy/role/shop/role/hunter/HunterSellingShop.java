@@ -13,6 +13,8 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
+import java.util.Objects;
+
 public class HunterSellingShop extends RoleShop implements InventoryHolder {
     private final XmasLegacy plugin;
     private final Inventory inv;
@@ -44,6 +46,10 @@ public class HunterSellingShop extends RoleShop implements InventoryHolder {
         createRecordAndSet(23, Material.BLAZE_ROD, hunter.getBlazeRodPrice());
         createRecordAndSet(24, Material.GHAST_TEAR, hunter.getGhastTearPrice());
         createRecordAndSet(25, Material.PRISMARINE_SHARD, hunter.getPrismarineShardPrice());
+    }
+
+    public boolean hasItem(int slot) {
+        return !Objects.equals(inv.getItem(slot), null);
     }
 
     private void createRecordAndSet(int slot, Material material, int price) {
