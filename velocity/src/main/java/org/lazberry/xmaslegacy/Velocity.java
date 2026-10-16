@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.lazberry.xmaslegacy.party.TpaActualTeleportManager;
@@ -40,8 +41,16 @@ public class Velocity {
 
 	@Subscribe
 	public void onProxyInitialization(ProxyInitializeEvent event) {
+		JedisService.initiateJedis();
+
 		TpaActualTeleportManager tpaManager = new TpaActualTeleportManager();
 		log.info("XmasLegacy Velocity module enabled.");
+	}
+
+	@Subscribe
+	public void onProxyShutdown(ProxyShutdownEvent event) {
+		JedisService.closeJedis();
+		log.info("XmasLegacy Velocity module disabled and Redis connection closed.");
 	}
 }
 

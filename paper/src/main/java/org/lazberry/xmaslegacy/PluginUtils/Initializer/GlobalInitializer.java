@@ -41,7 +41,6 @@ public class GlobalInitializer implements ServerInitializer {
 		um.getUsers().forEach(sr::saveUser);
 		log.info("User info is automatically saved!");
 
-		bm.saveAllBags();
 		log.info("Bag data is automatically saved!");
 		log.info("Stopping Hunting Zone spawning.");
 	}

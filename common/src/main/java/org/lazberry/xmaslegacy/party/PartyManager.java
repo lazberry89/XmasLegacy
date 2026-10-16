@@ -7,8 +7,6 @@ import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Registry.Exclude(type = ServerType.LOBBY)
@@ -33,7 +31,7 @@ public class PartyManager implements Initiator {
 	}
 
 	public void removeUserPartyMapping(UUID uuid) {
-		JedisService.setToJedis("user:" + uuid + ":party", null);
+		JedisService.removeKey("user:" + uuid + ":party");
 	}
 
 	public boolean disbandParty(@NotNull UUID leaderUuid) {
@@ -48,7 +46,7 @@ public class PartyManager implements Initiator {
 		for (UUID memberUuid : party.getMembers()) {
 			removeUserPartyMapping(memberUuid);
 		}
-		JedisService.setToJedis("party:" + party.getPartyID(), null);
+		JedisService.removeKey("party:" + party.getPartyID());
 		party.clearMembers();
 	}
 

@@ -108,7 +108,7 @@ public class JedisService implements Initiator {
 		log.info("Started Redis subscriber virtual thread for channels: {}", String.join(", ", channels));
 	}
 
-	private static void initiateJedis() {
+	public static void initiateJedis() {
 		try {
 			redisClient = RedisClient.builder()
 					.hostAndPort("localhost", 6379)
@@ -120,7 +120,7 @@ public class JedisService implements Initiator {
 		}
 	}
 
-	private static void closeJedis() {
+	public static void closeJedis() {
 		if (redisClient != null) redisClient.close();
 	}
 

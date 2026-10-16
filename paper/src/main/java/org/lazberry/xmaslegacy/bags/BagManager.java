@@ -50,6 +50,11 @@ public class BagManager implements Initiator {
 		}
 	}
 
+	public void addItem(UUID uuid, ItemStack item) {
+		var bag = getBag(uuid);
+		bag.addItem(item);
+	}
+
 	public void addAll(Player p, Collection<ItemStack> items) {
 		if (items.isEmpty()) return;
 

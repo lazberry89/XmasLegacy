@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.settings.Annotation.Inject;
 import org.lazberry.xmaslegacy.settings.Annotation.Registry;
 import org.lazberry.xmaslegacy.settings.Framework.Initiator;
 import org.lazberry.xmaslegacy.settings.ServerType;
@@ -25,6 +26,7 @@ public class WarmthZoneConfig implements Initiator {
     private @Getter YamlConfiguration config;
     private File file;
 
+	@Inject
     public WarmthZoneConfig(XmasLegacy plugin) {
         this.dataFolder = plugin.getDataFolder();
     }

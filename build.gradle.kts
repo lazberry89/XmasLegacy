@@ -26,6 +26,9 @@ allprojects {
         maven("https://maven.enginehub.org/repo/")
         maven("https://repo.codemc.io/repository/maven-releases/")
         maven("https://repo.codemc.io/repository/maven-snapshots/")
+        maven("https://repo.codemc.org/repository/maven-public/")
+
+        maven("https://nexus.frengor.com/repository/public/")
     }
 }
 
