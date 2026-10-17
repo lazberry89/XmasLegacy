@@ -20,7 +20,7 @@ public class CasinoShop implements InventoryHolder {
     public CasinoShop(XmasLegacy plugin) {
         this.plugin = plugin;
         this.plans = new ItemStack[]{plan1(), plan2(), plan3(), plan4(), plan5(), plan6(), plan7()};
-        this.prices = new int[]{13_000, 60_000, 115_000, 220_000, 520_000, 980_000, 2_300_000};
+        this.prices = new int[]{13000, 60000, 115_000, 220_000, 420000, 630000, 900000};
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&c&l카지노 상점"));
         this.inv.setItem(0, Casino.entranceTicket());
         this.inv.setItem(1, bg());

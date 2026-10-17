@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.GLOBAL)
+@Registry.Exclude(type = ServerType.LOBBY)
 public class SqlBagRepository implements BagRepository {
     private static final String TABLE = "bags";
 

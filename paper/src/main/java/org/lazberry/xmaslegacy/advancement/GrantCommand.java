@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.advancement;
 
+import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,15 +28,12 @@ public class GrantCommand implements CommandExecutor {
 
 		if (args.length == 1) {
 			try {
-				// 💡 플러그인 대신 탭 네임스페이스("xmaslegacy_global")를 사용하거나
-				// 사용자가 입력한 전체 문자열을 그대로 AdvancementKey로 변환합니다.
-				com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey key;
+				AdvancementKey key;
 
 				if (args[0].contains(":")) {
-					key = com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey.fromString(args[0]);
+					key = AdvancementKey.fromString(args[0]);
 				} else {
-					// 기본 탭의 키인 경우 탭 네임스페이스 적용
-					key = new com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey("xmaslegacy_global", args[0]);
+					key = new AdvancementKey("xmaslegacy_global", args[0]);
 				}
 
 				var give = advancements.getApi().getAdvancement(key);
