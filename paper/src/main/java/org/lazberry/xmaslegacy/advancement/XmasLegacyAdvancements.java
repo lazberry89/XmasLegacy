@@ -29,13 +29,16 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 public class XmasLegacyAdvancements implements Initiator {
 	private final XmasLegacy plugin;
 	private final UltimateAdvancementAPI api;
+	private final AdvancementBuilder builder;
+
 	private AdvancementTab globalTab;
 	private AdvancementTab wildTab;
 
 	@Inject
-	public XmasLegacyAdvancements(XmasLegacy plugin) {
+	public XmasLegacyAdvancements(XmasLegacy plugin, AdvancementBuilder builder) {
 		this.plugin = plugin;
 		this.api = UltimateAdvancementAPI.getInstance(plugin);
+		this.builder = builder;
 	}
 
 	@Override
@@ -61,90 +64,24 @@ public class XmasLegacyAdvancements implements Initiator {
 				"textures/block/packed_ice.png"
 		);
 		//
-		AdvancementDisplay torchFlowerPlantDisplay = new AdvancementDisplay(
-				Material.TORCHFLOWER_SEEDS,
-				"온기를 심다",
-				AdvancementFrameType.CHALLENGE,
-				true, false,
-				1, 1,
-				"한기를 유지하기 위해", "작물을 재배하세요."
-		);
-		BaseAdvancement torchFlowerPlantBase = new BaseAdvancement(
-				"plant_torch_flower",
-				torchFlowerPlantDisplay,
-				root
-		);
+		var torchFlowerPlantBase = builder.register("plant_torch_flower", Material.TORCHFLOWER_SEEDS, "온기를 심다", AdvancementFrameType.TASK,
+				1, 1, root, "한기를 유지하기 위해", "작물을 재배하세요.");
 		//
-		AdvancementDisplay sunflowerBreadCreate = new AdvancementDisplay(
-				Material.TORCHFLOWER,
-				"온기를 담아",
-				AdvancementFrameType.CHALLENGE,
-				true, false,
-				2, 1,
-				"온기를 담은 음식을 제작하세요."
-		);
-		BaseAdvancement sunFlowerBreadCreateBase = new BaseAdvancement(
-				"sunflower_bread_create",
-				sunflowerBreadCreate,
-				torchFlowerPlantBase
-		);
+		var sunFlowerBreadCreateBase = builder.register("sunflower_bread_create", Material.TORCHFLOWER, "온기를 담아", AdvancementFrameType.GOAL,
+				2, 1, torchFlowerPlantBase, "온기를 담은 음식을 제작하세요.");
 		//
-		AdvancementDisplay consumeBreadDisplay = new AdvancementDisplay(
-				AgeableCrops.SunFlowerBread(),
-				"한기에 대적",
-				AdvancementFrameType.CHALLENGE,
-				true, false,
-				3, 1,
-				"얼어붙은 세계의 한기에 대적하여", "몸을 따듯하게 유지하세요."
-		);
-		BaseAdvancement consumeBreadBase = new BaseAdvancement(
-				"consume_sunflower_bread",
-				consumeBreadDisplay,
-				sunFlowerBreadCreateBase
-		);
+		builder.register("consume_sunflower_bread", AgeableCrops.SunFlowerBread(), "한기에 대적", AdvancementFrameType.CHALLENGE,
+				3, 1, sunFlowerBreadCreateBase, "얼어붙은 세계의 한기에 대적하여", "몸을 따듯하게 유지하세요.");
 		//
  		// enchant
-		AdvancementDisplay enchant = new AdvancementDisplay(
-				EnchantMaterial.PrismFractal(),
-				"추운 곳에 낙원은 없다",
-				AdvancementFrameType.CHALLENGE,
-				true, false,
-				1, 3,
-				"살아남기 위해 강해지세요."
-		);
-		BaseAdvancement enchantBase = new BaseAdvancement(
-			"first_enchant",
-			enchant,
-			root
-		);
+		var enchantBase = builder.register("first_enchant", EnchantMaterial.PrismFractal(), "추운 곳에 낙원은 없다", AdvancementFrameType.CHALLENGE,
+				1, 3, root, "살아남기 위해 강해지세요.");
 		//
-		AdvancementDisplay downgradeProtectDisplay = new AdvancementDisplay(
-				EnchantMaterial.DowngradeProtector(),
-				"녹지 않는 얼음",
-				AdvancementFrameType.CHALLENGE,
-				true, false,
-				2, 3,
-				"마력이 깃든 아이템을 사용하여 장비를 보호하세요."
-		);
-		BaseAdvancement downgradeProtectBase = new BaseAdvancement(
-				"downgrade_protect",
-				downgradeProtectDisplay,
-				enchantBase
-		);
+		var downgradeProtectBase = builder.register("downgrade_protect", EnchantMaterial.DowngradeProtector(), "녹지 않는 얼음", AdvancementFrameType.TASK,
+				2, 3, enchantBase, "마력이 깃든 아이템을 사용하여 장비를 보호하세요.");
 		//
-		AdvancementDisplay breakProtectDisplay = new AdvancementDisplay(
-				EnchantMaterial.BreakProtector(),
-				"꺼지지않는 불꽃",
-				AdvancementFrameType.CHALLENGE,
-				true, false,
-				3, 3,
-				"실패를 두려워하지 마세요."
-		);
-		BaseAdvancement breakProtectBase = new BaseAdvancement(
-				"break_protect",
-				breakProtectDisplay,
-				downgradeProtectBase
-		);
+		var breakProtectBase = builder.register("break_protect", EnchantMaterial.BreakProtector(), "꺼지지않는 불꽃", AdvancementFrameType.GOAL,
+				3, 3, downgradeProtectBase, "실패를 두려워하지 마세요.");
 		//
 		AdvancementDisplay boosterUseDisplay = new AdvancementDisplay(
 				EnchantMaterial.BoosterTenPercent(),
@@ -159,8 +96,11 @@ public class XmasLegacyAdvancements implements Initiator {
 				boosterUseDisplay,
 				breakProtectBase
 		);
+		/*
 		globalTab.registerAdvancements(root, consumeBreadBase, torchFlowerPlantBase, sunFlowerBreadCreateBase
 				, enchantBase, downgradeProtectBase, breakProtectBase, boosterUserBase);
+		*/
+		builder.buildAndRegister(globalTab, root);
 		globalTab.automaticallyShowToPlayers();
 	}
 
@@ -178,14 +118,31 @@ public class XmasLegacyAdvancements implements Initiator {
 			var display = advancement.getDisplay();
 			String title = display.getTitle();
 			String name = player.getName();
+			AdvancementFrameType type = display.getFrame();
 
-			Component prefix = ColorUtils.chat("&f" + name + "이(가)");
-			Component advance = ColorUtils.chat(" &b[" + title + "] ")
-					.hoverEvent(HoverEvent.showText(ColorUtils.chat("&b" + display.getCompactDescription())));
-			Component end = ColorUtils.chat("&f도전을 완료했습니다.");
+			Component prefix = ColorUtils.chat("&f" + name + "이(가) ");
+			Component advance = titleMaker(type, title)
+					.hoverEvent(HoverEvent.showText(ColorUtils.chat(display.getCompactDescription())));
+			Component end = ColorUtils.chat(" &f도전을 완료했습니다.");
 
 			Bukkit.broadcast(prefix.append(advance).append(end));
-			player.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+			player.playSound(player, getSoundByAdvancementType(type), 1.0f, 1.0f);
 		}
 	}
+
+	private Component titleMaker(AdvancementFrameType type, String title) {
+		if (type == AdvancementFrameType.CHALLENGE)
+			return ColorUtils.minimessage("<gradient:#45F7FF:#762BDE>[" + title + "]</gradient>");
+		else return ColorUtils.chat("&b[" + title + "]");
+	}
+
+	private Sound getSoundByAdvancementType(AdvancementFrameType type) {
+		return switch (type) {
+			case CHALLENGE -> Sound.UI_TOAST_CHALLENGE_COMPLETE;
+			case GOAL -> Sound.ENTITY_PLAYER_LEVELUP;
+			case TASK -> Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+		};
+	}
+
+
 }

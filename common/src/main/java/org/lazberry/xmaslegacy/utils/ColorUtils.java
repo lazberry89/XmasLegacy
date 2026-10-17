@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.utils;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +32,9 @@ public class ColorUtils {
 	public static final String ITALIC = "&o";
 	public static final String RESET = "&r";
 
+	private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+
+
 	private static final @NotNull LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.builder()
 			.character('&')
 			.hexColors()
@@ -41,6 +45,7 @@ public class ColorUtils {
 			.hexColors()
 			.build();
 
+
 	/**
 	 * Utility method that changes string value to Colored Component.
 	 * @param message string value to change
@@ -50,6 +55,15 @@ public class ColorUtils {
 		if (message == null) return Component.empty();
 
 		return AMPERSAND_SERIALIZER.deserialize(message);
+	}
+
+	/**
+	 * Parse minimessage formatted String value to color applied Component message.
+	 * @param message string value to apply.
+	 * @return color applied Component message
+	 */
+	public static Component minimessage(String message) {
+		return MINI_MESSAGE.deserialize(message);
 	}
 
 	/**
