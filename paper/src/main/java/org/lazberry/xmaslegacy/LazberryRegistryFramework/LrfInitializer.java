@@ -1,6 +1,5 @@
-package org.lazberry.xmaslegacy.framework;
+package org.lazberry.xmaslegacy.LazberryRegistryFramework;
 
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.PackageScanner;
 import org.lazberry.xmaslegacy.framework.exception.NotValidInitializeTimingException;
 
 /**

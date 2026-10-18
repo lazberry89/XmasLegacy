@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.framework;
+package org.lazberry.xmaslegacy.LazberryRegistryFramework;
 
 /**
  * Only Used by Reflection annotation to divide process

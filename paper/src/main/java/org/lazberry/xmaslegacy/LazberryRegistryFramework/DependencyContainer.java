@@ -44,7 +44,7 @@ import java.util.Set;
  * @author Lazberry (LRF Architecture Team)
  * @see PackageScanner
  * @see org.lazberry.xmaslegacy.utils.ServerUtils
- * @see org.lazberry.xmaslegacy.framework.LrfInitializer
+ * @see LrfInitializer
  */
 @Slf4j
 public final class DependencyContainer {
@@ -167,9 +167,9 @@ public final class DependencyContainer {
                 instance = targetConstructor.newInstance(paramInstances);
                 StructuralLog.logAssemblySuccess(currentDepth, clazz, parameters.length);
 
-                if (instance instanceof org.lazberry.xmaslegacy.framework.LrfInitializer) {
+                if (instance instanceof LrfInitializer) {
                     try {
-                        ((org.lazberry.xmaslegacy.framework.LrfInitializer) instance).afterPropertiesSet();
+                        ((LrfInitializer) instance).afterPropertiesSet();
 
                         StructuralLog.logLifecycleSuccess(currentDepth, clazz);
                     } catch (NotValidInitializeTimingException e) {

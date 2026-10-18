@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.region.gui.RegionCreateInterface;
+import org.lazberry.xmaslegacy.region.screen.RegionCreateInterface;
 import org.lazberry.xmaslegacy.region.Region;
 import org.lazberry.xmaslegacy.region.RegionManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;

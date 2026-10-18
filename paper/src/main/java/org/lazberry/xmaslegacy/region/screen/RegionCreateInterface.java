@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.region.gui;
+package org.lazberry.xmaslegacy.region.screen;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

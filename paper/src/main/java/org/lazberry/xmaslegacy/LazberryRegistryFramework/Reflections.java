@@ -10,7 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
-import org.lazberry.xmaslegacy.framework.InitializeType;
 import org.lazberry.xmaslegacy.PluginUtils.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.PluginUtils.Initializers;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
@@ -34,7 +33,7 @@ import static org.lazberry.xmaslegacy.LazberryRegistryFramework.ClassInitiator.i
  * All method invocations are dynamically mapped by {@link InitializeType}.
  * * @see PackageScanner
  * @see InitializeType
- * @see org.lazberry.xmaslegacy.framework.annotation.Reflection
+ * @see Reflection
  */
 @Slf4j
 public final class Reflections {
@@ -90,7 +89,7 @@ public final class Reflections {
 	 * * @param classPath  Guava's analyzed classpath metadata.
 	 * @param exceptions Specific initialize types to skip or ignore during this reflection loop.
 	 */
-	@org.lazberry.xmaslegacy.framework.annotation.Reflection(type = InitializeType.EXCEPTED)
+	@Reflection(type = InitializeType.EXCEPTED)
 	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType... exceptions) {
 		DependencyContainer.registerInstance(XmasLegacy.class, plugin());
 		DependencyContainer.registerInstance(JavaPlugin.class, plugin());
@@ -106,9 +105,9 @@ public final class Reflections {
 		List<InitializeType> exceptionList = Arrays.asList(exceptions);
 
 		for (Method method : methods) {
-			if (!method.isAnnotationPresent(org.lazberry.xmaslegacy.framework.annotation.Reflection.class)) continue;
+			if (!method.isAnnotationPresent(Reflection.class)) continue;
 
-			org.lazberry.xmaslegacy.framework.annotation.Reflection annotation = method.getAnnotation(org.lazberry.xmaslegacy.framework.annotation.Reflection.class);
+			Reflection annotation = method.getAnnotation(Reflection.class);
 			if (annotation.type().equals(InitializeType.EXCEPTED)) continue;
 			if (exceptionList.contains(annotation.type())) continue;
 
@@ -133,7 +132,7 @@ public final class Reflections {
 	 * interface directly to the server's PluginManager.
 	 * * @param classPath Automatically provided classpath metadata (unused but kept for reflection invoke uniformity).
 	 */
-	@org.lazberry.xmaslegacy.framework.annotation.Reflection(type = InitializeType.LISTENERS)
+	@Reflection(type = InitializeType.LISTENERS)
 	public static void registerListeners(@NotNull ClassPath classPath) {
 		try {
 			for (var entry : DependencyContainer.getContainer().entrySet()) {
@@ -155,7 +154,7 @@ public final class Reflections {
 	 * Automatically registers {@link TabCompleter} logic if the bean implements it.
 	 * * @param classPath Automatically provided classpath metadata (unused but kept for reflection invoke uniformity).
 	 */
-	@org.lazberry.xmaslegacy.framework.annotation.Reflection(type = InitializeType.COMMANDS)
+	@Reflection(type = InitializeType.COMMANDS)
 	public static void registerCommands(@NotNull ClassPath classPath) {
 		try {
 			for (var entry : DependencyContainer.getContainer().entrySet()) {
@@ -227,7 +226,7 @@ public final class Reflections {
 	 * Gateway to turn on all periodic background tasks / schedulers.
 	 * * @param classPath Provided classpath metadata context.
 	 */
-	@org.lazberry.xmaslegacy.framework.annotation.Reflection(type = InitializeType.TASKS_ON)
+	@Reflection(type = InitializeType.TASKS_ON)
 	public static void startTasks(@NotNull ClassPath ignored) {
 		taskReflection(true);
 	}
@@ -236,7 +235,7 @@ public final class Reflections {
 	 * Gateway to gracefully turn off and cancel all active background tasks / schedulers.
 	 * * @param classPath Provided classpath metadata context, nullable during shutdown phase.
 	 */
-	@org.lazberry.xmaslegacy.framework.annotation.Reflection(type = InitializeType.TASKS_OFF)
+	@Reflection(type = InitializeType.TASKS_OFF)
 	public static void stopTasks(@Nullable ClassPath ignored) {
 		taskReflection(false);
 	}
@@ -267,7 +266,7 @@ public final class Reflections {
 		}
 	}
 
-	@org.lazberry.xmaslegacy.framework.annotation.Reflection(type = InitializeType.NETWORKS)
+	@Reflection(type = InitializeType.NETWORKS)
 	public static void registerPluginChannels(@NotNull ClassPath ignored) {
 		var messenger = Bukkit.getMessenger();
 		PluginMessageRouter messageRouter = DependencyContainer.getBean(PluginMessageRouter.class);

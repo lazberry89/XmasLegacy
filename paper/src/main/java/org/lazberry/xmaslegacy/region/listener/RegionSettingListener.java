@@ -7,8 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.region.gui.RegionDeleteInterface;
-import org.lazberry.xmaslegacy.region.gui.RegionSettingInterface;
+import org.lazberry.xmaslegacy.region.screen.RegionDeleteInterface;
+import org.lazberry.xmaslegacy.region.screen.RegionSettingInterface;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.ServerType;
 

@@ -21,8 +21,13 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 @Slf4j
 @Registry.Exclude(type = ServerType.LOBBY)
 public class AgeableCrops implements Initiator {
+	private static ItemStack CACHED_BREAD = null;
 
 	public static @NotNull ItemStack SunFlowerBread() {
+		if (CACHED_BREAD != null) {
+			return CACHED_BREAD.clone();
+		}
+
 		var builder = OraxenItems.getItemById("sunflower_bread");
 		var item = builder == null ? new ItemStack(Material.BREAD) : builder.build();
 
@@ -37,16 +42,17 @@ public class AgeableCrops implements Initiator {
 		ItemMeta meta = bread.getItemMeta();
 		if (meta != null) {
 			FoodComponent food = meta.getFood();
-
-			food.setNutrition(3);
-			food.setSaturation(6.0f);
-			food.setCanAlwaysEat(true);
-
-			meta.setFood(food);
-			bread.setItemMeta(meta);
+			if (food != null) {
+				food.setNutrition(3);
+				food.setSaturation(6.0f);
+				food.setCanAlwaysEat(true);
+				meta.setFood(food);
+				bread.setItemMeta(meta);
+			}
 		}
 
-		return bread;
+		CACHED_BREAD = bread;
+		return CACHED_BREAD.clone();
 	}
 
 	public boolean registerRecipe() {

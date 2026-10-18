@@ -70,8 +70,6 @@ final class PackageScanner {
                         clazz.isAnnotationPresent(Registry.class) ||
                         clazz.isAnnotationPresent(Commands.class) ||
                         clazz.isAnnotationPresent(Listeners.class) ||
-                        clazz.isAnnotationPresent(Skill.class) ||
-                        clazz.isAnnotationPresent(Roles.class) ||
                         clazz.isAnnotationPresent(Task.class) ||
                         hasInjectConstructor) {
 
