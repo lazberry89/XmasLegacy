@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.Set;
 import java.util.UUID;

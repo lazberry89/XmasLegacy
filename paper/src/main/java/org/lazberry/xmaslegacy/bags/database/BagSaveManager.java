@@ -1,12 +1,17 @@
 package org.lazberry.xmaslegacy.bags.database;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Blocking;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.bags.Bag;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.bags.BagManager;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InventorySerializer;
 
 import java.util.UUID;
@@ -14,12 +19,27 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Registry.Exclude(type = ServerType.LOBBY)
-public class BagSaveManager {
+public class BagSaveManager implements Initiator {
     private final SqlBagRepository bagRepository;
+    private final BagManager bagManager;
 
     @Inject
-    public BagSaveManager(SqlBagRepository bagRepository) {
+    public BagSaveManager(SqlBagRepository bagRepository, BagManager bagManager) {
         this.bagRepository = bagRepository;
+        this.bagManager = bagManager;
+    }
+
+    @Override
+    public void init() {
+        loadBagsOnLoad();
+    }
+
+    @Blocking
+    private void loadBagsOnLoad() {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            var uuid = player.getUniqueId();
+            bagRepository.load(uuid).join();
+        });
     }
 
     private String getBagKey(UUID uuid) {
@@ -70,13 +90,32 @@ public class BagSaveManager {
     }
 
     public CompletableFuture<Void> saveBag(Bag bag) {
-        return CompletableFuture.runAsync(() -> {
-            setJedis(bag);
-        }).thenCompose(v ->
+        return CompletableFuture.runAsync(() ->
+            setJedis(bag)).thenCompose(v ->
                 bagRepository.save(bag)
         ).thenApply(success -> {
             if (!success) log.error("Failed to persist bag for user {} to database during save chain.", bag.getOwner());
             return null;
         });
+    }
+
+    public void saveOnlinePlayer() {
+        var futures = Bukkit.getOnlinePlayers().stream()
+                .filter(Player::isValid)
+                .map(Player::getUniqueId)
+                .map(bagManager::getBag)
+                .map(this::saveBag)
+                .toArray(CompletableFuture[]::new);
+        try {
+            CompletableFuture.allOf(futures).join();
+            log.info("Successfully saved all online players' bags during shutdown.");
+        } catch (Exception e) {
+            log.error("An error occurred while saving bags during server shutdown.", e);
+        }
+    }
+
+    @Override
+    public void close() {
+        saveOnlinePlayer();
     }
 }

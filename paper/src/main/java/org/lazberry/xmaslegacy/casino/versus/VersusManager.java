@@ -16,9 +16,9 @@ import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.casino.versus.bet.VersusBetInterface;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusJoinEvent;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusResetEvent;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.*;
 
 import java.util.Optional;

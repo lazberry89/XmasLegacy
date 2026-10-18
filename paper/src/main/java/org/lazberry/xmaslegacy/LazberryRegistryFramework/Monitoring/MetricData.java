@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.LazberryRegistryFramework.Monitoring;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.concurrent.atomic.AtomicLong;
 

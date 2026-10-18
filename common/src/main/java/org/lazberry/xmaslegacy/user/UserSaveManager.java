@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,18 +18,23 @@ import java.util.concurrent.CompletableFuture;
 @Registry.Exclude(type = ServerType.LOBBY)
 public class UserSaveManager {
     private static final Logger log = LoggerFactory.getLogger(UserSaveManager.class);
-    private final UserManager um;
+
+    private final UserManager userManager;
     private final SqlUserRepository repository;
     private final UserEmergencyDump dump;
 
 	@Inject
-    public UserSaveManager(UserManager um, SqlUserRepository repository, UserEmergencyDump dump) {
-		this.um = um;
+    public UserSaveManager(UserManager userManager, SqlUserRepository repository, UserEmergencyDump dump) {
+		this.userManager = userManager;
 		this.repository = repository;
 		this.dump = dump;
     }
 
-	private @NotNull User loadOrCreateUser(@NotNull UUID uuid, @NotNull String name, boolean isFloodgate) {
+	public void clearCache() {
+		userManager.clearCache();
+	}
+
+	private @NotNull User loadOrCreateUser(UUID uuid, String name, boolean isFloodgate) {
 		User loaded = dump.checkLocalEmergencyFile(uuid);
 		boolean restoredFromDump = false;
 
@@ -71,7 +76,7 @@ public class UserSaveManager {
 	}
 
     public void saveAll() {
-        um.getUsers().forEach(user -> {
+		userManager.getUsers().forEach(user -> {
             synchronized (user.getLock()) {
                 try {
                     repository.saveUser(user);
@@ -90,27 +95,27 @@ public class UserSaveManager {
 
 	@NonBlocking
 	@Contract("_, _, _, _ -> new")
-	public @NotNull CompletableFuture<User> onJoinAsync(@NotNull UUID uuid, @NotNull String name, String server, boolean isFloodgate) {
+	public CompletableFuture<User> onJoinAsync(UUID uuid, String name, String server, boolean isFloodgate) {
 		return CompletableFuture.supplyAsync(() -> {
 			User loaded = loadOrCreateUser(uuid, name, isFloodgate);
-			um.addUser(loaded);
+			userManager.addUser(loaded);
 			JedisService.setUserServer(uuid, server);
 			return loaded;
 		});
 	}
 
 	@Blocking
-	@Contract("_, _ -> !null")
-	public @NotNull User load(@NotNull UUID uuid, @NotNull String name) {
-		User loaded = loadOrCreateUser(uuid, name, false);
-		um.addUser(loaded);
+	@Contract("_, _, _ -> !null")
+	public User load(UUID uuid, String name, boolean isFloodgate) {
+		User loaded = loadOrCreateUser(uuid, name, isFloodgate);
+		userManager.addUser(loaded);
 		return loaded;
 	}
 
     @NonBlocking
     @Contract("_ -> new")
-    public @NotNull CompletableFuture<Void> onQuitAsync(@NotNull UUID uuid) {
-        User u = um.removeUser(uuid);
+    public CompletableFuture<Void> onQuitAsync(UUID uuid) {
+        User u = userManager.removeUser(uuid);
         if (u == null) return CompletableFuture.completedFuture(null);
 
         return CompletableFuture.runAsync(() -> {
@@ -127,5 +132,4 @@ public class UserSaveManager {
             }
         });
     }
-
 }

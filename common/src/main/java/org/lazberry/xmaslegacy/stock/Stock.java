@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kyori.adventure.text.Component;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.List;
 

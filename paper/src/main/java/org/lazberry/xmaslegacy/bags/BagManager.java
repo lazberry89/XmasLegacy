@@ -3,16 +3,14 @@ package org.lazberry.xmaslegacy.bags;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class BagManager implements Initiator {
@@ -66,8 +64,13 @@ public class BagManager implements Initiator {
 		}
 	}
 
-	public ItemStack[] getPlayerBag(Player p) {
-		return getBag(p.getUniqueId()).getContents();
+	public List<ItemStack> getBagContents(UUID uuid) {
+		ItemStack[] contents = getBag(uuid).getContents();
+		if (contents == null) return Collections.emptyList();
+
+		return Arrays.stream(contents)
+				.filter(item -> item != null && item.getType().isAir())
+				.collect(Collectors.toList());
 	}
 
 	@Override

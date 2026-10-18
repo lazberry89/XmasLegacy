@@ -3,9 +3,8 @@ package org.lazberry.xmaslegacy.bags.database;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.bags.Bag;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InventorySerializer;
 
 import java.sql.*;

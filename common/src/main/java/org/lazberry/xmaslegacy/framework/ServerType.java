@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.settings;
+package org.lazberry.xmaslegacy.framework;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;

@@ -18,9 +18,9 @@ import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.BoardUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.List;
 import java.util.Objects;

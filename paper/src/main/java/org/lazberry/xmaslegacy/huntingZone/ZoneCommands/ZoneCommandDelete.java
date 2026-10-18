@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.huntingZone.HuntingZoneManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 @ConsumableClass
 public class ZoneCommandDelete implements SubCommand {

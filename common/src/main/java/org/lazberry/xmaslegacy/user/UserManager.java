@@ -4,24 +4,25 @@ import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.roles.Role;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.roles.ServerRoles;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.lazberry.xmaslegacy.roles.ServerRoles.USER;
+
 @Registry.Exclude(type = ServerType.LOBBY)
-public class UserManager implements Initiator {
-    private final @NotNull Map<UUID, User> users = new ConcurrentHashMap<>();
-	private final @NotNull @Getter File rootDataFolder;
+public class UserManager {
+    private final Map<UUID, User> users = new ConcurrentHashMap<>();
+	private final @Getter File rootDataFolder;
 
 	@Inject
-	public UserManager(@NotNull File rootDataFolder) {
+	public UserManager(File rootDataFolder) {
 		this.rootDataFolder = rootDataFolder;
 	}
 
@@ -29,23 +30,28 @@ public class UserManager implements Initiator {
 		return Optional.ofNullable(getUser(uuid));
 	}
 
-	@Override
-	public void init() {}
+	public void clearCache() {
+		users.clear();
+	}
 
 	public void addUser(@NotNull User user) {
         users.put(user.getUniqueId(), user);
     }
+
     public @Nullable User removeUser(@NotNull UUID uuid) {
 		return users.remove(uuid);
 	}
+
     public @Nullable User getUser(@NotNull UUID uuid) {
 	    return users.get(uuid);
     }
+
 	@Contract("-> new")
-	public @NotNull List<User> getUsers() {
+	public List<User> getUsers() {
 		return new ArrayList<>(users.values());
 	}
-    public boolean withdraw(@NotNull UUID uuid, int amount) {
+
+    public boolean withdraw(UUID uuid, int amount) {
         User user = getUser(uuid);
         if (user != null && user.getDollars() >= amount) {
             user.setDollars(user.getDollars() - amount);
@@ -54,26 +60,25 @@ public class UserManager implements Initiator {
         return false;
     }
 
-    public void deposit(@NotNull UUID uuid, int amount) {
+    public void deposit(UUID uuid, int amount) {
         User user = getUser(uuid);
         if (user != null) {
             user.setDollars(user.getDollars() + amount);
         }
     }
-	public @Nullable Role getRole(@NotNull UUID uuid) {
+	public Role getRole(UUID uuid) {
 		if (users.containsKey(uuid)) {
 			return users.get(uuid).getRole();
 		}
-
-		return null;
+		return USER;
 	}
 
-	public boolean startRole(@NotNull UUID uuid, @NotNull ServerRoles role) {
+	public boolean startRole(UUID uuid, ServerRoles role) {
 		User user = getUser(uuid);
 		if (user == null) return false;
 
 		Role getRole = user.getRole();
-		if (ServerRoles.USER.equals(getRole)) {
+		if (USER.equals(getRole)) {
 			user.setRole(role);
 			return true;
 		}

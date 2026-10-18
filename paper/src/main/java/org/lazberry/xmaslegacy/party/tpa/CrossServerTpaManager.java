@@ -2,9 +2,9 @@ package org.lazberry.xmaslegacy.party.tpa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

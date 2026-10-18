@@ -6,11 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
+import org.lazberry.xmaslegacy.framework.annotation.Conditional;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.utils.ServerUtils;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.ConditionalRegistry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ConditionalRegistry;
+import org.lazberry.xmaslegacy.framework.Initiator;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -45,7 +47,7 @@ final class PackageScanner {
                 Class<?> clazz = classInfo.load();
                 if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
 
-                if (clazz.isAnnotationPresent(org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass.class)) {
+                if (clazz.isAnnotationPresent(ConsumableClass.class)) {
                     if (LazberryRegistryFramework.isDebug()) log.debug("{} Skipping @ConsumableClass: {}", icon, clazz.getSimpleName());
                     continue;
                 }
@@ -73,8 +75,8 @@ final class PackageScanner {
                         clazz.isAnnotationPresent(Task.class) ||
                         hasInjectConstructor) {
 
-                    if (clazz.isAnnotationPresent(org.lazberry.xmaslegacy.settings.Annotation.Conditional.class)) {
-                        var conditionalAnno = clazz.getAnnotation(org.lazberry.xmaslegacy.settings.Annotation.Conditional.class);
+                    if (clazz.isAnnotationPresent(Conditional.class)) {
+                        var conditionalAnno = clazz.getAnnotation(Conditional.class);
                         try {
                             ConditionalRegistry condition = conditionalAnno.value().getDeclaredConstructor().newInstance();
 
@@ -119,7 +121,7 @@ final class PackageScanner {
             for (var classInfo : classPath.getTopLevelClassesRecursive(LazberryRegistryFramework.rootPackage())) {
                 Class<?> candidate = classInfo.load();
                 if (candidate.isInterface() || Modifier.isAbstract(candidate.getModifiers())) continue;
-                if (candidate.isAnnotationPresent(org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass.class)) {
+                if (candidate.isAnnotationPresent(ConsumableClass.class)) {
                     continue;
                 }
                 if (interfaceType.isAssignableFrom(candidate)) {

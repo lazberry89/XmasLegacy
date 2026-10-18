@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.user.User;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.ArrayList;
 import java.util.Collections;

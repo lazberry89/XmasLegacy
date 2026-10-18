@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.party;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.user.User;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.List;
 import java.util.UUID;

@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.LazberryRegistryFramework;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.ConfigValue;
-import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.InvalidConfigInjectException;
+import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
+import org.lazberry.xmaslegacy.framework.exception.InvalidConfigInjectException;
 import org.lazberry.xmaslegacy.XmasLegacy;
 /**
  * <h2>LRF Declarative Configuration Injection Engine</h2>

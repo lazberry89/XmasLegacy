@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.collectors.game.Session;
 import org.lazberry.xmaslegacy.collectors.hunter.exciting.PhaseHunter;
 import org.lazberry.xmaslegacy.collectors.hunter.horror.Silence;
 import org.lazberry.xmaslegacy.collectors.hunter.peaceful.HunterBug;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
+import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
 

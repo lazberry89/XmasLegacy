@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.stock.container;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.role.general;
 
 import lombok.Data;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class RoleManager {

@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
 
 public class RuleCommandRemove implements SubCommand {
     private final @NotNull RuleManager rm;

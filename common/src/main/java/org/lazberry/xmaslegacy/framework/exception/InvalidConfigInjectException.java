@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions;
+package org.lazberry.xmaslegacy.framework.exception;
 
 public class InvalidConfigInjectException extends RuntimeException {
     public InvalidConfigInjectException(String message) {

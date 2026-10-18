@@ -1,12 +1,11 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation;
+package org.lazberry.xmaslegacy.framework.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.CONSTRUCTOR)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Skill {
-
+public @interface Inject {
 }

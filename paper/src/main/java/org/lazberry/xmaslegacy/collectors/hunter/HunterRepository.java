@@ -4,9 +4,9 @@ import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.collectors.hunter.exciting.PhaseHunter;
 import org.lazberry.xmaslegacy.collectors.hunter.horror.Silence;
 import org.lazberry.xmaslegacy.collectors.hunter.peaceful.HunterBug;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.EnumMap;
 import java.util.Map;

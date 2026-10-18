@@ -1,6 +1,6 @@
-package org.lazberry.xmaslegacy.settings.Annotation;
+package org.lazberry.xmaslegacy.framework.annotation;
 
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

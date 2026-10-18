@@ -4,7 +4,7 @@ import lombok.Data;
 import org.bukkit.Location;
 import org.lazberry.xmaslegacy.casino.games.GameMachine;
 import org.lazberry.xmaslegacy.casino.logics.Machines;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.HashMap;
 import java.util.Map;

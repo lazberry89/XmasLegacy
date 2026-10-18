@@ -1,6 +1,6 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation;
+package org.lazberry.xmaslegacy.framework.annotation;
 
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
+import org.lazberry.xmaslegacy.framework.InitializeType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

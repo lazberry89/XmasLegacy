@@ -8,9 +8,9 @@ import org.lazberry.xmaslegacy.collectors.game.CollectorsManager;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterHandler;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterRepository;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Queue;
 import java.util.Set;

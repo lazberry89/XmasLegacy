@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.StunUtils;
 import org.lazberry.xmaslegacy.utils.TitleUtil;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 @Slf4j
 @ConsumableClass

@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.teleporter.logic;
 
 import org.bukkit.Location;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;

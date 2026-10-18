@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.PluginUtils.Initializer.InitializeType;
+import org.lazberry.xmaslegacy.framework.InitializeType;
 
 /**
  * <h2>LazberryRegistryFramework (LRF Bootstrapper & Global Context Manager)</h2>

@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.collectors.field;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions;
+package org.lazberry.xmaslegacy.framework.exception;
 
 public class CircularDependencyException extends RuntimeException {
     public CircularDependencyException(String message) {

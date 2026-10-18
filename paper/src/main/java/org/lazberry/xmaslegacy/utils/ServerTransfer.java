@@ -24,7 +24,7 @@ import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Arrays;
 import java.util.HashSet;

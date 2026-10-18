@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.casino.logics;
 
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
+import org.lazberry.xmaslegacy.framework.Initiator;
 
 public class CasinoConfig implements Initiator {
 

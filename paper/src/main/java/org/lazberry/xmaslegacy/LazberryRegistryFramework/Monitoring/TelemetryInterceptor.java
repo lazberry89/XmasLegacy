@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
-import org.lazberry.xmaslegacy.settings.Annotation.Monitor;
+import org.lazberry.xmaslegacy.framework.annotation.Monitor;
 
 import java.lang.reflect.Method;
 

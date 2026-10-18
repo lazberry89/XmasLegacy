@@ -1,7 +1,7 @@
-package org.lazberry.xmaslegacy.settings.Annotation;
+package org.lazberry.xmaslegacy.framework.annotation;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.Framework.Observation;
+import org.lazberry.xmaslegacy.framework.Observation;
 
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.ElementType;

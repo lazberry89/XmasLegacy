@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.ConfigValue;
+import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.utils.ServerUtils;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.CircularDependencyException;
-import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.NotCompatibleWithServerException;
-import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.NotValidInitializeTimingException;
-import org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions.VirtualClassInjectException;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.exception.CircularDependencyException;
+import org.lazberry.xmaslegacy.framework.exception.NotCompatibleWithServerException;
+import org.lazberry.xmaslegacy.framework.exception.NotValidInitializeTimingException;
+import org.lazberry.xmaslegacy.framework.exception.VirtualClassInjectException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -44,7 +44,7 @@ import java.util.Set;
  * @author Lazberry (LRF Architecture Team)
  * @see PackageScanner
  * @see org.lazberry.xmaslegacy.utils.ServerUtils
- * @see LrfInitializer
+ * @see org.lazberry.xmaslegacy.framework.LrfInitializer
  */
 @Slf4j
 public final class DependencyContainer {
@@ -167,9 +167,9 @@ public final class DependencyContainer {
                 instance = targetConstructor.newInstance(paramInstances);
                 StructuralLog.logAssemblySuccess(currentDepth, clazz, parameters.length);
 
-                if (instance instanceof LrfInitializer) {
+                if (instance instanceof org.lazberry.xmaslegacy.framework.LrfInitializer) {
                     try {
-                        ((LrfInitializer) instance).afterPropertiesSet();
+                        ((org.lazberry.xmaslegacy.framework.LrfInitializer) instance).afterPropertiesSet();
 
                         StructuralLog.logLifecycleSuccess(currentDepth, clazz);
                     } catch (NotValidInitializeTimingException e) {

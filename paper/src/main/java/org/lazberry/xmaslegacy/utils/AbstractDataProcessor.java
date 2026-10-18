@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
+import org.lazberry.xmaslegacy.framework.Initiator;
 
 import java.io.File;
 import java.io.IOException;

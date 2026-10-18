@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.settings.Framework.FrameworkExceptions;
+package org.lazberry.xmaslegacy.framework.exception;
 
 import org.jetbrains.annotations.NotNull;
 

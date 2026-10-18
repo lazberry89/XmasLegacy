@@ -3,8 +3,8 @@ package org.lazberry.xmaslegacy.collectors.hunter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.entity.EntityType;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 @NoArgsConstructor
 @Registry.Include(type = ServerType.MAIN)

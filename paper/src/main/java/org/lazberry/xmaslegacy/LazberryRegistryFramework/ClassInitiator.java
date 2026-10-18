@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.LazberryRegistryFramework;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
+import org.lazberry.xmaslegacy.framework.Initiator;
 
 import java.util.ArrayList;
 import java.util.List;

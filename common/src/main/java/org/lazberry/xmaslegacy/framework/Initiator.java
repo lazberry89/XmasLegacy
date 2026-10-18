@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.settings.Framework;
+package org.lazberry.xmaslegacy.framework;
 
 public interface Initiator {
     void init();

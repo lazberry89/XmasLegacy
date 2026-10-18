@@ -19,8 +19,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.collectors.drop.PlayerBreakContainerEvent;
 import org.lazberry.xmaslegacy.collectors.drop.PlayerHitContainerEvent;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.Vignette;
 
 @Listeners

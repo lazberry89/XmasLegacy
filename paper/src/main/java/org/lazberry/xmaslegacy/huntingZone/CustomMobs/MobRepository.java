@@ -11,8 +11,8 @@ import org.lazberry.xmaslegacy.huntingZone.CustomMobs.Mythic.AbstractMythicMobs;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.Named.AbstractNamedMobs;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.Unrated.*;
 import org.lazberry.xmaslegacy.huntingZone.ZoneType;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;

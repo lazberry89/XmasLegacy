@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.MobKey;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.CustomMob;
-import org.lazberry.xmaslegacy.settings.Annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 import java.util.*;
 

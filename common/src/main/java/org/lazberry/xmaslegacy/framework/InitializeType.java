@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PluginUtils.Initializer;
+package org.lazberry.xmaslegacy.framework;
 
 /**
  * Only Used by Reflection annotation to divide process

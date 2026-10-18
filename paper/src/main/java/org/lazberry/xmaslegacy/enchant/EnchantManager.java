@@ -19,9 +19,9 @@ import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.enchant.listener.EnchantBrokenPreventedEvent;
 import org.lazberry.xmaslegacy.enchant.listener.EnchantDowngradePreventEvent;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 

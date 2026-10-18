@@ -5,14 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.user.UserSaveManager;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.utils.FloodgateUtils;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,17 +23,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @Registry.Exclude(type = ServerType.LOBBY)
 public class UserSaveTask implements Tasks {
-	private @Nullable BukkitTask task;
-	private final UserSaveManager us;
-	private final UserManager um;
+	private final UserManager userManager;
+	private final UserSaveManager saveManager;
+	private BukkitTask task;
 
 	@Inject
-	public UserSaveTask(@NotNull UserSaveManager us, UserManager um) {
-		this.us = us;
-        this.um = um;
+    public UserSaveTask(UserManager userManager, UserSaveManager saveManager) {
+        this.userManager = userManager;
+        this.saveManager = saveManager;
     }
 
-	@Override
+    @Override
 	public void startTask(@NotNull XmasLegacy plugin) {
 		if (task != null) return;
 		synchronized (this) {
@@ -41,7 +41,7 @@ public class UserSaveTask implements Tasks {
 
 			this.task = Bukkit.getScheduler()
 					.runTaskTimer(plugin, () -> {
-								us.saveAsyncAll();
+								saveManager.saveAsyncAll();
 								loadInvalidUsers();
 								log.warn("User info automatically saved for {} tick duration.", Constants.USER_SAVE_TASK_DURATION);
 							},
@@ -59,9 +59,13 @@ public class UserSaveTask implements Tasks {
 
 	public void loadInvalidUsers() {
 		Map<UUID, String> playerData = Bukkit.getOnlinePlayers().stream()
-				.filter(p -> um.getOptionalUser(p.getUniqueId()).isEmpty())
+				.filter(p -> userManager.getOptionalUser(p.getUniqueId()).isEmpty())
 				.collect(Collectors.toMap(Player::getUniqueId, Player::getName));
 
-		CompletableFuture.runAsync(() -> playerData.forEach(us::load));
+		CompletableFuture.runAsync(() ->
+				playerData.forEach((uuid, name) -> {
+					boolean isFloodgate = FloodgateUtils.isFloodgate(uuid);
+					saveManager.load(uuid, name, isFloodgate);
+				}));
 	}
 }

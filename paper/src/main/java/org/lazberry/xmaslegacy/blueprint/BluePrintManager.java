@@ -17,10 +17,10 @@ import org.lazberry.xmaslegacy.blueprint.config.BlueprintRotator;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintTaskRecordConfig;
 import org.lazberry.xmaslegacy.blueprint.shop.BlueprintShop;
 import org.lazberry.xmaslegacy.region.RegionManager;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.Framework.Initiator;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.Axiom;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 

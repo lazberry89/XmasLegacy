@@ -3,13 +3,12 @@ package org.lazberry.xmaslegacy.PluginUtils.Initializer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.bags.BagManager;
-import org.lazberry.xmaslegacy.food.AgeableCrops;
 import org.lazberry.xmaslegacy.user.SqlUserRepository;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.settings.Annotation.Inject;
-import org.lazberry.xmaslegacy.settings.Annotation.Registry;
-import org.lazberry.xmaslegacy.settings.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
 
 @Slf4j
 @Registry
@@ -38,7 +37,6 @@ public class GlobalInitializer implements ServerInitializer {
 
 	@Override
 	public void shutdown(@NotNull XmasLegacy plugin) {
-		um.getUsers().forEach(sr::saveUser);
 		log.info("User info is automatically saved!");
 
 		log.info("Bag data is automatically saved!");
