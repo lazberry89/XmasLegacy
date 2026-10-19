@@ -1,28 +1,38 @@
 package org.lazberry.xmaslegacy.airdrop;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.lazberry.xmaslegacy.AirdropConfig;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.airdrop.event.AirdropLandEvent;
+import org.lazberry.xmaslegacy.airdrop.event.AirdropSpawnEvent;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.utils.Axiom;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
+@Getter @Setter
 @Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropManager implements Initiator {
 	public static final NamespacedKey key = KeyUtils.get("airdrop");
@@ -36,21 +46,44 @@ public class AirdropManager implements Initiator {
 	private final Set<BukkitRunnable> runningTasks = new HashSet<>();
 
 	private final AirdropContentsManager contentsManager;
+	private final AirdropConfig config;
 	private final XmasLegacy plugin;
-	private final BlockData chest;
+	private final BlockData chestData;
 	private final Particle.DustTransition dustTransition;
 
+	private boolean dropOnLiquid = false;
+	private int tickPerProcess = 3;
+	private Material chestMaterial = Material.WAXED_COPPER_CHEST;
+
 	@Inject
-	public AirdropManager(AirdropContentsManager contentsManager, XmasLegacy plugin) {
+	public AirdropManager(AirdropContentsManager contentsManager, AirdropConfig config, XmasLegacy plugin) {
 		this.contentsManager = contentsManager;
-		this.plugin = plugin;
-		this.chest = Material.WAXED_COPPER_CHEST.createBlockData();
+        this.config = config;
+        this.plugin = plugin;
+
+		reload().join();
+
+		this.chestData = chestMaterial.createBlockData();
 		this.dustTransition = new Particle.DustTransition(Color.RED, Color.WHITE, 0.8f);
 	}
 
 	@Override
 	public void init() {
+		cleanUp();
+	}
 
+	public CompletableFuture<Void> reload() {
+		return CompletableFuture.runAsync(() -> {
+			synchronized (this) {
+				dropOnLiquid = config.getDropOnLiquid();
+				tickPerProcess = config.getTickPerProcess();
+				chestMaterial = config.getAirdropMaterial();
+			}
+		});
+	}
+
+	public boolean isSupplyChest(Block block) {
+		return block instanceof Chest supply && KeyUtils.hasKey(supply, key);
 	}
 
 	public void spawnAirDrop(Location location) {
@@ -60,10 +93,17 @@ public class AirdropManager implements Initiator {
 		Location spawnLoc = location.clone().getBlock().getLocation();
 		spawnLoc.setY(y);
 
+		var spawnEvent = new AirdropSpawnEvent(spawnLoc);
+		Bukkit.getPluginManager().callEvent(spawnEvent);
+
+		if (spawnEvent.isCancelled()) return;
+		spawnLoc = spawnEvent.getLocation();
+
 		ArmorStand stand = spawnFallingDummy(spawnLoc);
 		BlockDisplay display = spawnAirdropDisplay(spawnLoc);
 		onWorldStands.add(stand);
 		onBlockDisplays.add(display);
+
 
 		new BukkitRunnable() {
 			final Location reuse = new Location(world, 0, 0, 0);
@@ -79,6 +119,10 @@ public class AirdropManager implements Initiator {
 				}
 				var standLoc = stand.getLocation(reuse);
 
+				if (standLoc.getBlock().isLiquid()) {
+					stand.removePotionEffect(PotionEffectType.SLOW_FALLING);
+				}
+
 				if (hasReached(stand)) {
 					runningTasks.remove(this);
 					onWorldStands.remove(stand);
@@ -87,7 +131,15 @@ public class AirdropManager implements Initiator {
 					stand.remove();
 					display.remove();
 
-					placeAirdropChest(standLoc);
+					Chest airdrop = placeAirdropChest(standLoc);
+					var blockInv = airdrop.getBlockInventory();
+
+					var landEvent = new AirdropLandEvent(airdrop.getLocation(), airdrop, blockInv.getContents());
+					Bukkit.getPluginManager().callEvent(landEvent);
+					blockInv.setContents(landEvent.getContents());
+
+					playLandingEffect(standLoc);
+
 					this.cancel();
 					return;
 				}
@@ -96,31 +148,42 @@ public class AirdropManager implements Initiator {
 				world.spawnParticle(Particle.DUST_COLOR_TRANSITION, standLoc.add(0.5, 0, 0.5),
 						3, 0.5, 0.5, 0.5, 0.01, dustTransition);
 			}
-		}.runTaskTimer(plugin, 3L, 1L);
+		}.runTaskTimer(plugin, 3L, tickPerProcess);
 	}
 
-	private void placeAirdropChest(Location location) {
+	private void playLandingEffect(Location loc) {
+		var center = Axiom.centerBlock(loc);
+		var world = center.getWorld();
+
+		world.playSound(center, Sound.BLOCK_COPPER_GOLEM_STATUE_STEP, 1.0f, 0.3f);
+		world.playSound(center, Sound.BLOCK_COPPER_BREAK, 0.8f, 0.5f);
+		world.spawnParticle(Particle.ASH, center, 10, 0.6, 0.6, 0.6, 0.05);
+	}
+
+	private Chest placeAirdropChest(Location location) {
 		var block = location.getBlock();
-		block.setType(Material.WAXED_COPPER_CHEST, false);
+		block.setType(chestMaterial, false);
 
 		if (block.getState() instanceof Chest supplyChest) {
 			supplyChest.setLockItem(new ItemStack(Material.OMINOUS_TRIAL_KEY));
-			supplyChest.customName(ColorUtils.chat("보급상자"));
+			supplyChest.customName(ColorUtils.chat("&c보급상자"));
+			supplyChest.getPersistentDataContainer().set(key, PersistentDataType.BOOLEAN, true);
 			supplyChest.update();
 
 			setSupplyContents(supplyChest);
+			return supplyChest;
 		} else {
-			log.warn("Airdrop chest placement failed at {}", location);
+			throw new IllegalStateException("Airdrop chest placement failed at " + location);
 		}
 	}
 
 	private boolean hasReached(ArmorStand stand) {
 		Location loc = stand.getLocation();
-		Location under = loc.clone().add(0, -1, 0);
+		Location under = loc.clone().add(0, -0.2, 0);
 
 		var block = under.getBlock();
 
-		return block.isSolid();
+		return block.isSolid() || (dropOnLiquid && block.isLiquid());
 	}
 
 	private ArmorStand spawnFallingDummy(Location loc) {
@@ -129,6 +192,7 @@ public class AirdropManager implements Initiator {
 			s.setInvisible(true);
 			s.setInvulnerable(true);
 			s.setVisible(false);
+			s.setSmall(true);
 
 			s.addPotionEffect(new PotionEffect(
 					PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, 1, true, false));
@@ -140,15 +204,15 @@ public class AirdropManager implements Initiator {
 		return loc.getWorld().spawn(loc, BlockDisplay.class, d -> {
 			d.setGravity(false);
 			d.teleport(loc);
-			d.setBlock(chest);
+			d.setBlock(chestData);
 			d.setGlowColorOverride(Color.RED);
 			d.setGlowing(true);
-			d.setTeleportDuration(3);
+			d.setTeleportDuration(tickPerProcess);
 			KeyUtils.set(d, key, true);
 		});
 	}
 
-	public void setSupplyContents(Chest chest) {
+	private void setSupplyContents(Chest chest) {
 		Inventory inv = chest.getBlockInventory();
 		ItemStack[] contents = new ItemStack[inv.getSize()];
 		for (int i = 0; i < contents.length; i++) {

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.currency.CurrencyManager;
+import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
 import org.lazberry.xmaslegacy.food.AgeableCrops;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
@@ -26,10 +27,23 @@ public class AirdropContentsManager implements Initiator {
 
 	@Override
 	public void init() {
-		dropItems.add(new AirdropContents(AgeableCrops.SunFlowerBread(), 1, 5, 0.7));
-		dropItems.add(new AirdropContents(CurrencyManager.currency(plugin), 1, 2, 0.2));
-		dropItems.add(new AirdropContents(new ItemStack(Material.DIAMOND), 1, 3, 0.2));
-		dropItems.add(new AirdropContents(new ItemStack(Material.TORCHFLOWER_SEEDS), 1, 2, 0.1));
+
+		//Server contents of Survival
+		dropItems.add(new AirdropContents(new ItemStack(Material.TORCHFLOWER), 1, 3, 0.2));
+		dropItems.add(new AirdropContents(new ItemStack(Material.TORCHFLOWER_SEEDS), 1, 2, 0.4));
+		dropItems.add(new AirdropContents(AgeableCrops.SunFlowerBread(), 1, 5, 0.6));
+
+		//Economy
+		dropItems.add(new AirdropContents(CurrencyManager.currency(plugin), 1, 3, 0.8));
+
+		//Treasures
+		dropItems.add(new AirdropContents(new ItemStack(Material.IRON_INGOT), 2, 5, 0.5));
+		dropItems.add(new AirdropContents(new ItemStack(Material.GOLD_INGOT), 1, 3, 0.3));
+		dropItems.add(new AirdropContents(new ItemStack(Material.DIAMOND), 1, 2, 0.15));
+		dropItems.add(new AirdropContents(new ItemStack(Material.NETHERITE_SCRAP), 1, 1, 0.03));
+
+		//Enchant
+		dropItems.add(new AirdropContents(EnchantMaterial.PrismFractal(), 1, 5, 0.3));
 	}
 
 	public boolean add(ItemStack item, int amountMin, int amountMax, double chancePerSlot) {
@@ -44,7 +58,8 @@ public class AirdropContentsManager implements Initiator {
 		double slotAppearanceChance = 0.3;
 		if (random.nextDouble() > slotAppearanceChance) return null;
 
-		double totalWeight = dropItems.stream().mapToDouble(AirdropContents::chancePerSlot).sum();
+		double totalWeight = dropItems.stream()
+				.mapToDouble(AirdropContents::chancePerSlot).sum();
 		if (totalWeight <= 0) return null;
 
 		double value = random.nextDouble() * totalWeight;
@@ -61,9 +76,34 @@ public class AirdropContentsManager implements Initiator {
 
 		if (selectedContent == null || selectedContent.item() == null) return null;
 
-		int amount = selectedContent.minimumAmount();
-		if (selectedContent.maximumAmount() > selectedContent.minimumAmount()) {
-			amount += random.nextInt(selectedContent.maximumAmount() - selectedContent.minimumAmount() + 1);
+		int min = selectedContent.minimumAmount();
+		int max = selectedContent.maximumAmount();
+		int amount = min;
+
+		if (max > min) {
+			int range = (max - min) + 1;
+
+			double[] weights = new double[range];
+			double weightSum = 0.0;
+
+			for (int i = 0; i < range; i++) {
+				weights[i] = range - i;
+				weightSum += weights[i];
+			}
+
+			double randomWeightValue = random.nextDouble() * weightSum;
+			double currentW = 0.0;
+			int chosenOffset = 0;
+
+			for (int i = 0; i < range; i++) {
+				currentW += weights[i];
+				if (randomWeightValue <= currentW) {
+					chosenOffset = i;
+					break;
+				}
+			}
+
+			amount = min + chosenOffset;
 		}
 
 		ItemStack resultItem = selectedContent.item().clone();
@@ -74,6 +114,6 @@ public class AirdropContentsManager implements Initiator {
 
 	@Override
 	public void close() {
-		Initiator.super.close();
+		dropItems.clear();
 	}
 }
