@@ -55,6 +55,7 @@ public class UserSaveManager {
 			loaded = new User(uuid, ServerRoles.USER, name);
 			loaded.setNewUser(true);
 			if (isFloodgate) loaded.addDollars(5000);
+			else loaded.addDollars(2500);
 
 			synchronized (loaded.getLock()) {
 				repository.saveUser(loaded);
