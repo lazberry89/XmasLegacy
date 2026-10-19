@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.lazberry.xmaslegacy.AirdropConfig;
+import org.lazberry.xmaslegacy.airdrop.AirdropConfig;
 import org.lazberry.xmaslegacy.airdrop.AirdropManager;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Setter @Getter
-@Registry.Include(type = ServerType.WILD)
+@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropSpawnManager implements Initiator {
     private final AirdropManager airdropManager;
     private final AirdropConfig config;

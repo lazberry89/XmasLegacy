@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
 import org.lazberry.xmaslegacy.airdrop.AirdropManager;
+import org.lazberry.xmaslegacy.airdrop.supply.AirdropSpawnManager;
 import org.lazberry.xmaslegacy.airdrop.supply.AirdropSpawnTask;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -26,8 +27,9 @@ public class AirdropCommand implements CommandExecutor, TabCompleter {
     private final Map<String, SubCommand> commands = new HashMap<>();
 
     @Inject
-    public AirdropCommand(AirdropManager airdropManager, AirdropSpawnTask spawnTask) {
+    public AirdropCommand(AirdropManager airdropManager, AirdropSpawnManager spawnManager, AirdropSpawnTask spawnTask) {
         commands.put("drop", new AirdropCommandDrop(airdropManager));
+		commands.put("task", new AirdropCommandTask(spawnManager, spawnTask));
     }
 
     @Override

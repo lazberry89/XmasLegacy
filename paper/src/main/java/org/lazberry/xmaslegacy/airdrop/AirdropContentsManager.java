@@ -44,6 +44,8 @@ public class AirdropContentsManager implements Initiator {
 
 		//Enchant
 		dropItems.add(new AirdropContents(EnchantMaterial.PrismFractal(), 1, 5, 0.3));
+		dropItems.add(new AirdropContents(EnchantMaterial.DowngradeProtector(), 1, 1, 0.07));
+		dropItems.add(new AirdropContents(EnchantMaterial.BreakProtector(), 1, 1, 0.02));
 	}
 
 	public boolean add(ItemStack item, int amountMin, int amountMax, double chancePerSlot) {

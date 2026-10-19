@@ -55,8 +55,13 @@ public class BagSessionListener implements Listener {
 
         saveManager.saveBag(bagManager.getBag(uuid)).whenComplete((v, ex) ->
             Bukkit.getScheduler().runTask(plugin, () -> {
+                if (ex != null) {
+                    log.error("Failed to save player({})'s bag on quit. Data may be lost!", player.getName(), ex);
+                } else {
+                    log.info("Saved player({})'s bag contents.", player.getName());
+                }
+                // 플레이어가 이미 서버를 떠난 상태이므로 저장 성공 여부와 관계없이 메모리에서는 제거
                 bagManager.removeUserBag(uuid);
-                log.info("Saved player({})'s bag contents.", player.getName());
             }));
     }
 }

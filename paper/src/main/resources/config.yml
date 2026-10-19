@@ -1,1 +1,13 @@
 server-type: "lobby"
+
+webserver:
+  enabled: true
+  port: 8080
+  # Azure App Registration (Microsoft OAuth)
+  # 비워두거나 mock-auth가 true이면 테스트 모드로 동작합니다.
+  mock-auth: true
+  oauth:
+    client-id: ""
+    client-secret: ""
+    # 예: http://localhost:8080/api/auth/ms-callback
+    redirect-uri: "http://localhost:8080/api/auth/ms-callback"

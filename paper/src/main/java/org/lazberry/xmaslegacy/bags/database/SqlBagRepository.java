@@ -76,14 +76,17 @@ public class SqlBagRepository implements BagRepository {
                                 result.getString("contents"));
                         return new Bag(uuid, contents);
                     }
+                    // 데이터베이스에 해당 UUID 레코드가 없는 경우 (신규 유저)
+                    return null;
                 }
             } catch (SQLException e) {
                 log.error("Cannot load user({})'s bag from database.", uuid, e);
+                throw new RuntimeException("Database error while loading bag for " + uuid, e);
             } catch (Exception e) {
-                log.error("Exception occurred while loading user({})'s bag. It may be ItemStack array Serializing Exception or" +
-                        "network unstable, or something", uuid, e);
+                log.error("Exception occurred while loading user({})'s bag. It may be ItemStack array Serializing Exception or " +
+                        "network unstable, or something.", uuid, e);
+                throw new RuntimeException("Unexpected error while loading bag for " + uuid, e);
             }
-            return new Bag(uuid);
         });
     }
 }

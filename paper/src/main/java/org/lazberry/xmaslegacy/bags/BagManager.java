@@ -20,7 +20,7 @@ public class BagManager implements Initiator {
 
 	@Override
 	public void init() {
-		bags.clear();
+		// bags는 플레이어 접속 시 loadBag로 로드되므로 여기서 초기화하지 않음
 	}
 
 	public void setUserBag(UUID uuid, Bag bag) {
@@ -69,7 +69,7 @@ public class BagManager implements Initiator {
 		if (contents == null) return Collections.emptyList();
 
 		return Arrays.stream(contents)
-				.filter(item -> item != null && item.getType().isAir())
+				.filter(item -> item != null && !item.getType().isAir())
 				.collect(Collectors.toList());
 	}
 

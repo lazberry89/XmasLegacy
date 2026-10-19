@@ -13,7 +13,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Registry;
 
 @Task
 @Slf4j
-@Registry.Include(type = ServerType.WILD)
+@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropSpawnTask implements Tasks {
     private final AirdropSpawnManager spawnManager;
     private BukkitTask task;
@@ -25,6 +25,11 @@ public class AirdropSpawnTask implements Tasks {
 
     @Override
     public void startTask(@NotNull XmasLegacy plugin) {
+		if (spawnManager.getCenter() == null) {
+			log.error("Spawn Manager Center is null");
+			return;
+		}
+
         if (task == null) task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             spawnManager.dropAirdropRandomly();
             log.info("Successfully dropped airdrop.");
