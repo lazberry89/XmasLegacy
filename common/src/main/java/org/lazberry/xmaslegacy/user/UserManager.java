@@ -26,6 +26,16 @@ public class UserManager {
 		this.rootDataFolder = rootDataFolder;
 	}
 
+	/**
+	 * Find player's User instance from every Server except Lobby.
+	 * Null if player is offline or at lobby server.
+	 * @param uuid target player's uniqueId
+	 * @return User instance of target uuid
+	 */
+	public @Nullable User getProxyUser(UUID uuid) {
+		return User.fromJson("user:" + uuid);
+	}
+
 	public Optional<User> getOptionalUser(UUID uuid) {
 		return Optional.ofNullable(getUser(uuid));
 	}

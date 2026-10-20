@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PartyScoreBoard;
+package org.lazberry.xmaslegacy.scoreboard;
 
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
@@ -29,13 +29,13 @@ import java.util.UUID;
 @Slf4j
 @Task
 @Registry.Exclude(type = ServerType.LOBBY)
-public class UserPartyScoreBoard implements Tasks {
+public class UserScoreboard implements Tasks {
 	private final @NotNull PartyManager pm;
 	private final @NotNull UserManager um;
 	private @Nullable BukkitTask task;
 
 	@Inject
-	public UserPartyScoreBoard(@NotNull UserManager um, @NotNull PartyManager pm) {
+	public UserScoreboard(@NotNull UserManager um, @NotNull PartyManager pm) {
 		this.pm = pm;
 		this.um = um;
 	}
@@ -71,18 +71,18 @@ public class UserPartyScoreBoard implements Tasks {
 		var party = pm.getParty(player.getUniqueId());
 		if (party == null) {
 			BoardUtils.getOrCreate(player, ColorUtils.chat("&6&l" + player.getName()), b -> {
-				b.setLine(1, ColorUtils.chat("&6&l소지금&f " + user.getDollars() + " &6$"));
-				b.setLine(2, ColorUtils.chat(""));
-				b.setLine(3, ColorUtils.chat("&6&l경험치&f " + user.getExp() + " &6&l레벨 " + user.getLevel()));
-				b.setLine(4, ColorUtils.chat(""));
+				b.setLine(1, ColorUtils.chat(""));
+				b.setLine(2, ColorUtils.chat("&6&l소지금&f " + user.getDollars() + " &6$"));
+				b.setLine(3, ColorUtils.chat(""));
+				b.setLine(4, ColorUtils.chat("&6&l경험치&f " + user.getExp() + " &c(" + user.getLevel() + ")"));
+				b.setLine(5, ColorUtils.chat(""));
 				var role = user.getRole();
-				b.setLine(5, ColorUtils.chat("&6&l직업&f " + role.getKor()));
-				b.setLine(6, ColorUtils.chat(""));
-				b.setLine(7, ColorUtils.chat("&6&l직업 경험치&f " + user.getRoleExp() + " &6Rxp"));
-				b.setLine(8, ColorUtils.chat(""));
-				b.setLine(9, IceLogo().appendSpace().append(ColorUtils.chat("&b빙결수치")));
-				b.setLine(10, IceLogo().appendSpace().append(iceStateBar(user)));
-				b.setLine(11, ColorUtils.chat("&7&l------------"));
+				b.setLine(6, ColorUtils.chat("&6&l직업&f " + role.getKor()));
+				b.setLine(7, ColorUtils.chat(""));
+				b.setLine(8, ColorUtils.chat("&6&l마스터리&f " + user.getRoleExp() + " &6Rxp"));
+				b.setLine(9, ColorUtils.chat(""));
+				b.setLine(10, IceLogo().appendSpace().append(ColorUtils.chat("&b&l한기수치")));
+				b.setLine(11, IceLogo().appendSpace().append(iceStateBar(user)));
 
 				for (int i = 12; i < 15; i++) {
 					b.removeLine(i);

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.user;
+package org.lazberry.xmaslegacy.rank;
 
 public enum RankType {
     DOLLAR,

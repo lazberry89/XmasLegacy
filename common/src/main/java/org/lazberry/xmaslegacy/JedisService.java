@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.RedisClient;
 import redis.clients.jedis.params.SetParams;
+import redis.clients.jedis.resps.Tuple;
 
 import java.util.List;
 import java.util.Set;
@@ -90,6 +91,26 @@ public class JedisService implements Initiator {
 	public static void srem(String key, String... members) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
 		redisClient.srem(key, members);
+	}
+
+	public static void zadd(String key, String member, double score) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		redisClient.zadd(key, score, member);
+	}
+
+	public static List<Tuple> zrevrangeWithScores(String key, long start, long stop) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		return redisClient.zrangeWithScores(key, start, stop);
+	}
+
+	public static @Nullable Long zrevrank(String key, String member) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		return redisClient.zrevrank(key, member);
+	}
+
+	public static @Nullable Double zscore(String key, String member) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		return redisClient.zscore(key, member);
 	}
 
 	public static void subscribe(JedisPubSub jedisPubSub, String... channels) {

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.PartyScoreBoard;
+package org.lazberry.xmaslegacy.scoreboard;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.entity.Player;
