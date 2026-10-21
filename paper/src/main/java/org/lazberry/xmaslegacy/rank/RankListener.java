@@ -26,12 +26,12 @@ public class RankListener implements Listener {
 		this.rankManager = rankManager;
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void updateUserOnJoin(PlayerJoinEvent event) {
 		updateProcess(event.getPlayer());
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void updateUserOnLeave(PlayerQuitEvent event) {
 		updateProcess(event.getPlayer());
 	}
@@ -41,7 +41,7 @@ public class RankListener implements Listener {
 
 		User user = userManager.getUser(uuid);
 		if (user == null) {
-			UserHandler.loadUser(player, true);
+			UserHandler.loadUser(player, true, rankManager::updateUser);
 			return;
 		}
 		rankManager.updateUser(user);
