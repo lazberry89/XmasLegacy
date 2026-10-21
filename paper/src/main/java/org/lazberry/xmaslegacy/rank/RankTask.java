@@ -24,6 +24,7 @@ public class RankTask implements Tasks {
     @Override
     public void startTask(@NotNull XmasLegacy plugin) {
         if (task == null) task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+			rankManager.updateAll();
             rankManager.updateRanks();
         }, 0L, 20L * 3);
     }

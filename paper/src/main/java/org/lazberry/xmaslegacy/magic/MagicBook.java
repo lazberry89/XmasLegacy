@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.magic;
 import io.papermc.paper.math.Rotation;
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Data;
-import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -17,10 +17,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 @Data
@@ -54,7 +53,8 @@ public class MagicBook {
             i.getPersistentDataContainer().set(key, PersistentDataType.STRING, "rpgbook");
             i.customName(ColorUtils.chat("&c&k#####"));
             i.setCustomNameVisible(true);
-	        GlowUtils.glow(i, NamedTextColor.RED);
+	        i.setGlowColorOverride(Color.RED);
+			i.setGlowing(true);
         });
     }
 

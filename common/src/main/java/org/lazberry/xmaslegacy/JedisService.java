@@ -100,7 +100,7 @@ public class JedisService implements Initiator {
 
 	public static List<Tuple> zrevrangeWithScores(String key, long start, long stop) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
-		return redisClient.zrangeWithScores(key, start, stop);
+		return redisClient.zrevrangeWithScores(key, start, stop);
 	}
 
 	public static @Nullable Long zrevrank(String key, String member) {

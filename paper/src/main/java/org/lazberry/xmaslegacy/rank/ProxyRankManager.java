@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.rank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.lazberry.xmaslegacy.framework.Initiator;
@@ -11,6 +12,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +38,41 @@ public class ProxyRankManager implements Initiator {
 	public void init() {
 		cachedRanks.clear();
 		updateAll();
+	}
+
+	public Component getUserRankOverview(UUID uuid) {
+		int dollarRank = getRank(RankType.DOLLAR, uuid);
+		int expRank = getRank(RankType.EXP, uuid);
+		int roleExpRank = getRank(RankType.ROLE_EXP, uuid);
+		int playtimeRank = getRank(RankType.PLAYTIME, uuid);
+
+		String name = Bukkit.getOfflinePlayer(uuid).getName();
+		if (name == null) name = "Unknown";
+
+		String formattedMessage = String.format(
+				"""
+						<yellow><b>[ %s 님의 랭킹 정보 ]</b></yellow>
+						<dark_gray>--------------------------------</dark_gray>
+						💰 <gold>자산 랭킹:</gold> %s
+						✨ <green>경험치 랭킹:</green> %s
+						⚔ <red>직업 경험치 랭킹:</red> %s
+						⏳ <aqua>플레이 시간 랭킹:</aqua> %s
+						<dark_gray>--------------------------------</dark_gray>""",
+				name,
+				formatRankString(dollarRank),
+				formatRankString(expRank),
+				formatRankString(roleExpRank),
+				formatRankString(playtimeRank)
+		);
+
+		return ColorUtils.minimessage(formattedMessage);
+	}
+
+	private String formatRankString(int rank) {
+		if (rank <= 0) {
+			return "<gray>순위 권외 (-위)</gray>";
+		}
+		return String.format("<yellow><b>%d</b>위</yellow>", rank);
 	}
 
 	public ArrayList<RankManager.RankData> getRankList(RankType rankType) {
@@ -64,7 +101,7 @@ public class ProxyRankManager implements Initiator {
 			}));
 	}
 
-	private void updateAll() {
+	public void updateAll() {
 		forEachOnlineUsers(rankManager::updateUser);
 	}
 
