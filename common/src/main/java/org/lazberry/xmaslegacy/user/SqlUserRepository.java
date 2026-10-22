@@ -39,9 +39,9 @@ public class SqlUserRepository implements UserRepository {
 				"uuid VARCHAR(36) PRIMARY KEY, " +
 				"name VARCHAR(16), " +
 				"role VARCHAR(20), " +
-				"dollars INT, " +
+				"dollars BIGINT, " +
 				"inquireCount INT, " +
-				"playTime INT, " +
+				"playTime BIGINT, " +
 				"Exp INT, " +
 				"roleExp INT," +
 				"sinPoints INT," +
@@ -78,9 +78,9 @@ public class SqlUserRepository implements UserRepository {
 				Role role = Role.parseRole(rs.getString("role"), ServerRoles.USER);
 
 				User loadedUser = new User(uuid, role, name);
-				loadedUser.setDollars(rs.getInt("dollars"));
+				loadedUser.setDollars(rs.getLong("dollars"));
 				loadedUser.setInquireCount(rs.getInt("inquireCount"));
-				loadedUser.setPlayTime(rs.getInt("playTime"));
+				loadedUser.setPlayTime(rs.getLong("playTime"));
 				loadedUser.setExp(rs.getInt("Exp"));
 				loadedUser.setRoleExp(rs.getInt("roleExp"));
 				loadedUser.setSinPoints(rs.getInt("sinPoints"));
@@ -115,9 +115,9 @@ public class SqlUserRepository implements UserRepository {
 			pstmt.setString(1, user.getUniqueId().toString());
 			pstmt.setString(2, user.getName());
 			pstmt.setString(3, user.getRole().name());
-			pstmt.setInt(4, user.getDollars());
+			pstmt.setLong(4, user.getDollars());
 			pstmt.setInt(5, user.getInquireCount());
-			pstmt.setInt(6, user.getPlayTime());
+			pstmt.setLong(6, user.getPlayTime());
 			pstmt.setInt(7, user.getExp());
 			pstmt.setInt(8, user.getRoleExp());
 			pstmt.setInt(9, user.getSinPoints());

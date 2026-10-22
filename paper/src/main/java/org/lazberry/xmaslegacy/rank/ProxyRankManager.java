@@ -10,6 +10,7 @@ import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -41,6 +42,11 @@ public class ProxyRankManager implements Initiator {
 	}
 
 	public Component getUserRankOverview(UUID uuid) {
+		User user = userManager.getProxyUser(uuid);
+		if (user == null) {
+			return ColorUtils.chat(Alert.RED + "유저 정보를 조회할 수 없습니다.");
+		}
+
 		int dollarRank = getRank(RankType.DOLLAR, uuid);
 		int expRank = getRank(RankType.EXP, uuid);
 		int roleExpRank = getRank(RankType.ROLE_EXP, uuid);
@@ -53,16 +59,20 @@ public class ProxyRankManager implements Initiator {
 				"""
 						<yellow><b>[ %s 님의 랭킹 정보 ]</b></yellow>
 						<dark_gray>--------------------------------</dark_gray>
-						💰 <gold>자산 랭킹:</gold> %s
-						✨ <green>경험치 랭킹:</green> %s
-						⚔ <red>직업 경험치 랭킹:</red> %s
-						⏳ <aqua>플레이 시간 랭킹:</aqua> %s
+						💰 <gold>자산 랭킹:</gold> %s <red>(%d)</red>
+						✨ <green>경험치 랭킹:</green> %s <red>(%d)</red>
+						⚔ <red>직업 경험치 랭킹:</red> %s <red>(%d)</red>
+						⏳ <aqua>플레이 시간 랭킹:</aqua> %s <red>(%d)</red>
 						<dark_gray>--------------------------------</dark_gray>""",
 				name,
 				formatRankString(dollarRank),
+				user.getDollars(),
 				formatRankString(expRank),
+				user.getExp(),
 				formatRankString(roleExpRank),
-				formatRankString(playtimeRank)
+				user.getRoleExp(),
+				formatRankString(playtimeRank),
+				user.getPlayTime()
 		);
 
 		return ColorUtils.minimessage(formattedMessage);

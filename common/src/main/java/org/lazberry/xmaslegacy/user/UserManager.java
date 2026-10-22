@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.roles.Role;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -13,6 +14,7 @@ import org.lazberry.xmaslegacy.framework.ServerType;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static org.lazberry.xmaslegacy.roles.ServerRoles.USER;
 
@@ -33,7 +35,21 @@ public class UserManager {
 	 * @return User instance of target uuid
 	 */
 	public @Nullable User getProxyUser(UUID uuid) {
-		return User.fromJson("user:" + uuid);
+		String json = JedisService.getFromJedis("user:" + uuid);
+		if (json == null || json.isEmpty()) return null;
+
+		return User.fromJson(json);
+	}
+
+	public @Nullable User editProxyUser(UUID uuid, Consumer<User> edit) {
+		var user = getProxyUser(uuid);
+		if (user == null) return null;
+
+		edit.accept(user);
+
+		String json = user.toJson();
+		JedisService.setToJedis("user:" + uuid, json);
+		return user;
 	}
 
 	public Optional<User> getOptionalUser(UUID uuid) {

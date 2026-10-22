@@ -76,9 +76,9 @@ public class UserEmergencyDump {
 	        Role role = Role.parseRole(props.getProperty("role"), ServerRoles.USER);
             User recoveredUser = new User(uuid, role, name);
 
-            recoveredUser.setDollars(Integer.parseInt(props.getProperty("dollars", "0")));
+            recoveredUser.setDollars(Long.parseLong(props.getProperty("dollars", "0")));
             recoveredUser.setInquireCount(Integer.parseInt(props.getProperty("inquireCount", "0")));
-            recoveredUser.setPlayTime(Integer.parseInt(props.getProperty("playTime", "0")));
+            recoveredUser.setPlayTime(Long.parseLong(props.getProperty("playTime", "0")));
             recoveredUser.setExp(Integer.parseInt(props.getProperty("Exp", "0")));
             recoveredUser.setRoleExp(Integer.parseInt(props.getProperty("roleExp", "0")));
             recoveredUser.setSinPoints(Integer.parseInt(props.getProperty("sinPoints", "0")));

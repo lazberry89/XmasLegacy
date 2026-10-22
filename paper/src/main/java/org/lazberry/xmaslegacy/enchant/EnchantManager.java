@@ -19,9 +19,9 @@ import org.jetbrains.annotations.Range;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.enchant.listener.EnchantBrokenPreventedEvent;
 import org.lazberry.xmaslegacy.enchant.listener.EnchantDowngradePreventEvent;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
@@ -44,11 +44,12 @@ public class EnchantManager implements Initiator {
     private static final Component LEVEL_8 = ColorUtils.chat("&e★★★★★★★&6★☆&c☆");
     private static final Component LEVEL_9 = ColorUtils.chat("&e★★★★★★★&6★★&c☆");
     private static final Component LEVEL_10 = ColorUtils.chat("&e★★★★★★★&6★★&c★");
-    private static final Component PRISM = ColorUtils.chat("&#C822FF★&#B22CFC★&#9C36F8★&#853FF5★&#6F49F2★&#5953EE★&#435DEB★&#2C66E8★&#1670E4★&#007AE1★");
     private static final List<Component> LORE_LIST = List.of(
             LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5,
             LEVEL_6, LEVEL_7, LEVEL_8, LEVEL_9, LEVEL_10
     );
+
+    public static final Component PRISM = ColorUtils.chat("&#C822FF★&#B22CFC★&#9C36F8★&#853FF5★&#6F49F2★&#5953EE★&#435DEB★&#2C66E8★&#1670E4★&#007AE1★");
 
     public EnchantManager() {}
 

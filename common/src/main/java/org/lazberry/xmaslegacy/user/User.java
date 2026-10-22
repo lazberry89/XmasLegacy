@@ -43,9 +43,9 @@ public class User {
 	private final @NotNull String lock;
 	private @NotNull String name;
     private @NotNull Role role;
-	private int dollars = 0;
+	private long dollars = 0;
 	private int inquireCount = 0;
-	private int playTime = 0;
+	private long playTime = 0;
 	private int exp = 0;
 	private int roleExp = 0;
 	private int sinPoints = 0;
@@ -89,12 +89,12 @@ public class User {
 	public void setIcingState(int icingState) {
 		this.icingState = Math.clamp(icingState, 0, 100);
 	}
-    public void addDollars(int dollars) {
+    public void addDollars(long dollars) {
 		this.dollars += dollars;
 		if (this.dollars < 0) this.dollars = 0;
 	}
     public void addInquireCount(int inquireCount) {this.inquireCount += inquireCount;}
-    public void addPlayTime(int playTime) {this.playTime += playTime;}
+    public void addPlayTime(long playTime) {this.playTime += playTime;}
     public void wantsCookie(boolean wantsCookie) {this.wantsCookie = wantsCookie;}
     public boolean ifWantsCookie() {return this.wantsCookie;}
     public void addExp(int amount) {this.exp += amount;}

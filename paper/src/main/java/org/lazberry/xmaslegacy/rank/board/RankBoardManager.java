@@ -37,7 +37,13 @@ public class RankBoardManager implements Initiator {
 			rankBoard.spawnOrUpdateDisplay(rankManager.getRankList(rankBoard.getRankType())));
 	}
 
+	private void removeAll() {
+		rankBoards.values().forEach(RankBoard::removeDisplay);
+	}
+
 	public void createRankBoard(RankType type, @NotNull Location loc, int limit) {
+		removeRankBoard(type);
+
 		loc.getChunk().load(true);
 
 		var board = new RankBoard(type, loc, limit);
@@ -46,7 +52,10 @@ public class RankBoardManager implements Initiator {
 	}
 
 	public boolean removeRankBoard(RankType type) {
-		return rankBoards.remove(type) != null;
+		var board = rankBoards.remove(type);
+		if (board == null) return false;
+		board.removeDisplay();
+		return true;
 	}
 
 	public void updateBoard(RankType type) {
@@ -61,6 +70,7 @@ public class RankBoardManager implements Initiator {
     @Override
     public void close() {
         boardConfig.saveSync(rankBoards);
+		removeAll();
 		rankBoards.clear();
     }
 }

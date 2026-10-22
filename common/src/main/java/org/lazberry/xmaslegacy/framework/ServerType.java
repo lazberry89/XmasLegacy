@@ -4,6 +4,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public enum ServerType {
 	GLOBAL("global", true),
 	LOBBY("lobby", true),
@@ -17,6 +19,10 @@ public enum ServerType {
 	ServerType(@NotNull String name, boolean requiresGlobalInitializer) {
 		this.name = name;
 		this.requiresGlobalInitializer = requiresGlobalInitializer;
+	}
+
+	public static List<ServerType> getUserValidServers() {
+		return List.of(MAIN, WILD);
 	}
 
 	/**
