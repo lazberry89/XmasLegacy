@@ -27,7 +27,7 @@ import java.util.UUID;
 		emergency dump class's saving method.
 		""")
 public class User {
-	private static final Gson GSON = new com.google.gson.GsonBuilder()
+	public static final Gson GSON = new com.google.gson.GsonBuilder()
 			.registerTypeAdapter(Role.class, (com.google.gson.JsonSerializer<Role>) (src, typeOfSrc, context) ->
 					new com.google.gson.JsonPrimitive(src.name())
 			)
@@ -39,10 +39,10 @@ public class User {
 			.create();
 
     @EqualsAndHashCode.Include
-    private final @NotNull UUID uniqueId;
-	private final @NotNull String lock;
-	private @NotNull String name;
-    private @NotNull Role role;
+    private final UUID uniqueId;
+	private final String lock;
+	private String name;
+    private Role role;
 	private long dollars = 0;
 	private int inquireCount = 0;
 	private long playTime = 0;
@@ -50,18 +50,18 @@ public class User {
 	private int roleExp = 0;
 	private int sinPoints = 0;
 	private int level = 0;
-    private @NotNull Tier tier = Tier.VISITOR;
-    private @NotNull RoleMastery mastery = RoleMastery.BEGINNER;
+    private Tier tier = Tier.VISITOR;
+    private RoleMastery mastery = RoleMastery.BEGINNER;
     private boolean isMobile = false;
 	private boolean isNewUser = false;
 	private boolean wantsCookie = true;
-	private final @NotNull List<ServerPrefix> availablePrefix = new ArrayList<>(List.of(Tier.VISITOR, Tier.USER, RoleMastery.BEGINNER));
+	private List<ServerPrefix> availablePrefix = new ArrayList<>(List.of(Tier.VISITOR, Tier.USER, RoleMastery.BEGINNER));
 	private @Nullable ServerPrefix equipPrefix = Tier.VISITOR;
     private boolean isImmuneToIcing = false;
 	private int icingState = 100;
 	private boolean showBoard = true;
 
-    public User(@NotNull UUID uuid, @NotNull Role role, @NotNull String name) {
+    public User(UUID uuid, Role role, String name) {
         this.uniqueId = uuid;
 		this.lock = uuid.toString().intern();
 		this.role = role;

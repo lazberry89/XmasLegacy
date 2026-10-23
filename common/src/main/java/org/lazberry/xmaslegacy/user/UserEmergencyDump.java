@@ -8,6 +8,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+
+import static org.lazberry.xmaslegacy.user.User.GSON;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class UserEmergencyDump {
@@ -55,6 +59,9 @@ public class UserEmergencyDump {
         props.setProperty("isImmuneToIcing", String.valueOf(user.isImmuneToIcing()));
         props.setProperty("icingState", String.valueOf(user.getIcingState()));
         props.setProperty("showBoard", String.valueOf(user.isShowBoard()));
+        props.setProperty("isMobile", String.valueOf(user.isMobile()));
+        props.setProperty("availablePrefix", new com.google.gson.Gson().toJson(user.getAvailablePrefix()));
+        props.setProperty("equipPrefix", user.getEquipPrefix() != null ? user.getEquipPrefix().name() : "");
 
         try (FileOutputStream out = new FileOutputStream(dumpFile)) {
             props.store(out, "Emergency Backup for " + user.getName());
@@ -91,6 +98,26 @@ public class UserEmergencyDump {
             recoveredUser.setImmuneToIcing(Boolean.parseBoolean(props.getProperty("isImmuneToIcing", "false")));
             recoveredUser.setIcingState(Integer.parseInt(props.getProperty("icingState", "100")));
             recoveredUser.setShowBoard(Boolean.parseBoolean(props.getProperty("showBoard", "true")));
+
+            recoveredUser.setMobile(Boolean.parseBoolean(props.getProperty("isMobile", "false")));
+
+            String prefixJson = props.getProperty("availablePrefix");
+            if (prefixJson != null && !prefixJson.isEmpty()) {
+                List<ServerPrefix> prefixes = GSON.fromJson(
+                        prefixJson,
+                        new com.google.gson.reflect.TypeToken<List<ServerPrefix>>(){}.getType()
+                );
+                recoveredUser.getAvailablePrefix().clear();
+                recoveredUser.getAvailablePrefix().addAll(prefixes);
+            }
+
+            String equipName = props.getProperty("equipPrefix");
+            if (equipName != null && !equipName.isEmpty()) {
+                ServerPrefix equip = ServerPrefix.parse(equipName, Tier.VISITOR);
+                recoveredUser.setEquipPrefix(equip);
+            } else {
+                recoveredUser.setEquipPrefix(null);
+            }
 
             return recoveredUser;
         } catch (Exception e) {

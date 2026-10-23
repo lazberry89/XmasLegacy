@@ -3,18 +3,22 @@ package org.lazberry.xmaslegacy.user;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.roles.Role;
-import org.lazberry.xmaslegacy.roles.ServerRoles;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.roles.Role;
+import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
-import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.List;
 import java.util.UUID;
+
+import static org.lazberry.xmaslegacy.user.User.GSON;
 
 @Data
 @Registry.Exclude(type = ServerType.LOBBY)
@@ -52,7 +56,10 @@ public class SqlUserRepository implements UserRepository {
 				"mastery VARCHAR(20), " +
 				"isImmuneToIcing BOOLEAN, " +
 				"icingState INT, " +
-				"showBoard BOOLEAN" +
+				"showBoard BOOLEAN, " +
+				"isMobile BOOLEAN, " +
+				"availablePrefix TEXT, " +
+				"equipPrefix VARCHAR(50)" +
 				");";
 
 		try (Connection conn = getConnection();
@@ -95,6 +102,24 @@ public class SqlUserRepository implements UserRepository {
 				loadedUser.setImmuneToIcing(rs.getBoolean("isImmuneToIcing"));
 				loadedUser.setIcingState(rs.getInt("icingState"));
 				loadedUser.setShowBoard(rs.getBoolean("showBoard"));
+				loadedUser.setMobile(rs.getBoolean("isMobile"));
+
+				String prefixJson = rs.getString("availablePrefix");
+				if (prefixJson != null && !prefixJson.isEmpty()) {
+					List<ServerPrefix> prefixes = GSON.fromJson(
+							prefixJson,
+							new com.google.gson.reflect.TypeToken<List<ServerPrefix>>(){}.getType()
+					);
+					loadedUser.getAvailablePrefix().clear();
+					loadedUser.getAvailablePrefix().addAll(prefixes);
+				}
+				String equipName = rs.getString("equipPrefix");
+				if (equipName != null && !equipName.isEmpty()) {
+					ServerPrefix equip = ServerPrefix.parse(equipName, Tier.VISITOR);
+					loadedUser.setEquipPrefix(equip);
+				} else {
+					loadedUser.setEquipPrefix(null);
+				}
 
 				return loadedUser;
 			}
@@ -107,7 +132,7 @@ public class SqlUserRepository implements UserRepository {
 	@Override
 	public void saveUser(@NotNull User user) {
 		String sql = "REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = getConnection();
 		     PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -129,6 +154,15 @@ public class SqlUserRepository implements UserRepository {
 			pstmt.setBoolean(15, user.isImmuneToIcing());
 			pstmt.setInt(16, user.getIcingState());
 			pstmt.setBoolean(17, user.isShowBoard());
+			pstmt.setBoolean(18, user.isMobile());
+
+			String prefixJson = GSON.toJson(user.getAvailablePrefix());
+			pstmt.setString(19, prefixJson);
+			if (user.getEquipPrefix() != null) {
+				pstmt.setString(20, user.getEquipPrefix().name());
+			} else {
+				pstmt.setNull(20, java.sql.Types.VARCHAR);
+			}
 
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
