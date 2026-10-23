@@ -144,9 +144,4 @@ public class JedisService implements Initiator {
 	public static void closeJedis() {
 		if (redisClient != null) redisClient.close();
 	}
-
-	@Override
-	public void close() {
-		closeJedis();
-	}
 }

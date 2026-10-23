@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.enchant.transcendence.ability.Ability;
+import org.lazberry.xmaslegacy.enchant.transcendence.ability.AbilityType;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.SonicHunter;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -27,7 +29,8 @@ public class SonicHunterListener implements Listener {
         if (!(e.getEntity() instanceof LivingEntity victim)) return;
 
         var weapon = attacker.getInventory().getItemInMainHand();
-        if (sonicHunter.isAbilityWeapon(weapon) && sonicHunter.isFeared(victim)) {
+        if (Ability.isAbilityWeapon(weapon, AbilityType.SonicHunter)
+		        && sonicHunter.isFeared(victim)) {
             e.setDamage(e.getDamage() * 1.5);
         }
     }

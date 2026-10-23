@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.user;
 
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Blocking;
+import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.Initiator;
@@ -37,5 +38,6 @@ public class UserAdditionalSaveManager implements Initiator {
     public void close() {
         userSaveManager.saveAll();
         userSaveManager.clearCache();
+	    JedisService.closeJedis();
     }
 }

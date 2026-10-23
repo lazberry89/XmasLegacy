@@ -189,7 +189,7 @@ public class EnchantManager implements Initiator {
 		return 1.0;
 	}
 
-	private void updateItemBuffs(@NotNull ItemStack item, int lvl) {
+	public void updateItemBuffs(@NotNull ItemStack item, int lvl) {
 		if (lvl < 1 || lvl - 1 >= Constants.ENCHANT_MULTIPLIERS.size()) return;
 
 		Material type = item.getType();
@@ -275,7 +275,7 @@ public class EnchantManager implements Initiator {
 		return 0.0;
 	}
 
-    private void applyLevelChange(@NotNull ItemStack item, int newLvl) {
+    public void applyLevelChange(@NotNull ItemStack item, int newLvl) {
         editTag(item, newLvl);
 
         item.editMeta(meta -> {

@@ -51,7 +51,7 @@ public class EconomyManager {
         return false;
     }
 
-    public int checkBalance(@NotNull UUID uuid) {
+    public long checkBalance(@NotNull UUID uuid) {
 		User user = um.getUser(uuid);
 	    return (user != null) ? user.getDollars() : 0;
     }
@@ -69,7 +69,7 @@ public class EconomyManager {
 		var user = um.getUser(uuid);
 		if (user == null) return false;
 
-        int userMoney = user.getDollars();
+        long userMoney = user.getDollars();
         return userMoney >= amount;
     }
 

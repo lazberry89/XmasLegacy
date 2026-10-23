@@ -6,6 +6,7 @@ import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,8 +25,8 @@ public class SonicHunter extends Ability {
     public static final NamespacedKey feared = KeyUtils.get("feared");
 
     @Inject
-    public SonicHunter(AbilityManager abilityManager) {
-        super(abilityManager, AbilityType.SonicHunter);
+    public SonicHunter(EnchantManager enchantManager) {
+        super(enchantManager, AbilityType.SonicHunter);
     }
 
     @Override
@@ -33,12 +34,14 @@ public class SonicHunter extends Ability {
         var builder = OraxenItems.getItemById("echo_reaver");
         ItemStack item = builder == null ?
                 new ItemStack(getAbilityType().getTranscendenceMaterial()) : builder.build();
+		getEnchantManager().setEnchantable(item);
+		getEnchantManager().applyLevelChange(item, 10);
         return ItemBuilder.of(getPlugin(), item)
                 .name(ColorUtils.chat("&#0021E1&lE&#0B34E2&lc&#1647E3&lh&#215BE4&lo&#2C6EE5&lR" +
                         "&#3681E5&le&#4194E6&la&#4CA8E7&lv&#57BBE8&le&#62CEE9&lr"))
                 .lore(EnchantManager.PRISM,
                         ColorUtils.chat("&7초월함: SonicHunter"))
-                .setTag(key, getAbilityType().name())
+                .setTag(key, PersistentDataType.STRING, getAbilityType().name())
                 .hideAllFlags()
                 .setGlint(true)
                 .build();
