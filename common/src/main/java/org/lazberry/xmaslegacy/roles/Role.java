@@ -60,8 +60,8 @@ public interface Role {
      * @param def default value to use as failure return.
      * @return target value, default when failed.
      */
-    @Contract(value = "_, !null -> !null; _, null -> _", pure = true)
-    static Role parseRole(@NotNull String name, Role def) {
+    static Role parseRole(String name, Role def) {
+		if (name == null) return def;
         Role result;
         try {
             result = valueOf(name);

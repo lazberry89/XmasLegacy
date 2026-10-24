@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.enchant.transcendence.ability;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,18 +12,20 @@ import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.ParseEnum;
 
+@Slf4j
 @Getter
 @ConsumableClass
 public abstract class Ability {
     public static final NamespacedKey key = KeyUtils.get("ability");
+
 	private final EnchantManager enchantManager;
     private final AbilityType abilityType;
     private final XmasLegacy plugin;
 
-    public Ability(EnchantManager enchantManager, AbilityType abilityType) {
+    public Ability(EnchantManager enchantManager, XmasLegacy plugin, AbilityType abilityType) {
 	    this.enchantManager = enchantManager;
 	    this.abilityType = abilityType;
-        this.plugin = XmasLegacy.getInstance();
+        this.plugin = plugin;
     }
 
     public static boolean isAbilityWeapon(ItemStack item) {
@@ -34,10 +37,11 @@ public abstract class Ability {
 	}
 
 	public static AbilityType getAbilityByItem(ItemStack item) {
-		return ParseEnum.of(AbilityType.class).parse(KeyUtils.get(item, key, PersistentDataType.STRING));
+		String value = KeyUtils.get(item, key, String.class);
+		return ParseEnum.of(AbilityType.class).parse(value);
 	}
 
     public abstract ItemStack weapon();
-    public abstract void execute(Player p);
-    public abstract void projectile(Player p);
+    public abstract boolean execute(Player p);
+    public abstract boolean projectile(Player p);
 }

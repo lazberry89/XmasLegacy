@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.enchant.transcendence.ability;
+package org.lazberry.xmaslegacy.enchant.transcendence.ability.logic;
 
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -6,27 +6,24 @@ import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.enchant.EnchantManager;
-import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.enchant.transcendence.ability.Ability;
+import org.lazberry.xmaslegacy.enchant.transcendence.ability.AbilityType;
 import org.lazberry.xmaslegacy.utils.*;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
-@Registry.Exclude(type = ServerType.LOBBY)
 public class SonicHunter extends Ability {
     public static final NamespacedKey feared = KeyUtils.get("feared");
 
-    @Inject
-    public SonicHunter(EnchantManager enchantManager) {
-        super(enchantManager, AbilityType.SonicHunter);
+    public SonicHunter(EnchantManager enchantManager, XmasLegacy plugin) {
+        super(enchantManager, plugin, AbilityType.SONIC_HUNTER);
     }
 
     @Override
@@ -36,21 +33,23 @@ public class SonicHunter extends Ability {
                 new ItemStack(getAbilityType().getTranscendenceMaterial()) : builder.build();
 		getEnchantManager().setEnchantable(item);
 		getEnchantManager().applyLevelChange(item, 10);
-        return ItemBuilder.of(getPlugin(), item)
+        var result = ItemBuilder.of(getPlugin(), item)
                 .name(ColorUtils.chat("&#0021E1&lE&#0B34E2&lc&#1647E3&lh&#215BE4&lo&#2C6EE5&lR" +
                         "&#3681E5&le&#4194E6&la&#4CA8E7&lv&#57BBE8&le&#62CEE9&lr"))
                 .lore(EnchantManager.PRISM,
-                        ColorUtils.chat("&7초월함: SonicHunter"))
-                .setTag(key, PersistentDataType.STRING, getAbilityType().name())
-                .hideAllFlags()
+                        ColorUtils.chat("&7초월: SonicHunter"))
                 .setGlint(true)
                 .build();
+		KeyUtils.set(result, key, getAbilityType().name());
+		return result;
     }
 
     @Override
-    public void execute(Player p) {
+    public boolean execute(Player p) {
         var target = p.getTargetEntity(15, true);
-        if (!(target instanceof LivingEntity lv)) return;
+        if (!(target instanceof LivingEntity lv)) return false;
+
+		p.playSound(p, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 0.4f);
 
         lv.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS,
                 20 * 5, 2, true, false, false));
@@ -66,6 +65,7 @@ public class SonicHunter extends Ability {
             KeyUtils.remove(lv, feared);
             GlowUtils.clearGlow(lv);
         }, 20 * 5);
+		return true;
     }
 
     public boolean isFeared(LivingEntity lv) {
@@ -90,9 +90,10 @@ public class SonicHunter extends Ability {
     }
 
     @Override
-    public void projectile(Player p) {
+    public boolean projectile(Player p) {
         stunNearbyWhenProjectileExecuted(p);
         shootInstantSonicBoom(p);
+		return true;
     }
 
     private void shootInstantSonicBoom(Player player) {
@@ -101,7 +102,7 @@ public class SonicHunter extends Ability {
 
         player.getWorld().playSound(start, org.bukkit.Sound.ENTITY_WARDEN_SONIC_BOOM, 1.0f, 1.0f);
 
-        for (double d = 0; d <= 30.0; d += 0.7) {
+        for (double d = 0; d <= 60.0; d += 0.9) {
             Location loc = start.clone().add(dir.clone().multiply(d));
             onHitSonicBoom(player, loc);
             loc.getWorld().spawnParticle(Particle.SONIC_BOOM, loc, 1, 0, 0, 0, 0);
@@ -111,11 +112,13 @@ public class SonicHunter extends Ability {
     private void onHitSonicBoom(Player executor, Location loc) {
         loopAroundEntities(executor, loc, 1, lv -> {
             lv.damage(10, executor);
-            Vector vector = loc.getDirection().subtract(executor.getVelocity());
+            Vector vector = lv.getLocation().toVector().subtract(loc.toVector());
             vector.normalize();
+			vector.setY(0.5);
             vector.multiply(1.2);
 
-            executor.setVelocity(vector);
+            lv.setVelocity(vector);
+			executor.playSound(executor, Sound.ENTITY_ARROW_HIT_PLAYER, 0.5f, 1.0f);
         });
     }
 

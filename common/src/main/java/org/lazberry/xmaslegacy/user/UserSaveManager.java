@@ -54,22 +54,31 @@ public class UserSaveManager {
 		if (loaded == null) {
 			loaded = new User(uuid, ServerRoles.USER, name);
 			loaded.setNewUser(true);
+			loaded.setMobile(isFloodgate);
 			if (isFloodgate) loaded.addDollars(5000);
 			else loaded.addDollars(2500);
 
 			synchronized (loaded.getLock()) {
-				repository.saveUser(loaded);
-				JedisService.setToJedis("user:" + uuid, loaded.toJson());
-			}
-		} else if (restoredFromDump) {
-			try {
-				synchronized (loaded.getLock()) {
+				try {
 					repository.saveUser(loaded);
 					JedisService.setToJedis("user:" + uuid, loaded.toJson());
-					dump.deleteLocalEmergencyFile(uuid);
+				} catch (Exception e) {
+					log.error("Failed to save new user {}", uuid, e);
+					dump.threadDump(loaded);
 				}
-			} catch (Exception e) {
-				log.error("Failed to sync restored user {} back to DB.", uuid, e);
+			}
+		} else {
+			loaded.setMobile(isFloodgate);
+			if (restoredFromDump) {
+				try {
+					synchronized (loaded.getLock()) {
+						repository.saveUser(loaded);
+						JedisService.setToJedis("user:" + uuid, loaded.toJson());
+						dump.deleteLocalEmergencyFile(uuid);
+					}
+				} catch (Exception e) {
+					log.error("Failed to sync restored user {} back to DB.", uuid, e);
+				}
 			}
 		}
 

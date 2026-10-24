@@ -15,8 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.lazberry.xmaslegacy.user.User.GSON;
 
@@ -62,11 +61,76 @@ public class SqlUserRepository implements UserRepository {
 				"equipPrefix VARCHAR(50)" +
 				");";
 
-		try (Connection conn = getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
-			 stmt.execute();
+		try (Connection conn = getConnection()) {
+			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+				stmt.execute();
+			}
+			migrateColumns(conn);
 		} catch (SQLException e) {
 			log.error("Error occurred while Creating Table Task -> {}", e.getMessage(), e);
+		}
+	}
+
+	private void migrateColumns(@NotNull Connection conn) {
+		Set<String> existingColumns = new HashSet<>();
+		try {
+			DatabaseMetaData meta = conn.getMetaData();
+			try (ResultSet rs = meta.getColumns(conn.getCatalog(), null, "users", "%")) {
+				while (rs.next()) {
+					existingColumns.add(rs.getString("COLUMN_NAME").toLowerCase());
+				}
+			}
+		} catch (SQLException e) {
+			log.warn("Failed to retrieve columns via DatabaseMetaData: {}", e.getMessage());
+		}
+
+		if (existingColumns.isEmpty()) {
+			try (Statement stmt = conn.createStatement();
+			     ResultSet rs = stmt.executeQuery("SHOW COLUMNS FROM users")) {
+				while (rs.next()) {
+					existingColumns.add(rs.getString("Field").toLowerCase());
+				}
+			} catch (SQLException e) {
+				log.warn("Failed to retrieve columns via SHOW COLUMNS: {}", e.getMessage());
+			}
+		}
+
+		Map<String, String> requiredColumns = new LinkedHashMap<>();
+		requiredColumns.put("name", "VARCHAR(16)");
+		requiredColumns.put("role", "VARCHAR(20)");
+		requiredColumns.put("dollars", "BIGINT DEFAULT 0");
+		requiredColumns.put("inquireCount", "INT DEFAULT 0");
+		requiredColumns.put("playTime", "BIGINT DEFAULT 0");
+		requiredColumns.put("Exp", "INT DEFAULT 0");
+		requiredColumns.put("roleExp", "INT DEFAULT 0");
+		requiredColumns.put("sinPoints", "INT DEFAULT 0");
+		requiredColumns.put("level", "INT DEFAULT 0");
+		requiredColumns.put("isNewUser", "BOOLEAN DEFAULT FALSE");
+		requiredColumns.put("wantsCookie", "BOOLEAN DEFAULT TRUE");
+		requiredColumns.put("tier", "VARCHAR(20) DEFAULT 'VISITOR'");
+		requiredColumns.put("mastery", "VARCHAR(20) DEFAULT 'BEGINNER'");
+		requiredColumns.put("isImmuneToIcing", "BOOLEAN DEFAULT FALSE");
+		requiredColumns.put("icingState", "INT DEFAULT 100");
+		requiredColumns.put("showBoard", "BOOLEAN DEFAULT TRUE");
+		requiredColumns.put("isMobile", "BOOLEAN DEFAULT FALSE");
+		requiredColumns.put("availablePrefix", "TEXT");
+		requiredColumns.put("equipPrefix", "VARCHAR(50)");
+
+		for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
+			String column = entry.getKey();
+			String definition = entry.getValue();
+			if (!existingColumns.contains(column.toLowerCase())) {
+				String alterSql = "ALTER TABLE users ADD COLUMN " + column + " " + definition;
+				try (Statement alterStmt = conn.createStatement()) {
+					alterStmt.executeUpdate(alterSql);
+					log.info("Successfully added missing column '{}' to table 'users'.", column);
+				} catch (SQLException e) {
+					// 1060: Duplicate column name (if column was already present)
+					if (e.getErrorCode() != 1060 && (e.getMessage() == null || !e.getMessage().contains("Duplicate column"))) {
+						log.error("Failed to add missing column '{}' to table 'users': {}", column, e.getMessage(), e);
+					}
+				}
+			}
 		}
 	}
 
@@ -81,39 +145,53 @@ public class SqlUserRepository implements UserRepository {
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) { // 데이터가 존재한다면
-				String name = rs.getString("name");
-				Role role = Role.parseRole(rs.getString("role"), ServerRoles.USER);
+				String name = getStringSafe(rs, "name", "Unknown");
+				Role role = Role.parseRole(getStringSafe(rs, "role", ServerRoles.USER.name()), ServerRoles.USER);
 
 				User loadedUser = new User(uuid, role, name);
-				loadedUser.setDollars(rs.getLong("dollars"));
-				loadedUser.setInquireCount(rs.getInt("inquireCount"));
-				loadedUser.setPlayTime(rs.getLong("playTime"));
-				loadedUser.setExp(rs.getInt("Exp"));
-				loadedUser.setRoleExp(rs.getInt("roleExp"));
-				loadedUser.setSinPoints(rs.getInt("sinPoints"));
-				loadedUser.setLevel(rs.getInt("level"));
-				loadedUser.setNewUser(rs.getBoolean("isNewUser"));
-				loadedUser.wantsCookie(rs.getBoolean("wantsCookie"));
+				loadedUser.setDollars(getLongSafe(rs, "dollars", 0L));
+				loadedUser.setInquireCount(getIntSafe(rs, "inquireCount", 0));
+				loadedUser.setPlayTime(getLongSafe(rs, "playTime", 0L));
+				loadedUser.setExp(getIntSafe(rs, "Exp", 0));
+				loadedUser.setRoleExp(getIntSafe(rs, "roleExp", 0));
+				loadedUser.setSinPoints(getIntSafe(rs, "sinPoints", 0));
+				loadedUser.setLevel(getIntSafe(rs, "level", 0));
+				loadedUser.setNewUser(getBooleanSafe(rs, "isNewUser", false));
+				loadedUser.wantsCookie(getBooleanSafe(rs, "wantsCookie", true));
 
-				Tier tier = Tier.valueOf(rs.getString("tier"));
-				RoleMastery mastery = RoleMastery.valueOf(rs.getString("mastery"));
+				String tierStr = getStringSafe(rs, "tier", Tier.VISITOR.name());
+				Tier tier = Tier.VISITOR;
+				try {
+					tier = Tier.valueOf(tierStr);
+				} catch (IllegalArgumentException ignored) {}
+
+				String masteryStr = getStringSafe(rs, "mastery", RoleMastery.BEGINNER.name());
+				RoleMastery mastery = RoleMastery.BEGINNER;
+				try {
+					mastery = RoleMastery.valueOf(masteryStr);
+				} catch (IllegalArgumentException ignored) {}
+
 				loadedUser.setTier(tier);
 				loadedUser.setMastery(mastery);
-				loadedUser.setImmuneToIcing(rs.getBoolean("isImmuneToIcing"));
-				loadedUser.setIcingState(rs.getInt("icingState"));
-				loadedUser.setShowBoard(rs.getBoolean("showBoard"));
-				loadedUser.setMobile(rs.getBoolean("isMobile"));
+				loadedUser.setImmuneToIcing(getBooleanSafe(rs, "isImmuneToIcing", false));
+				loadedUser.setIcingState(getIntSafe(rs, "icingState", 100));
+				loadedUser.setShowBoard(getBooleanSafe(rs, "showBoard", true));
+				loadedUser.setMobile(getBooleanSafe(rs, "isMobile", false));
 
-				String prefixJson = rs.getString("availablePrefix");
+				String prefixJson = getStringSafe(rs, "availablePrefix", null);
 				if (prefixJson != null && !prefixJson.isEmpty()) {
-					List<ServerPrefix> prefixes = GSON.fromJson(
-							prefixJson,
-							new com.google.gson.reflect.TypeToken<List<ServerPrefix>>(){}.getType()
-					);
-					loadedUser.getAvailablePrefix().clear();
-					loadedUser.getAvailablePrefix().addAll(prefixes);
+					try {
+						List<ServerPrefix> prefixes = GSON.fromJson(
+								prefixJson,
+								new com.google.gson.reflect.TypeToken<List<ServerPrefix>>(){}.getType()
+						);
+						loadedUser.getAvailablePrefix().clear();
+						loadedUser.getAvailablePrefix().addAll(prefixes);
+					} catch (Exception e) {
+						log.warn("Failed to parse availablePrefix for user {}: {}", uuid, e.getMessage());
+					}
 				}
-				String equipName = rs.getString("equipPrefix");
+				String equipName = getStringSafe(rs, "equipPrefix", null);
 				if (equipName != null && !equipName.isEmpty()) {
 					ServerPrefix equip = ServerPrefix.parse(equipName, Tier.VISITOR);
 					loadedUser.setEquipPrefix(equip);
@@ -129,6 +207,39 @@ public class SqlUserRepository implements UserRepository {
 		return null;
 	}
 
+	private boolean getBooleanSafe(@NotNull ResultSet rs, @NotNull String column, boolean def) {
+		try {
+			return rs.getBoolean(column);
+		} catch (SQLException e) {
+			return def;
+		}
+	}
+
+	private int getIntSafe(@NotNull ResultSet rs, @NotNull String column, int def) {
+		try {
+			return rs.getInt(column);
+		} catch (SQLException e) {
+			return def;
+		}
+	}
+
+	private long getLongSafe(@NotNull ResultSet rs, @NotNull String column, long def) {
+		try {
+			return rs.getLong(column);
+		} catch (SQLException e) {
+			return def;
+		}
+	}
+
+	private @Nullable String getStringSafe(@NotNull ResultSet rs, @NotNull String column, @Nullable String def) {
+		try {
+			String val = rs.getString(column);
+			return val != null ? val : def;
+		} catch (SQLException e) {
+			return def;
+		}
+	}
+
 	@Override
 	public void saveUser(@NotNull User user) {
 		String sql = "REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard, isMobile, availablePrefix, equipPrefix) " +
@@ -139,7 +250,7 @@ public class SqlUserRepository implements UserRepository {
 
 			pstmt.setString(1, user.getUniqueId().toString());
 			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getRole().name());
+			pstmt.setString(3, user.getRole() != null ? user.getRole().name() : ServerRoles.USER.name());
 			pstmt.setLong(4, user.getDollars());
 			pstmt.setInt(5, user.getInquireCount());
 			pstmt.setLong(6, user.getPlayTime());
@@ -149,8 +260,8 @@ public class SqlUserRepository implements UserRepository {
 			pstmt.setInt(10, user.getLevel());
 			pstmt.setBoolean(11, user.isNewUser());
 			pstmt.setBoolean(12, user.ifWantsCookie());
-			pstmt.setString(13, user.getTier().name());
-			pstmt.setString(14, user.getMastery().name());
+			pstmt.setString(13, user.getTier() != null ? user.getTier().name() : Tier.VISITOR.name());
+			pstmt.setString(14, user.getMastery() != null ? user.getMastery().name() : RoleMastery.BEGINNER.name());
 			pstmt.setBoolean(15, user.isImmuneToIcing());
 			pstmt.setInt(16, user.getIcingState());
 			pstmt.setBoolean(17, user.isShowBoard());
@@ -167,6 +278,7 @@ public class SqlUserRepository implements UserRepository {
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			log.error("sql error while saving User -> {}", e.getMessage(), e);
+			throw new RuntimeException("sql error while saving User", e);
 		}
 	}
 

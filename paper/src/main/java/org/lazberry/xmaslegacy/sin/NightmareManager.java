@@ -161,12 +161,12 @@ public class NightmareManager implements Initiator {
 
     @Override
     public void close() {
-        unregisterTeam();
 		originalSkinCache.keySet().stream()
 				.map(Bukkit::getPlayer)
 				.filter(Objects::nonNull)
 				.filter(Player::isValid)
 				.forEach(this::cleanup);
 		originalSkinCache.clear();
+        unregisterTeam();
     }
 }

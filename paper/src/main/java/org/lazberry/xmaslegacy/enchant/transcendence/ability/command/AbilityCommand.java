@@ -34,7 +34,7 @@ public class AbilityCommand implements CommandExecutor, TabCompleter {
 		if (!(sender instanceof Player p)) return true;
 		if (args.length >= 1) {
 			String name = args[0].toUpperCase();
-			AbilityType type = ParseEnum.of(AbilityType.class).parseOrDefault(name, AbilityType.SonicHunter);
+			AbilityType type = ParseEnum.of(AbilityType.class).parseOrDefault(name, AbilityType.SONIC_HUNTER);
 			Ability ability = abilityManager.getAbility(type);
 			InventoryHelper.giveItemOrDrop(p, ability.weapon());
 		}

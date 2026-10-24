@@ -93,8 +93,19 @@ public class UserEmergencyDump {
             recoveredUser.setNewUser(Boolean.parseBoolean(props.getProperty("isNewUser", "false")));
             recoveredUser.wantsCookie(Boolean.parseBoolean(props.getProperty("wantsCookie", "false")));
 
-            recoveredUser.setTier(Tier.valueOf(props.getProperty("tier", "BRONZE")));
-            recoveredUser.setMastery(RoleMastery.valueOf(props.getProperty("mastery", "BEGINNER")));
+            String tierProp = props.getProperty("tier", Tier.VISITOR.name());
+            try {
+                recoveredUser.setTier(Tier.valueOf(tierProp));
+            } catch (IllegalArgumentException e) {
+                recoveredUser.setTier(Tier.VISITOR);
+            }
+
+            String masteryProp = props.getProperty("mastery", RoleMastery.BEGINNER.name());
+            try {
+                recoveredUser.setMastery(RoleMastery.valueOf(masteryProp));
+            } catch (IllegalArgumentException e) {
+                recoveredUser.setMastery(RoleMastery.BEGINNER);
+            }
             recoveredUser.setImmuneToIcing(Boolean.parseBoolean(props.getProperty("isImmuneToIcing", "false")));
             recoveredUser.setIcingState(Integer.parseInt(props.getProperty("icingState", "100")));
             recoveredUser.setShowBoard(Boolean.parseBoolean(props.getProperty("showBoard", "true")));
