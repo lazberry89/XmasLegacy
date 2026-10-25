@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.enchant.transcendence.ability;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.enchant.EnchantManager;
 import org.lazberry.xmaslegacy.framework.ServerType;

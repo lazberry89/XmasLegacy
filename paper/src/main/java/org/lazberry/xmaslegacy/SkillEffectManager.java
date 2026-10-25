@@ -22,17 +22,17 @@ import java.util.UUID;
 
 @Registry
 public class SkillEffectManager {
-    private final @NotNull XmasLegacy plugin;
-    private final @NotNull Set<UUID> immuneToKnockback = new HashSet<>();
-    private final @NotNull Set<UUID> immuneToDebuff = new HashSet<>();
-    private final @NotNull Set<LivingEntity> hideMap = new HashSet<>();
+    private final XmasLegacy plugin;
+    private final Set<UUID> immuneToKnockback = new HashSet<>();
+    private final Set<UUID> immuneToDebuff = new HashSet<>();
+    private final Set<LivingEntity> hideMap = new HashSet<>();
 
 	@Inject
-    public SkillEffectManager(@NotNull XmasLegacy plugin) {
+    public SkillEffectManager(XmasLegacy plugin) {
 		this.plugin = plugin;
     }
 
-    public void setImmuneToKnockback(@NotNull UUID uuid, boolean flag) {
+    public void setImmuneToKnockback(UUID uuid, boolean flag) {
         if (flag) this.immuneToKnockback.add(uuid);
         else this.immuneToKnockback.remove(uuid);
     }
@@ -113,10 +113,9 @@ public class SkillEffectManager {
         target.setVelocity(direction);
     }
 
-    public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points) {
+    public static void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points) {
         int finalPoints = (points == null) ? 20 : points;
         if (animated) {
-            // 💡 비동기 스레드 안전성을 위해 스캔할 위치를 클론하여 고정 상수로 보존
             final Location fixedLoc = loc.clone();
             new BukkitRunnable() {
                 double angle = 0;
@@ -129,7 +128,7 @@ public class SkillEffectManager {
 
                     if (angle >= 2 * Math.PI) this.cancel();
                 }
-            }.runTaskTimerAsynchronously(plugin, 0L, 1L);
+            }.runTaskTimerAsynchronously(XmasLegacy.getInstance(), 0L, 1L);
         } else {
             for (int i = 0; i < finalPoints; i++) {
                 double angle = i * ((2 * Math.PI) / finalPoints);
@@ -138,7 +137,7 @@ public class SkillEffectManager {
         }
     }
 
-    public void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points, Particle.DustOptions dust) {
+    public static void drawCircularLine(Location loc, Particle particle, double radius, boolean animated, @Nullable Integer points, Particle.DustOptions dust) {
         int finalPoints = (points == null) ? 20 : points;
 
         if (animated) {
@@ -154,7 +153,7 @@ public class SkillEffectManager {
 
                     if (angle >= 2 * Math.PI) this.cancel();
                 }
-            }.runTaskTimerAsynchronously(plugin, 0L, 1L);
+            }.runTaskTimerAsynchronously(XmasLegacy.getInstance(), 0L, 1L);
         } else {
             for (int i = 0; i < finalPoints; i++) {
                 double angle = i * ((2 * Math.PI) / finalPoints);
@@ -163,14 +162,14 @@ public class SkillEffectManager {
         }
     }
 
-    private void spawnCircularParticle(Location center, Particle particle, double radius, double angle) {
+    private static void spawnCircularParticle(Location center, Particle particle, double radius, double angle) {
         double x = Math.cos(angle) * radius;
         double z = Math.sin(angle) * radius;
         Location particleLoc = center.clone().add(x, 0.5, z);
         center.getWorld().spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0);
     }
 
-    private void spawnCircularParticle(Location center, Particle particle, double radius, double angle, Particle.DustOptions dust) {
+    private static void spawnCircularParticle(Location center, Particle particle, double radius, double angle, Particle.DustOptions dust) {
         double x = Math.cos(angle) * radius;
         double z = Math.sin(angle) * radius;
         Location particleLoc = center.clone().add(x, 0.5, z);

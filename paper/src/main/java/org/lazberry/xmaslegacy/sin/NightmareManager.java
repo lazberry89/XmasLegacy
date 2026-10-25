@@ -17,6 +17,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -137,18 +138,44 @@ public class NightmareManager implements Initiator {
 		}
 	}
 
+	/**
+	 * Refreshes the player's skin for all online players.
+	 * Also handles self-view by temporarily hiding this player from all
+	 * players and re-showing them including via the player's own client
+	 * perspective using a delayed task.
+	 *
+	 * <p>Note: Minecraft clients don't receive their own skin update
+	 * via setPlayerProfile alone — they need a hide+show cycle too.
+	 */
 	public void refreshView(Player player) {
-		for (Player online : Bukkit.getOnlinePlayers()) {
-			if (online.equals(player)) continue;
+		// Snapshot the current online list to avoid ConcurrentModificationException in the delayed task
+		List<Player> onlinePlayers = List.copyOf(Bukkit.getOnlinePlayers());
 
+		for (Player online : onlinePlayers) {
 			online.hidePlayer(plugin, player);
-
-			Bukkit.getScheduler().runTaskLater(plugin, () -> {
-				if (online.isOnline() && player.isOnline()) {
-					online.showPlayer(plugin, player);
-				}
-			}, 1L);
 		}
+
+		// Also hide all others from the target player so they see themselves re-rendered
+		for (Player online : onlinePlayers) {
+			if (!online.equals(player)) {
+				player.hidePlayer(plugin, online);
+			}
+		}
+
+		// Use 3-tick delay for packet stability (1 tick was often too short)
+		Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			if (!player.isOnline()) return;
+
+			for (Player online : onlinePlayers) {
+				if (!online.isOnline()) continue;
+				// Show the target player to everyone (including self via tab list)
+				online.showPlayer(plugin, player);
+				// And show everyone else back to the target player
+				if (!online.equals(player)) {
+					player.showPlayer(plugin, online);
+				}
+			}
+		}, 3L);
 	}
 
 	public void restoreFromMojang(Player player) {

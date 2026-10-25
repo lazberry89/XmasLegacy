@@ -73,8 +73,12 @@ public class BagManager implements Initiator {
 				.collect(Collectors.toList());
 	}
 
+	public void clear() {
+		bags.clear();
+	}
+
 	@Override
 	public void close() {
-		bags.clear();
+		// Do not clear bags here to prevent data loss before BagSaveManager.close() persists data to DB/Redis.
 	}
 }

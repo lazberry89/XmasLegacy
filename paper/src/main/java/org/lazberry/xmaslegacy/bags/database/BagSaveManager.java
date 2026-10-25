@@ -38,7 +38,14 @@ public class BagSaveManager implements Initiator {
     private void loadBagsOnLoad() {
         Bukkit.getOnlinePlayers().forEach(player -> {
             var uuid = player.getUniqueId();
-            bagRepository.load(uuid).join();
+            try {
+                Bag bag = loadBag(uuid).join();
+                if (bag != null) {
+                    bagManager.setUserBag(uuid, bag);
+                }
+            } catch (Exception e) {
+                log.error("Failed to load bag for online player {} during reload", player.getName(), e);
+            }
         });
     }
 
@@ -117,5 +124,6 @@ public class BagSaveManager implements Initiator {
     @Override
     public void close() {
         saveOnlinePlayer();
+        bagManager.clear();
     }
 }

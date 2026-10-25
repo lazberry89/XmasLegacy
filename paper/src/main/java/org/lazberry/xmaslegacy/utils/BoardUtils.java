@@ -106,6 +106,7 @@ public final class BoardUtils {
 			this.lines.put(i, team);
 		}
 
+		GlowUtils.syncGlowsToScoreboard(this.scoreboard);
 		player.setScoreboard(this.scoreboard);
 	}
 

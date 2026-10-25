@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.lazberry.xmaslegacy.SkillEffectManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.enchant.EnchantManager;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.Ability;
@@ -60,7 +61,6 @@ public class FlameWeaver extends Ability {
 		p.setAllowFlight(true);
 		p.setFlying(true);
 
-
 		var vector = p.getLocation().getDirection().normalize();
 		vector.multiply(2);
 		vector.setY(2.5f);
@@ -73,9 +73,14 @@ public class FlameWeaver extends Ability {
 			@Override
 			public void run() {
 				if (p.isDead() || !p.isValid()) {
+					p.setAllowFlight(p.getGameMode() == GameMode.CREATIVE);
+					p.setFlying(false);
 					this.cancel();
 					return;
 				}
+				p.setAllowFlight(true);
+				p.setFlying(true);
+
 				var reuse = new Location(world, 0, 0, 0);
 				var loc = p.getLocation(reuse);
 
@@ -90,8 +95,8 @@ public class FlameWeaver extends Ability {
 							l -> isTarget(p, l));
 					applyRangeEffect(p, targets);
 
+					p.setAllowFlight(p.getGameMode() == GameMode.CREATIVE);
 					p.setFlying(false);
-					p.setAllowFlight(false);
 					return;
 				}
 
@@ -106,9 +111,11 @@ public class FlameWeaver extends Ability {
 		if (targets.isEmpty()) {
 			attacker.sendActionBar(ColorUtils.chat("&c타켓 탐색 실패!"));
 			attacker.playSound(attacker, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
+			attacker.damage(5, attacker);
 			return;
 		}
 		var world = attacker.getWorld();
+		SkillEffectManager.drawCircularLine(attacker.getLocation(), Particle.FLAME, 10, false, 200);
 
 		int i = 0;
 		for (LivingEntity target : targets) {
@@ -143,7 +150,7 @@ public class FlameWeaver extends Ability {
 					1.0f, false, false);
 			else if (entity instanceof LivingEntity target) {
 				target.damage(10.0f);
-				target.setFireTicks(20 * 10);
+				target.setFireTicks(20 * 5);
 				var world = target.getWorld();
 				var loc = target.getLocation();
 
@@ -163,7 +170,8 @@ public class FlameWeaver extends Ability {
 			Location reuse = new Location(world, 0, 0, 0);
 			KeyUtils.set(f, fireBall, (byte) 1);
 			GlowUtils.glow(f, NamedTextColor.RED);
-			new org.bukkit.scheduler.BukkitRunnable() {
+			f.setShooter(p);
+			new BukkitRunnable() {
 				@Override
 				public void run() {
 					if (!f.isValid() || f.isDead()) {

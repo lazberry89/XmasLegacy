@@ -42,9 +42,18 @@ public class UserSaveManager {
 			restoredFromDump = true;
 			log.info("User {} recovered from emergency dump!", uuid);
 		} else {
-			String cached = JedisService.getFromJedis("user:" + uuid);
+			String cached = null;
+			try {
+				cached = JedisService.getFromJedis("user:" + uuid);
+			} catch (Exception e) {
+				log.warn("Redis lookup failed for user {}: {}. Falling back to database.", uuid, e.getMessage());
+			}
 			if (cached != null) {
-				loaded = User.fromJson(cached);
+				try {
+					loaded = User.fromJson(cached);
+				} catch (Exception e) {
+					log.warn("Failed to parse user cache JSON for {}: {}", uuid, e.getMessage());
+				}
 			}
 			if (loaded == null) {
 				loaded = repository.loadUser(uuid);

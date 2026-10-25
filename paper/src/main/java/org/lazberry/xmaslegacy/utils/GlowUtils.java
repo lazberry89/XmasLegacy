@@ -19,19 +19,15 @@ public final class GlowUtils {
 		throw new UnsupportedOperationException("Utility class");
 	}
 
-	/**
-	 * This method glows target entity with param2 color.
-	 * Also apply team to entity to change color.
-	 * <pre>{@code
-	 * GlowUtils.glow(target, NamedTextColor.YELLOW);
-	 * }</pre>
-	 * @param entity Target entity to give glow.
-	 * @param color target color to glow.
-	 */
-	public static void glow(@NotNull Entity entity, @NotNull NamedTextColor color) {
-		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+	private static final java.util.Map<java.util.UUID, NamedTextColor> ACTIVE_GLOWS = new java.util.concurrent.ConcurrentHashMap<>();
 
-		String teamName = "glow_" + color;
+	private static @NotNull String getTeamName(@NotNull NamedTextColor color) {
+		String name = "gl_" + color.toString().toLowerCase();
+		return name.length() > 16 ? name.substring(0, 16) : name;
+	}
+
+	private static void applyToScoreboard(@NotNull Scoreboard scoreboard, @NotNull Entity entity, @NotNull NamedTextColor color) {
+		String teamName = getTeamName(color);
 		Team team = scoreboard.getTeam(teamName);
 
 		if (team == null) {
@@ -40,24 +36,69 @@ public final class GlowUtils {
 		}
 
 		team.addEntity(entity);
+	}
+
+	private static void removeFromScoreboard(@NotNull Scoreboard scoreboard, @NotNull Entity entity) {
+		Team team = scoreboard.getEntityTeam(entity);
+		if (team != null && team.getName().startsWith("gl_")) {
+			team.removeEntity(entity);
+		}
+	}
+
+	/**
+	 * Sync currently active glowing entities to a target player/custom scoreboard.
+	 * Call this when a player receives a newly constructed scoreboard.
+	 * @param scoreboard Target scoreboard to register active glowing entities into.
+	 */
+	public static void syncGlowsToScoreboard(@NotNull Scoreboard scoreboard) {
+		ACTIVE_GLOWS.forEach((uuid, color) -> {
+			Entity e = Bukkit.getEntity(uuid);
+			if (e != null && e.isValid()) {
+				applyToScoreboard(scoreboard, e, color);
+			}
+		});
+	}
+
+	/**
+	 * This method glows target entity with param2 color.
+	 * Also apply team to entity across all online player scoreboards and main scoreboard.
+	 * <pre>{@code
+	 * GlowUtils.glow(target, NamedTextColor.YELLOW);
+	 * }</pre>
+	 * @param entity Target entity to give glow.
+	 * @param color target color to glow.
+	 */
+	public static void glow(@NotNull Entity entity, @NotNull NamedTextColor color) {
+		ACTIVE_GLOWS.put(entity.getUniqueId(), color);
+
+		applyToScoreboard(Bukkit.getScoreboardManager().getMainScoreboard(), entity, color);
+		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
+			Scoreboard sb = p.getScoreboard();
+			if (sb != Bukkit.getScoreboardManager().getMainScoreboard()) {
+				applyToScoreboard(sb, entity, color);
+			}
+		}
+
 		entity.setGlowing(true);
 	}
 
 	/**
-	 * Remove target entity's glowing.Also remove team entry for memory cleaning.
+	 * Remove target entity's glowing. Also remove team entry from all player scoreboards and main scoreboard.
 	 * <pre>{@code
 	 * GlowUtils.clearGlow(target);
 	 * }</pre>
 	 * @param entity target entity.
 	 */
 	public static void clearGlow(@NotNull Entity entity) {
+		ACTIVE_GLOWS.remove(entity.getUniqueId());
 		entity.setGlowing(false);
 
-		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-		Team team = scoreboard.getEntityTeam(entity);
-
-		if (team != null) {
-			team.removeEntity(entity);
+		removeFromScoreboard(Bukkit.getScoreboardManager().getMainScoreboard(), entity);
+		for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
+			Scoreboard sb = p.getScoreboard();
+			if (sb != Bukkit.getScoreboardManager().getMainScoreboard()) {
+				removeFromScoreboard(sb, entity);
+			}
 		}
 	}
 
