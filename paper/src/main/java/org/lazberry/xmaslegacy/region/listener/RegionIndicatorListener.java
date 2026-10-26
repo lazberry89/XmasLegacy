@@ -9,17 +9,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
-import org.lazberry.xmaslegacy.region.event.RegionDeleteEvent;
-import org.lazberry.xmaslegacy.region.event.RegionGenerateEvent;
-import org.lazberry.xmaslegacy.region.screen.RegionCreateInterface;
-import org.lazberry.xmaslegacy.region.screen.RegionSettingInterface;
-import org.lazberry.xmaslegacy.region.RegionManager;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
-import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.region.RegionManager;
+import org.lazberry.xmaslegacy.region.event.RegionDeleteEvent;
+import org.lazberry.xmaslegacy.region.event.RegionGenerateEvent;
+import org.lazberry.xmaslegacy.region.indicator.RegionDisplayManager;
+import org.lazberry.xmaslegacy.region.screen.RegionCreateInterface;
+import org.lazberry.xmaslegacy.region.screen.RegionSettingInterface;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
@@ -28,11 +28,13 @@ import org.lazberry.xmaslegacy.utils.UserHandler;
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
 public class RegionIndicatorListener implements Listener {
+	private final RegionDisplayManager displayManager;
 	private final RegionManager rm;
 	private final UserManager um;
 
 	@Inject
-	public RegionIndicatorListener(UserManager um, RegionManager rm) {
+	public RegionIndicatorListener(RegionDisplayManager displayManager, UserManager um, RegionManager rm) {
+		this.displayManager = displayManager;
 		this.rm = rm;
 		this.um = um;
 	}
@@ -65,8 +67,7 @@ public class RegionIndicatorListener implements Listener {
 		Chunk chunk = region.getChunk();
 		if (!region.isValid()) return;
 		if (chunk == null) return;
-
-		region.setIndicator(rm.indicatorDisplay(region));
+		displayManager.spawnIndicatorDisplay(region);
 	}
 
 	@EventHandler

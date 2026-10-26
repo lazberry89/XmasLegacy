@@ -37,7 +37,7 @@ public class RegionCommandDelete implements SubCommand {
 
                 if (args[1].equals("삭제") || args[1].equalsIgnoreCase("delete")) {
                     rm.removeRegion(region);
-                    player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.Id()));
+                    player.sendMessage(ColorUtils.chat(Alert.YELLOW + " 구역을 삭제했습니다. &6ID: " + region.getId()));
                 } else
                     InfoUtils.error(player, "유효하지 않은 명령어입니다.");
             } else player.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));

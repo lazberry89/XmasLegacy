@@ -59,10 +59,10 @@ public class ProxyRankManager implements Initiator {
 				"""
 						<yellow><b>[ %s 님의 랭킹 정보 ]</b></yellow>
 						<dark_gray>--------------------------------</dark_gray>
-						💰 <gold>자산 랭킹:</gold> %s위
-						✨ <green>경험치 랭킹:</green> %s위
-						⚔ <red>직업 경험치 랭킹:</red> %s위
-						⏳ <aqua>플레이 시간 랭킹:</aqua> %s위
+						💰 <gold>자산 랭킹:</gold> %s
+						✨ <green>경험치 랭킹:</green> %s
+						⚔ <red>직업 경험치 랭킹:</red> %s
+						⏳ <aqua>플레이 시간 랭킹:</aqua> %s
 						<dark_gray>--------------------------------</dark_gray>""",
 				name,
 				formatRankString(dollarRank),

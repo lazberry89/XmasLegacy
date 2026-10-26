@@ -99,7 +99,7 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 			if (targetList.isEmpty()) return List.of();
 
 			return targetList.stream()
-					.map(Region::Id)
+					.map(Region::getId)
 					.filter(id -> id.toLowerCase().startsWith(args[0].toLowerCase()))
 					.toList();
 		}

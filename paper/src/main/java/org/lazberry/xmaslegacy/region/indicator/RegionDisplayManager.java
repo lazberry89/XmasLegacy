@@ -10,7 +10,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.region.Region;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -21,13 +20,10 @@ import java.util.Objects;
 
 @Registry.Exclude(type = ServerType.LOBBY)
 public class RegionDisplayManager {
+    public static final NamespacedKey key = KeyUtils.get(Constants.regionKey);
     private final BlockData beacon = Material.BEACON.createBlockData();
-    private final NamespacedKey key;
 
-    @Inject
-    public RegionDisplayManager() {
-        this.key = KeyUtils.get(Constants.regionKey);
-    }
+    public RegionDisplayManager() {}
 
     public void spawnIndicatorDisplay(Region region) {
         var chunk = region.getChunk();
@@ -99,7 +95,7 @@ public class RegionDisplayManager {
 
     /**
      * Not needed to find Region instance from Indicator and clear field about indicator
-     * because manager clears region instances as well as indicator field cause it's transient.
+     * because manager clears region instances as well as indicator field because it's transient.
      * Because of these, this method should be called only at server reload or plugin disable.
      */
     public void clearDisplays() {

@@ -119,6 +119,10 @@ public class RegionManager implements Initiator {
 		}
 	}
 
+	public @Nullable Region getRegion(long key) {
+		return regions.get(key);
+	}
+
 	public List<Region> getRegion(Player p) {
 		return getRegion(p.getUniqueId());
 	}
