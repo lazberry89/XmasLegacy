@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.user;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
@@ -27,15 +27,16 @@ import java.util.UUID;
 		emergency dump class's saving method.
 		""")
 public class User {
-	public static final Gson GSON = new com.google.gson.GsonBuilder()
-			.registerTypeAdapter(Role.class, (com.google.gson.JsonSerializer<Role>) (src, typeOfSrc, context) ->
-					new com.google.gson.JsonPrimitive(src.name())
+	public static final Gson GSON = new GsonBuilder()
+			.registerTypeAdapter(Role.class, (JsonSerializer<Role>) (src, typeOfSrc, context) ->
+					new JsonPrimitive(src.name())
 			)
-			.registerTypeAdapter(Role.class, (com.google.gson.JsonDeserializer<Role>) (json, typeOfT, context) -> Role.parseRole(json.getAsString(), ServerRoles.USER))
-			.registerTypeAdapter(ServerPrefix.class, (com.google.gson.JsonSerializer<ServerPrefix>) (src, typeOfSrc, context) ->
-					new com.google.gson.JsonPrimitive(src.name())
+			.registerTypeAdapter(Role.class, (JsonDeserializer<Role>) (json, typeOfT, context) ->
+					Role.parseRole(json.getAsString(), ServerRoles.USER))
+			.registerTypeAdapter(ServerPrefix.class, (JsonSerializer<ServerPrefix>) (src, typeOfSrc, context) ->
+					new JsonPrimitive(src.name())
 			)
-			.registerTypeAdapter(ServerPrefix.class, (com.google.gson.JsonDeserializer<ServerPrefix>) (json, typeOfT, context) -> ServerPrefix.parse(json.getAsString(), Tier.VISITOR))
+			.registerTypeAdapter(ServerPrefix.class, (JsonDeserializer<ServerPrefix>) (json, typeOfT, context) -> ServerPrefix.parse(json.getAsString(), Tier.VISITOR))
 			.create();
 
     @EqualsAndHashCode.Include

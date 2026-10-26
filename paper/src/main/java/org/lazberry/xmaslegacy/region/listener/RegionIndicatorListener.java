@@ -27,12 +27,12 @@ import org.lazberry.xmaslegacy.utils.UserHandler;
 
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
-public class RegionIndicator implements Listener {
-	private final @NotNull RegionManager rm;
-	private final @NotNull UserManager um;
+public class RegionIndicatorListener implements Listener {
+	private final RegionManager rm;
+	private final UserManager um;
 
 	@Inject
-	public RegionIndicator(@NotNull UserManager um, @NotNull RegionManager rm) {
+	public RegionIndicatorListener(UserManager um, RegionManager rm) {
 		this.rm = rm;
 		this.um = um;
 	}

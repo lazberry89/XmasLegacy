@@ -59,20 +59,16 @@ public class ProxyRankManager implements Initiator {
 				"""
 						<yellow><b>[ %s 님의 랭킹 정보 ]</b></yellow>
 						<dark_gray>--------------------------------</dark_gray>
-						💰 <gold>자산 랭킹:</gold> %s <red>(%d)</red>
-						✨ <green>경험치 랭킹:</green> %s <red>(%d)</red>
-						⚔ <red>직업 경험치 랭킹:</red> %s <red>(%d)</red>
-						⏳ <aqua>플레이 시간 랭킹:</aqua> %s <red>(%d)</red>
+						💰 <gold>자산 랭킹:</gold> %s위
+						✨ <green>경험치 랭킹:</green> %s위
+						⚔ <red>직업 경험치 랭킹:</red> %s위
+						⏳ <aqua>플레이 시간 랭킹:</aqua> %s위
 						<dark_gray>--------------------------------</dark_gray>""",
 				name,
 				formatRankString(dollarRank),
-				user.getDollars(),
 				formatRankString(expRank),
-				user.getExp(),
 				formatRankString(roleExpRank),
-				user.getRoleExp(),
-				formatRankString(playtimeRank),
-				user.getPlayTime()
+				formatRankString(playtimeRank)
 		);
 
 		return ColorUtils.minimessage(formattedMessage);
