@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.stock.shop.StockShopManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;

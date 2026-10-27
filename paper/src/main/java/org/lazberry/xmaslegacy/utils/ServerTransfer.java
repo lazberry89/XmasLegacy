@@ -138,7 +138,7 @@ public final class ServerTransfer {
     /**
      * Main transport logic. Transfers target player to intended server. The Channel on
      * {@link org.bukkit.plugin.messaging.Messenger#registerOutgoingPluginChannel(Plugin, String)} at "bungeecord:main" should be
-     * opened in {@link org.lazberry.xmaslegacy.PluginUtils.Initializer.GlobalInitializer}. Also, when player is in party, two cases.
+     * opened in {@link org.lazberry.xmaslegacy.plugin.Initializer.GlobalInitializer}. Also, when player is in party, two cases.
      * First, as general member, leaves {@link org.lazberry.xmaslegacy.party.Party} and transfers server. Second, as Leader of a party, brings all party member with him/her.
      * But fails when user info is not loaded, not sending any notice.(Should handle this case.)
      * <pre>{@code

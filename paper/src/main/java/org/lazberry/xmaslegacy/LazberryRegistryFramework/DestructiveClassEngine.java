@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.SelfDestruct;
-import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
 import java.util.ArrayList;

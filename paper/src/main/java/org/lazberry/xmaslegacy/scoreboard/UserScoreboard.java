@@ -12,7 +12,7 @@ import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
 import org.lazberry.xmaslegacy.knockout.KnockoutPlayer;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.party.PartyManager;
-import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.BoardUtils;

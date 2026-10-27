@@ -1,0 +1,33 @@
+package org.lazberry.xmaslegacy.player;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.utils.InfoUtils;
+import org.lazberry.xmaslegacy.utils.KeyUtils;
+
+@Commands(command = "clearpdc")
+public class PdcClearCommand implements CommandExecutor {
+
+	@Override
+	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
+		if (!(commandSender instanceof Player p)) return true;
+		if (!p.isOp()) {
+			InfoUtils.error(p, "관리자용 명령어에요!");
+			return true;
+		}
+		if (args.length == 1) {
+			var key = KeyUtils.get(args[0]);
+			if (p.getPersistentDataContainer().has(key)) {
+				p.getPersistentDataContainer().remove(key);
+				InfoUtils.info(p, "제거하였습니다.");
+			} else {
+				InfoUtils.error(p, "키를 소유하고 있지 않습니다.");
+			}
+		}
+		return true;
+	}
+}

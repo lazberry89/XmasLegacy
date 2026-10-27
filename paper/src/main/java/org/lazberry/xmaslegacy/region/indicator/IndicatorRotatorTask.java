@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
-import org.lazberry.xmaslegacy.PluginUtils.Tasks;
+import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;

@@ -1,0 +1,60 @@
+package org.lazberry.xmaslegacy.plugin;
+
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.plugin.Initializer.*;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.ServerType;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+
+@Slf4j
+@Registry.Exclude(type = ServerType.LOBBY)
+public class Initializers {
+	private final @NotNull Map<ServerType, ServerInitializer> initializers = new EnumMap<>(ServerType.class);
+
+	@Inject
+    public Initializers(@NotNull GlobalInitializer globalInitializer, @NotNull MainInitializer mainInitializer,
+	                    @NotNull HuntingInitializer huntingInitializer, @NotNull LobbyInitializer lobbyInitializer,
+	                    WildInitializer wildInitializer) {
+		this.initializers.put(ServerType.GLOBAL, globalInitializer);
+		this.initializers.put(ServerType.MAIN, mainInitializer);
+		this.initializers.put(ServerType.HUNTING, huntingInitializer);
+		this.initializers.put(ServerType.LOBBY, lobbyInitializer);
+		this.initializers.put(ServerType.WILD, wildInitializer);
+	}
+
+	/**
+	 * Method casts instance to target ServerInitializer
+	 * @return Generic cast Initializer returned. But not recommended in cast instance.
+	 * @param <I> ServerInitializer instance.
+	 * @param type what kind of server to get Initializer
+	 * @param flag Only for overloading method.
+	 */
+	@SuppressWarnings("unchecked")
+	@Deprecated(forRemoval = true, since = "1.21.11")
+	public <I extends ServerInitializer> @NotNull I getInitializer(@NotNull ServerType type, boolean flag) {
+		return Objects.requireNonNull((I) this.initializers.get(type));
+	}
+
+	public @NotNull ServerInitializer getInitializer(@NotNull ServerType type) {
+		return this.initializers.get(type);
+	}
+
+	/**
+	 * Method casts instance to target ServerInitializer class of param
+	 * <pre>{@code
+	 * MainInitializer main = ServerType.MAIN.getInitializer(MainInitializer.class);
+	 * }</pre>
+	 * @param clazz target initializer's class
+	 * @return cast instance of ServerInitializer class
+	 * @param <I> generic instance
+	 * @throws ClassCastException throws ClassCastException
+	 */
+	public <I extends ServerInitializer> @NotNull I getInitializer(ServerType type, Class<I> clazz) throws ClassCastException {
+		return Objects.requireNonNull(clazz.cast(this.initializers.get(type)));
+	}
+}

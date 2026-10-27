@@ -59,7 +59,7 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
         }
         String answer = ruleManager.hideBadWords(message);
         inquiryManager.answerInquiry(id, answer);
-        InfoUtils.info(p, "등록하신 문의 &e#{}&f가 답변되었습니다.", id);
+        InfoUtils.info(p, "등록된 문의 &e#{}&f를 답변하였습니다.", id);
     }
 
     @Override

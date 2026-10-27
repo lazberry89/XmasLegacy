@@ -1,10 +1,7 @@
 package org.lazberry.xmaslegacy.enchant.transcendence.ability.logic;
 
 import io.th0rgal.oraxen.api.OraxenItems;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.LivingEntity;
@@ -100,6 +97,24 @@ public class AeroMancer extends Ability {
 
 	@Override
 	public boolean projectile(Player p) {
-		return false;
+		shootAirBullet(p);
+		return true;
+	}
+
+	private void shootAirBullet(Player p) {
+		Location init = p.getLocation();
+		World world = p.getWorld();
+
+		var vector = init.getDirection().normalize();
+
+		for (int i = 1; i < 5; i++) {
+			int step = i;
+			Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+				var effectLoc = init.clone().add(vector.clone().multiply(5 * step));
+				world.createExplosion(effectLoc, 2.0f, false, false, p);
+				world.spawnParticle(Particle.EXPLOSION_EMITTER, effectLoc, 1, 0, 0, 0, 0.01);
+				world.playSound(effectLoc, Sound.ENTITY_BREEZE_WIND_BURST, 1.0f, 1.0f);
+			}, step * 5L);
+		}
 	}
 }
