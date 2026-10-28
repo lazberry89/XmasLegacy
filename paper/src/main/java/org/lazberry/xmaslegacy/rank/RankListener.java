@@ -41,7 +41,7 @@ public class RankListener implements Listener {
 
 		User user = userManager.getUser(uuid);
 		if (user == null) {
-			UserHandler.loadUser(player, true, rankManager::updateUser);
+			UserHandler.loadUser(player, false, rankManager::updateUser);
 			return;
 		}
 		rankManager.updateUser(user);
