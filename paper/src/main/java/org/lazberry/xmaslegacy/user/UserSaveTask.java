@@ -1,17 +1,17 @@
-package org.lazberry.xmaslegacy;
+package org.lazberry.xmaslegacy.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.user.UserSaveManager;
 import org.lazberry.xmaslegacy.utils.FloodgateUtils;
 
 import java.util.Map;

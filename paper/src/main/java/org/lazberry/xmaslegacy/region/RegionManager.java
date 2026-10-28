@@ -20,6 +20,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.region.event.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.region.event.RegionGenerateEvent;
+import org.lazberry.xmaslegacy.region.indicator.RegionDisplayManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
@@ -31,19 +32,29 @@ import java.util.*;
 public class RegionManager implements Initiator {
 	private final Map<Long, Region> regions = new HashMap<>();
 	private final Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
+	private final RegionDisplayManager displayManager;
 	private final RegionConfig config;
 
 	@Inject
-	public RegionManager(RegionConfig config) {
-		this.config = config;
+	public RegionManager(RegionDisplayManager displayManager, RegionConfig config) {
+        this.displayManager = displayManager;
+        this.config = config;
 	}
 
 	@Override
 	public void init() {
+		restoreFromConfig(config.loadSync());
+	}
+
+	private void restoreFromConfig(Map<UUID, List<Region>> restored) {
+		userRegionsMap.clear();
 		regions.clear();
-		userRegionsMap.putAll(config.loadSync());
-		userRegionsMap.values().forEach(l ->
-			l.forEach(r -> regions.put(r.getKey(), r)));
+		userRegionsMap.putAll(restored);
+		restored.values().forEach(r ->
+			r.forEach(region -> {
+				regions.put(region.getKey(), region);
+				displayManager.spawnIndicatorDisplay(region);
+			}));
 	}
 
 	public static ItemStack RegionTicket() {
@@ -175,6 +186,20 @@ public class RegionManager implements Initiator {
 			p.sendMessage(ColorUtils.chat(String.format("&eSettings : &f출입[%s&f] 상호작용[%s&f]", entry, interact)));
 		}
 		p.sendMessage(ColorUtils.chat("&8&l--------------------------------"));
+	}
+
+	@Override
+	public void close() {
+		cleanUp();
+	}
+
+	private void cleanUp() {
+		config.saveSync(userRegionsMap);
+		userRegionsMap.clear();
+		regions.values().forEach(displayManager::removeDisplay);
+		regions.clear();
+
+		displayManager.clearDisplays();
 	}
 
 	@NotNull

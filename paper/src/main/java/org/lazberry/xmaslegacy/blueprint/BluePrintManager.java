@@ -11,6 +11,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintConfig;
 import org.lazberry.xmaslegacy.blueprint.config.BlueprintRotator;
@@ -78,10 +79,10 @@ public class BluePrintManager implements Initiator {
         return Optional.ofNullable(bluePrints.get(structureName));
     }
 
-	public CompletableFuture<BluePrint> createAndSave(String id, Location origin, Location loc1, Location loc2) {
+	public CompletableFuture<BluePrint> createAndSave(String id, @Nullable String builder, Location origin, Location loc1, Location loc2) {
 		if (exists(id)) return CompletableFuture.completedFuture(null);
 
-		BluePrint bluePrint = createBluePrint(id, origin, loc1, loc2);
+		BluePrint bluePrint = createBluePrint(id, builder, origin, loc1, loc2);
 
 		return config.saveAsync(bluePrint).thenApply(success -> {
 			if (success) {
@@ -92,7 +93,7 @@ public class BluePrintManager implements Initiator {
 		});
 	}
 
-    public BluePrint createBluePrint(String id, Location origin, Location loc1, Location loc2) {
+    public BluePrint createBluePrint(String id, @Nullable String builder, Location origin, Location loc1, Location loc2) {
         BluePrint bluePrint = new BluePrint(id);
         Axiom.loopArea(loc1, loc2, l -> {
             var block = l.getBlock();
@@ -102,6 +103,8 @@ public class BluePrintManager implements Initiator {
         });
 	    float originYaw = Axiom.snapDegrees(origin.getYaw());
 	    if (originYaw != 0f) return rotate(bluePrint, -originYaw);
+
+		if (builder != null) bluePrint.setBuilder(builder);
         return bluePrint;
     }
 

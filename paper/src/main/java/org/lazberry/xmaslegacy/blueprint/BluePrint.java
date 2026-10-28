@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.blueprint;
 import com.google.gson.Gson;
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,6 +44,9 @@ public class BluePrint {
 	private transient BlueprintGrade grade;
     private int process = 0;
 
+    @Setter
+    private String builder = "Unknown";
+
     public BluePrint(String structureName) {
         this.structureName = structureName;
     }
@@ -56,11 +60,12 @@ public class BluePrint {
 		List<Component> lore = new ArrayList<>();
 		lore.add(ColorUtils.chat("&7건축물: &6" + structureName));
 		lore.add(ColorUtils.chat("&7가격: &6" + price + "$"));
+        lore.add(ColorUtils.chat("&7제작자: " + builder));
 		lore.addAll(getChunkMapLore());
 
         return ItemBuilder.of(XmasLegacy.getInstance(), item)
-                .setName(ColorUtils.chat("&9&l건축물 도면").append(grade))
-                .setLore(lore)
+                .name(ColorUtils.chat("&9&l건축물 도면").append(grade))
+                .lore(lore)
                 .setTag(key, PersistentDataType.STRING, structureName)
                 .setMaxStackSize(1)
                 .build();

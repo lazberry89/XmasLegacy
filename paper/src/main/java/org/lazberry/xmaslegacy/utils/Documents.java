@@ -49,7 +49,7 @@ public final class Documents {
         return BookUtils.create(
 				ColorUtils.chat("&5엘리스"),
 		        ColorUtils.chat("&b백야&f에 관하여"),
-		        ColorUtils.chat( //엘리안에게 바칩니다.
+		        ColorUtils.chat(
 				        """
 				        이 책을 &b&k###&r&0에게 바칩니다..
 				        

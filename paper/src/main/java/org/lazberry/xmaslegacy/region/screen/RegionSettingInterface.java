@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.region.screen;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,11 @@ public class RegionSettingInterface implements InventoryHolder {
         this.plugin = XmasLegacy.getInstance();
         OfflinePlayer owner = Bukkit.getOfflinePlayer(region.getOwner());
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&6&l" + owner.getName()));
+    }
+
+    public void updateInventory(Player player) {
         for (int i = 0; i < this.inv.getSize(); i++) this.inv.setItem(i, maker(region, i));
+        player.updateInventory();
     }
 
     private ItemStack maker(Region region, int slot) {

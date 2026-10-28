@@ -19,15 +19,17 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 			InfoUtils.error(player, "명령어를 사용할 권한이 없습니다.");
 			return;
 		}
-		//blueprint create id
-		if (args.length < 2) {
+		//blueprint create builder id
+		if (args.length < 3) {
 			InfoUtils.error(player, "올바르지 않은 명령어입니다.");
 			return;
 		}
+		String builder = args[1];
 		String id = Arrays.stream(args)
 				.skip(1)
+				.skip(2)
 				.filter(s -> !s.isBlank())
-				.collect(Collectors.joining("_"));
+				.collect(Collectors.joining(" "));
 
 		var uuid = player.getUniqueId();
 		var optionalFirst = selectionManager.getFirstSelection(uuid);
@@ -39,7 +41,7 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 
 			var current = player.getLocation();
 
-			manager.createAndSave(id, current, first, second).whenComplete((bluePrint, ex) -> {
+			manager.createAndSave(id, builder, current, first, second).whenComplete((bluePrint, ex) -> {
 				if (bluePrint != null) {
 					InfoUtils.info(player, "성공적으로 도면을 완성했습니다.");
 					InventoryHelper.giveItemOrDrop(player, bluePrint.getItem());

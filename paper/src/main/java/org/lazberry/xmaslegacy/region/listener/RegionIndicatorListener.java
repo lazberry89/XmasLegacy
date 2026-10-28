@@ -66,18 +66,24 @@ public class RegionIndicatorListener implements Listener {
 
 		Chunk chunk = region.getChunk();
 		if (!region.isValid()) return;
-		if (chunk == null) return;
+
+		if (!chunk.isLoaded()) chunk.load(true);
 		displayManager.spawnIndicatorDisplay(region);
 	}
 
 	@EventHandler
 	public void removeWhenDeleted(RegionDeleteEvent e) {
-		var chunk = e.getRegion().getChunk();
-		if (chunk == null) return;
-
 		var region = e.getRegion();
+		var chunk = region.getChunk();
+		if (chunk == null) {
+			region.getWorld().getChunkAt(region.getChunkX(),
+					region.getChunkZ()).load(true);
+		}
+
 		var indic = region.getIndicator();
-		if (indic != null && indic.isValid()) indic.remove();
+		var interaction = region.getInteraction();
+		if (indic != null) indic.remove();
+		if (interaction != null) interaction.remove();
 	}
 
 	@EventHandler

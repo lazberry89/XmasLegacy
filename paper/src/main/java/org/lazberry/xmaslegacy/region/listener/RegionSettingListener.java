@@ -59,10 +59,10 @@ public class RegionSettingListener implements Listener {
 
         Inventory inv = e.getClickedInventory();
         if (inv == null) return;
-
         if (!(inv.getHolder() instanceof RegionSettingInterface rsi)) return;
 
         e.setCancelled(true);
+
         int slot = e.getRawSlot();
         var region = rsi.getRegion();
 
@@ -71,12 +71,12 @@ public class RegionSettingListener implements Listener {
             case 2 -> {
                 region.toggleEntry();
                 p.playSound(p, Sound.BLOCK_TRIPWIRE_CLICK_ON, 1.0f, 1.0f);
-                p.updateInventory();
+                rsi.updateInventory(p);
             }
             case 3 -> {
                 region.toggleInteraction();
                 p.playSound(p, Sound.BLOCK_TRIPWIRE_CLICK_ON, 1.0f, 1.0f);
-                p.updateInventory();
+                rsi.updateInventory(p);
             }
             case 8 -> p.openInventory(new RegionDeleteInterface(region).getInventory());
         }
