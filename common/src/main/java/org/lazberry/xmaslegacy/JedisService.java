@@ -15,15 +15,22 @@ import redis.clients.jedis.resps.Tuple;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Registry.Include(type = ServerType.GLOBAL)
 public class JedisService implements Initiator {
 	private static final Logger log = LoggerFactory.getLogger(JedisService.class);
 	private static RedisClient redisClient = null;
+	private static final Set<JedisPubSub> activeSubscribers = ConcurrentHashMap.newKeySet();
 
 	@Override
 	public void init() {
 		initiateJedis();
+	}
+
+	@Override
+	public void close() {
+		closeJedis();
 	}
 
 	public static void setUserServer(@NotNull UUID uuid, @NotNull String serverName) {
@@ -116,21 +123,46 @@ public class JedisService implements Initiator {
 	public static void subscribe(JedisPubSub jedisPubSub, String... channels) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
 
+		activeSubscribers.add(jedisPubSub);
+
 		Thread.ofVirtual()
-				.name("Redis-Subscriber-Thread")
+				.name("Redis-Subscriber-" + String.join("-", channels))
 				.start(() -> {
 					try {
 						redisClient.subscribe(jedisPubSub, channels);
 					} catch (Exception e) {
-						log.error("Error occurred while subscribing to Redis channels: {}", String.join(", ", channels), e);
+						if (redisClient == null || !jedisPubSub.isSubscribed()) {
+							log.debug("Redis subscriber stopped for channels: {}", String.join(", ", channels));
+						} else {
+							log.error("Error occurred while subscribing to Redis channels: {}", String.join(", ", channels), e);
+						}
+					} finally {
+						activeSubscribers.remove(jedisPubSub);
 					}
 				});
 
 		log.info("Started Redis subscriber virtual thread for channels: {}", String.join(", ", channels));
 	}
 
+	public static void unsubscribe(JedisPubSub jedisPubSub) {
+		if (jedisPubSub == null) return;
+		try {
+			if (jedisPubSub.isSubscribed()) {
+				jedisPubSub.unsubscribe();
+			}
+		} catch (Exception e) {
+			log.warn("Failed to unsubscribe pubsub: {}", e.getMessage());
+		} finally {
+			activeSubscribers.remove(jedisPubSub);
+		}
+	}
+
 	public static void initiateJedis() {
 		try {
+			if (redisClient != null) {
+				closeJedis();
+			}
+
 			redisClient = RedisClient.builder()
 					.hostAndPort("localhost", 6379)
 					.build();
@@ -142,6 +174,26 @@ public class JedisService implements Initiator {
 	}
 
 	public static void closeJedis() {
-		if (redisClient != null) redisClient.close();
+		log.info("Closing Redis service and active subscribers (count: {})...", activeSubscribers.size());
+		for (JedisPubSub sub : activeSubscribers) {
+			try {
+				if (sub.isSubscribed()) {
+					sub.unsubscribe();
+				}
+			} catch (Exception e) {
+				log.warn("Failed to unsubscribe pubsub during shutdown: {}", e.getMessage());
+			}
+		}
+		activeSubscribers.clear();
+
+		if (redisClient != null) {
+			try {
+				redisClient.close();
+			} catch (Exception e) {
+				log.warn("Failed to close Redis client: {}", e.getMessage());
+			} finally {
+				redisClient = null;
+			}
+		}
 	}
 }

@@ -38,18 +38,25 @@ public enum InfoLevel {
     }
 
     /**
-     * 배경 글리프(pluget:chat_background 폰트, 레벨 색상 tint) + 아이콘(흰색) + reset
-     * 구조: <#color><bg_char></font><white>[ icon ]<reset>
-     * - 배경 텍스처는 레벨 색상으로 tint되어 배경처럼 보임
-     * - 아이콘과 텍스트는 색상 전파 없이 분리됨
+     * Skript ItemAdder/Nexo 호환 채팅 배경 + 아이콘 접두사 빌더.
+     *
+     * 렌더링 순서 (Skript {@code {@1}<#color>{@2}} 원리와 100% 동일):
+     *  1. OFFSET_MINUS_2     (-2px 미세 보정)
+     *  2. <!shadow>          그림자 제거 (배경 렌더링 깔끔화)
+     *  3. <#color>           레벨 색상으로 배경 tint
+     *  4. CHAT_BACKGROUND    배경 이미지 글리프 (~218px 너비)
+     *  5. OFFSET_MINUS_218   (-218px 커서 복귀, 텍스트가 배경 위에 겹쳐짐)
+     *  6. <reset>            색상 리셋 (배경 색상이 텍스트로 번지는 것 완전 차단)
+     *  7. [ icon ]           흰색 대괄호로 감싼 아이콘
      *
      * @return MiniMessage 형식의 접두사 문자열
      */
     public @NotNull String glyphPrefix() {
-        // 배경 글리프: 레벨 색상으로 tint
-        // 아이콘: white 고정 (색상 전파 차단)
-        return "<" + hexColor + ">" + InfoUtils.CHAT_BACKGROUND
-             + "<white>[ " + icon + " ]<reset>";
+        return InfoUtils.OFFSET_MINUS_2
+             + "<!shadow>"
+             + "<" + hexColor + ">" + InfoUtils.CHAT_BACKGROUND
+             + InfoUtils.OFFSET_MINUS_218
+             + "<reset> "
+             + "<" + hexColor + ">[ <white>" + icon + "</white><" + hexColor + "> ]<reset> ";
     }
 }
-

@@ -88,5 +88,6 @@ final class ClassInitiator {
                 log.error("{} Failed to Closeup Initiators: {}", icon, manager.getClass().getSimpleName(), e);
             }
         }
+        ORDERED_MANAGERS.clear();
     }
 }

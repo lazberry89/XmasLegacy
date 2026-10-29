@@ -23,6 +23,11 @@ public class CrossServerTpaManager extends AbstractTpaSubscriber implements Init
     }
 
     @Override
+    public void close() {
+        unsubscribeSubscriber();
+    }
+
+    @Override
     protected void onTpaRequested(UUID senderUuid, String senderName, UUID targetUuid) {
         Player target = Bukkit.getPlayer(targetUuid);
         if (target != null && target.isOnline()) {

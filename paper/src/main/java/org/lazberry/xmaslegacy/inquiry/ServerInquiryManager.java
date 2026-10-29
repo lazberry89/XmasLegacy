@@ -38,6 +38,11 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
         subscribeJedisService(this);
     }
 
+    @Override
+    public void close() {
+        unsubscribeJedisService(this);
+    }
+
     public void sendInquiry(Player player, String message) {
         var uuid = player.getUniqueId();
         if (inquiryManager.canInquire(uuid)) {

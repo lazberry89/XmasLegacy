@@ -11,37 +11,34 @@ import org.slf4j.helpers.MessageFormatter;
 @UtilityClass
 public final class InfoUtils {
 
-    // ===== 리소스팩 배경/아이콘 글리프 (모두 pluget:chat_background 폰트로 격리) =====
-    // Oraxen 기본 폰트와 char 충돌 방지를 위해 전용 font 네임스페이스 사용
-    private static final String FONT_START = "<font:pluget:chat_background>";
+    private static final String FONT_START = "<font:chat_background:default>";
     private static final String FONT_END   = "</font>";
 
-    public static final String CHAT_BACKGROUND = FONT_START + "\uA40E" + FONT_END; // ꐎ
-    public static final String CHAT_PREFIX     = FONT_START + "\uA40F" + FONT_END; // ꐏ
+    public static final String CHAT_BACKGROUND = FONT_START + "\uA40E" + FONT_END; // ꐎ  background.png
+    public static final String CHAT_PREFIX     = FONT_START + "\uA40F" + FONT_END; // ꐏ  prefix.png
 
-    public static final String ICON_BELL    = FONT_START + "\uA410" + FONT_END; // ꐐ
-    public static final String ICON_COIN    = FONT_START + "\uA411" + FONT_END; // ꐑ
-    public static final String ICON_DANGER  = FONT_START + "\uA412" + FONT_END; // ꐒ
-    public static final String ICON_DOWN    = FONT_START + "\uA413" + FONT_END; // ꐓ
-    public static final String ICON_GIFT    = FONT_START + "\uA414" + FONT_END; // ꐔ
-    public static final String ICON_HEART   = FONT_START + "\uA415" + FONT_END; // ꐕ
-    public static final String ICON_UP      = FONT_START + "\uA416" + FONT_END; // ꐖ
-    public static final String ICON_WARNING = FONT_START + "\uA417" + FONT_END; // ꐗ
+    public static final String ICON_BELL    = FONT_START + "\uA410" + FONT_END; // ꐐ  bell.png
+    public static final String ICON_COIN    = FONT_START + "\uA411" + FONT_END; // ꐑ  coin.png
+    public static final String ICON_DANGER  = FONT_START + "\uA412" + FONT_END; // ꐒ  danger.png
+    public static final String ICON_DOWN    = FONT_START + "\uA413" + FONT_END; // ꐓ  down.png
+    public static final String ICON_GIFT    = FONT_START + "\uA414" + FONT_END; // ꐔ  gift.png
+    public static final String ICON_HEART   = FONT_START + "\uA415" + FONT_END; // ꐕ  heart.png
+    public static final String ICON_UP      = FONT_START + "\uA416" + FONT_END; // ꐖ  up.png
+    public static final String ICON_WARNING = FONT_START + "\uA417" + FONT_END; // ꐗ  warning.png
 
+    // ── 커서 오프셋 (space provider, 유저 입력 불가 PUA) ──────
+    // font JSON 의 "type":"space","advances":{"ꐌ":-2, "ꐍ":-218} 과 매칭
+    // <shift:-N> 대신 사용 — MiniMessage 기본 태그가 아니라 직접 문자로 처리
+    public static final String OFFSET_MINUS_2   = FONT_START + "\uA40C" + FONT_END;
+    public static final String OFFSET_MINUS_218 = FONT_START + "\uA40D" + FONT_END;
 
-    /**
-     * 리소스팩 배경 및 글리프 네임스페이스 상수
-     */
     public static final class Glyphs {
         public static final String BACKGROUND = InfoUtils.CHAT_BACKGROUND;
         public static final String PREFIX     = InfoUtils.CHAT_PREFIX;
-        public static final char CHAR_BACKGROUND = 'ꐎ';
-        public static final char CHAR_PREFIX     = 'ꐏ';
+        public static final char CHAR_BACKGROUND = '\uA40E';
+        public static final char CHAR_PREFIX     = '\uA40F';
     }
 
-    /**
-     * Oraxen 리소스팩 아이콘 글리프 네임스페이스 상수
-     */
     public static final class Icons {
         public static final String BELL    = InfoUtils.ICON_BELL;
         public static final String COIN    = InfoUtils.ICON_COIN;
@@ -85,7 +82,8 @@ public final class InfoUtils {
     }
 
     private void sendMessage(@NotNull InfoLevel level, @NotNull Player p, @NotNull Component message) {
-        Component txt = buildGlyphPrefix(level).appendSpace().append(message);
+        Component safeMsg = ColorUtils.minimessage("<white>").append(message);
+        Component txt = buildGlyphPrefix(level).append(safeMsg);
         p.sendMessage(txt);
         p.playSound(p, level.sound(), 1.0f, 1.0f);
         mobileProcess(p, txt);
@@ -99,15 +97,13 @@ public final class InfoUtils {
             default    -> {}
         }
         Component content = parseMessage(formatted);
-        Component txt = buildGlyphPrefix(level).appendSpace().append(content);
+        Component safeContent = ColorUtils.minimessage("<white>").append(content);
+        Component txt = buildGlyphPrefix(level).append(safeContent);
         p.sendMessage(txt);
         p.playSound(p, level.sound(), 1.0f, 1.0f);
         mobileProcess(p, txt);
     }
 
-    /**
-     * 레거시 색상 코드(&)와 MiniMessage 태그를 모두 지원하기 위한 파서
-     */
     private Component parseMessage(@NotNull String message) {
         if (message.isEmpty()) return Component.empty();
         String converted = convertLegacyToMiniMessage(message);
@@ -141,14 +137,6 @@ public final class InfoUtils {
                 .replace("&r", "<reset>");
     }
 
-    /**
-     * Skript {@code {@1}<#color>{@2}} 패턴을 Java로 구현한 벨퍼 함수.
-     * 리소스팩 {@code pluget:chat_background} 폰트 글리프로
-     * 레벨 색상 배경을 렌더링한 후 커서를 복귀합니다.
-     *
-     * @param level 메시지 레벨 (ERROR / WARN / INFO)
-     * @return 배경 글리프가 포함된 MiniMessage Component
-     */
     private Component buildGlyphPrefix(@NotNull InfoLevel level) {
         return ColorUtils.minimessage(level.glyphPrefix());
     }

@@ -38,6 +38,10 @@ public abstract class AbstractTpaSubscriber extends JedisPubSub {
         JedisService.subscribe(this, CHANNEL);
     }
 
+    public void unsubscribeSubscriber() {
+        JedisService.unsubscribe(this);
+    }
+
     protected abstract void onTpaRequested(UUID senderUuid, String senderName, UUID targetUuid);
     protected abstract void onCrossTpAccepted(UUID senderUuid, String targetServer, UUID targetUuid);
 }

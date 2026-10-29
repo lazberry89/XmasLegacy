@@ -37,5 +37,9 @@ public abstract class AbstractVelocityTpaSubscriber extends JedisPubSub {
 		JedisService.subscribe(this, CHANNEL);
 	}
 
+	public void unsubscribeSubscriber() {
+		JedisService.unsubscribe(this);
+	}
+
 	protected abstract void onCrossTpAccepted(UUID senderUuid, String targetServer);
 }

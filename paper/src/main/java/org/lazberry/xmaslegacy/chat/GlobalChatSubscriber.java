@@ -20,6 +20,11 @@ public class GlobalChatSubscriber extends JedisPubSub implements Initiator {
     }
 
     @Override
+    public void close() {
+        JedisService.unsubscribe(this);
+    }
+
+    @Override
     public void onMessage(String channel, String message) {
         if (!CHANNEL.equals(channel)) return; //least protection of channel difference
 

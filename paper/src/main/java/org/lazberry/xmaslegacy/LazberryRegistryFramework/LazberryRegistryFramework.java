@@ -109,7 +109,11 @@ public final class LazberryRegistryFramework {
             if (on) Reflections.invokeReflections(classPath, InitializeType.TASKS_OFF);
             else Reflections.stopTasks(null);
 
-            if (!on) ClassInitiator.closeupManagers();
+            if (!on) {
+                ClassInitiator.closeupManagers();
+                DestructiveClassEngine.abortAllTransient();
+                DependencyContainer.getContainer().clear();
+            }
 
             long current = System.currentTimeMillis() - startTime;
             if (on) log.info("{} Framework booted successfully in {}ms.", icon, current);

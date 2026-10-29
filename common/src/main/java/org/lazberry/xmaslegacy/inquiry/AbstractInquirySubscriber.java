@@ -32,6 +32,10 @@ public abstract class AbstractInquirySubscriber extends JedisPubSub {
         JedisService.subscribe(instance, "inquiry-channel");
     }
 
+    public void unsubscribeJedisService(AbstractInquirySubscriber instance) {
+        JedisService.unsubscribe(instance);
+    }
+
     protected abstract void onInquiryReceived(String playerName, String ticketId);
     protected abstract void onInquiryAnswered(UUID userUuid, String ticketId);
 }
