@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.prefix;
+package org.lazberry.xmaslegacy.chat.prefix;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.bukkit.entity.Player;

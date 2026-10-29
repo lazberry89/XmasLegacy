@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.prefix;
+package org.lazberry.xmaslegacy.chat.prefix;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
@@ -8,13 +8,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.jetbrains.annotations.NonBlocking;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
 import org.lazberry.xmaslegacy.RuleManager;
+import org.lazberry.xmaslegacy.chat.ChatPacket;
+import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
-import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -24,6 +26,8 @@ import org.lazberry.xmaslegacy.utils.UserHandler;
 @Listeners
 @Registry.Exclude(type = ServerType.LOBBY)
 public class ChatPrefixListener implements Listener {
+	private static final String CHANNEL = "global_chat";
+
 	private final PrefixManager pfm;
 	private final RuleManager rm;
 	private final UserManager um;
@@ -35,32 +39,48 @@ public class ChatPrefixListener implements Listener {
 		this.um = um;
 	}
 
-	@NonBlocking
 	@EventHandler
 	public void onChatPrefix(AsyncChatEvent e) {
+		e.setCancelled(true);
+
 		var p = e.getPlayer();
+		var uuid = p.getUniqueId();
+
+		String server = JedisService.getUserServer(uuid);
+		if (server == null) {
+			InfoUtils.error(p, "현재 접속중이 서버를 인식할 수 없습니다. 재접속하세요.");
+			p.kick(ColorUtils.chat("&c서버간의 동기화 문제로 인하여 추방되었습니다."),
+					PlayerKickEvent.Cause.CHAT_VALIDATION_FAILED);
+
+			return;
+		}
+
 		String rawMsg = ColorUtils.toLegacy(e.message());
 		String msg;
 		if (rm.checkBadWords(rawMsg)) {
 			msg = rm.hideBadWords(rawMsg);
 			InfoUtils.error(p, "욕설이 포함된 메시지는 제재를 받을 수 있습니다.");
 		} else msg = rawMsg;
-		e.renderer((source, sourceDisplayName, message, viewer) -> {
-			User user = um.getUser(source.getUniqueId());
-			if (user == null) return Component.text()
-					.append(sourceDisplayName)
-					.append(Component.text(" : "))
-					.append(ColorUtils.chat(msg))
-					.build();
+
+		User user = um.getUser(uuid);
+		Component publishMessage;
+		if (user == null) publishMessage = Component.text()
+				.append(p.name())
+				.append(Component.text(" : "))
+				.append(ColorUtils.chat(msg))
+				.build();
+		else {
 			ServerPrefix prefix = user.getEquipPrefix();
 			Component equipP = prefix == null ? Component.text("") : prefix.prefix().appendSpace();
-			return Component.text()
+			publishMessage = Component.text()
 					.append(equipP)
-					.append(sourceDisplayName)
+					.append(p.name())
 					.append(Component.text(" : "))
 					.append(ColorUtils.chat(msg))
 					.build();
-		});
+		}
+		ChatPacket newPacket = new ChatPacket(p.getName(), server, publishMessage);
+		JedisService.publish(CHANNEL, newPacket.toJson());
 	}
 
 	@EventHandler

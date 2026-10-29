@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.prefix;
+package org.lazberry.xmaslegacy.chat.prefix;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
