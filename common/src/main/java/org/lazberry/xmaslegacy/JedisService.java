@@ -13,9 +13,11 @@ import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.resps.Tuple;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Registry.Include(type = ServerType.GLOBAL)
 public class JedisService implements Initiator {
@@ -120,9 +122,33 @@ public class JedisService implements Initiator {
 		return redisClient.zscore(key, member);
 	}
 
+	public static void addOnlineUser(UUID uuid) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		sadd("network:online_users", uuid.toString());
+	}
+
+	public static void removeOnlineUser(UUID uuid) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		srem("network:online_users", uuid.toString());
+	}
+
+	public static Set<UUID> getAllProxyUsers() {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		return smembers("network:online_users").stream()
+				.map(s -> {
+					try {
+						return UUID.fromString(s);
+					} catch (IllegalArgumentException e) {
+						log.warn("Invalid UUID format in Redis online_users: {}", s);
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toSet());
+	}
+
 	public static void subscribe(JedisPubSub jedisPubSub, String... channels) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
-
 		activeSubscribers.add(jedisPubSub);
 
 		Thread.ofVirtual()

@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Data
 @Slf4j
+@Deprecated(since = "1.21.11")
 public abstract class AbstractDataProcessor implements Initiator {
     private final XmasLegacy plugin;
     private final File dataFolder;

@@ -118,7 +118,9 @@ public class UserSaveManager {
 		return CompletableFuture.supplyAsync(() -> {
 			User loaded = loadOrCreateUser(uuid, name, isFloodgate);
 			userManager.addUser(loaded);
+
 			JedisService.setUserServer(uuid, server);
+			JedisService.addOnlineUser(uuid);
 			return loaded;
 		});
 	}
@@ -143,6 +145,7 @@ public class UserSaveManager {
                     repository.saveUser(u);
 					JedisService.setToJedis("user:" + u.getUniqueId(), u.toJson());
 					JedisService.removeUserServer(uuid);
+					JedisService.removeOnlineUser(uuid);
                     log.info("User {} saved.", uuid);
                 }
             } catch (Exception e) {

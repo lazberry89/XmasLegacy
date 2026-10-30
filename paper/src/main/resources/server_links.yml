@@ -1,0 +1,5 @@
+#available link types: ANNOUNCEMENTS, COMMUNITY, COMMUNITY_GUIDELINES, FEEDBACK, FORUMS, NEWS
+# REPORT_BUG, STATUS, SUPPORT, WEBSITE
+# Each type tag cannot be duplicated. One Url for a Link types.
+
+WEBSITE: "https://XmasLegacy.xyz" #Official XmasLegacy Website

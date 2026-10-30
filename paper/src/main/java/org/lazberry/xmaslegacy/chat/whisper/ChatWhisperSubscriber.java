@@ -40,8 +40,9 @@ public class ChatWhisperSubscriber extends JedisPubSub implements Initiator {
 
 		UUID uuid = receivedWhisper.receiverId();
 		Player player = Bukkit.getPlayer(uuid);
-		if (player != null && player.isOnline())
-			whisperManager.whisperReceived(receivedWhisper.sender(), receivedWhisper.contents());
-
+		if (player != null && player.isOnline() && !Whisper.isMuted(player)) {
+			var text = whisperManager.whisperReceived(receivedWhisper.sender(), receivedWhisper.contents());
+			player.sendMessage(text);
+		}
 	}
 }
