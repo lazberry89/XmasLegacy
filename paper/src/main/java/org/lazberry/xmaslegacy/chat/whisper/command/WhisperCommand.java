@@ -16,21 +16,19 @@ import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.SubCommand;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Commands(command = "whisper", aliases = {"귓", "w"})
 @Registry.Include(type = ServerType.GLOBAL)
 public class WhisperCommand implements CommandExecutor, TabCompleter {
-    private final Map<String, SubCommand> commands = new HashMap<>();
     private final WhisperManager whisperManager;
 
     @Inject
     public WhisperCommand(WhisperManager whisperManager) {
         this.whisperManager = whisperManager;
-        commands.put("mute", new WhisperCommandMute());
     }
 
     @Override
@@ -41,13 +39,12 @@ public class WhisperCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         var value = args[0].toLowerCase();
-        var subCommand = commands.get(value);
-        if (subCommand == null) {
-            new WhisperCommandPlayer(whisperManager).execute(p, args);
-            return true;
-        }
-        subCommand.execute(p, args);
-        return true;
+		switch (value) {
+			case "mute" -> new WhisperCommandMute().execute(p, args);
+			case "unmute" -> new WhisperCommandUnmute().execute(p, args);
+			default -> new WhisperCommandPlayer(whisperManager).execute(p, args);
+		}
+		return true;
     }
 
     @Override

@@ -32,6 +32,7 @@ public class ServerOfficialLinks implements Initiator {
 
     @Override
     public void init() {
+		clearLinks();
         serverLinkValues.clear();
         serverLinkValues.putAll(serverLinkConfig.loadSync());
         serverLinks = createLinks();
@@ -57,6 +58,7 @@ public class ServerOfficialLinks implements Initiator {
                    return;
                }
                serverLinkValues.putAll(value);
+			   clearLinks();
                serverLinks = createLinks();
                Bukkit.getScheduler().runTask(plugin, this::updateAllUsers);
            });
@@ -72,9 +74,16 @@ public class ServerOfficialLinks implements Initiator {
         Bukkit.getOnlinePlayers().forEach(this::sendOfficialLinks);
     }
 
+	private void clearLinks() {
+		if (serverLinks != null) serverLinks.getLinks().forEach(serverLink ->
+				serverLinks.removeLink(serverLink));
+		serverLinks = null;
+	}
+
     @Override
     public void close() {
         serverLinkConfig.saveSync(serverLinkValues);
         serverLinkValues.clear();
+		clearLinks();
     }
 }

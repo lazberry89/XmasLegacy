@@ -47,11 +47,11 @@ public class WhisperManager {
     }
 
 	public Component whisperSent(String receiver, String message) {
-		return ColorUtils.chat("&b[ 나 -> " + receiver + " ]&7" + message);
+		return ColorUtils.chat("&b[ 나 -> " + receiver + " ]&7 " + message);
 	}
 
 	public Component whisperReceived(String sender, String message) {
-		return ColorUtils.chat("&e[ " + sender + " -> 나 ]&7" + message);
+		return ColorUtils.chat("&e[ " + sender + " -> 나 ]&7 " + message);
 	}
 
 	private void logWhisper(String sender, String receiver, String message) {

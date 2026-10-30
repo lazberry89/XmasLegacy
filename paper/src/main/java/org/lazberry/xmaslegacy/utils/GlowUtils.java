@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -35,13 +36,33 @@ public final class GlowUtils {
 			team.color(color);
 		}
 
-		team.addEntity(entity);
+		// 플레이어는 오직 닉네임(Name)만 팀 엔트리로 등록해야 정상적으로 색상이 적용됩니다.
+		if (entity instanceof Player player) {
+			team.addEntry(player.getName());
+		} else {
+			team.addEntry(entity.getUniqueId().toString());
+		}
 	}
 
 	private static void removeFromScoreboard(@NotNull Scoreboard scoreboard, @NotNull Entity entity) {
-		Team team = scoreboard.getEntityTeam(entity);
-		if (team != null && team.getName().startsWith("gl_")) {
-			team.removeEntity(entity);
+		if (entity instanceof Player player) {
+			String name = player.getName();
+			Team nameTeam = scoreboard.getEntryTeam(name);
+			if (nameTeam != null && nameTeam.getName().startsWith("gl_")) {
+				nameTeam.removeEntry(name);
+			}
+
+			String uuidStr = player.getUniqueId().toString();
+			Team uuidTeam = scoreboard.getEntryTeam(uuidStr);
+			if (uuidTeam != null && uuidTeam.getName().startsWith("gl_")) {
+				uuidTeam.removeEntry(uuidStr);
+			}
+		} else {
+			String uuidStr = entity.getUniqueId().toString();
+			Team team = scoreboard.getEntryTeam(uuidStr);
+			if (team != null && team.getName().startsWith("gl_")) {
+				team.removeEntry(uuidStr);
+			}
 		}
 	}
 

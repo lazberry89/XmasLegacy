@@ -25,7 +25,7 @@ public class NightmareCommand implements CommandExecutor {
 		if (!(sender instanceof Player p)) return true;
 		if (args.length == 0) {
 			nightmareManager.blackPlayer(p);
-		} else nightmareManager.cleanup(p);
+		} else nightmareManager.resetPlayer(p);
 		return true;
 	}
 }

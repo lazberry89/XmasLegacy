@@ -52,9 +52,12 @@ public class RegionManager implements Initiator {
 		userRegionsMap.putAll(restored);
 		restored.values().forEach(r ->
 			r.forEach(region -> {
-				regions.put(region.getKey(), region);
-				displayManager.spawnIndicatorDisplay(region);
+				if (region != null && region.isValid()) {
+					regions.put(region.getKey(), region);
+					displayManager.spawnIndicatorDisplay(region);
+				}
 			}));
+		log.info("[Region] Restored {} regions from config.", regions.size());
 	}
 
 	public static ItemStack RegionTicket() {
@@ -87,7 +90,7 @@ public class RegionManager implements Initiator {
 
 		regions.put(region.getKey(), region);
 		userRegionsMap.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);
-		config.saveAsync(userRegionsMap);
+		config.saveSync(userRegionsMap);
 	}
 
 	public void removeRegion(Region region) {
@@ -98,12 +101,10 @@ public class RegionManager implements Initiator {
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return;
 
-		if (region.getIndicator() != null && region.getIndicator().isValid()) {
-			region.getIndicator().remove();
-		}
+		// 인디케이터 디스플레이 및 인터랙션 엔티티 확실하게 제거
+		displayManager.removeDisplay(region);
 
 		regions.remove(region.getKey());
-
 
 		List<Region> userRegions = userRegionsMap.get(ownerUUID);
 		if (userRegions != null) {
@@ -111,7 +112,7 @@ public class RegionManager implements Initiator {
 				if (userRegions.isEmpty()) {
 					userRegionsMap.remove(ownerUUID);
 				}
-				config.saveAsync(userRegionsMap);
+				config.saveSync(userRegionsMap);
 				log.info("구역이 삭제되었습니다. ID: {}", region.getId());
 			}
 		}
@@ -121,12 +122,10 @@ public class RegionManager implements Initiator {
 		List<Region> userRegions = userRegionsMap.remove(p.getUniqueId());
 		if (userRegions != null) {
 			userRegions.forEach(region -> {
-				if (region.getIndicator() != null && region.getIndicator().isValid()) {
-					region.getIndicator().remove();
-				}
+				displayManager.removeDisplay(region);
 				regions.remove(region.getKey());
 			});
-			config.saveAsync(userRegionsMap);
+			config.saveSync(userRegionsMap);
 		}
 	}
 
@@ -177,7 +176,7 @@ public class RegionManager implements Initiator {
 
 			int x = region.getChunkX();
 			int z = region.getChunkZ();
-			String world = region.getWorld().getName();
+			String world = region.getWorld() != null ? region.getWorld().getName() : "unknown";
 
 			p.sendMessage(ColorUtils.chat(String.format("&eLocation : &7%s (%d, %d)", world, x, z)));
 
@@ -194,12 +193,16 @@ public class RegionManager implements Initiator {
 	}
 
 	private void cleanUp() {
+		// 1. 파일에 현재 구역 정보 동기 저장
 		config.saveSync(userRegionsMap);
-		userRegionsMap.clear();
-		regions.values().forEach(displayManager::removeDisplay);
-		regions.clear();
 
+		// 2. 모든 인디케이터 디스플레이 및 인터랙션 엔티티 안전하게 제거
+		regions.values().forEach(displayManager::removeDisplay);
 		displayManager.clearDisplays();
+
+		// 3. 맵 메모리 정리
+		userRegionsMap.clear();
+		regions.clear();
 	}
 
 	@NotNull

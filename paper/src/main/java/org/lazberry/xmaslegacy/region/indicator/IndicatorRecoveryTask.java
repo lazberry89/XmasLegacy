@@ -39,7 +39,8 @@ public class IndicatorRecoveryTask implements Tasks {
 
     private Collection<Region> invalidRegions() {
         return regionManager.getRegions().stream()
-                .filter(r -> r.getIndicator() == null || r.getInteraction() == null)
+                .filter(r -> r.getIndicator() == null || !r.getIndicator().isValid()
+                          || r.getInteraction() == null || !r.getInteraction().isValid())
                 .toList();
     }
 

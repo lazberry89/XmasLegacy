@@ -20,11 +20,27 @@ import java.util.UUID;
 
 @Getter @Setter
 public class Region {
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(World.class, (JsonSerializer<World>) (world, type, context) ->
-                    new JsonPrimitive(world.getUID().toString()))
-            .registerTypeAdapter(World.class, (JsonDeserializer<World>) (json, type, context) ->
-                Bukkit.getWorld(UUID.fromString(json.getAsString()))).create();
+	public static final Gson GSON = new GsonBuilder()
+			.registerTypeHierarchyAdapter(World.class, (JsonSerializer<World>) (world, type, context) ->
+					new JsonPrimitive(world != null ? world.getName() : "world"))
+			.registerTypeHierarchyAdapter(World.class, (JsonDeserializer<World>) (json, type, context) -> {
+				String str = json.getAsString();
+				if (str == null || str.isEmpty()) return null;
+
+				// 1) 월드 이름으로 조회
+				World w = Bukkit.getWorld(str);
+				if (w != null) return w;
+
+				// 2) 과거에 UUID로 저장된 구버전 데이터 호환
+				try {
+					UUID uid = UUID.fromString(str);
+					w = Bukkit.getWorld(uid);
+					if (w != null) return w;
+				} catch (IllegalArgumentException ignored) {}
+
+				// 3) 어떤 경우에도 null이 되지 않도록 첫 번째 기본 월드로 안전하게 폴백
+				return Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().getFirst();
+			}).create();
 
     public String toGson() {
         return GSON.toJson(this);
@@ -32,7 +48,11 @@ public class Region {
 
     public static Region fromGson(String gson) {
         if (gson == null || gson.isEmpty()) return null;
-        return GSON.fromJson(gson, Region.class);
+        try {
+            return GSON.fromJson(gson, Region.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private final UUID owner;
@@ -63,20 +83,21 @@ public class Region {
     }
 
     public boolean isValid() {
-        return key != -1;
+        return key != -1 && world != null;
     }
 
     public boolean isInside(@NotNull Location loc) {
-        if (!loc.getWorld().equals(this.world)) return false; // 월드가 다르면 바로 컷
+        if (this.world == null || !this.world.equals(loc.getWorld())) return false; // 월드가 다르면 바로 컷
         return loc.getChunk().getChunkKey() == this.key;
     }
 
     public boolean isInside(@NotNull Chunk c) {
-        if (!c.getWorld().equals(this.world)) return false;
+        if (this.world == null || !this.world.equals(c.getWorld())) return false;
         return c.getChunkKey() == this.key;
     }
 
-    public Chunk getChunk() {
+    public @Nullable Chunk getChunk() {
+        if (world == null) return null;
         return world.getChunkAt(getChunkX(), getChunkZ());
     }
 

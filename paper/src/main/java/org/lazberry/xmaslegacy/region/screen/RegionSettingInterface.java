@@ -23,6 +23,7 @@ public class RegionSettingInterface implements InventoryHolder {
         this.plugin = XmasLegacy.getInstance();
         OfflinePlayer owner = Bukkit.getOfflinePlayer(region.getOwner());
         this.inv = Bukkit.createInventory(this, 9, ColorUtils.chat("&6&l" + owner.getName()));
+	    for (int i = 0; i < this.inv.getSize(); i++) this.inv.setItem(i, maker(region, i));
     }
 
     public void updateInventory(Player player) {
