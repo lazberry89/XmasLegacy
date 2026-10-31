@@ -1,4 +1,4 @@
-server-type: "lobby"
+server-type: "main"
 
 webserver:
   enabled: true
@@ -11,3 +11,7 @@ webserver:
     client-secret: ""
     # 예: http://localhost:8080/api/auth/ms-callback
     redirect-uri: "http://localhost:8080/api/auth/ms-callback"
+
+web:
+  api_internal_key: "akjefjc8w49vm9wvm2w449v7"
+  timeout_seconds: 5

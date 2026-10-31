@@ -3,7 +3,9 @@ package org.lazberry.xmaslegacy.user;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Blocking;
+import org.lazberry.xmaslegacy.framework.InitiatePriority;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Priority;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
@@ -44,6 +46,7 @@ public class UserAdditionalSaveManager implements Initiator {
     }
 
     @Override
+    @Priority(InitiatePriority.FAST)
     public void close() {
         userSaveManager.saveAll();
         userSaveManager.clearCache();

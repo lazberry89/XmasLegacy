@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.framework.annotation.Registry;
 import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.InitiatePriority;
+import org.lazberry.xmaslegacy.framework.annotation.Priority;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +28,13 @@ public class JedisService implements Initiator {
 	private static final Set<JedisPubSub> activeSubscribers = ConcurrentHashMap.newKeySet();
 
 	@Override
+	@Priority(InitiatePriority.FAST)
 	public void init() {
 		initiateJedis();
 	}
 
 	@Override
+	@Priority(InitiatePriority.DELAYED)
 	public void close() {
 		closeJedis();
 	}

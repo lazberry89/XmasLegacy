@@ -20,6 +20,23 @@ public class EnchantMaterial {
 
     private EnchantMaterial() {}
 
+	public static ItemStack TotemOfEnchant() {
+		var builder = OraxenItems.getItemById("totem_of_enchant");
+		ItemStack item = builder == null ? new ItemStack(Material.DIAMOND) : builder.build();
+
+		return ItemBuilder.of(XmasLegacy.getInstance(), item)
+				.name(ColorUtils.chat("&b&l강화 결정"))
+				.lore(
+						ColorUtils.chat("&7강화의 정수가 결합된 형태이며, "),
+						ColorUtils.chat("&79개를 재결합하여 확률 강화서(1차)를 제작할 수 있다.")
+				)
+				.setGlint(true)
+				.setMaxStackSize(16)
+				.setTag(key, PersistentDataType.STRING, "totem_of_enchant")
+				.hideAllFlags()
+				.build();
+	}
+
 	public static ItemStack DowngradeProtector() {
 		var builder = OraxenItems.getItemById("downgrade_protector");
 		ItemStack item = builder == null ? new ItemStack(Material.AMETHYST_SHARD) : builder.build();
@@ -208,7 +225,7 @@ public class EnchantMaterial {
 				.name(ColorUtils.chat("&b&l강화의 정수"))
 				.lore(
 						ColorUtils.chat("&7강화 도중 발생한 마력 파편."),
-						ColorUtils.chat("&7결합하여 사용자의 도구의 마력을 끌어올려준다.")
+						ColorUtils.chat("&79개를 결합하여 강화 결정을 제작할 수 있다.")
 				)
 				.setGlint(true)
 				.setRarity(ItemRarity.UNCOMMON)
@@ -237,7 +254,10 @@ public class EnchantMaterial {
 
 		return ItemBuilder.of(XmasLegacy.getInstance(), item)
 				.name(ColorUtils.chat("&e&l확률 강화서"))
-				.lore(ColorUtils.chat("&7인벤토리에 보유시 강화 확률 10% 증가"))
+				.lore(
+						ColorUtils.chat("&7인벤토리에 보유시 강화 확률 10% 증가"),
+						ColorUtils.chat("&74개를 결합하여 강화서(2차) 제작가능")
+				)
 				.setGlint(true)
 				.hideAllFlags()
 				.setTag(key, "booster_ten_percent")

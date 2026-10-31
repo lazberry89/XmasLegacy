@@ -27,7 +27,8 @@ public final class GlowUtils {
 		return name.length() > 16 ? name.substring(0, 16) : name;
 	}
 
-	private static void applyToScoreboard(@NotNull Scoreboard scoreboard, @NotNull Entity entity, @NotNull NamedTextColor color) {
+	private static void applyToScoreboard(@NotNull Scoreboard scoreboard, @NotNull Entity entity,
+			@NotNull NamedTextColor color) {
 		String teamName = getTeamName(color);
 		Team team = scoreboard.getTeam(teamName);
 
@@ -36,15 +37,24 @@ public final class GlowUtils {
 			team.color(color);
 		}
 
-		// 플레이어는 오직 닉네임(Name)만 팀 엔트리로 등록해야 정상적으로 색상이 적용됩니다.
+		team.addEntity(entity);
+		// 마인크래프트 클라이언트는 플레이어의 발광 색상을 결정할 때 플레이어 이름(Name)을 팀 엔트리로 조회하고,
+		// 일반 엔티티는 UUID 문자열을 팀 엔트리로 조회합니다.
+		// CraftBukkit의 team.addEntity(entity)는 내부적으로 UUID만 넣기 때문에 플레이어의 팀 매칭이 실패하는 문제가
+		// 있었습니다.
 		if (entity instanceof Player player) {
 			team.addEntry(player.getName());
+			team.addEntry(player.getUniqueId().toString());
 		} else {
 			team.addEntry(entity.getUniqueId().toString());
 		}
 	}
 
 	private static void removeFromScoreboard(@NotNull Scoreboard scoreboard, @NotNull Entity entity) {
+		Team entityTeam = scoreboard.getEntityTeam(entity);
+		if (entityTeam != null && entityTeam.getName().startsWith("gl_")) {
+			entityTeam.removeEntity(entity);
+		}
 		if (entity instanceof Player player) {
 			String name = player.getName();
 			Team nameTeam = scoreboard.getEntryTeam(name);
@@ -59,9 +69,9 @@ public final class GlowUtils {
 			}
 		} else {
 			String uuidStr = entity.getUniqueId().toString();
-			Team team = scoreboard.getEntryTeam(uuidStr);
-			if (team != null && team.getName().startsWith("gl_")) {
-				team.removeEntry(uuidStr);
+			Team entryTeam = scoreboard.getEntryTeam(uuidStr);
+			if (entryTeam != null && entryTeam.getName().startsWith("gl_")) {
+				entryTeam.removeEntry(uuidStr);
 			}
 		}
 	}
@@ -69,6 +79,7 @@ public final class GlowUtils {
 	/**
 	 * Sync currently active glowing entities to a target player/custom scoreboard.
 	 * Call this when a player receives a newly constructed scoreboard.
+	 * 
 	 * @param scoreboard Target scoreboard to register active glowing entities into.
 	 */
 	public static void syncGlowsToScoreboard(@NotNull Scoreboard scoreboard) {
@@ -82,12 +93,15 @@ public final class GlowUtils {
 
 	/**
 	 * This method glows target entity with param2 color.
-	 * Also apply team to entity across all online player scoreboards and main scoreboard.
+	 * Also apply team to entity across all online player scoreboards and main
+	 * scoreboard.
+	 * 
 	 * <pre>{@code
 	 * GlowUtils.glow(target, NamedTextColor.YELLOW);
 	 * }</pre>
+	 * 
 	 * @param entity Target entity to give glow.
-	 * @param color target color to glow.
+	 * @param color  target color to glow.
 	 */
 	public static void glow(@NotNull Entity entity, @NotNull NamedTextColor color) {
 		ACTIVE_GLOWS.put(entity.getUniqueId(), color);
@@ -104,10 +118,13 @@ public final class GlowUtils {
 	}
 
 	/**
-	 * Remove target entity's glowing. Also remove team entry from all player scoreboards and main scoreboard.
+	 * Remove target entity's glowing. Also remove team entry from all player
+	 * scoreboards and main scoreboard.
+	 * 
 	 * <pre>{@code
 	 * GlowUtils.clearGlow(target);
 	 * }</pre>
+	 * 
 	 * @param entity target entity.
 	 */
 	public static void clearGlow(@NotNull Entity entity) {
@@ -124,12 +141,15 @@ public final class GlowUtils {
 	}
 
 	/**
-	 * This method glows block. Spawns invisible shulker and give it a glow removed in selected ticks.
+	 * This method glows block. Spawns invisible shulker and give it a glow removed
+	 * in selected ticks.
+	 * 
 	 * <pre>{@code
 	 * GlowUtils.glowBlock(block, NamedTextColor.RED, 10);
 	 * }</pre>
-	 * @param block Target block to glow
-	 * @param color color of glowing
+	 * 
+	 * @param block    Target block to glow
+	 * @param color    color of glowing
 	 * @param duration how much ticks to glow
 	 */
 	public static void glowBlock(@NotNull Block block, @NotNull NamedTextColor color, int duration) {

@@ -2,92 +2,117 @@ package org.lazberry.xmaslegacy.LazberryRegistryFramework;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.framework.InitiatePriority;
 import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.annotation.Priority;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Core Orchestrator for ServerManager lifecycle initialization in LazberryRegistryFramework.
- * * <p><h3>Architecture & Operational Principle</h3>
+ *
+ * <p><h3>Architecture & Operational Principle</h3>
  * This class acts as a dedicated control bridge between the raw IoC storage ({@link DependencyContainer})
- * and the Bukkit platform boot logic. In large-scale plugin environments, components extending
- * {@link Initiator} contain critical domain business logic (e.g., Database pools, User caches,
- * Game states) that must be prepared strictly before event listeners or command maps start accepting traffic.
- * * <p>Rather than registering managers in an unpredictable classpath scanning sequence, this system
- * operates in a strictly separated two-phase deterministic pipeline:
- * <ol>
- * <li><b>Phase 1 (Collection):</b> Extracts fully dependency-resolved singleton beans from the IoC container
- * that are assignable to {@link Initiator} and stores them into a tracked linear sequence.</li>
- * <li><b>Phase 2 (Sequential Boot):</b> Iterates through the gathered sequence and executes the mandatory
- * {@link Initiator#init()} lifecycle hook inside a guarded try-catch block to guarantee whole server
- * boot resiliency.</li>
- * </ol>
- * * <p><h3>Related Framework Components</h3>
+ * and the Bukkit platform boot logic.
+ *
+ * <p>Methods {@link Initiator#init()} and {@link Initiator#close()} can be annotated with {@link Priority}
+ * to control their execution order:
  * <ul>
- * <li>{@link PackageScanner}: The source data provider. Provides fully built bean references via {@link DependencyContainer#getContainer()}.</li>
- * <li>{@link Reflections}: The master lifecycle orchestrator that coordinates the timing of when this injection room is triggered.</li>
- * <li>{@link Initiator}: The target component contract. Any class implementing this contract automatically participates in this phase.</li>
+ * <li><b>Execution order:</b> {@code FAST -> AVERAGE -> SLOW -> DELAYED}</li>
  * </ul>
- * @see Initiator
- * @see PackageScanner
- * @see Reflections
  */
 @Slf4j
 final class ClassInitiator {
-    private static final @NotNull List<Initiator> ORDERED_MANAGERS = new ArrayList<>();
+    private static final @NotNull List<Initiator> MANAGERS = new ArrayList<>();
     private static final @NotNull String icon = LazberryRegistryFramework.icon(false);
 
     /**
      * Phase 1: Context Filtering & Collection Routine.
-     * Clears any leftover historical reference in the internal sequence and queries the global
-     * IoC bean map. Filters out types that do not inherit {@link Initiator} and safely casts
-     * the instantiated data into the localized tracking container.
-     * * <p>This method maintains the natural insertion or resolution order guaranteed by the
-     * {@link java.util.LinkedHashMap} layout inside {@link PackageScanner}.
+     * Clears historical references and extracts singleton beans implementing {@link Initiator}.
      */
     static void collectManagers() {
-        ORDERED_MANAGERS.clear();
+        MANAGERS.clear();
         for (var entry : DependencyContainer.getContainer().entrySet()) {
             Class<?> clazz = entry.getKey();
 
             if (Initiator.class.isAssignableFrom(clazz)) {
-                ORDERED_MANAGERS.add((Initiator) entry.getValue());
+                MANAGERS.add((Initiator) entry.getValue());
             }
         }
-        log.info("{} Collected {} ServerManagers in safe initialization order.", icon, ORDERED_MANAGERS.size());
+        log.info("{} Collected {} ServerManagers.", icon, MANAGERS.size());
     }
 
     /**
      * Phase 2: Sequential Lifecycle Invocation Engine.
-     * Iterates over the pre-collected ordered list of managers and triggers their {@code init()} logic.
-     * <p><b>Resiliency Guardrail:</b> Each manager is wrapped in an individual isolated runtime
-     * catch block. If a single database manager throws a connection exception, the framework catches the error
-     * instantly, logs a critical state warning with the custom {@code icon}, and proceeds to initialize the
-     * remaining managers in queue to maximize runtime survivability.
+     * Sorts managers by their {@code init()} method's {@link Priority}
+     * ({@code FAST -> AVERAGE -> SLOW -> DELAYED}) and triggers {@code init()}.
      */
     static void initializeManagers() {
-        log.info("[IoC] Initializing Initiators sequentially...");
-        for (Initiator manager : ORDERED_MANAGERS) {
+        log.info("[IoC] Initializing Initiators sequentially by init() priority...");
+        List<Initiator> initList = new ArrayList<>(MANAGERS);
+        initList.sort(Comparator.comparing(ClassInitiator::getInitPriority));
+
+        for (Initiator manager : initList) {
             try {
                 manager.init();
-                log.info("{} Initialized Initiators: {}", icon, manager.getClass().getSimpleName());
+                log.info("{} Initialized Initiator: {} (Init Priority: {})",
+                        icon, manager.getClass().getSimpleName(), getInitPriority(manager));
             } catch (Exception e) {
-                log.error("{} Failed to initialize Initiators: {}", icon, manager.getClass().getSimpleName(), e);
+                log.error("{} Failed to initialize Initiator: {}",
+                        icon, manager.getClass().getSimpleName(), e);
             }
         }
     }
 
+    /**
+     * Phase 3: Ordered Lifecycle Shutdown Engine.
+     * Sorts managers by their {@code close()} method's {@link Priority}
+     * ({@code FAST -> AVERAGE -> SLOW -> DELAYED}) and triggers {@code close()}.
+     */
     static void closeupManagers() {
-        log.info("[IoC] Closing Initiators sequentially...");
-        for (Initiator manager : ORDERED_MANAGERS) {
+        log.info("[IoC] Closing Initiators sequentially by close() priority...");
+        List<Initiator> closeList = new ArrayList<>(MANAGERS);
+        closeList.sort(Comparator.comparing(ClassInitiator::getClosePriority));
+
+        for (Initiator manager : closeList) {
             try {
                 manager.close();
-                log.info("{} Closed Initiators: {}", icon, manager.getClass().getSimpleName());
+                log.info("{} Closed Initiator: {} (Close Priority: {})",
+                        icon, manager.getClass().getSimpleName(), getClosePriority(manager));
             } catch (Exception e) {
-                log.error("{} Failed to Closeup Initiators: {}", icon, manager.getClass().getSimpleName(), e);
+                log.error("{} Failed to Closeup Initiator: {}",
+                        icon, manager.getClass().getSimpleName(), e);
             }
         }
-        ORDERED_MANAGERS.clear();
+        MANAGERS.clear();
+    }
+
+    private static @NotNull InitiatePriority getInitPriority(@NotNull Initiator initiator) {
+        try {
+            Method method = initiator.getClass().getMethod("init");
+            Priority priority = method.getAnnotation(Priority.class);
+            if (priority != null) {
+                return priority.value();
+            }
+        } catch (NoSuchMethodException ignored) {}
+
+        Priority classPriority = initiator.getClass().getAnnotation(Priority.class);
+        return classPriority != null ? classPriority.value() : InitiatePriority.AVERAGE;
+    }
+
+    private static @NotNull InitiatePriority getClosePriority(@NotNull Initiator initiator) {
+        try {
+            Method method = initiator.getClass().getMethod("close");
+            Priority priority = method.getAnnotation(Priority.class);
+            if (priority != null) {
+                return priority.value();
+            }
+        } catch (NoSuchMethodException ignored) {}
+
+        Priority classPriority = initiator.getClass().getAnnotation(Priority.class);
+        return classPriority != null ? classPriority.value() : InitiatePriority.AVERAGE;
     }
 }
