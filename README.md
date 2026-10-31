@@ -1,55 +1,34 @@
-❄️ Project XmasLegacy ❄️
+# Project: XmasLegacy
 
-Developer: Lazberry89
+# Developer: Lazberry89
 
-TITLE 大白夜, and Last Flame
+## Story
+고대 대백야 시대의 과학자들의 실험 대실패로 인하여 이 세계는 생명체가 살수 없을 정도로 얼어붙어버렸다.
 
-DESCRIPTION :
-고대 과학자들에 의해 파괴된 세계를 배경으로 한 멀티플레이어 서바이벌 RPG 서버입니다.
-플레이어는 폐허가 된 세계에서 생존하며, 다른 생존자들과 협력하고, 다양한 직업(Job/Role)을 통해 역할을 수행하며 새로운 문명을 재건하는 여정을 경험합니다.
-장르: Survival RPG + Multi-Server Network
+고대 과학자들은다가오는 빙하기를 막기 위해 모든 수단을 투자했다.
 
-플랫폼: Minecraft Paper 1.21.1 (BungeeCord / Velocity Proxy 연동)
-Main Features
+하지만 이 시도는 오히려 독이 되어, 빙하기와 인간의 종말을 더 가깝게
 
-User Database System
-UserManager, SqlUserRepository, User, UserRepository
-UUID 기반 영속성 사용자 데이터 관리
-비동기 로딩 (CompletableFuture + whenComplete)
-Lombok-style getter/setter, equals/hashCode 오버라이딩
+이끌었다. 기온은 생명체가 살 수 없을 만치 낮아지고,
 
-Role / Job System
-Role (Interface), Roles, SecondaryRole, ThirdRole, HiddenRole
-다층 역할 시스템 (1차 / 2차 / 3차 / 히든직업)
-RoleMastery, Tier (VISITOR ~ 상위 티어) 연동
+동식물이 차례차례 멸종하기 시작했으며, 인간의 개체 수 또한 급격히 줄어들기 시작했다.
 
-Rule System
-RuleManager, RuleCommandManager
-서버 규칙 관리 및 명령어 처리
+100년뒤, 인간의 문명은 흔적도 찾을 수 없이 없어졌다. 본격적인 빙하기가 시작되어 인류는 멸종했을 듯 싶었다.
 
-Prefix (칭호) System
-PrefixManager, PrefixCommandManager, ChatPrefixListener, PrefixInterface, UserTagManager, PrefixMission
-동적 칭호 획득·장착 시스템
-채팅 및 Hover Tag (Kyori Adventure Component) 연동
+하지만 유일한 생존자들이 살아남아 만든 마을이 바로 "크리아" 마을이다. 인간은 쉽게 멸종할 생물이 아니었다.
 
-Region System
-RegionIndicator, ServerTransfer (static utility)
-멀티 서버 간 이동 (BungeeCord plugin message)
-파티(Party) 연동 이동 (파티장 따라가기 / 파티원 강제 탈퇴)
-Floodgate (모바일 유저) 지원 및 hide 옵션 (목적지 숨김)
+그들에게 문명의 끝은 새로운 시작이었다. 전자기기와 고도로 발달된 과학에 대한 접근이 없어지자,
 
-Party System
-PartyManager, Party, PartyCommand 등
-Additional Systems
-Economy (dollars) & Inquire 시스템
-ServerTransfer 유틸 (Early Return, Stream API, Kyori Component UX)
-ColorUtils, Constants, IDGenerator 등 공통 유틸
+크리아의 사람들은 인간에게는 자연을 다루는 힘이 있다는것을 알게되었다.
 
+이들은 "기" 라는 것을 공부하며, 이것을 자신들의 도구에 깃들게 하였다.
 
-Technical Highlights
+또한 직업을 나누어 서로 협력하게 하였다.
 
-멀티 모듈 구조: common / paper / velocity
-비동기 처리와 안전한 UX (ClickCallback, Hover/Click Event)
-Early Return + Stream API 적극 활용
-Floodgate 지원으로 PC + 모바일 유저 모두 대응
-Kyori Adventure Component를 활용한 현대적인 채팅/메시지 UI
+사람들은 이런식으로 살아남으며, 점차 다시 발전하였다. 다른 방향으로.
+
+## Contents
+서버에는 다양한 컨텐츠들이 존재합니다. 야생에서 살아남는것 뿐 아니라 직접 경제활동에 참여하고,
+유저와 겨뤄보며, 다양한 체험을 해볼 수 있습니다.
+
+### Main Description
