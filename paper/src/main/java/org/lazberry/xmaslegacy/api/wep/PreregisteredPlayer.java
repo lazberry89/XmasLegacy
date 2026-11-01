@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.wep;
+package org.lazberry.xmaslegacy.api.wep;
 
 import java.util.UUID;
 

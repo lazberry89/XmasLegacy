@@ -18,6 +18,7 @@ dependencies {
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
     compileOnly("io.th0rgal:oraxen:1.213.0")
     compileOnly("com.frengor:ultimateadvancementapi:2.8.2")
+    compileOnly("net.luckperms:api:5.5")
 }
 
 java {

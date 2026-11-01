@@ -5,7 +5,7 @@ main: org.lazberry.xmaslegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
 depend: [floodgate, WorldEdit]
-softdepend: [oraxen, UltimateAdvancementAPI]
+softdepend: [oraxen, UltimateAdvancementAPI, LuckPerms]
 commands:
   문의: #0
     usage: /문의 <내용>

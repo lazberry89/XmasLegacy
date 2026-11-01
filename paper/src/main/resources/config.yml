@@ -13,5 +13,5 @@ webserver:
     redirect-uri: "http://localhost:8080/api/auth/ms-callback"
 
 web:
-  api_internal_key: "akjefjc8w49vm9wvm2w449v7"
+  api_internal_key: ""
   timeout_seconds: 5

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.wep;
+package org.lazberry.xmaslegacy.api.wep;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,11 +37,12 @@ public class WebApiClient {
 	@Inject
 	public WebApiClient(@ConfigValue(path = "web.api_internal_key") String key,
 	                    @ConfigValue(path = "web.timeout_seconds") Integer seconds) {
-		this.internalKey = key == null ? "akjefjc8w49vm9wvm2w449v7" : key;
+		if (key == null || key.isEmpty()) throw new IllegalArgumentException("key cannot be null or empty. Edit config.yml");
+		this.internalKey = key;
 		this.timeoutSeconds = seconds == null ? 5 : seconds;
 	}
 
-	public static CompletableFuture<ServerInfo> getServerInfo() {
+	public CompletableFuture<ServerInfo> getServerInfo() {
 		return requestServerInfo().handle((s, ex) -> {
 			if (s == null) return null;
 			try {
@@ -49,7 +50,7 @@ public class WebApiClient {
 
 				String name = root.has("name") ? root.get("name").getAsString() : "Unknown";
 				String version = root.has("version") ? root.get("version").getAsString() : "Unknown";
-				int onlineCount = root.has("onlineCount") ? root.get("onlineCount").getAsInt() : 0;
+				int onlineCount = root.has("online") ? root.get("online").getAsInt() : 0;
 				int preregCount = root.has("preregCount") ? root.get("preregCount").getAsInt() : 0;
 				boolean addressRevealed = root.has("addressRevealed") && root.get("addressRevealed").getAsBoolean();
 
@@ -63,8 +64,9 @@ public class WebApiClient {
 		});
 	}
 
-	private static CompletableFuture<String> fetchRequestAndCatch(HttpRequest request, HttpResponse.BodyHandler<String> responseBodyHandler) {
-		return CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+	private static CompletableFuture<String> fetchRequestAndCatch(
+			HttpRequest request, HttpResponse.BodyHandler<String> responseBodyHandler) {
+		return CLIENT.sendAsync(request, responseBodyHandler)
 				.thenApply(response -> {
 					int resultCode = response.statusCode();
 					if (resultCode == 200) return response.body();
@@ -78,11 +80,11 @@ public class WebApiClient {
 				});
 	}
 
-	private static CompletableFuture<String> requestServerInfo() {
+	private CompletableFuture<String> requestServerInfo() {
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(API_URL + "server/info"))
 				.header("Accept", "application/json")
-				.timeout(Duration.ofSeconds(5))
+				.timeout(Duration.ofSeconds(timeoutSeconds))
 				.GET()
 				.build();
 
@@ -98,7 +100,7 @@ public class WebApiClient {
 				.uri(URI.create(API_URL + "internal/online"))
 				.header("Content-Type", "application/json")
 				.header("X-Internal-Key", internalKey)
-				.timeout(Duration.ofSeconds(3))
+				.timeout(Duration.ofSeconds(timeoutSeconds))
 				.POST(HttpRequest.BodyPublishers.ofString(json.toString()))
 				.build();
 		return CLIENT.sendAsync(request, HttpResponse.BodyHandlers.discarding())

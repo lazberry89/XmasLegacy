@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.wep;
+package org.lazberry.xmaslegacy.api.wep;
 
 public record ServerInfo(
 		String name,
