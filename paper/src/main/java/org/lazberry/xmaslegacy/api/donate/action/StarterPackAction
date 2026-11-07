@@ -1,4 +1,4 @@
-
+package org.lazberry.xmaslegacy.api.donate.action;
 
 @Getter
 public class StarterPackAction extends ProvideAction {
