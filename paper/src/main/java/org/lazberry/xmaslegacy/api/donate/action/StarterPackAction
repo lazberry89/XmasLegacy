@@ -1,0 +1,20 @@
+
+
+@Getter
+public class StarterPackAction extends ProvideAction {
+    private final ProductType productType;
+
+    public StarterPackAction() {
+        this.productType = ProductType.STARTER_PACK;
+    }
+
+    public CompletableFuture<Boolean> grantProduct(UUID uuid) {
+        if (PermissionHandler.hasPermission(uuid)) {
+            return CompletableFuture.completedFuture(true);
+        }
+    }
+
+    public CompletableFuture<Boolean> revokeProduct(UUID uuid) {
+
+    }
+}
