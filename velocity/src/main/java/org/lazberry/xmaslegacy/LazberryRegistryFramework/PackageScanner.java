@@ -1,0 +1,103 @@
+package org.lazberry.xmaslegacy.LazberryRegistryFramework;
+
+import com.google.common.reflect.ClassPath;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.framework.ConditionalRegistry;
+import org.lazberry.xmaslegacy.framework.Initiator;
+import org.lazberry.xmaslegacy.framework.annotation.Conditional;
+import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.framework.annotation.Registry;
+
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Package-private Class that Should be Used in only Reflections package. This class scans
+ * all valid classes with {@link ClassPath} package utils.
+ * Getter for all gathered container
+ * is only privately opened to package. Never use scanning class in other distinctive class.
+ * This class function is quite heavy. Only works when server starts-reflections work.
+ * @see Reflections
+ * @see ClassInitiator
+ * @see Registry
+ */
+@Slf4j
+final class PackageScanner {
+    private static final @NotNull String icon = LazberryRegistryFramework.icon(false);
+
+    /**
+     * Core scan loop that gathers target classes based on specific annotations, filters out
+     * interface/abstract/incompatible types, and triggers the bean container instantiation flow.
+     * @param classPath Guava's ClassPath utils containing current classloader's metadata.
+     * @see ClassPath
+     */
+    static void buildAndInjectBeans(@NotNull ClassPath classPath) {
+        log.info("{} Building Bean Container and resolving constructor dependencies...", icon);
+
+        List<Class<?>> targetClasses = new ArrayList<>();
+        for (var classInfo : classPath.getTopLevelClassesRecursive(LazberryRegistryFramework.rootPackage())) {
+            try {
+                Class<?> clazz = classInfo.load();
+                if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
+
+                if (clazz.isAnnotationPresent(ConsumableClass.class)) {
+                    if (LazberryRegistryFramework.isDebug()) log.debug("{} Skipping @ConsumableClass: {}", icon, clazz.getSimpleName());
+                    continue;
+                }
+
+                boolean hasInjectConstructor = false;
+                for (var constructor : clazz.getDeclaredConstructors()) {
+                    if (constructor.isAnnotationPresent(Inject.class)) {
+                        hasInjectConstructor = true;
+                        break;
+                    }
+                }
+
+                if (clazz.isAnnotationPresent(Registry.class) ||
+                        clazz.isAnnotationPresent(Registry.Include.class) ||
+                        clazz.isAnnotationPresent(Registry.Exclude.class) ||
+                        clazz.isAnnotationPresent(Commands.class) ||
+                        clazz.isAnnotationPresent(Listeners.class) ||
+                        clazz.isAnnotationPresent(Task.class) ||
+                        hasInjectConstructor) {
+
+                    if (clazz.isAnnotationPresent(Conditional.class)) {
+                        var conditionalAnno = clazz.getAnnotation(Conditional.class);
+                        try {
+                            ConditionalRegistry condition = conditionalAnno.value().getDeclaredConstructor().newInstance();
+
+                            if (!condition.matches()) {
+                                if (LazberryRegistryFramework.isDebug()) log.info("{} Skipping disabled component: {}", icon, clazz.getSimpleName());
+                                continue;
+                            }
+                        } catch (Exception e) {
+                            log.error("{} Failed to evaluate condition for {}", icon, clazz.getSimpleName(), e);
+                            continue;
+                        }
+                    }
+
+                    targetClasses.add(clazz);
+                }
+            } catch (Exception e) {
+                if (LazberryRegistryFramework.isDebug()) log.warn("{} Failed to load class for scanning: {}", icon, classInfo.getName());
+            }
+        }
+
+        for (Class<?> targetClass : targetClasses) {
+            try {
+                DependencyContainer.getOrCreateBean(targetClass);
+            } catch (Exception e) {
+                StructuralLog.logAssemblyFailure(DependencyContainer.constructionStack(), targetClass, e);
+                if (LazberryRegistryFramework.isDebug()) log.error("{} Error StackTrace:", icon, e);
+            }
+        }
+    }
+}

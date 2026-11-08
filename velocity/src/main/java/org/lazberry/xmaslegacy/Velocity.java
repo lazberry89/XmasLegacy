@@ -6,8 +6,14 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
 import org.lazberry.xmaslegacy.party.TpaActualTeleportManager;
 import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Plugin(
 		id = "xmaslegacy-velocity",
@@ -19,6 +25,8 @@ public class Velocity {
 	private static Velocity instance;
 	private static ProxyServer proxy;
 	private static Logger log;
+	private static Path dataDirectory;
+	private static Path configPath;
 
 	public static Velocity getVelocityInstance() {
 		return instance;
@@ -32,25 +40,56 @@ public class Velocity {
 		return log;
 	}
 
+	public static Path getConfig() {
+		return configPath;
+	}
+
+	public static Path directory() {
+		return dataDirectory;
+	}
+
 	@Inject
-	public Velocity(ProxyServer proxyServer, Logger logger) {
+	public Velocity(ProxyServer proxyServer, Logger logger, Path path) {
+		initConfig();
+
 		instance = this;
 		log = logger;
 		proxy = proxyServer;
+		dataDirectory = path;
+
 	}
 
 	@Subscribe
 	public void onProxyInitialization(ProxyInitializeEvent event) {
-		JedisService.initiateJedis();
-
-		TpaActualTeleportManager tpaManager = new TpaActualTeleportManager();
-		log.info("XmasLegacy Velocity module enabled.");
+		LazberryRegistryFramework.boot(getInstance(), getInstance().getClass());
 	}
 
 	@Subscribe
 	public void onProxyShutdown(ProxyShutdownEvent event) {
-		JedisService.closeJedis();
-		log.info("XmasLegacy Velocity module disabled and Redis connection closed.");
+		LazberryRegistryFramework.cleanUp(getInstance(), getInstance().getClass());
+	}
+
+	private void initConfig() {
+		try {
+
+			if (!Files.exists(dataDirectory)) {
+				Files.createDirectories(dataDirectory);
+			}
+
+			configPath = dataDirectory.resolve("config.yml");
+			if (!Files.exists(configPath)) {
+				try (InputStream in = getClass().getResourceAsStream("/config.yml")) {
+					if (in != null) {
+						Files.copy(in, configPath);
+						log.info("기본 설정 파일을 생성했습니다: {}", configPath.toAbsolutePath());
+					} else {
+						Files.createFile(configPath);
+					}
+				}
+			}
+		} catch (IOException e) {
+			log.error("설정 파일 초기화 중 오류가 발생했습니다.", e);
+		}
 	}
 }
 
