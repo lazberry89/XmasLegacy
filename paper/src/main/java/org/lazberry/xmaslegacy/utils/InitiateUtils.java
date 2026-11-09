@@ -2,17 +2,16 @@ package org.lazberry.xmaslegacy.utils;
 
 import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.party.PartyManager;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.LrfInitializer;
 import org.lazberry.xmaslegacy.chat.prefix.PrefixManager;
 import org.lazberry.xmaslegacy.bags.BagManager;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.user.UserSaveManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.exception.NotValidInitializeTimingException;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class InitiateUtils implements LrfInitializer {
 	private final PartyManager pm;
 	private final UserManager um;

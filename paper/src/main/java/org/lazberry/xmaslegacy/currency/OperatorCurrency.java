@@ -12,9 +12,9 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.EconomyManager;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Commands(command = "currency")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	private final @NotNull EconomyManager ecm;
 

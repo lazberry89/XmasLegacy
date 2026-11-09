@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.collectors.game.Session;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterHandler;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterRepository;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class SilenceHandler extends HunterHandler {
     private static final long RAGE_CYCLE_TICKS = 600L; // 30초 주기
     private static final long RAGE_DURATION_TICKS = 200L; // 분노 10초 유지

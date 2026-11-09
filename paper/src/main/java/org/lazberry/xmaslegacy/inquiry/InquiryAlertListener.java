@@ -3,14 +3,14 @@ package org.lazberry.xmaslegacy.inquiry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 @Listeners
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class InquiryAlertListener implements Listener {
 	private final InquiryManager inquiryManager;
 

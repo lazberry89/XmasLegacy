@@ -7,11 +7,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.roles.HiddenRoles;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
@@ -20,7 +20,7 @@ import org.lazberry.xmaslegacy.utils.SubCommand;
 import java.util.*;
 
 @Commands(command = "role")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RoleCommand implements CommandExecutor, TabCompleter {
 	private final Map<String, SubCommand> commands = new HashMap<>();
 

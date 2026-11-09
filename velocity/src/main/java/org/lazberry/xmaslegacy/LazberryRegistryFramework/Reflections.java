@@ -7,8 +7,9 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.Velocity;
+import org.lazberry.xmaslegacy.framework.InitializeType;
 
 import java.io.File;
 import java.lang.reflect.Method;

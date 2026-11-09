@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "cos")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull CosmeticManager csm;
 

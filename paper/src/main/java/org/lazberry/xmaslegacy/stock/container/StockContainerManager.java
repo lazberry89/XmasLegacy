@@ -1,14 +1,14 @@
 package org.lazberry.xmaslegacy.stock.container;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class StockContainerManager {
     private final Map<UUID, StockContainer> containers = new ConcurrentHashMap<>();
 

@@ -1,7 +1,7 @@
 package org.lazberry.xmaslegacy;
 
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class RuleManager {
 	private volatile Pattern cachedPattern;
 	private final Set<String> badWords = new CopyOnWriteArraySet<>();

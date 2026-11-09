@@ -12,16 +12,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
 import org.lazberry.xmaslegacy.enchant.material.MaterialRecipeManager;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 
 import java.util.function.Supplier;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class MaterialRecipeListener implements Listener {
 
 	/**

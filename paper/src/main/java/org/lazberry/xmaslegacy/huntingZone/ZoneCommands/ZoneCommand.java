@@ -8,18 +8,18 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.huntingZone.HuntingZoneManager;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.huntingZone.ZoneType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.*;
 
 @Commands(command = "zone")
-@Registry.Include(type = ServerType.HUNTING)
+@Components.Include(type = ServerType.HUNTING)
 public class ZoneCommand implements CommandExecutor, TabCompleter {
 	private final @NotNull Map<String, SubCommand> subCommand = new HashMap<>();
 

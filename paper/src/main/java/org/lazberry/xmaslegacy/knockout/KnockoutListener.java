@@ -12,10 +12,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
@@ -23,7 +23,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 import java.util.UUID;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class KnockoutListener implements Listener {
 	private final NamespacedKey key;
     private final KnockoutManager km;

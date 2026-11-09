@@ -14,14 +14,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.exp.ExpManager;
 import org.lazberry.xmaslegacy.role.general.RoleManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class FishermanPassiveListener extends PassiveListeners implements Listener {
     private final ItemStack cookedCod;
     private final ItemStack cookedSalmon;

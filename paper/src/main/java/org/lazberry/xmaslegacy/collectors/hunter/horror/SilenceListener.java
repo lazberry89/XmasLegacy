@@ -16,15 +16,15 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.collectors.drop.PlayerBreakContainerEvent;
 import org.lazberry.xmaslegacy.collectors.drop.PlayerHitContainerEvent;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.Vignette;
 
 @Listeners
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class SilenceListener implements Listener {
 
     @EventHandler

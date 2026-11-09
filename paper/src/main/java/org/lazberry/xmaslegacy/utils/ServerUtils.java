@@ -4,7 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 /**
@@ -21,7 +21,7 @@ import org.lazberry.xmaslegacy.framework.ServerType;
  *
  * @author Lazberry (LRF Architecture Team)
  * @see ServerType
- * @see Registry
+ * @see Components
  */
 public final class ServerUtils {
 
@@ -62,9 +62,9 @@ public final class ServerUtils {
      * </p>
      * <b>[Operational Mechanics & Philosophy]:</b>
      * <ol>
-     * <li><b>Blacklist Evaluation:</b> It first inspects the {@link Registry.Exclude} annotation on the target class.
+     * <li><b>Blacklist Evaluation:</b> It first inspects the {@link Components.Exclude} annotation on the target class.
      * If the current server type is matched within the exclusion array, the component is rejected immediately (returns true).</li>
-     * <li><b>Whitelist Evaluation:</b> It then verifies the {@link Registry.Include} annotation. The method scans the
+     * <li><b>Whitelist Evaluation:</b> It then verifies the {@link Components.Include} annotation. The method scans the
      * permitted server types using the `isServerTypeUnCompatible` algorithm. If not a single matching condition is satisfied,
      * it concludes the component is incompatible (returns true).</li>
      * <li><b>Global Defaulting:</b> If a pure component lacks both annotations, the LRF architectural philosophy
@@ -74,21 +74,21 @@ public final class ServerUtils {
      * @param clazz The target component class currently being scanned for IoC container registration.
      * @return <b>true</b> if the component is incompatible with the current server runtime and must be skipped;
      * <b>false</b> if it is perfectly safe to proceed with injection.
-     * @see Registry.Include
-     * @see Registry.Exclude
+     * @see Components.Include
+     * @see Components.Exclude
      */
     public static boolean unCompatibleWithCurrentServer(@NotNull Class<?> clazz) {
         ServerType current = getServerType(plugin());
 
-        if (clazz.isAnnotationPresent(Registry.Exclude.class)) {
-            Registry.Exclude exclude = clazz.getAnnotation(Registry.Exclude.class);
+        if (clazz.isAnnotationPresent(Components.Exclude.class)) {
+            Components.Exclude exclude = clazz.getAnnotation(Components.Exclude.class);
             for (ServerType excludedType : exclude.type()) {
                 if (excludedType == current) return true;
             }
         }
 
-        if (clazz.isAnnotationPresent(Registry.Include.class)) {
-            Registry.Include include = clazz.getAnnotation(Registry.Include.class);
+        if (clazz.isAnnotationPresent(Components.Include.class)) {
+            Components.Include include = clazz.getAnnotation(Components.Include.class);
             boolean matched = false;
             for (ServerType targetType : include.type()) {
                 if (!isServerTypeUnCompatible(targetType, current)) {
@@ -99,7 +99,7 @@ public final class ServerUtils {
             return !matched;
         }
 
-        if (clazz.isAnnotationPresent(Registry.class))
+        if (clazz.isAnnotationPresent(Components.class))
             return isServerTypeUnCompatible(ServerType.GLOBAL, current);
 
         return false;

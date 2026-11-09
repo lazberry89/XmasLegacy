@@ -7,11 +7,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.stock.Stock;
 import org.lazberry.xmaslegacy.stock.StockManager;
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Commands(command = "display")
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class DisplayCommand implements CommandExecutor, TabCompleter {
 	private final Map<String, SubCommand> commands = new HashMap<>();
 	private final StockManager sm;

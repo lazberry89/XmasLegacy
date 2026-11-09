@@ -8,13 +8,13 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Task;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.MobRepository;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.CustomMob;
 import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Task
-@Registry.Include(type = ServerType.HUNTING)
+@Components.Include(type = ServerType.HUNTING)
 public class MobSpawnTask implements Tasks {
 	private final @NotNull HuntingZoneManager hzm;
 	private final @NotNull MobRepository mr;

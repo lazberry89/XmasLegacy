@@ -5,7 +5,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class IcingBossBarManager implements Initiator {
     private final Map<UUID, BossBar> bars = new HashMap<>();
 

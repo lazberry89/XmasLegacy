@@ -3,13 +3,13 @@ package org.lazberry.xmaslegacy.party;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.JedisService;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.UUID;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class PartyManager implements Initiator {
 	private static final com.google.gson.Gson GSON = new com.google.gson.GsonBuilder().create();
 

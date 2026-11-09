@@ -9,10 +9,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataType;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.region.RegionManager;
 import org.lazberry.xmaslegacy.region.indicator.RegionDisplayManager;
 import org.lazberry.xmaslegacy.region.screen.RegionDeleteInterface;
@@ -23,7 +23,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 import java.util.Objects;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RegionSettingListener implements Listener {
 	private final RegionManager regionManager;
 

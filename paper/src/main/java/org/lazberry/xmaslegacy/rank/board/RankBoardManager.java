@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.rank.ProxyRankManager;
 import org.lazberry.xmaslegacy.rank.RankType;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RankBoardManager implements Initiator {
 	private final Map<RankType, RankBoard> rankBoards = new ConcurrentHashMap<>(8);
     private final ProxyRankManager rankManager;

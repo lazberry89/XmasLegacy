@@ -10,7 +10,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
@@ -18,7 +18,7 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class FarmerShopListener implements Listener {
 	private final RoleShopManager roleShopManager;
 	private final UserManager userManager;

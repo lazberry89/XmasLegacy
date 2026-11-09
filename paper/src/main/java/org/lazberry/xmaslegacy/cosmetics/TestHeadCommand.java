@@ -6,10 +6,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 
-@Registry
+@Components
 @Commands(command = "head")
 public class TestHeadCommand implements CommandExecutor {
 	@Override

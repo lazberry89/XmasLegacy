@@ -8,16 +8,16 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Task;
 import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.region.RegionManager;
 
 @Task
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class IndicatorRotatorTask implements Tasks {
     private static final int PERIOD_TICKS = 2; // 0.1초마다 회전 (부드러운 보간 주기)
     private static final float ROTATION_PER_STEP = (float) Math.toRadians(7); // 1스텝당 7도 (초당 70도, 약 5.1초에 1바퀴)

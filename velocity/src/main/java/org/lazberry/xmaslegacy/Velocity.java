@@ -56,7 +56,6 @@ public class Velocity {
 		log = logger;
 		proxy = proxyServer;
 		dataDirectory = path;
-
 	}
 
 	@Subscribe
@@ -81,7 +80,7 @@ public class Velocity {
 				try (InputStream in = getClass().getResourceAsStream("/config.yml")) {
 					if (in != null) {
 						Files.copy(in, configPath);
-						log.info("기본 설정 파일을 생성했습니다: {}", configPath.toAbsolutePath());
+						log.info("General setting config file created: {}", configPath.toAbsolutePath());
 					} else {
 						Files.createFile(configPath);
 					}

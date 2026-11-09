@@ -7,20 +7,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Task;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.bags.BagManager;
 import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
 @Slf4j
 @Task
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class FreeFoodTask implements Tasks {
 	private @Nullable BukkitTask task;
 	private @Getter boolean isRunning = false;

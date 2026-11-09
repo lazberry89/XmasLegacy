@@ -6,13 +6,13 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.AbstractDataProcessor;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 
 @Slf4j
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class TeleporterConfig extends AbstractDataProcessor {
     private final TeleporterManager tm;
 

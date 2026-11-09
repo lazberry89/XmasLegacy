@@ -19,7 +19,7 @@ import org.lazberry.xmaslegacy.blueprint.config.BlueprintTaskRecordConfig;
 import org.lazberry.xmaslegacy.blueprint.shop.BlueprintShop;
 import org.lazberry.xmaslegacy.region.RegionManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.Axiom;
@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 @Slf4j
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class BluePrintManager implements Initiator {
     private final Map<String, BluePrint> bluePrints = new ConcurrentHashMap<>();
 	private final Map<UUID, ActiveTask> buildTasks = new ConcurrentHashMap<>();

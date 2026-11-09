@@ -10,7 +10,7 @@ import org.lazberry.xmaslegacy.airdrop.AirdropManager;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Setter @Getter
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropSpawnManager implements Initiator {
     private final AirdropManager airdropManager;
     private final AirdropConfig config;

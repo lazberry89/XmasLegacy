@@ -3,11 +3,11 @@ package org.lazberry.xmaslegacy.collectors.hunter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.entity.EntityType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 @NoArgsConstructor
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class HunterData {
     private final HunterBug hunterbug = new HunterBug();
     private final PhaseHunter phaseHunter = new PhaseHunter();

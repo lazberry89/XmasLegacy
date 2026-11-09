@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.api.donate;
+package org.lazberry.xmaslegacy.api;
 
 import lombok.Getter;
 

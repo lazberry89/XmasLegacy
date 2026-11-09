@@ -8,13 +8,13 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.location.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.SubCommand;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Commands(command = "lobby")
-@Registry.Include(type = ServerType.LOBBY)
+@Components.Include(type = ServerType.LOBBY)
 public class LobbyCommand implements CommandExecutor, TabCompleter {
     private final @NotNull Map<String, SubCommand> sub = new HashMap<>();
 

@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.Constants;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.enchant.EnchantManager;
 import org.lazberry.xmaslegacy.enchant.EnchantUserInterface;
@@ -27,7 +27,7 @@ import org.lazberry.xmaslegacy.enchant.ResultType;
 import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -40,7 +40,7 @@ import java.util.Objects;
 import java.util.Random;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class EnchantListener implements Listener {
 	private final XmasLegacy plugin;
 	private final EnchantifyEffectManager effectManager;

@@ -10,11 +10,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.JedisService;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.chat.whisper.WhisperManager;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Commands(command = "whisper", aliases = {"귓", "w"})
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class WhisperCommand implements CommandExecutor, TabCompleter {
     private final WhisperManager whisperManager;
 

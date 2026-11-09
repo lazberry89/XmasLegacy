@@ -7,7 +7,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class WarmthZoneConfig implements Initiator {
     private final File dataFolder;
     private @Getter YamlConfiguration config;

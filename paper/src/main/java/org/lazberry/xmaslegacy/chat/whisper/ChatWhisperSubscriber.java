@@ -6,12 +6,12 @@ import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.UUID;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class ChatWhisperSubscriber extends JedisPubSub implements Initiator {
 	private static final String WHISPER_CHANNEL = "whisper_global";
 	private final WhisperManager whisperManager;

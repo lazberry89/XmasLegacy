@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterHandler;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterRepository;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Queue;
@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class PeacefulHunterHandler extends HunterHandler {
 	private static final long PEACEFUL_DESPAWN_TIME_MS = 60_000L;
 	private final XmasLegacy plugin;

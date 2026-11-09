@@ -8,13 +8,13 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.mining.logics.MineManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.AbstractDataProcessor;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 
 @Slf4j
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class MineConfig extends AbstractDataProcessor {
 	private final MineManager mm;
 

@@ -12,12 +12,12 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 
 @Slf4j
-@Registry.Include(type = { ServerType.MAIN, ServerType.WILD })
+@Components.Include(type = { ServerType.MAIN, ServerType.WILD })
 public class NightmareManager implements Initiator {
 	private final XmasLegacy plugin;
 	private final Team team;

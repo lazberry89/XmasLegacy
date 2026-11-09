@@ -7,12 +7,12 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.blueprint.BluePrint;
 import org.lazberry.xmaslegacy.blueprint.BluePrintManager;
 import org.lazberry.xmaslegacy.blueprint.selection.BlueprintSelectionManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Commands(command = "blueprint", aliases = "bp")
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class BlueprintCommand implements CommandExecutor, TabCompleter {
 	private final Map<String, SubCommand> commands = new HashMap<>();
 	private final BlueprintSelectionManager selectionManager;

@@ -13,16 +13,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Task;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Task;
 import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 @Slf4j
 @Task
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class IcingSystem implements Tasks {
 	private final @NotNull IcingBossBarManager bar;
 	private final @NotNull UserManager um;

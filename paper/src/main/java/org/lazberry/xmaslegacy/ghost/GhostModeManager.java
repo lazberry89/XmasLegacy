@@ -6,12 +6,12 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 
 import java.util.*;
 
-@Registry
+@Components
 public class GhostModeManager implements Initiator {
     private final @NotNull Set<UUID> isGhostMode = new HashSet<>();
     private final @NotNull Map<UUID, ItemStack[]> saveArmor = new HashMap<>();

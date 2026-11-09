@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Monitoring;
+package org.lazberry.xmaslegacy.framework.monitor;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

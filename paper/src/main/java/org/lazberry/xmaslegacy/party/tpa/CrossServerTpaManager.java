@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.party.tpa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class CrossServerTpaManager extends AbstractTpaSubscriber implements Initiator {
     private static final Logger log = LoggerFactory.getLogger(CrossServerTpaManager.class);
 

@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.net.URI;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @SuppressWarnings("UnstableApiUsage")
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class ServerOfficialLinks implements Initiator {
     private final Map<ServerLinks.Type, URI> serverLinkValues = new ConcurrentHashMap<>();
     private final ServerLinkConfig serverLinkConfig;

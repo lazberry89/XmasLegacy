@@ -5,7 +5,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.function.Predicate;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class InquiryManager implements Initiator {
 	private static final Logger log = LoggerFactory.getLogger(InquiryManager.class);
 	private static final int INQUIRY_COOLDOWN_SECONDS = 30;

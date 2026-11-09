@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.enchant.EnchantManager;
 import org.lazberry.xmaslegacy.enchant.listener.PlayerEnchantEvent;
 import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
@@ -15,7 +15,7 @@ import org.lazberry.xmaslegacy.role.general.RoleManager;
 import org.lazberry.xmaslegacy.role.general.RoleTool;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
@@ -23,7 +23,7 @@ import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class BlackSmithPassiveListener extends PassiveListeners implements Listener {
     private final RoleManager rm;
     private final ExpManager em;

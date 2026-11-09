@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.collectors.drop.DropsManager;
 import org.lazberry.xmaslegacy.collectors.field.FieldManager;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.User;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class CollectorsManager implements Initiator {
 	private final Map<UUID, ItemStack[]> backup = new ConcurrentHashMap<>();
 	private final Map<Difficulty, Session> sessionByDifficulty = new HashMap<>(5);

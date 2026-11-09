@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static org.lazberry.xmaslegacy.casino.Casino.countCoins;
 
 @Data
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class SlotMachineManager {
 	private final Map<String, SlotMachine> machines = new ConcurrentHashMap<>();
 	private final Map<String, SlotAnimationController> controllers = new ConcurrentHashMap<>();

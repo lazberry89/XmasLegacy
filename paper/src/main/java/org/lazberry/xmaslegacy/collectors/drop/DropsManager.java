@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.collectors.field.Field;
 import org.lazberry.xmaslegacy.collectors.game.Session;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.CollectionHandler;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class DropsManager {
     private final DropsRepository dr;
 

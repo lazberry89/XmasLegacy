@@ -11,14 +11,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.location.DestinationType;
 import org.lazberry.xmaslegacy.location.SpawnRepository;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.exp.ExpManager;
 import org.lazberry.xmaslegacy.mining.logics.MineManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -27,7 +27,7 @@ import org.lazberry.xmaslegacy.utils.OptionalUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 
 @Listeners
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class PortListener implements Listener {
     private final SpawnRepository sr;
     private final MineManager mm;

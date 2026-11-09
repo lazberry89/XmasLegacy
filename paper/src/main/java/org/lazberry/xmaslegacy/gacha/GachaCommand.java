@@ -12,10 +12,10 @@ import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "gacha")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class GachaCommand implements CommandExecutor, TabCompleter {
     private final @NotNull GachaManager gm;
 

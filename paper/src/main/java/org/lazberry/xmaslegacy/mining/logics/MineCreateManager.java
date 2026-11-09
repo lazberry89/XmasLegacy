@@ -2,7 +2,7 @@ package org.lazberry.xmaslegacy.mining.logics;
 
 import lombok.NoArgsConstructor;
 import org.bukkit.Location;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @NoArgsConstructor
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class MineCreateManager {
 	private final Map<UUID, Location> firstSelection = new HashMap<>();
 	private final Map<UUID, Location> secondSelection = new HashMap<>();

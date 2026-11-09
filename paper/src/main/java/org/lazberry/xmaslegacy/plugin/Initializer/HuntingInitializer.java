@@ -3,11 +3,11 @@ package org.lazberry.xmaslegacy.plugin.Initializer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 @Slf4j
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class HuntingInitializer implements ServerInitializer {
 
     @Override

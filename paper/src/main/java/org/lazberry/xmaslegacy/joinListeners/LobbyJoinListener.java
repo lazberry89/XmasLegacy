@@ -5,17 +5,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.location.DestinationType;
 import org.lazberry.xmaslegacy.location.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.location.SpawnRepository;
 import org.lazberry.xmaslegacy.settings.Alert;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 @Listeners
-@Registry.Include(type = ServerType.LOBBY)
+@Components.Include(type = ServerType.LOBBY)
 public class LobbyJoinListener implements Listener {
 	private final @NotNull SpawnRepository spawnRepo;
 

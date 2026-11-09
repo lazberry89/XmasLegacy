@@ -11,13 +11,13 @@ import org.bukkit.util.Transformation;
 import org.joml.Vector3f;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.region.Region;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.GlowUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RegionDisplayManager {
     public static final NamespacedKey key = KeyUtils.get(Constants.regionKey);
     private final BlockData beacon = Material.BEACON.createBlockData();

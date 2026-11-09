@@ -15,14 +15,14 @@ import org.lazberry.xmaslegacy.region.Region;
 import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.*;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RegionShop {
     public static final NamespacedKey key = KeyUtils.get("region_trader");
     private final RoleShopManager roleShopManager;

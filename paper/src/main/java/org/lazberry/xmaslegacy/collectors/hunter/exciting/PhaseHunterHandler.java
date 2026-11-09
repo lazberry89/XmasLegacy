@@ -12,7 +12,7 @@ import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterHandler;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterRepository;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.CollectorFactory;
 
@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class PhaseHunterHandler extends HunterHandler {
     private static final long AGGRO_DURATION_MS = 10_000L;
     private final Set<UUID> hunters = ConcurrentHashMap.newKeySet(5);

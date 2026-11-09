@@ -6,7 +6,7 @@ import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.rank.database.SqlRankRepository;
 import org.lazberry.xmaslegacy.user.User;
 import redis.clients.jedis.resps.Tuple;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RankManager implements Initiator {
 	private static final String dollarChannel = "rank:dollar";
 	private static final String expChannel = "rank:exp";

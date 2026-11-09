@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework;
+package org.lazberry.xmaslegacy.framework;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

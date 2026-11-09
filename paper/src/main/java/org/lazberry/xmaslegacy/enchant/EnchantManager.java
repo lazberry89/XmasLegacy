@@ -21,14 +21,14 @@ import org.lazberry.xmaslegacy.enchant.listener.EnchantBrokenPreventedEvent;
 import org.lazberry.xmaslegacy.enchant.listener.EnchantDowngradePreventEvent;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class EnchantManager implements Initiator {
     public static final NamespacedKey key = KeyUtils.get("enchant");
 	public static final NamespacedKey enchantAmountKey = KeyUtils.get("enchant_amount");

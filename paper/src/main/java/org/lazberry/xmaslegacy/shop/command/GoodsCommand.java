@@ -7,9 +7,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.shop.goods.Goods;
 import org.lazberry.xmaslegacy.shop.showcase.ShowCaseManager;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Commands(command = "goods")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class GoodsCommand implements CommandExecutor, TabCompleter {
 	private final Map<String, SubCommand> commands = new HashMap<>();
 	private final ShowCaseManager showcaseManager;

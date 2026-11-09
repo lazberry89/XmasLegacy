@@ -9,10 +9,10 @@ import org.lazberry.xmaslegacy.role.shop.role.fisherman.FishSellingShop;
 import org.lazberry.xmaslegacy.role.shop.role.hunter.HunterSellingShop;
 import org.lazberry.xmaslegacy.role.shop.role.miner.MinerSellingShop;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RoleShopManager {
 	private final Farmer farmer = new Farmer();
 	private final Fisherman fisherman = new Fisherman();

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation;
+package org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation;
 
 import org.jetbrains.annotations.NotNull;
 

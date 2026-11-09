@@ -5,17 +5,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.Ability;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.AbilityManager;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.AbilityType;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.logic.SonicHunter;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class SonicHunterListener implements Listener {
     private final SonicHunter sonicHunter;
 

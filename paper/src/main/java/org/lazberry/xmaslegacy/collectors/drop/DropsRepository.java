@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class DropsRepository implements Initiator {
 	private final Map<CollectorLoot, ItemStack> lootItems = new HashMap<>();
 	private final Map<Value, List<CollectorLoot>> lootsByValue = new EnumMap<>(Value.class);

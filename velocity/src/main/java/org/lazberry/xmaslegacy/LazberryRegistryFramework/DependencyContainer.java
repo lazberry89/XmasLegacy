@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.framework.LrfInitializer;
+import org.lazberry.xmaslegacy.framework.StructuralLog;
 import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.exception.CircularDependencyException;

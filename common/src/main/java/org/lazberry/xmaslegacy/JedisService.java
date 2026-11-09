@@ -2,11 +2,11 @@ package org.lazberry.xmaslegacy;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
-import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.InitiatePriority;
-import org.lazberry.xmaslegacy.framework.annotation.Priority;
+import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
+import org.lazberry.xmaslegacy.framework.annotation.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisPubSub;
@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class JedisService implements Initiator {
 	private static final Logger log = LoggerFactory.getLogger(JedisService.class);
 	private static RedisClient redisClient = null;
@@ -104,6 +104,11 @@ public class JedisService implements Initiator {
 	public static void srem(String key, String... members) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
 		redisClient.srem(key, members);
+	}
+
+	public static boolean sismember(String key, String member) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		return redisClient.sismember(key, member);
 	}
 
 	public static void zadd(String key, String member, double score) {

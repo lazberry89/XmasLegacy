@@ -7,13 +7,13 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.lazberry.xmaslegacy.location.DestinationType;
 import org.lazberry.xmaslegacy.location.SpawnRepository;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.utils.ServerTransfer;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class BookListener implements Listener {
 	private final SpawnRepository repository;
 

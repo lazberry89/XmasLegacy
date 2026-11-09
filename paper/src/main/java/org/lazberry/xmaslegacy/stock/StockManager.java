@@ -18,7 +18,7 @@ import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @Slf4j
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class StockManager {
 	private final Map<String, Stock> stocks = new ConcurrentHashMap<>();
 	private final StockUpdater updater = new StockUpdater();

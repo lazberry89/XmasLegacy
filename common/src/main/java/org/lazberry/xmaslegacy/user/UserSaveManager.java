@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class UserSaveManager {
     private static final Logger log = LoggerFactory.getLogger(UserSaveManager.class);
 

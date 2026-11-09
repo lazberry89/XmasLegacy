@@ -8,14 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.plugin.Initializer.ServerInitializer;
 import org.lazberry.xmaslegacy.location.DestinationType;
 import org.lazberry.xmaslegacy.location.MainSpawnManager;
 import org.lazberry.xmaslegacy.location.SpawnRepository;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserSaveManager;
 import org.lazberry.xmaslegacy.utils.ServerTransfer;
@@ -32,7 +32,7 @@ import org.lazberry.xmaslegacy.utils.UserHandler;
  */
 @Slf4j
 @Listeners
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public final class ServerJoinListener implements Listener {
 	private final @NotNull UserSaveManager us;
 	private final @NotNull XmasLegacy plugin;

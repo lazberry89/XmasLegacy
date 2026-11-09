@@ -13,8 +13,8 @@ import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.settings.*;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Commands(command = "prefix")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class PrefixCommand implements CommandExecutor, TabCompleter {
     private final @NotNull PrefixManager pfm;
     private final @NotNull UserManager um;

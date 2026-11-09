@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.utils.ParseEnum;
 
@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropConfig implements Initiator {
     private final File dataFolder;
     private @Getter YamlConfiguration config;

@@ -9,13 +9,13 @@ import org.lazberry.xmaslegacy.food.AgeableCrops;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropContentsManager implements Initiator {
 	private final Set<AirdropContents> dropItems = ConcurrentHashMap.newKeySet();
 	private final XmasLegacy plugin;

@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter @Setter
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class WarmthManager implements Initiator {
     private final Map<Long, WarmthZone> zones = new ConcurrentHashMap<>();
     private final WarmthZoneConfig zoneConfig;

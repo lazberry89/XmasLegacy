@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.casino.versus.bet.VersusBetInterface;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusJoinEvent;
 import org.lazberry.xmaslegacy.casino.versus.event.VersusResetEvent;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.*;
 
@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 
 @Data
 @Slf4j
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class VersusManager {
     private final XmasLegacy plugin;
     private volatile VersusField field;

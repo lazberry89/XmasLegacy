@@ -1,6 +1,4 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation;
-
-import org.jetbrains.annotations.NotNull;
+package org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OutboundChannel {
-    @NotNull String[] value() default {"bungeecord::main"};
+public @interface Task {
 }

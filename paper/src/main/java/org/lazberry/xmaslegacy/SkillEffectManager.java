@@ -14,13 +14,13 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Registry
+@Components
 public class SkillEffectManager {
     private final XmasLegacy plugin;
     private final Set<UUID> immuneToKnockback = new HashSet<>();

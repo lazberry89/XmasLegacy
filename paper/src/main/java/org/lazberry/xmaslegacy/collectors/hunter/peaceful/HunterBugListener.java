@@ -5,14 +5,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Listeners;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.collectors.drop.PlayerBreakContainerEvent;
 import org.lazberry.xmaslegacy.collectors.game.CollectorsManager;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.collectors.game.Session;
 import org.lazberry.xmaslegacy.collectors.hunter.HunterRepository;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.OptionalUtils;
@@ -20,7 +20,7 @@ import org.lazberry.xmaslegacy.utils.OptionalUtils;
 import java.util.UUID;
 
 @Listeners
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class HunterBugListener implements Listener {
 	private final HunterRepository repository;
 	private final PeacefulHunterHandler handler;

@@ -3,14 +3,14 @@ package org.lazberry.xmaslegacy.cosmetics;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class CosmeticManager {
 	private final @NotNull Map<String, Cosmetics> equippedCosmetics = new HashMap<>();
 

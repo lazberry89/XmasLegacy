@@ -8,7 +8,7 @@ import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.roles.Role;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.io.File;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 import static org.lazberry.xmaslegacy.roles.ServerRoles.USER;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class UserManager {
     private final Map<UUID, User> users = new ConcurrentHashMap<>();
 	private final @Getter File rootDataFolder;

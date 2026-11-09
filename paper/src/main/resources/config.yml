@@ -15,3 +15,8 @@ webserver:
 web:
   api_internal_key: ""
   timeout_seconds: 5
+
+  database:
+    url: "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
+    user: "husksync"
+    password: "husksync"

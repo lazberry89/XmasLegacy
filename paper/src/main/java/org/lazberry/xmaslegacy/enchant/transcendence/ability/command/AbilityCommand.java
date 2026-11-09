@@ -7,20 +7,20 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.Ability;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.AbilityManager;
 import org.lazberry.xmaslegacy.enchant.transcendence.ability.AbilityType;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ParseEnum;
 
 import java.util.List;
 
 @Commands(command = "ability")
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class AbilityCommand implements CommandExecutor, TabCompleter {
 	private final AbilityManager abilityManager;
 

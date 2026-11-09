@@ -7,13 +7,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 
 import java.util.UUID;
 
 @Slf4j
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class WhisperManager {
     private static final String WHISPER_CHANNEL = "whisper_global";
 

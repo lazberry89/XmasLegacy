@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.blueprint.BluePrint;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class BlueprintConfig {
 	private final File blueprintFolder;
 

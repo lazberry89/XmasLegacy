@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.*;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.*;
 import org.lazberry.xmaslegacy.framework.annotation.Conditional;
 import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ConditionalRegistry;
 import org.lazberry.xmaslegacy.framework.Initiator;
 
@@ -26,7 +26,7 @@ import java.util.List;
  * This class function is quite heavy. Only works when server starts-reflections work.
  * @see Reflections
  * @see ClassInitiator
- * @see Registry
+ * @see Components
  */
 @Slf4j
 final class PackageScanner {
@@ -65,9 +65,9 @@ final class PackageScanner {
                     }
                 }
 
-                if (clazz.isAnnotationPresent(Registry.Include.class) ||
-                        clazz.isAnnotationPresent(Registry.Exclude.class) ||
-                        clazz.isAnnotationPresent(Registry.class) ||
+                if (clazz.isAnnotationPresent(Components.Include.class) ||
+                        clazz.isAnnotationPresent(Components.Exclude.class) ||
+                        clazz.isAnnotationPresent(Components.class) ||
                         clazz.isAnnotationPresent(Commands.class) ||
                         clazz.isAnnotationPresent(Listeners.class) ||
                         clazz.isAnnotationPresent(Task.class) ||
@@ -123,8 +123,8 @@ final class PackageScanner {
                     continue;
                 }
                 if (interfaceType.isAssignableFrom(candidate)) {
-                    if (candidate.isAnnotationPresent(Registry.Include.class) ||
-                            candidate.isAnnotationPresent(Registry.Exclude.class) ||
+                    if (candidate.isAnnotationPresent(Components.Include.class) ||
+                            candidate.isAnnotationPresent(Components.Exclude.class) ||
                             candidate.isAnnotationPresent(Commands.class) ||
                             Initiator.class.isAssignableFrom(candidate)) {
                         return candidate;

@@ -5,14 +5,14 @@ import org.lazberry.xmaslegacy.collectors.hunter.exciting.PhaseHunter;
 import org.lazberry.xmaslegacy.collectors.hunter.horror.Silence;
 import org.lazberry.xmaslegacy.collectors.hunter.peaceful.HunterBug;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class HunterRepository {
 	private final Map<Difficulty, Hunter> hunters = new EnumMap<>(Difficulty.class);
 

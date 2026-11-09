@@ -3,11 +3,11 @@ package org.lazberry.xmaslegacy.enchant.material.shop;
 import lombok.Getter;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 @Getter
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class EnchantShopManager {
     private final XmasLegacy plugin;
     private final EnchantMaterialShop materialShop;

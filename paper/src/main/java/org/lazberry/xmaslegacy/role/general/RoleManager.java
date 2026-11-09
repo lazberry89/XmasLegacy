@@ -1,10 +1,10 @@
 package org.lazberry.xmaslegacy.role.general;
 
 import lombok.Data;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RoleManager {
     private final Farmer farmer = new Farmer();
     private final Miner miner = new Miner();

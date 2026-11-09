@@ -4,14 +4,14 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.location.Lobby.LobbyManager;
 import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Registry
+@Components
 public class SpawnRepository {
     private final @NotNull Map<DestinationType, SavedLocation> spawnMap = new EnumMap<>(DestinationType.class);
 

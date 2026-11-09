@@ -1,14 +1,14 @@
 package org.lazberry.xmaslegacy.teleporter.logic;
 
 import org.bukkit.Location;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class TeleporterCreateManager {
     private final Map<UUID, Location> firstLoc = new HashMap<>();
     private final Map<UUID, Location> secondLoc = new HashMap<>();

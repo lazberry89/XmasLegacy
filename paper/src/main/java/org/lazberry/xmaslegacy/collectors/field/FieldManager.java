@@ -3,7 +3,7 @@ package org.lazberry.xmaslegacy.collectors.field;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class FieldManager {
     private final Map<Difficulty, Field> fieldByDifficulty = new ConcurrentHashMap<>(5);
 

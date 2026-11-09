@@ -18,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 @Data
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class MagicBook {
 	public static final NamespacedKey key = KeyUtils.get("book");
     private @Nullable ItemDisplay display;

@@ -6,7 +6,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.stock.Stock;
 import org.lazberry.xmaslegacy.stock.StockManager;
@@ -14,7 +14,7 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.*;
 
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class StockShopManager {
 	private final StockManager sm;
 	private final XmasLegacy plugin;

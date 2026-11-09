@@ -9,7 +9,7 @@ import org.lazberry.xmaslegacy.utils.ParseEnum;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.collectors.game.Difficulty;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ConfigBuilder;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Include(type = ServerType.MAIN)
+@Components.Include(type = ServerType.MAIN)
 public class FieldConfig implements Initiator {
 	private final FieldManager fm;
 	private final File dataFolder;

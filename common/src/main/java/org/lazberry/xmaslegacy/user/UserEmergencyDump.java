@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.roles.Role;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import static org.lazberry.xmaslegacy.user.User.GSON;
 
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class UserEmergencyDump {
     private static final @NotNull Logger log = LoggerFactory.getLogger(UserEmergencyDump.class);
     private final @NotNull File rootDataFolder;

@@ -8,9 +8,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.Annotation.Commands;
+import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.teleporter.logic.TeleporterCreateManager;
 import org.lazberry.xmaslegacy.teleporter.logic.TeleporterManager;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Slf4j
 @Commands(command = "portal")
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class TeleporterCommand implements CommandExecutor, TabCompleter {
     private final Map<String, SubCommand> commands;
     private final TeleporterManager tm;

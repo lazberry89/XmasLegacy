@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class WebApiClient {
 	private static final String API_URL = "https://api.xmaslegacy.xyz/api/";
 	private static final HttpClient CLIENT = HttpClient.newBuilder()

@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Monitoring;
+package org.lazberry.xmaslegacy.framework.monitor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

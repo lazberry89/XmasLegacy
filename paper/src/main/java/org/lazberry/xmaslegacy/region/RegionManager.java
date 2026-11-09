@@ -17,7 +17,7 @@ import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.region.event.RegionDeleteEvent;
 import org.lazberry.xmaslegacy.region.event.RegionGenerateEvent;
 import org.lazberry.xmaslegacy.region.indicator.RegionDisplayManager;
@@ -28,7 +28,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 import java.util.*;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class RegionManager implements Initiator {
 	private final Map<Long, Region> regions = new HashMap<>();
 	private final Map<UUID, List<Region>> userRegionsMap = new HashMap<>();

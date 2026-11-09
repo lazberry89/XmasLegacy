@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.RuleManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 @Slf4j
-@Registry.Include(type = ServerType.GLOBAL)
+@Components.Include(type = ServerType.GLOBAL)
 public class ServerInquiryManager extends AbstractInquirySubscriber implements Initiator {
     private static final NamespacedKey key = KeyUtils.get("inquiry-alert");
     private final InquiryManager inquiryManager;

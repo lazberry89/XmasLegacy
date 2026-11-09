@@ -6,11 +6,11 @@ import org.bukkit.Bukkit;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import redis.clients.jedis.JedisPubSub;
 
 @Slf4j
-@Registry.Exclude(type = ServerType.LOBBY)
+@Components.Exclude(type = ServerType.LOBBY)
 public class GlobalChatSubscriber extends JedisPubSub implements Initiator {
     private static final String CHANNEL = "global_chat";
 

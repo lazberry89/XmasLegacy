@@ -1,16 +1,14 @@
-package org.lazberry.xmaslegacy.LazberryRegistryFramework.Monitoring;
+package org.lazberry.xmaslegacy.framework.monitor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
 import org.lazberry.xmaslegacy.framework.annotation.Monitor;
 
 import java.lang.reflect.Method;
 
 @Slf4j
 public final class TelemetryInterceptor {
-	private static final @NotNull String icon = LazberryRegistryFramework.icon(false);
 
 	public static Object execute(@Nullable Object targetInstance, @NotNull Method method, @Nullable Object... args) throws Exception {
 		if (!method.isAnnotationPresent(Monitor.class)) {
@@ -37,7 +35,7 @@ public final class TelemetryInterceptor {
 	}
 
 	private static void triggerSpikeWarning(String clazz, String method, long elapsed, long limit) {
-		log.error("{} Performance Spike Detected in {}#{}()", icon, clazz, method);
+		log.error("[LRF] Performance Spike Detected in {}#{}()", clazz, method);
 		log.error("              └─ Execution Time : {} ns", elapsed);
 		log.error("              └─ Allowed Limit  : {} ns", limit);
 	}

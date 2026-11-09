@@ -12,10 +12,10 @@ import org.lazberry.xmaslegacy.location.SavedLocation;
 import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.settings.Alert;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
-@Registry
+@Components
 public final class LobbyManager extends SavedLocation {
 
     public LobbyManager() {

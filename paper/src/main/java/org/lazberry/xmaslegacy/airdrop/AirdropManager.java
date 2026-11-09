@@ -21,7 +21,7 @@ import org.lazberry.xmaslegacy.airdrop.event.AirdropSpawnEvent;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Registry;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.utils.Axiom;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Getter @Setter
-@Registry.Include(type = {ServerType.MAIN, ServerType.WILD})
+@Components.Include(type = {ServerType.MAIN, ServerType.WILD})
 public class AirdropManager implements Initiator {
 	public static final NamespacedKey key = KeyUtils.get("airdrop");
 
