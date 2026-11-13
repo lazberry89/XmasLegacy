@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.casino.Casino;
@@ -19,11 +20,16 @@ import org.lazberry.xmaslegacy.utils.OptionalUtils;
 import org.lazberry.xmaslegacy.utils.ServerTransfer;
 import org.lazberry.xmaslegacy.utils.TitleUtil;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 @Listeners
 @Components.Include(type = ServerType.MAIN)
 public class VersusGameListener implements Listener {
     private final VersusManager vm;
     private final XmasLegacy plugin;
+    private final Set<UUID> spectatingLosers = new HashSet<>();
 
     @Inject
     public VersusGameListener(VersusManager vm, XmasLegacy plugin) {
@@ -47,12 +53,34 @@ public class VersusGameListener implements Listener {
         var uuid = p.getUniqueId();
 
         vm.whenFieldExists(f -> {
-            if (!f.isRunning()) return;
+            if (!f.isRunning() || !f.isFighter(uuid)) return;
 
-            if (uuid.equals(f.getBlueFighter())) {
-                vm.reset(GameResult.RED);
-            } else if (uuid.equals(f.getRedFighter())) {
-                vm.reset(GameResult.BLUE);
+            // An arena death must not spill the fighter's inventory and levels onto the floor.
+            e.setKeepInventory(true);
+            e.getDrops().clear();
+            e.setKeepLevel(true);
+            e.setDroppedExp(0);
+
+            vm.reset(uuid.equals(f.getBlueFighter()) ? GameResult.RED : GameResult.BLUE);
+        });
+    }
+
+    @EventHandler
+    public void handleFighterQuit(PlayerQuitEvent e) {
+        var p = e.getPlayer();
+        var uuid = p.getUniqueId();
+
+        vm.whenFieldExists(f -> {
+            if (f.isFighter(uuid)) {
+                // Mid-fight the quitter forfeits; before the fight the match is cancelled and stakes go back.
+                if (f.isRunning()) vm.reset(uuid.equals(f.getBlueFighter()) ? GameResult.RED : GameResult.BLUE);
+                else vm.reset(GameResult.LEAVE);
+            }
+
+            // Otherwise the loser would log back in as a spectator inside the arena.
+            if (spectatingLosers.remove(uuid)) {
+                p.setGameMode(GameMode.SURVIVAL);
+                p.teleport(f.getEntrance());
             }
         });
     }
@@ -63,7 +91,22 @@ public class VersusGameListener implements Listener {
         var loser = e.getLoser();
 
         vm.whenFieldExists(f -> {
-            if (winner == null || loser == null) return;
+            if (winner == null || loser == null) {
+                // Cancelled before a winner was decided: both stakes go back.
+                for (UUID fighter : new UUID[]{e.getBlueTeamFighter(), e.getRedTeamFighter()}) {
+                    if (fighter == null) continue;
+                    OptionalUtils.ifNotNull(Bukkit.getPlayer(fighter), p -> {
+                        Casino.giveCoin(p, vm.getJoinCoinAmount());
+                        p.teleport(f.getEntrance());
+                        InfoUtils.warn(p, "경기가 취소되어 참가비가 반환되었습니다.");
+                    });
+                }
+                // shortcut: a fixed pause outlasts the cancelled match's leftover timers (about 5.5s);
+                // switch to a per-match id if the countdown lengths ever become configurable.
+                f.setCanStart(false);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> f.setCanStart(true), 20 * 8L);
+                return;
+            }
 
             f.setCanStart(false);
             var titleWin = TitleUtil.create("&6&l승리!", "5초뒤 복귀합니다.");
@@ -71,8 +114,10 @@ public class VersusGameListener implements Listener {
 
             OptionalUtils.ifNotNull(Bukkit.getPlayer(loser), l -> {
                 l.setGameMode(GameMode.SPECTATOR);
+                spectatingLosers.add(loser);
                 l.showTitle(titleLose);
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (!spectatingLosers.remove(loser)) return; // quit meanwhile: handled in handleFighterQuit
                     OptionalUtils.ifNotNull(Bukkit.getPlayer(loser), rl -> {
                         rl.setGameMode(GameMode.SURVIVAL);
                         ServerTransfer.dramaticTeleport(rl, f.getEntrance());

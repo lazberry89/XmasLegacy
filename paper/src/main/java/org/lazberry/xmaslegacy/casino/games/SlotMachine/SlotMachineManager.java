@@ -30,10 +30,13 @@ public class SlotMachineManager {
 	private final Set<String> activeRunningMachines = ConcurrentHashMap.newKeySet();
 	private final XmasLegacy plugin;
 
-	private double diamondChance;
-	private double goldChance;
-	private double silverChance;
-	private double noLuckChance;
+	// Relative weights per reel (they don't need to sum to 100). With all four at 0 every reel
+	// lands on NO_LUCK and each spin just refunds the stake, so they need real defaults.
+	// Three-of-a-kind odds with these: diamond 0.0125%, gold 0.34%, silver 2.7%, no-luck 12.5%.
+	private double diamondChance = 5;
+	private double goldChance = 15;
+	private double silverChance = 30;
+	private double noLuckChance = 50;
 
 	@Inject
 	public SlotMachineManager(XmasLegacy plugin) {
@@ -104,9 +107,7 @@ public class SlotMachineManager {
 					double multiplier = machine.getMultipliesPerSymbol(slot1);
 					int payoutAmount = Math.toIntExact(Math.round(machine.getNeededCoin() * multiplier));
 
-					if (payoutAmount > 0) {
-						Casino.setCoins(player, Casino.countCoins(player) + payoutAmount);
-					}
+					if (payoutAmount > 0) Casino.giveCoin(player, payoutAmount);
 
 					if (slot1 == Symbol.NO_LUCK) {
 						Casino.sendIconAlert(player, "NO LUCK 3개 매치! 배수 없이 판돈만 돌려받습니다.");

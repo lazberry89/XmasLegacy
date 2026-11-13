@@ -1,21 +1,26 @@
 package org.lazberry.xmaslegacy.party.tpa;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+@Slf4j
 @Components.Exclude(type = ServerType.LOBBY)
 public class CrossServerTpaManager extends AbstractTpaSubscriber implements Initiator {
-    private static final Logger log = LoggerFactory.getLogger(CrossServerTpaManager.class);
+    private final XmasLegacy plugin;
 
-    public CrossServerTpaManager() {}
+    @Inject
+    public CrossServerTpaManager(XmasLegacy plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public void init() {
@@ -29,17 +34,18 @@ public class CrossServerTpaManager extends AbstractTpaSubscriber implements Init
 
     @Override
     protected void onTpaRequested(UUID senderUuid, String senderName, UUID targetUuid) {
-        Player target = Bukkit.getPlayer(targetUuid);
-        if (target != null && target.isOnline()) {
-            InfoUtils.info(target, "&6{}&f님의 텔레포트 요청이 도착했습니다. &6'/tpaccept'&f로 수락하세요.");
-        } else log.error("Tpa target player is not valid at all.");
+        // Called on the Redis subscriber thread: hop to the main thread before touching Bukkit.
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            // Every paper server gets the signal; only the one holding the target reacts.
+            Player target = Bukkit.getPlayer(targetUuid);
+            if (target == null) return;
+            InfoUtils.info(target, "&6{}&f님의 텔레포트 요청이 도착했습니다. &6'/tpaccept'&f로 수락하세요.", senderName);
+        });
     }
 
+    /** The proxy moves the requester (TpaActualTeleportManager); paper has nothing to do here. */
     @Override
     protected void onCrossTpAccepted(UUID senderUuid, String targetServer, UUID targetUuid) {
-        Player sender = Bukkit.getPlayer(senderUuid);
-        if (sender == null || !sender.isOnline()) return;
-
-        log.info("Cross-server TPA triggered for sender {} to move to server {}", sender.getName(), targetServer);
+        log.info("Cross-server TPA: {} is being moved to server {}", senderUuid, targetServer);
     }
 }

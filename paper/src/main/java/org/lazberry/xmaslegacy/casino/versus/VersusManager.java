@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.casino.versus;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,6 +22,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.*;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -45,6 +47,11 @@ public class VersusManager {
 
     public Optional<VersusField> getField() {
         return Optional.ofNullable(field);
+    }
+
+    /** A fighter slot is emptied when a match is cancelled, so timers still running must tolerate null. */
+    private static @Nullable Player online(@Nullable UUID uuid) {
+        return uuid == null ? null : Bukkit.getPlayer(uuid);
     }
 
     public void whenFieldExists(Consumer<VersusField> onExists, Runnable... fail) {
@@ -81,6 +88,11 @@ public class VersusManager {
         var f = optional.get();
         if (f.isRunning()) {
             InfoUtils.error(player, "이미 경기가 시작되었습니다!");
+            return;
+        }
+        // Joining during the wrap-up would fill the field while betting refuses to start, trapping both players.
+        if (!f.isCanStart()) {
+            InfoUtils.error(player, "이전 경기를 정리하는 중입니다. 잠시 후 다시 시도해주세요.");
             return;
         }
 
@@ -143,8 +155,8 @@ public class VersusManager {
                         return;
                     }
                     int current = a.getRemainingSeconds();
-                    Player p1 = Bukkit.getPlayer(f.getRedFighter());
-                    Player p2 = Bukkit.getPlayer(f.getBlueFighter());
+                    Player p1 = online(f.getRedFighter());
+                    Player p2 = online(f.getBlueFighter());
 
                     if (p1 == null || p2 == null) {
                         log.error("Betting timer started cause fighter left.");
@@ -158,8 +170,8 @@ public class VersusManager {
                     p1.playSound(p1, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.2f);
                     p2.playSound(p2, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.2f);
                 }, () -> {
-                    Player p1 = Bukkit.getPlayer(f.getRedFighter());
-                    Player p2 = Bukkit.getPlayer(f.getBlueFighter());
+                    Player p1 = online(f.getRedFighter());
+                    Player p2 = online(f.getBlueFighter());
 
                     if (p1 == null || p2 == null) {
                         reset(GameResult.LEAVE);
@@ -187,7 +199,7 @@ public class VersusManager {
         synchronized (this) {
             OptionalUtils.ifNotNullOrElse(field, f ->
                 new AtomicTimer(seconds, a ->
-                        OptionalUtils.allNotNullOrElse(Bukkit.getPlayer(f.getRedFighter()), Bukkit.getPlayer(f.getBlueFighter()), (p1, p2) -> {
+                        OptionalUtils.allNotNullOrElse(online(f.getRedFighter()), online(f.getBlueFighter()), (p1, p2) -> {
                             int current = a.getRemainingSeconds();
                             var secTitle = TitleUtil.create(beforeFightTitleMaker(current), "");
                             p1.showTitle(secTitle);
@@ -248,17 +260,21 @@ public class VersusManager {
     private Component betComponent(VersusField f) {
         if (!f.isFull()) return ColorUtils.chat("");
 
-        Player blue = Bukkit.getPlayer(f.getBlueFighter());
-        Player red = Bukkit.getPlayer(f.getRedFighter());
+        Player blue = online(f.getBlueFighter());
+        Player red = online(f.getRedFighter());
         if (blue == null || red == null) return ColorUtils.chat("");
 
         var clickable = ColorUtils.chat("&6&l[베팅하기]").clickEvent(ClickEvent.callback(audience -> {
                     if (audience instanceof Player p) {
                         if (isCanBet())
-                            p.openInventory(new VersusBetInterface(blue, red, plugin, maxBetAmount).getInventory());
+                            p.openInventory(new VersusBetInterface(blue, red, plugin).getInventory());
                         else InfoUtils.error(p, "베팅 세션이 종료되었습니다.");
                     }
-                }))
+                // The default callback works for one click only; this message is broadcast to everyone.
+                }, ClickCallback.Options.builder()
+                        .uses(ClickCallback.UNLIMITED_USES)
+                        .lifetime(Duration.ofSeconds(betAvailableSeconds + 5L))
+                        .build()))
                 .hoverEvent(HoverEvent.showText(ColorUtils.chat("&7클릭하여 베팅화면을 로드합니다.")));
         return Casino.icon.append(ColorUtils.chat(" 곧 1대1 게임이 시작됩니다. 카지노의 인원은 베팅이 가능합니다. "))
                 .append(clickable);
@@ -299,8 +315,11 @@ public class VersusManager {
         synchronized (this) {
             if (field != null) {
                 field.setRunning(false);
+                setCanBet(false);
                 var blueUuid = field.getBlueFighter();
                 var redUuid = field.getRedFighter();
+                // Already reset (a leftover timer of a cancelled match): don't announce a second result.
+                if (blueUuid == null && redUuid == null) return;
                 var winner = getResultPlayer(result, blueUuid, redUuid, true);
                 var loser = getResultPlayer(result, blueUuid, redUuid, false);
 

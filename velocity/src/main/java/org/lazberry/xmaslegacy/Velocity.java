@@ -8,7 +8,6 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
-import org.lazberry.xmaslegacy.party.TpaActualTeleportManager;
 import org.slf4j.Logger;
 
 import java.io.IOException;

@@ -154,4 +154,11 @@ commands:
   귓:
   w:
 
+  tpa:
+    usage: /tpa <플레이어>
+    description: 다른 유저에게 텔레포트를 요청합니다.
+  tpaccept:
+    usage: /tpaccept
+    description: 받은 텔레포트 요청을 수락합니다.
+
   links:

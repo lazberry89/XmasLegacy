@@ -1,6 +1,5 @@
 package org.lazberry.xmaslegacy.utils;
 
-import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.framework.LrfInitializer;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.chat.prefix.PrefixManager;
@@ -35,7 +34,6 @@ public class InitiateUtils implements LrfInitializer {
 		ServerTransfer.setUm(um);
 		UserHandler.setUs(us);
 		UserHandler.setPfm(pfm);
-		Casino.setBm(bm);
 		InventoryHelper.setBm(bm);
 	}
 }

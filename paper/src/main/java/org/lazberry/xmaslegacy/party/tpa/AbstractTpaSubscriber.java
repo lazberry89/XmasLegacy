@@ -20,17 +20,22 @@ public abstract class AbstractTpaSubscriber extends JedisPubSub {
 
         String type = parts[0];
 
-        if ("REQUEST".equals(type) && parts.length >= 4) {
-            UUID senderUuid = UUID.fromString(parts[1]);
-            String senderName = parts[2];
-            UUID targetUuid = UUID.fromString(parts[3]);
-            onTpaRequested(senderUuid, senderName, targetUuid);
-        }
-        else if ("CROSS_TP".equals(type) && parts.length >= 4) {
-            UUID senderUuid = UUID.fromString(parts[1]);
-            String targetServer = parts[2];
-            UUID targetUuid = UUID.fromString(parts[3]);
-            onCrossTpAccepted(senderUuid, targetServer, targetUuid);
+        // An exception escaping onMessage ends the subscription for good, so one bad message must not throw.
+        try {
+            if ("REQUEST".equals(type) && parts.length >= 4) {
+                UUID senderUuid = UUID.fromString(parts[1]);
+                String senderName = parts[2];
+                UUID targetUuid = UUID.fromString(parts[3]);
+                onTpaRequested(senderUuid, senderName, targetUuid);
+            }
+            else if ("CROSS_TP".equals(type) && parts.length >= 4) {
+                UUID senderUuid = UUID.fromString(parts[1]);
+                String targetServer = parts[2];
+                UUID targetUuid = UUID.fromString(parts[3]);
+                onCrossTpAccepted(senderUuid, targetServer, targetUuid);
+            }
+        } catch (Exception e) {
+            log.warn("Ignored invalid TPA message: {}", message, e);
         }
     }
 

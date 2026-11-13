@@ -56,6 +56,12 @@ public class CoinFlipManager {
             InfoUtils.error(player, "카지노 코인을 넣어주세요!");
             return;
         }
+        if (!Casino.hasEnoughCoins(player, injectedCoin)) {
+            InfoUtils.error(player, "카지노 코인이 부족합니다! (필요 코인: " + injectedCoin + "개)");
+            return;
+        }
+        // The stake is taken here, so callers only pass the amount and never handle coins themselves.
+        Casino.removeCoins(player, injectedCoin);
         machine.setResult(CoinFlip.State.ROLLING);
         CoinFlip.State finalResult = result(machine, selection);
         startCoinFlipAnimation(player, machine, selection, finalResult, injectedCoin);

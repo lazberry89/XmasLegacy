@@ -1,29 +1,24 @@
 package org.lazberry.xmaslegacy.casino;
 
 import io.th0rgal.oraxen.api.OraxenItems;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.bags.BagManager;
-import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 
 public final class Casino {
 	public static final Component icon =
 			ColorUtils.chat("&#FF4545[&#E34444C&#C74242a&#AB4141s&#8F3F3Fi&#733E3En&#573C3Co&#3B3B3B]");
-    private static @Setter BagManager bm;
 
     public static NamespacedKey key() {
         return KeyUtils.get("casino");
@@ -46,25 +41,9 @@ public final class Casino {
                 .build();
     }
 
-    public static boolean buyCoin(User user, int amount) {
-        if (user == null || amount <= 0) return false;
-
-        Player player = Bukkit.getPlayer(user.getUniqueId());
-        if (player == null || !player.isValid()) return false;
-
-        int neededMoney = 10_000 * amount;
-        if (user.getDollars() < neededMoney) return false;
-        user.addDollars(-neededMoney);
-
-        giveCoin(player, amount);
-        return true;
-    }
-
+	/** Online: inventory, overflow goes to the bag. Offline (or null): nothing is given. */
 	public static void giveCoin(Player player, int amount) {
-		Map<Integer, ItemStack> leftOver = player.getInventory().addItem(coin(amount));
-		if (!leftOver.isEmpty()) {
-			leftOver.values().forEach(i -> bm.addItem(player, i));
-		}
+		InventoryHelper.giveItemOrKeep(player, coin(amount));
 	}
 
 	public static int countCoins(Player player) {
@@ -89,11 +68,7 @@ public final class Casino {
 		if (currentCount > targetAmount) {
 			removeCoins(player, currentCount - targetAmount);
 		} else {
-			int toAdd = targetAmount - currentCount;
-			Map<Integer, ItemStack> leftOver = player.getInventory().addItem(coin(toAdd));
-			if (!leftOver.isEmpty() && bm != null) {
-				leftOver.values().forEach(i -> bm.addItem(player, i));
-			}
+			giveCoin(player, targetAmount - currentCount);
 		}
 	}
 

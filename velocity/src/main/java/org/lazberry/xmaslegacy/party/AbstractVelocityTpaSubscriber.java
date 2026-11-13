@@ -25,7 +25,14 @@ public abstract class AbstractVelocityTpaSubscriber extends JedisPubSub {
 		String type = parts[0];
 
 		if ("CROSS_TP".equals(type)) {
-			UUID senderUuid = UUID.fromString(parts[1]);
+			UUID senderUuid;
+			try {
+				senderUuid = UUID.fromString(parts[1]);
+			} catch (IllegalArgumentException e) {
+				// An exception escaping onMessage ends the subscription for good.
+				Velocity.logger().warn("Ignored invalid TPA message: {}", message);
+				return;
+			}
 			String targetServer = parts[2];
 
 			proxy.getScheduler().buildTask(Velocity.getVelocityInstance(), () ->

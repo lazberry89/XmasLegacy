@@ -46,7 +46,18 @@ public class VersusBetListener implements Listener {
 
         e.setCancelled(slot != 4);
 
+        // Any early return below leaves the coins in the slot; they go back to the player when the screen closes.
         if (slot == 3 || slot == 5) {
+            // The screen can be kept open past the deadline, so check again at click time.
+            if (!vm.isCanBet()) {
+                InfoUtils.error(p, "베팅 세션이 종료되었습니다.");
+                return;
+            }
+            // A second bet would overwrite the first record and its coins would be gone.
+            if (vbm.getBetRecord(p.getUniqueId()).isPresent()) {
+                InfoUtils.error(p, "이미 베팅하셨습니다.");
+                return;
+            }
             if (amount > vm.getMaxBetAmount()) {
                 InfoUtils.error(p, "베팅 최대 갯수는 &6{}개&f 입니다.", vm.getMaxBetAmount());
                 return;
@@ -55,18 +66,11 @@ public class VersusBetListener implements Listener {
                 InfoUtils.error(p, "빈칸에 베팅할 카지노 코인을 올려주세요!");
                 return;
             }
-            if (slot == 3) {
-                vbm.bet(p, bet.getFighter1(), amount);
-                var player = Bukkit.getPlayer(bet.getFighter1());
-                if (player != null) InfoUtils.info(p, "&6{}&f님에게 &6{}&f코인을 베팅했습니다.", player.getName());
-                p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
-            }
-            else {
-                vbm.bet(p, bet.getFighter2(), amount);
-                var player = Bukkit.getPlayer(bet.getFighter2());
-                if (player != null) InfoUtils.info(p, "&6{}&f님에게 &6{}&f코인을 베팅했습니다.", player.getName());
-                p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
-            }
+            var selected = slot == 3 ? bet.getFighter1() : bet.getFighter2();
+            vbm.bet(p, selected, amount);
+            var player = Bukkit.getPlayer(selected);
+            if (player != null) InfoUtils.info(p, "&6{}&f님에게 &6{}&f코인을 베팅했습니다.", player.getName(), amount);
+            p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
             bet.clearBettingSlot();
             Bukkit.getScheduler().runTask(plugin, () -> p.closeInventory(InventoryCloseEvent.Reason.PLUGIN));
         }
