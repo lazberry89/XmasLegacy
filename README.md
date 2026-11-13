@@ -1,6 +1,6 @@
 <div align="center">
 
-# ❄️ XmasLegacy
+# XmasLegacy
 
 **얼어붙은 세계에서 다시 시작하는 생존 · 경제 · 대전 마인크래프트 네트워크**
 
@@ -18,17 +18,17 @@ Developed by **Lazberry89**
 
 ## 목차
 
-- [스토리](#-스토리)
-- [컨텐츠](#-컨텐츠)
-- [서버 구조](#-서버-구조)
-- [프로젝트 구조](#-프로젝트-구조)
-- [LazberryRegistryFramework](#-lazberryregistryframework)
-- [빌드와 실행](#-빌드와-실행)
-- [주요 명령어](#-주요-명령어)
+- [스토리](#스토리)
+- [컨텐츠](#컨텐츠)
+- [서버 구조](#서버-구조)
+- [프로젝트 구조](#프로젝트-구조)
+- [LazberryRegistryFramework](#lazberryregistryframework)
+- [빌드와 실행](#빌드와-실행)
+- [주요 명령어](#주요-명령어)
 
 ---
 
-## 📖 스토리
+## 스토리
 
 > 고대 대백야 시대, 과학자들의 실험 대실패로 이 세계는 생명체가 살 수 없을 정도로 얼어붙어 버렸다.
 
@@ -52,7 +52,7 @@ Developed by **Lazberry89**
 
 ---
 
-## 🎮 컨텐츠
+## 컨텐츠
 
 야생에서 살아남는 것뿐 아니라 직접 경제활동에 참여하고, 유저와 겨뤄 보며, 다양한 체험을 해 볼 수 있습니다.
 
@@ -70,11 +70,11 @@ Developed by **Lazberry89**
 
 | 직업 | 특징 |
 | --- | --- |
-| 🌾 **농부** | 농사 시 추가 경험치, 작물 판매 추가금 |
-| ⛏️ **광부** | 채광 시 추가 아이템과 경험치, 광물 판매 추가금 |
-| 🎣 **어부** | 낚시 버프, 생선 판매 추가금 |
-| 🏹 **사냥꾼** | 사냥 시 추가 아이템과 경험치 |
-| 🔨 **대장장이** | 어디서든 무기 강화 |
+| **농부** | 농사 시 추가 경험치, 작물 판매 추가금 |
+| **광부** | 채광 시 추가 아이템과 경험치, 광물 판매 추가금 |
+| **어부** | 낚시 버프, 생선 판매 추가금 |
+| **사냥꾼** | 사냥 시 추가 아이템과 경험치 |
+| **대장장이** | 어디서든 무기 강화 |
 
 - **직업 숙련도**: `BEGINNER` → `BRONZE` → `SILVER` → `GOLD` → `CRYSTAL` → `EMERALD` → `INSANE` → `IMMORTAL` → `INFINITE`
 - **티어**: `VISITOR` → `USER` → `NEIGHBOR` → `CELEBRITY` → `HERO` → `MYTHIC` → `LEGENDARY` → `OVERLORD` → `ETERNAL`
@@ -123,7 +123,7 @@ Developed by **Lazberry89**
 
 ---
 
-## 🌐 서버 구조
+## 서버 구조
 
 여러 Paper 서버가 Velocity 프록시 아래에 묶여 있고, Redis와 MySQL을 공유합니다.
 
@@ -155,7 +155,7 @@ flowchart LR
 
 ---
 
-## 📦 프로젝트 구조
+## 프로젝트 구조
 
 Gradle 멀티 모듈 프로젝트입니다.
 
@@ -177,7 +177,7 @@ XmasLegacy/
 
 ---
 
-## 🧩 LazberryRegistryFramework
+## LazberryRegistryFramework
 
 이 프로젝트는 직접 만든 의존성 주입 프레임워크 위에서 동작합니다.
 어노테이션만 붙이면 클래스가 스캔되어 컨테이너에 등록되고, 리스너와 명령어도 자동으로 연결됩니다.
@@ -206,7 +206,7 @@ public class DonationJoinListener implements Listener {
 
 ---
 
-## 🔧 빌드와 실행
+## 빌드와 실행
 
 ### 요구 사항
 
@@ -242,7 +242,7 @@ Velocity는 첫 실행 때 `plugins/xmaslegacy-velocity/config.yml`이 생성됩
 
 ---
 
-## ⌨️ 주요 명령어
+## 주요 명령어
 
 ### 유저
 
