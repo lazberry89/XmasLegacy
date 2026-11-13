@@ -2,52 +2,35 @@ package org.lazberry.xmaslegacy.api.donate.action;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.bukkit.Bukkit;
-import org.lazberry.xmaslegacy.api.PermissionHandler;
+import org.bukkit.entity.Player;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.api.ProductType;
-import org.lazberry.xmaslegacy.framework.Observation;
-import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Monitor;
-import org.lazberry.xmaslegacy.framework.annotation.Components;
-import org.lazberry.xmaslegacy.framework.monitor.Monitored;
-
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import org.lazberry.xmaslegacy.currency.CurrencyManager;
+import org.lazberry.xmaslegacy.food.AgeableCrops;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 
 @Slf4j
-@Components.Exclude(type = ServerType.LOBBY)
-public class StarterPackAction extends ProvideAction implements Monitored {
+public class StarterPackAction extends ProvideAction {
+	private final XmasLegacy plugin;
 
     @Getter
     private final ProductType productType;
 
-    public StarterPackAction() {
-        this.productType = ProductType.STARTER_PACK;
+    public StarterPackAction(XmasLegacy plugin) {
+	    this.plugin = plugin;
+	    this.productType = ProductType.STARTER_PACK;
     }
 
-    @Monitor(lvl = Observation.AVERAGE)
-    public CompletableFuture<Boolean> grantProduct(UUID uuid) {
-        if (PermissionHandler.hasPermission(uuid, productType.name())) {
-            return CompletableFuture.completedFuture(true);
-        }
-        return productType.grantPermission(uuid).whenComplete((success, ex) -> {
-            if (ex != null) {
-                log.error("Failed to grant product '{}' to player({}).", productType.name(), uuid, ex);
-                return;
-            }
-            if (!success) {
-                log.error("Failed of LuckPerm save process. Log will be appeared.");
-                return;
-            }
-            var target = Bukkit.getPlayer(uuid);
+	@Override
+    public void grantProduct(Player player) {
+		if (player != null && player.isOnline()) {
+			var bread = AgeableCrops.SunFlowerBread();
+			bread.setAmount(64);
 
-            if (target != null && target.isOnline()) {
+			var money = CurrencyManager.currency(plugin);
+			money.setAmount(99);
 
-            }
-        });
-    }
-
-    public CompletableFuture<Boolean> revokeProduct(UUID uuid) {
-        return CompletableFuture.completedFuture(true);
+			InventoryHelper.giveItemOrKeep(player, bread, money, money, money);
+		}
     }
 }

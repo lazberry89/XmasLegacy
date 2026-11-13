@@ -24,7 +24,6 @@ import static org.lazberry.xmaslegacy.LazberryRegistryFramework.ClassInitiator.i
  * Public execution room for LazberryRegistryFramework lifecycle triggers.
  * This class takes fully initialized beans from {@link PackageScanner}, then automatically
  * binds them to Velocity EventManager, CommandManager, and Custom Registry systems.
- *
  * All method invocations are dynamically mapped by {@link InitializeType}.
  *
  * @see PackageScanner

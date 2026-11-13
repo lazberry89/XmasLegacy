@@ -1,13 +1,10 @@
 package org.lazberry.xmaslegacy.api.donate.action;
 
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import org.bukkit.entity.Player;
 
 public abstract class ProvideAction {
 
-	public abstract CompletableFuture<Boolean> grantProduct(UUID uuid);
-
-	public abstract CompletableFuture<Boolean> revokeProduct(UUID uuid);
+	public abstract void grantProduct(Player player);
 
 	public void recall() {
 

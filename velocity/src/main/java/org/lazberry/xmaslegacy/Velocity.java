@@ -5,6 +5,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.LazberryRegistryFramework;
 import org.lazberry.xmaslegacy.party.TpaActualTeleportManager;
@@ -49,13 +50,21 @@ public class Velocity {
 	}
 
 	@Inject
-	public Velocity(ProxyServer proxyServer, Logger logger, Path path) {
-		initConfig();
-
+	public Velocity(ProxyServer proxyServer, Logger logger, @DataDirectory Path path) {
 		instance = this;
 		log = logger;
 		proxy = proxyServer;
 		dataDirectory = path;
+
+		// Needs dataDirectory and log, so it must run after the assignments above.
+		initConfig();
+
+		// The driver sits in this plugin's jar, where DriverManager won't discover it by itself.
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			log.error("MySQL driver is missing from the plugin jar. Database features will fail.", e);
+		}
 	}
 
 	@Subscribe

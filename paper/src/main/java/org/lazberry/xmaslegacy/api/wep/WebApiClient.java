@@ -50,11 +50,14 @@ public class WebApiClient {
 
 				String name = root.has("name") ? root.get("name").getAsString() : "Unknown";
 				String version = root.has("version") ? root.get("version").getAsString() : "Unknown";
-				int onlineCount = root.has("online") ? root.get("online").getAsInt() : 0;
+				// "online" is JSON null while the server is closed; has() is still true for it.
+				JsonElement online = root.get("online");
+				int onlineCount = online == null || online.isJsonNull() ? 0 : online.getAsInt();
 				int preregCount = root.has("preregCount") ? root.get("preregCount").getAsInt() : 0;
 				boolean addressRevealed = root.has("addressRevealed") && root.get("addressRevealed").getAsBoolean();
 
-				String address = (addressRevealed && root.has("address")) ? root.get("address").getAsString() : null;
+				JsonElement addr = root.get("address");
+				String address = addressRevealed && addr != null && !addr.isJsonNull() ? addr.getAsString() : null;
 
 				return new ServerInfo(name, version, onlineCount, preregCount, addressRevealed, address);
 			} catch (Exception e) {

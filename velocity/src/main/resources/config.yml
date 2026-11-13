@@ -1,0 +1,6 @@
+# Copied to plugins/xmaslegacy-velocity/config.yml on first start. Edit that copy, not this one.
+web:
+  database:
+    url: "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
+    user: "husksync"
+    password: "husksync"

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.framework.LrfInitializer;
-import org.lazberry.xmaslegacy.framework.StructuralLog;
 import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.utils.ServerUtils;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;

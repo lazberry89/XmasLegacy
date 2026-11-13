@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Commands;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.framework.ConditionalRegistry;
-import org.lazberry.xmaslegacy.framework.StructuralLog;
 import org.lazberry.xmaslegacy.framework.annotation.Conditional;
 import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -63,7 +62,6 @@ final class PackageScanner {
                         clazz.isAnnotationPresent(Components.Exclude.class) ||
                         clazz.isAnnotationPresent(Commands.class) ||
                         clazz.isAnnotationPresent(Listeners.class) ||
-                        clazz.isAnnotationPresent(Task.class) ||
                         hasInjectConstructor) {
 
                     if (clazz.isAnnotationPresent(Conditional.class)) {

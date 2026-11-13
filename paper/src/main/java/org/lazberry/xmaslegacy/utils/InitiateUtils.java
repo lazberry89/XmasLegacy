@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.utils;
 
 import org.lazberry.xmaslegacy.casino.Casino;
+import org.lazberry.xmaslegacy.framework.LrfInitializer;
 import org.lazberry.xmaslegacy.party.PartyManager;
 import org.lazberry.xmaslegacy.chat.prefix.PrefixManager;
 import org.lazberry.xmaslegacy.bags.BagManager;

@@ -111,6 +111,21 @@ public class JedisService implements Initiator {
 		return redisClient.sismember(key, member);
 	}
 
+	public static void hset(String key, String field, String value) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		redisClient.hset(key, field, value);
+	}
+
+	public static @Nullable String hget(String key, String field) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		return redisClient.hget(key, field);
+	}
+
+	public static void hdel(String key, String... fields) {
+		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
+		redisClient.hdel(key, fields);
+	}
+
 	public static void zadd(String key, String member, double score) {
 		if (redisClient == null) throw new IllegalStateException("Redis client is not connected! Check host or port.");
 		redisClient.zadd(key, score, member);

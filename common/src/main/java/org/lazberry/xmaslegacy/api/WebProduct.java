@@ -1,7 +1,6 @@
 package org.lazberry.xmaslegacy.api;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
@@ -11,25 +10,28 @@ import java.util.UUID;
 @Getter
 @ConsumableClass
 public class WebProduct {
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Gson GSON = new Gson();
 
+    /** Purchase number. Issued by the database (AUTO_INCREMENT), unique per purchase. */
+    private final long id;
     private final UUID receiver;
     private final ProductType product;
 
     @Setter
     private boolean isGranted = false;
 
-    public WebProduct(UUID receiver, ProductType product) {
+    public WebProduct(long id, UUID receiver, ProductType product) {
+        this.id = id;
         this.receiver = receiver;
         this.product = product;
     }
 
     public String toJson() {
-        return gson.toJson(this);
+        return GSON.toJson(this);
     }
 
-    public static WebProduct fromJson(String src) {
-        if (src == null || src.isEmpty()) return null;
-        return gson.fromJson(src, WebProduct.class);
+    public static WebProduct fromJson(String json) {
+        if (json == null || json.isEmpty()) return null;
+        return GSON.fromJson(json, WebProduct.class);
     }
 }

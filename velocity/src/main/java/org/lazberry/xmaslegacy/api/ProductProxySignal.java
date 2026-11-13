@@ -23,12 +23,15 @@ public class ProductProxySignal implements Monitored {
 
     @Monitor(lvl = Observation.AVERAGE)
     public void transmitProxyGrantSignal(UUID uuid, ProductType productType) {
-        WebProduct product = new WebProduct(uuid, productType);
-        product.setGranted(false);
-
-        productManager.addProductAsPended(product);
-
-        JedisService.publish(channel, product.toJson());
-        log.info("Web product signal sent by Proxy. (receiver: {}, type: {})", uuid, productType.name());
+        productManager.addProductAsPended(uuid, productType).whenComplete((product, ex) -> {
+            if (ex != null) {
+                log.error("Failed to record web product. (receiver: {}, type: {})", uuid, productType.name(), ex);
+                return;
+            }
+            // Only the purchase number travels; paper resolves it through ProductRecordManager.
+            JedisService.publish(channel, String.valueOf(product.getId()));
+            log.info("Web product signal sent by Proxy. (id: {}, receiver: {}, type: {})",
+                    product.getId(), uuid, productType.name());
+        });
     }
 }

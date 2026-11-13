@@ -8,6 +8,8 @@ plugins {
 dependencies {
     implementation(project(":common"))
     implementation("redis.clients:jedis:8.0.2")
+    // Velocity ships no JDBC driver (Paper does), so the proxy jar must carry its own.
+    implementation("com.mysql:mysql-connector-j:8.4.0")
 
     val velocityVersion = "3.5.0-SNAPSHOT"
     compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
