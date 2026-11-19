@@ -99,7 +99,7 @@ public final class LazberryRegistryFramework {
         return failure;
     }
 
-    private static void setup(@NotNull ProxyServer ignored, @NotNull Class<? extends ProxyServer> mainClass, boolean on) {
+    private static void setup(@NotNull ProxyServer ignored, @NotNull Class<?> mainClass, boolean on) {
         String icon = icon(false);
         long startTime = System.currentTimeMillis();
         log.info("{} Booting LazberryRegistryFramework for Proxy...", icon);
@@ -123,12 +123,12 @@ public final class LazberryRegistryFramework {
         }
     }
 
-    public static void boot(@NotNull ProxyServer plugin, @NotNull Class<? extends ProxyServer> mainClass) {
+    public static void boot(@NotNull ProxyServer plugin, @NotNull Class<?> mainClass) {
         setScanPackage(mainClass.getPackageName());
         setup(plugin, mainClass, true);
     }
 
-    public static void cleanUp(@NotNull ProxyServer plugin, @NotNull Class<? extends ProxyServer> mainClass) {
+    public static void cleanUp(@NotNull ProxyServer plugin, @NotNull Class<?> mainClass) {
         setup(plugin, mainClass, false);
     }
 

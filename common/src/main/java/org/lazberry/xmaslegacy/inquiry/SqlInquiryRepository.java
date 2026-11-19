@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +20,17 @@ import java.util.concurrent.CompletableFuture;
 public class SqlInquiryRepository {
 	private static final Logger logger = LoggerFactory.getLogger(SqlInquiryRepository.class);
 
-	private final String url = "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
-	private final String user = "husksync";
-	private final String password = "husksync";
+	private final String url;
+	private final String user;
+	private final String password;
 
-	public SqlInquiryRepository() {
+	@Inject
+	public SqlInquiryRepository(@ConfigValue(path = "web.database.url") String url,
+	                            @ConfigValue(path = "web.database.user") String user,
+	                            @ConfigValue(path = "web.database.password") String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
 		createNewTable();
 	}
 

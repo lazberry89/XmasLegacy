@@ -73,9 +73,9 @@ public class VersusBetManager {
 		clearBets();
 	}
 
-	/** Offline bettors get nothing: there is no reliable place to keep coins for them yet. */
+	/** Bettors who left get their coins through the mailbox. */
 	private void payout(UUID uuid, int amount) {
-		if (amount > 0) Casino.giveCoin(Bukkit.getPlayer(uuid), amount);
+		if (amount > 0) Casino.giveCoin(uuid, amount);
 	}
 
     public void remove(UUID uuid) {

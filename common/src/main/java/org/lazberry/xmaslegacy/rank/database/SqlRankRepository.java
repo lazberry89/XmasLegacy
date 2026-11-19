@@ -2,6 +2,8 @@ package org.lazberry.xmaslegacy.rank.database;
 
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
+import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.rank.RankType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +18,18 @@ import java.util.concurrent.CompletableFuture;
 public class SqlRankRepository implements RankRepository {
 	private static final Logger log = LoggerFactory.getLogger(SqlRankRepository.class);
 
-	private final String url = "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
-	private final String user = "husksync";
-	private final String password = "husksync";
+	private final String url;
+	private final String user;
+	private final String password;
 
-	public SqlRankRepository() {}
+	@Inject
+	public SqlRankRepository(@ConfigValue(path = "web.database.url") String url,
+	                         @ConfigValue(path = "web.database.user") String user,
+	                         @ConfigValue(path = "web.database.password") String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
+	}
 
 	private Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(url, user, password);

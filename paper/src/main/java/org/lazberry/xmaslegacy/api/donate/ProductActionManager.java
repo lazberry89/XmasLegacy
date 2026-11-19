@@ -40,7 +40,10 @@ public class ProductActionManager implements Initiator {
 	 */
 	public void grantProduct(long id) {
 		recordManager.find(id).thenAccept(product -> {
-			if (product == null) return;
+			if (product == null) {
+				log.warn("Web product {} not found in Redis or DB, or already granted. Skipped.", id);
+				return;
+			}
 
 			var action = typeActions.get(product.getProduct());
 			if (action == null) {
@@ -50,10 +53,17 @@ public class ProductActionManager implements Initiator {
 
 			// Every paper server gets the signal, so check the player is here BEFORE claiming.
 			Bukkit.getScheduler().runTask(plugin, () -> {
-				if (Bukkit.getPlayer(product.getReceiver()) == null) return;
+				if (Bukkit.getPlayer(product.getReceiver()) == null) {
+					// Normal for every server the player isn't on; the purchase stays pending.
+					log.info("Web product {} waits: receiver {} is not on this server.", id, product.getReceiver());
+					return;
+				}
 
 				recordManager.markAsGranted(product).thenAccept(claimed -> {
-					if (!claimed) return;
+					if (!claimed) {
+						log.info("Web product {} was already marked granted in DB. Skipped.", id);
+						return;
+					}
 
 					Bukkit.getScheduler().runTask(plugin, () -> {
 						var player = Bukkit.getPlayer(product.getReceiver());

@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class Casino {
 	public static final Component icon =
@@ -41,9 +42,13 @@ public final class Casino {
                 .build();
     }
 
-	/** Online: inventory, overflow goes to the bag. Offline (or null): nothing is given. */
+	/** Online: inventory, overflow goes to the bag. Left this server: delivered through the mailbox. */
 	public static void giveCoin(Player player, int amount) {
 		InventoryHelper.giveItemOrKeep(player, coin(amount));
+	}
+
+	public static void giveCoin(UUID uuid, int amount) {
+		InventoryHelper.giveItemOrKeep(uuid, coin(amount));
 	}
 
 	public static int countCoins(Player player) {

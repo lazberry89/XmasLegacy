@@ -31,6 +31,11 @@ public class BagManager implements Initiator {
 		bags.remove(uuid);
 	}
 
+	/** True once this server holds the player's real bag (getBag would otherwise create an empty one). */
+	public boolean isLoaded(UUID uuid) {
+		return bags.containsKey(uuid);
+	}
+
 	public Bag getBag(UUID uuid) {
 		return bags.computeIfAbsent(uuid, Bag::new);
 	}

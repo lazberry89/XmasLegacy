@@ -12,6 +12,7 @@ import org.lazberry.xmaslegacy.bags.database.BagSaveManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.joinListeners.PlayerDataReadyEvent;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.StunUtils;
 
@@ -21,12 +22,14 @@ import org.lazberry.xmaslegacy.utils.StunUtils;
 public class BagSessionListener implements Listener {
     private final BagManager bagManager;
     private final BagSaveManager saveManager;
+    private final BagMailbox mailbox;
     private final XmasLegacy plugin;
 
     @Inject
-    public BagSessionListener(BagManager bagManager, BagSaveManager saveManager, XmasLegacy plugin) {
+    public BagSessionListener(BagManager bagManager, BagSaveManager saveManager, BagMailbox mailbox, XmasLegacy plugin) {
         this.bagManager = bagManager;
         this.saveManager = saveManager;
+        this.mailbox = mailbox;
         this.plugin = plugin;
     }
 
@@ -45,7 +48,14 @@ public class BagSessionListener implements Listener {
                     return;
                 }
                 bagManager.setUserBag(uuid, bag);
+                mailbox.tryDeliver(player);
             }));
+    }
+
+    /** The other half of the mailbox gate: whichever of bag load / data sync finishes last delivers. */
+    @EventHandler
+    public void deliverMailboxWhenDataReady(PlayerDataReadyEvent e) {
+        mailbox.tryDeliver(e.getPlayer());
     }
 
     @EventHandler

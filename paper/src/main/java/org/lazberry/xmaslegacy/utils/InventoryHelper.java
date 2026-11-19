@@ -1,6 +1,7 @@
 package org.lazberry.xmaslegacy.utils;
 
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -8,12 +9,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.bags.BagMailbox;
 import org.lazberry.xmaslegacy.bags.BagManager;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class InventoryHelper {
     private static @Setter BagManager bm;
+    private static @Setter BagMailbox mailbox;
 
     public static ItemStack background() {
         return ItemBuilder.of(XmasLegacy.getInstance(), Material.GRAY_STAINED_GLASS_PANE)
@@ -44,14 +48,30 @@ public class InventoryHelper {
                 .forEach(i -> world.dropItemNaturally(loc, i));
     }
 
+    /**
+     * Inventory first, overflow into the bag. A player who has left this server gets the items
+     * through the mailbox, delivered wherever they are now or on their next join.
+     */
     public static void giveItemOrKeep(@Nullable Player p, ItemStack... items) {
-        if (items.length == 0 || p == null || !p.isOnline()) return;
+        if (items.length == 0 || p == null) return;
+        if (!p.isOnline()) {
+            mailbox.send(p.getUniqueId(), items);
+            return;
+        }
 
         final var remains = p.getInventory().addItem(items);
         var remainItems = remains.values();
         if (remainItems.isEmpty()) return;
 
         bm.addAll(p, remainItems);
+    }
+
+    /** For when only the UUID is known: gives directly if the player is on this server, otherwise mails it. */
+    public static void giveItemOrKeep(UUID uuid, ItemStack... items) {
+        if (items.length == 0) return;
+        var p = Bukkit.getPlayer(uuid);
+        if (p != null) giveItemOrKeep(p, items);
+        else mailbox.send(uuid, items);
     }
 
     public static boolean hasItem(@Nullable Player p, ItemStack target, int amount) {

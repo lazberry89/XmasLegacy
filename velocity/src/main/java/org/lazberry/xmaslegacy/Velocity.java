@@ -68,12 +68,13 @@ public class Velocity {
 
 	@Subscribe
 	public void onProxyInitialization(ProxyInitializeEvent event) {
-		LazberryRegistryFramework.boot(getInstance(), getInstance().getClass());
+		// The scan root and classloader must come from this plugin, not from the proxy's own class.
+		LazberryRegistryFramework.boot(getInstance(), Velocity.class);
 	}
 
 	@Subscribe
 	public void onProxyShutdown(ProxyShutdownEvent event) {
-		LazberryRegistryFramework.cleanUp(getInstance(), getInstance().getClass());
+		LazberryRegistryFramework.cleanUp(getInstance(), Velocity.class);
 	}
 
 	private void initConfig() {

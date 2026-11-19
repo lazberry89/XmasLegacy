@@ -4,6 +4,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.roles.Role;
@@ -22,14 +23,19 @@ import static org.lazberry.xmaslegacy.user.User.GSON;
 @Data
 @Components.Exclude(type = ServerType.LOBBY)
 public class SqlUserRepository implements UserRepository {
-	private final String url = "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
-	private final String user = "husksync";
-	private final String password = "husksync";
+	private final String url;
+	private final String user;
+	private final String password;
 
 	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
 
 	@Inject
-	public SqlUserRepository() {
+	public SqlUserRepository(@ConfigValue(path = "web.database.url") String url,
+	                         @ConfigValue(path = "web.database.user") String user,
+	                         @ConfigValue(path = "web.database.password") String password) {
+		this.url = url;
+		this.user = user;
+		this.password = password;
 		createTable();
 	}
 

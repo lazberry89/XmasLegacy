@@ -58,7 +58,8 @@ public final class Reflections {
 	public static void invokeReflections(@NotNull ClassPath classPath, InitializeType... exceptions) {
 		DependencyContainer.registerInstance(Velocity.class, pluginMainInstance());
 		DependencyContainer.registerInstance(ProxyServer.class, plugin());
-		DependencyContainer.registerInstance(File.class, Velocity.directory());
+		// Velocity hands out a Path; beans (EconomyManager, UserManager...) ask for a File, as on paper.
+		DependencyContainer.registerInstance(File.class, Velocity.directory().toFile());
 
 		PackageScanner.buildAndInjectBeans(classPath);
 		collectManagers();
@@ -94,27 +95,31 @@ public final class Reflections {
 	 */
 	@Reflection(type = InitializeType.LISTENERS)
 	public static void registerListeners(@NotNull ClassPath classPath) {
-		try {
-			for (var entry : DependencyContainer.getContainer().entrySet()) {
-				Class<?> clazz = entry.getKey();
-				Object instance = entry.getValue();
+		for (var entry : DependencyContainer.getContainer().entrySet()) {
+			Class<?> clazz = entry.getKey();
+			Object instance = entry.getValue();
 
-				// 클래스 내부에 @Subscribe 어노테이션이 붙은 메서드가 하나라도 존재하면 이벤트 리스너로 간주
-				boolean hasSubscribeMethod = false;
-				for (Method method : clazz.getDeclaredMethods()) {
-					if (method.isAnnotationPresent(Subscribe.class)) {
-						hasSubscribeMethod = true;
-						break;
-					}
-				}
+			// Velocity registers the main plugin instance by itself; doing it again throws.
+			if (instance == pluginMainInstance()) continue;
 
-				if (hasSubscribeMethod) {
-					plugin().getEventManager().register(pluginMainInstance(), instance);
-					log.info("{} Velocity Listener/Event handler {} Automatically registered from IoC Container", icon, clazz.getSimpleName());
+			// 클래스 내부에 @Subscribe 어노테이션이 붙은 메서드가 하나라도 존재하면 이벤트 리스너로 간주
+			boolean hasSubscribeMethod = false;
+			for (Method method : clazz.getDeclaredMethods()) {
+				if (method.isAnnotationPresent(Subscribe.class)) {
+					hasSubscribeMethod = true;
+					break;
 				}
 			}
-		} catch (Exception e) {
-			log.error("{} Error occurred while registering all Velocity listeners", icon, e);
+
+			if (!hasSubscribeMethod) continue;
+
+			// Per bean, so one bad listener doesn't leave every later one unregistered.
+			try {
+				plugin().getEventManager().register(pluginMainInstance(), instance);
+				log.info("{} Velocity Listener/Event handler {} Automatically registered from IoC Container", icon, clazz.getSimpleName());
+			} catch (Exception e) {
+				log.error("{} Failed to register Velocity listener {}", icon, clazz.getSimpleName(), e);
+			}
 		}
 	}
 
