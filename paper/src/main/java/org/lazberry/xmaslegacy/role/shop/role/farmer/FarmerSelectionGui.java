@@ -21,26 +21,20 @@ public class FarmerSelectionGui implements InventoryHolder {
         for (int i = 0; i < inv.getSize(); i++) {
             inv.setItem(i, bg);
         }
-		inv.setItem(2, createSellShopButton(plugin));
-		inv.setItem(6, createBuyCropButton(plugin));
+		inv.setItem(2, button(plugin, Material.IRON_HOE, "&6&l도구상점",
+				"&7물뿌리개, 스프링클러, 비료, 화분 같은", "&7농사 도구를 구매합니다."));
+		inv.setItem(4, button(plugin, Material.WHEAT_SEEDS, "&6&l씨앗상점",
+				"&7새로운 작물의 씨앗을 구매하여", "&7농사를 시작해보세요!"));
+		inv.setItem(6, button(plugin, Material.GOLDEN_CARROT, "&6&l작물판매",
+				"&7수확한 작물을 판매합니다.", "&7별이 많을수록 비싸게 팔립니다."));
     }
 
-    private ItemStack createSellShopButton(XmasLegacy plugin) {
-        return ItemBuilder.of(plugin, Material.WHEAT)
-                .name(ColorUtils.chat("&6&l생산물 판매하기"))
-                .lore(ColorUtils.chat("&7생산한 농산물을 판매해보세요!"))
+    private ItemStack button(XmasLegacy plugin, Material icon, String name, String... lore) {
+        return ItemBuilder.of(plugin, icon)
+                .name(ColorUtils.chat(name))
+                .lore(java.util.Arrays.stream(lore).map(ColorUtils::chat).toList())
                 .hideAllFlags()
                 .build();
-    }
-
-    private ItemStack createBuyCropButton(XmasLegacy plugin) {
-        return ItemBuilder.of(plugin, Material.GOLDEN_CARROT)
-                .name(ColorUtils.chat("&6&l농부상점"))
-                .lore(
-						ColorUtils.chat("&7필요한 작물을 구매하거나 씨앗을 구매하여"),
-		                ColorUtils.chat("&7농사를 시작해보세요!")
-                )
-                .hideAllFlags().build();
     }
 
     @Override

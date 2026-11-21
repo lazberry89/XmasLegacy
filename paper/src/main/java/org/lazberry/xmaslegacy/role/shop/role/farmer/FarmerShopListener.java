@@ -1,13 +1,12 @@
 package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 import org.lazberry.xmaslegacy.role.shop.role.RoleShopManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
@@ -15,7 +14,6 @@ import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
-import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 
 @Components.Exclude(type = ServerType.LOBBY)
@@ -35,6 +33,9 @@ public class FarmerShopListener implements Listener {
 
 		if (!(e.getWhoClicked() instanceof Player p)) return;
 
+		// The shop inventories are shared by every player, so nothing may be moved into them.
+		if (isFarmerShop(e.getView().getTopInventory().getHolder())) e.setCancelled(true);
+
 		var inv = e.getClickedInventory();
 		if (inv == null) return;
 
@@ -52,25 +53,19 @@ public class FarmerShopListener implements Listener {
 		if (holder instanceof FarmerSelectionGui) {
 			e.setCancelled(true);
 
-			if (slot == 2) {
-				p.openInventory(farmer.getSellingShop().getInventory());
-				p.playSound(p, Sound.BLOCK_LEVER_CLICK, 1.0f, 1.0f);
-			} else if (slot == 6) {
-				p.openInventory(farmer.getPurchaseShop().getInventory());
+			OraxenItemShop target = switch (slot) {
+				case 2 -> farmer.getToolShop();
+				case 4 -> farmer.getSeedShop();
+				case 6 -> farmer.getCropShop();
+				default -> null;
+			};
+			if (target != null) {
+				p.openInventory(target.getInventory());
 				p.playSound(p, Sound.BLOCK_LEVER_CLICK, 1.0f, 1.0f);
 			}
+			return;
 		}
-		if (holder instanceof CropSellingShop shop) {
-			e.setCancelled(true);
-			if (slot != 1) p.playSound(p, Sound.BLOCK_LEVER_CLICK, 1.0f, 1.0f);
-
-			switch (slot) {
-				case 0 -> p.openInventory(farmer.getSelectionGui().getInventory());
-				case 2, 3, 4, 5, 6, 7, 8 ->
-					shop.tryPurchase(p, user, slot, e.isShiftClick());
-			}
-		}
-		if (holder instanceof FarmPurchaseShop shop) {
+		if (holder instanceof OraxenItemShop shop) {
 			e.setCancelled(true);
 
 			if (slot == 0) {
@@ -78,18 +73,20 @@ public class FarmerShopListener implements Listener {
 				p.playSound(p, Sound.BLOCK_LEVER_CLICK, 1.0f, 1.0f);
 				return;
 			}
+			var entry = shop.entry(slot);
+			if (entry == null) return;
 
-			var record = shop.getRecord(slot);
-			if (record != null) {
-				p.playSound(p, Sound.BLOCK_LEVER_CLICK, 1.0f, 1.0f);
-				Material material = record.material();
-				int price = record.price();
-
-				if (userManager.withdraw(uuid, price)) {
-					InventoryHelper.giveItemOrDrop(p, new ItemStack(material));
-					InfoUtils.info(p, "구매하였습니다.");
-				} else InfoUtils.error(p, "잔액이 부족합니다.");
-			}
+			if (shop.mode() == OraxenItemShop.Mode.BUY) shop.buy(p, userManager, entry);
+			else shop.sell(p, user, entry, e.isShiftClick());
 		}
+	}
+
+	@EventHandler
+	public void onInventoryDrag(InventoryDragEvent e) {
+		if (isFarmerShop(e.getView().getTopInventory().getHolder())) e.setCancelled(true);
+	}
+
+	private static boolean isFarmerShop(InventoryHolder holder) {
+		return holder instanceof FarmerSelectionGui || holder instanceof OraxenItemShop;
 	}
 }
