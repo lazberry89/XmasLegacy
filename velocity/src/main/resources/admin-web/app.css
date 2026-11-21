@@ -138,6 +138,7 @@ tbody tr.selected { background: #1f2c52; }
 .bag-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: start; }
 .owner-list { display: grid; gap: 4px; }
 .owner-list .mc-btn { text-align: left; display: flex; justify-content: space-between; gap: 8px; }
+.owner-list .mc-btn .muted { color: #e6e6e6; }
 .container {
   display: inline-block;
   background: var(--gui);
@@ -182,7 +183,7 @@ tbody tr.selected { background: #1f2c52; }
 .mc-tooltip .t-name { font-size: 14px; }
 .mc-tooltip .t-ench { color: #aaaaff; }
 .mc-tooltip .t-lore { color: #aaa; }
-.mc-tooltip .t-id { color: #555; font-size: 11px; margin-top: 4px; }
+.mc-tooltip .t-id { color: #8a8a8a; font-size: 11px; margin-top: 4px; }
 
 /* Advancements */
 details.adv { border-bottom: 1px solid var(--line); padding: 10px 0; }
