@@ -16,6 +16,12 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
 
     compileOnly("com.google.inject:guice:5.1.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.yaml:snakeyaml:2.2")
+    testImplementation("com.google.code.gson:gson:2.11.0")
+    testImplementation("com.velocitypowered:velocity-api:3.5.0-SNAPSHOT")
 }
 
 java {
@@ -23,6 +29,10 @@ java {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+    }
+
     runVelocity {
     // Configure the Velocity version for our task.
     // This is the only required configuration besides applying the plugin.
