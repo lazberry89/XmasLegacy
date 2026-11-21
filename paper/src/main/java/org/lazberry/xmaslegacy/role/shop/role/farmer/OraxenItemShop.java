@@ -19,6 +19,7 @@ import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * A farmer shop page that buys or sells Oraxen items (CustomCrops crops, seeds and tools) by Oraxen id.
@@ -29,7 +30,12 @@ import java.util.List;
 public class OraxenItemShop implements InventoryHolder {
 	public enum Mode { BUY, SELL }
 
-	public record Entry(String id, int price) {}
+	/** {@code factory} builds a non-Oraxen item (sold only); without it the item is the Oraxen item {@code id}. */
+	public record Entry(String id, int price, @Nullable Supplier<ItemStack> factory) {
+		public Entry(String id, int price) {
+			this(id, price, null);
+		}
+	}
 
 	private static final int FIRST_SLOT = 9;
 
@@ -68,7 +74,7 @@ public class OraxenItemShop implements InventoryHolder {
 		int slot = FIRST_SLOT;
 		for (Entry e : entries) {
 			if (slot >= size) break;
-			ItemStack icon = item(e.id());
+			ItemStack icon = item(e);
 			if (icon == null) {
 				log.warn("Farmer shop '{}': Oraxen item '{}' does not exist, skipped.", title, e.id());
 				continue;
@@ -84,7 +90,7 @@ public class OraxenItemShop implements InventoryHolder {
 	}
 
 	public void buy(Player p, UserManager userManager, Entry e) {
-		ItemStack item = item(e.id());
+		ItemStack item = item(e);
 		if (item == null) return;
 		if (userManager.withdraw(p.getUniqueId(), e.price())) {
 			InventoryHelper.giveItemOrDrop(p, item);
@@ -128,8 +134,9 @@ public class OraxenItemShop implements InventoryHolder {
 		return item != null && !item.getType().isAir() && id.equals(OraxenItems.getIdByItem(item));
 	}
 
-	private static @Nullable ItemStack item(String id) {
-		var builder = OraxenItems.getItemById(id);
+	private static @Nullable ItemStack item(Entry e) {
+		if (e.factory() != null) return e.factory().get();
+		var builder = OraxenItems.getItemById(e.id());
 		return builder == null ? null : builder.build();
 	}
 }

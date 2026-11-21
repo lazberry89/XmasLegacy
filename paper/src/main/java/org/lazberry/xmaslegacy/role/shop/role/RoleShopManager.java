@@ -3,6 +3,7 @@ package org.lazberry.xmaslegacy.role.shop.role;
 import lombok.Data;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.role.shop.role.farmer.OraxenItemShop;
+import org.lazberry.xmaslegacy.role.shop.role.farmer.guide.FarmerGuideBook;
 import org.lazberry.xmaslegacy.role.shop.role.farmer.FarmerSelectionGui;
 import org.lazberry.xmaslegacy.role.shop.role.fisherman.FishSellingShop;
 import org.lazberry.xmaslegacy.role.shop.role.hunter.HunterSellingShop;
@@ -43,36 +44,55 @@ public class RoleShopManager {
 	/**
 	 * Farmer shops sell only CustomCrops items (Oraxen ids from plugins/Oraxen/items/customcrops).
 	 * Vanilla crops are left to the server's normal economy.
+	 *
+	 * Price model: other jobs earn about 200-300k$/hour, so a working farm of 48 pots
+	 * (two 5x5 top sprinkler fields) should earn ~250k$/hour, i.e. ~5,200$ per pot per hour.
+	 * Measured 2026-11-22 (corn, 22 sprinkler-watered pots, no fertilizer): most were ripe at 6 minutes,
+	 * a few took 9, so a 3-stage crop is ~6.5 minutes (~2.2 per stage): 5 stages ~11, a regrowing vine ~9.
+	 * Normal price = value per harvest / (average yield x 1.25), where 1.25 is the average
+	 * quality multiplier at the default 85/10/5% normal/silver/gold odds with silver x2 and gold x4.
+	 * Seeds drop back on harvest, so seed prices are a start-up cost only.
 	 */
 	@Data
 	public class Farmer {
 		private final List<OraxenItemShop.Entry> tools = List.of(
-				entry("watering_can_1", 500), entry("watering_can_2", 1_500),
-				entry("watering_can_3", 4_000), entry("watering_can_4", 10_000),
-				entry("sprinkler_1_item", 2_500), entry("sprinkler_2_item", 7_000), entry("sprinkler_3_item", 18_000),
-				entry("dry_pot", 150), entry("greenhouse_glass", 60),
-				entry("scarecrow", 2_000), entry("soil_surveyor", 1_000),
-				entry("yield_increase_1", 300), entry("yield_increase_2", 900), entry("yield_increase_3", 2_500),
-				entry("quality_1", 300), entry("quality_2", 900), entry("quality_3", 2_500),
-				entry("soil_retain_1", 300), entry("soil_retain_2", 900), entry("soil_retain_3", 2_500),
-				entry("speed_grow_1", 300), entry("speed_grow_2", 900), entry("speed_grow_3", 2_500),
-				entry("variation_1", 300), entry("variation_2", 900), entry("variation_3", 2_500)
+				new OraxenItemShop.Entry("farmer_guide_book", 100, FarmerGuideBook::create),
+				entry("dry_pot", 1_000), entry("greenhouse_glass", 500),
+				entry("watering_can_1", 2_000), entry("watering_can_2", 8_000),
+				entry("watering_can_3", 25_000), entry("watering_can_4", 60_000),
+				entry("sprinkler_1_item", 10_000), entry("sprinkler_2_item", 30_000), entry("sprinkler_3_item", 80_000),
+				entry("scarecrow", 15_000), entry("soil_surveyor", 5_000),
+				entry("quality_1", 1_500), entry("quality_2", 3_500), entry("quality_3", 7_000),
+				entry("yield_increase_1", 1_500), entry("yield_increase_2", 3_500), entry("yield_increase_3", 7_000),
+				entry("speed_grow_1", 1_000), entry("speed_grow_2", 2_500), entry("speed_grow_3", 5_000),
+				entry("soil_retain_1", 500), entry("soil_retain_2", 1_200), entry("soil_retain_3", 2_500),
+				entry("variation_1", 1_000), entry("variation_2", 2_500), entry("variation_3", 5_000)
 		);
 
 		private final List<OraxenItemShop.Entry> seeds = List.of(
-				entry("tomato_seeds", 40), entry("cabbage_seeds", 40), entry("chinese_cabbage_seeds", 40),
-				entry("corn_seeds", 40), entry("eggplant_seeds", 40), entry("garlic_seeds", 40),
-				entry("pepper_seeds", 40), entry("hop_seeds", 40),
-				entry("grape_seeds", 80), entry("pineapple_seeds", 80), entry("pitaya_seeds", 80),
-				entry("redpacket_seeds", 150)
+				entry("cabbage_seeds", 100), entry("chinese_cabbage_seeds", 100), entry("corn_seeds", 100),
+				entry("eggplant_seeds", 100), entry("garlic_seeds", 100), entry("pineapple_seeds", 100),
+				entry("hop_seeds", 200),
+				entry("tomato_seeds", 150), entry("pepper_seeds", 150),
+				entry("grape_seeds", 500), entry("pitaya_seeds", 500),
+				entry("redpacket_seeds", 200)
 		);
 
 		private final List<OraxenItemShop.Entry> crops = Stream.of(
-				qualities("tomato", 45), qualities("cabbage", 45), qualities("chinese_cabbage", 45),
-				qualities("corn", 45), qualities("eggplant", 45), qualities("garlic", 45),
-				qualities("pepper", 45), qualities("hop", 45),
-				qualities("grape", 60), qualities("pineapple", 60), qualities("pitaya", 60),
-				List.of(entry("golden_tomato", 600), entry("redpacket", 300))
+				// 3 stages, 1 per harvest
+				qualities("cabbage", 450), qualities("chinese_cabbage", 450),
+				qualities("corn", 450), qualities("pineapple", 450),
+				// 3 stages, several per harvest
+				qualities("eggplant", 130), qualities("hop", 130),
+				qualities("garlic", 100), // 4 per harvest, any season and never withers
+				// 5 stages
+				qualities("tomato", 300), qualities("pepper", 165),
+				// vines that regrow from stage 4
+				qualities("grape", 150), qualities("pitaya", 140), // pitaya needs no water
+				List.of(
+						entry("golden_tomato", 4_000), // rare variation, needs a golden hoe
+						entry("redpacket", 455)        // no quality, no seed drop: covers a 200$ seed each harvest
+				)
 		).flatMap(List::stream).toList();
 
 		private final FarmerSelectionGui selectionGui = new FarmerSelectionGui(plugin);
