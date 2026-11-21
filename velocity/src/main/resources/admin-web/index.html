@@ -1,1 +1,43 @@
-<!doctype html><title>XmasLegacy Admin</title>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XmasLegacy 관리자</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<main id="login" class="login" hidden>
+  <h1 class="logo">XmasLegacy</h1>
+  <p class="login-sub">관리자 키를 입력하면 바로 들어갑니다.</p>
+  <form id="login-form" class="login-form">
+    <label for="key" class="sr-only">관리자 키</label>
+    <input id="key" type="password" autocomplete="current-password" placeholder="관리자 키" required>
+    <button class="mc-btn" type="submit">접속</button>
+    <p id="login-error" class="login-error" role="alert"></p>
+  </form>
+</main>
+
+<div id="app" class="app" hidden>
+  <header class="topbar">
+    <span class="brand">XmasLegacy <small>관리자</small></span>
+    <nav class="tabs" role="tablist" aria-label="데이터 종류">
+      <button class="mc-btn tab" role="tab" data-tab="overview">개요</button>
+      <button class="mc-btn tab" role="tab" data-tab="users">유저</button>
+      <button class="mc-btn tab" role="tab" data-tab="inquiries">문의</button>
+      <button class="mc-btn tab" role="tab" data-tab="bags">가방</button>
+      <button class="mc-btn tab" role="tab" data-tab="mailbox">우편함</button>
+      <button class="mc-btn tab" role="tab" data-tab="products">후원</button>
+      <button class="mc-btn tab" role="tab" data-tab="advancements">업적</button>
+    </nav>
+    <button id="logout" class="mc-btn small">로그아웃</button>
+  </header>
+  <section id="view" class="view" role="tabpanel" aria-live="polite"></section>
+</div>
+
+<div id="tooltip" class="mc-tooltip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
