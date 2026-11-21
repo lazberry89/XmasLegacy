@@ -10,7 +10,7 @@ public enum ServerRoles implements Role {
     MINER("광부", "광물을 채집할때 추가 아이템과 경험치를 획득합니다.", "광물 판매시 추가금을 획득할 수 있습니다."),
     FISHERMAN("어부", "낚시를 할때 기본적인 버프가 적용됩니다.", "생선 판매시 추가금을 획득할 수 있습니다."),
     HUNTER("사냥꾼", "몹을 사냥할 때 추가 아이템과 경험치를 획득합니다.", "타격시 확률적으로 치명타가 발생합니다."),
-    BLACKSMITH("대장장이", "무기 강화를 의뢰받거나 직접 어디서든 할 수 있습니다.", "대장간 입장금이 면제됩니다.");
+    BLACKSMITH("대장장이", "무기 강화를 의뢰받거나 직접 어디서든 할 수 있습니다.", "강화서를 제작할 수 있습니다.");
 
     ServerRoles(String name, String ...description) {
         this.name = name;

@@ -11,6 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -166,6 +167,15 @@ public class EnchantListener implements Listener {
 		}
 
 		Bukkit.getScheduler().runTask(plugin, () -> eui.updateInv(p));
+	}
+
+	/** The custom window leaves the other top slots empty, so a drag could drop items into them. */
+	@EventHandler
+	public void blockDragOutsideInput(InventoryDragEvent e) {
+		Inventory topInv = e.getView().getTopInventory();
+		if (!(topInv.getHolder() instanceof EnchantUserInterface)) return;
+		int topSize = topInv.getSize();
+		if (e.getRawSlots().stream().anyMatch(raw -> raw < topSize && raw != 13)) e.setCancelled(true);
 	}
 
 	@EventHandler

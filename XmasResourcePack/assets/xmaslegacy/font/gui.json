@@ -1,0 +1,17 @@
+{
+  "providers": [
+    {
+      "type": "space",
+      "advances": {
+        "": -8
+      }
+    },
+    {
+      "type": "bitmap",
+      "file": "xmaslegacy:gui/forge.png",
+      "ascent": 13,
+      "height": 71,
+      "chars": [""]
+    }
+  ]
+}

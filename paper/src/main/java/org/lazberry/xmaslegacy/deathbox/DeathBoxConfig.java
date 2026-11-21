@@ -91,7 +91,7 @@ public class DeathBoxConfig implements Initiator {
                 data.put("z", box.getLocation().getBlockZ());
                 data.put("previous_block", box.getPreviousBlock().name());
                 data.put("remaining_time", box.getRemainingTime());
-                data.put("contents", box.getContents());
+                data.put("contents", java.util.Arrays.stream(box.getInventory().getContents()).filter(java.util.Objects::nonNull).toList());
 
                 serializedList.add(data);
             }

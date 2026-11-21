@@ -23,6 +23,10 @@ public record GoodsCommandCreate(ShowCaseManager showCaseManager) implements Sub
 			InfoUtils.error(player, "가격은 숫자 형태로 입력해주세요!");
 			return;
 		}
+		if (price <= 0) {
+			InfoUtils.error(player, "가격은 1 이상이어야 합니다!");
+			return;
+		}
 		ItemStack item = player.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) {
 			InfoUtils.error(player, "판매할 아이템을 손에 들고있어주세요!");

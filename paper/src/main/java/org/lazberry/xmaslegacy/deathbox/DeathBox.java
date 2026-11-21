@@ -45,7 +45,7 @@ public class DeathBox implements InventoryHolder {
             }
         }
 
-        int invSize = this.contents.size() > 27 ? 36 : 27;
+        int invSize = Math.min(54, Math.max(27, (this.contents.size() + 8) / 9 * 9));
         this.inv = Bukkit.createInventory(this, invSize, ColorUtils.chat("&c&l" + ownerName + "&r&c&l의 시체상자"));
 
         for (ItemStack item : this.contents) {
@@ -71,7 +71,7 @@ public class DeathBox implements InventoryHolder {
         }
         String format = !hide ? "&c&l" : "&c&k";
 
-        int invSize = this.contents.size() > 27 ? 36 : 27;
+        int invSize = Math.min(54, Math.max(27, (this.contents.size() + 8) / 9 * 9));
         this.inv = Bukkit.createInventory(this, invSize, ColorUtils.chat(format + player.getName() + "&r&c&l의 시체상자"));
 
         for (ItemStack item : this.contents) {

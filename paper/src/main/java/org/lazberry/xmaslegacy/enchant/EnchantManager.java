@@ -347,7 +347,7 @@ public class EnchantManager implements Initiator {
     }
 
     public void openInterface(Player p) {
-        p.openInventory(new EnchantUserInterface(this).getInventory());
+        p.openInventory(new EnchantUserInterface(this, p).getInventory());
     }
 
 	@Override

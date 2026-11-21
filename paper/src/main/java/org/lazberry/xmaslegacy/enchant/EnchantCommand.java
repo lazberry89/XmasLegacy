@@ -31,8 +31,9 @@ public class EnchantCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
+		if (args.length > 0 && !args[0].equalsIgnoreCase("shop") && !p.isOp()) return true;
 		if (args.length == 0) {
-			EnchantUserInterface eui = new EnchantUserInterface(ecm);
+			EnchantUserInterface eui = new EnchantUserInterface(ecm, p);
 			p.openInventory(eui.getInventory());
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("start")) {
 			var item = p.getInventory().getItemInMainHand();

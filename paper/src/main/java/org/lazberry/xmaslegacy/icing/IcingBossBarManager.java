@@ -31,7 +31,7 @@ public class IcingBossBarManager implements Initiator {
 
         BossBar bar = bars.computeIfAbsent(uuid, k -> {
             BossBar newBar = BossBar.bossBar(
-                    ColorUtils.chat("&b&l[ 한기 수치 ]"),
+                    ColorUtils.chat("&b&l한기 수치"),
                     1.0f,
                     BossBar.Color.BLUE,
                     BossBar.Overlay.PROGRESS
@@ -45,10 +45,10 @@ public class IcingBossBarManager implements Initiator {
 
         if (amount <= 20) {
             bar.color(BossBar.Color.RED);
-            bar.name(ColorUtils.chat("&4&l[ 한기수치 : 저체온증 진행 중 ]"));
+            bar.name(ColorUtils.chat("&4&l한기수치 : 저체온증 진행 중"));
         } else {
             bar.color(BossBar.Color.BLUE);
-            bar.name(ColorUtils.chat("&b&l[ 한기 수치 ]"));
+            bar.name(ColorUtils.chat("&b&l한기 수치"));
         }
     }
 

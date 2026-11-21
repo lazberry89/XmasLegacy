@@ -1,0 +1,31 @@
+# 강화창(마력 정수 정제소) 배경 애니메이션 글리프
+# 복사 위치: plugins/Oraxen/glyphs/xmaslegacy_gui.yml
+# 텍스처:   plugins/Oraxen/pack/textures/xmaslegacy/enchant_forge.png (176x1136, 16프레임 세로 시트)
+
+enchant_forge:
+  texture: xmaslegacy/enchant_forge   # pack/textures 기준 경로, 확장자 없이
+  animation:
+    frames: 16                        # Oraxen 최대값. 시트 높이(1136)가 16으로 나누어떨어져야 함
+    fps: 8                            # 1~127. 8이면 2초에 한 바퀴
+    loop: true
+  ascent: 13                          # 상자 GUI 제목 줄 기준으로 창 맨 위에 맞추는 값
+  height: 71                          # 한 프레임의 높이 = 상자 위쪽(컨테이너) 부분 높이
+
+# 스코어보드(사이드바) 제목: XmasLegacy 로고 + 장식 + 제목칸을 덮은 눈, 아래로 눈이 내림
+# 텍스처: plugins/Oraxen/pack/textures/xmaslegacy/sidebar_snow.png (105x944, 16프레임 세로 시트)
+# 각 프레임의 마지막 열(x=104)은 비어 있어야 함(강화창과 같은 밀림 방지 규칙)
+sidebar_snow:
+  texture: xmaslegacy/sidebar_snow
+  animation:
+    frames: 16
+    fps: 6                            # 한 프레임에 2px씩 떨어짐
+    loop: true
+  ascent: 32                          # 프레임 24번째 줄(로고 14 + 장식 아래)이 제목칸 맨 위에 오도록
+  height: 59                          # 한 프레임 높이 (로고/장식 24 + 제목칸 9 + 아래로 내리는 구간)
+
+# ESC(일시정지) 메뉴 제목 로고. pack/lang/global.json의 "menu.game"을 "<glyph:menu_logo>"로 바꿔서 사용
+# 텍스처: plugins/Oraxen/pack/textures/xmaslegacy/menu_logo.png (160x45)
+menu_logo:
+  texture: xmaslegacy/menu_logo
+  ascent: 30                          # 메뉴 제목 줄 기준 위로 30px. 아래 끝이 첫 버튼 위(약 GUI y=62)에서 끝남
+  height: 45                          # 이미지 높이 그대로(1픽셀 = GUI 1픽셀)

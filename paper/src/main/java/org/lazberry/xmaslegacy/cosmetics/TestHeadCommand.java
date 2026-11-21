@@ -15,6 +15,7 @@ public class TestHeadCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
+		if (!p.isOp()) return true;
 		ItemStack head = p.getInventory().getItemInMainHand();
 		if (head.getType().isAir()) return false;
 		p.getInventory().setHelmet(head);

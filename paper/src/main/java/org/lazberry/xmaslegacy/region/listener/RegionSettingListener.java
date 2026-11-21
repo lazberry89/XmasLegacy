@@ -6,6 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataType;
@@ -65,6 +68,11 @@ public class RegionSettingListener implements Listener {
 
         int slot = e.getRawSlot();
         var region = rsi.getRegion();
+        if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
+            p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+            return;
+        }
 
         switch (slot) {
             case 0 -> {}

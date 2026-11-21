@@ -25,6 +25,7 @@ public class UserLoadCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
+		if (!p.isOp()) return true;
 
 		var uuid = p.getUniqueId();
 		us.load(uuid, p.getName(), FloodgateUtils.isFloodgate(uuid));

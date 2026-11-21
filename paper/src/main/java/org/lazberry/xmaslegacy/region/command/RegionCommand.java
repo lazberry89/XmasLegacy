@@ -62,6 +62,10 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 					return true;
 				}
+				if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
+					return true;
+				}
 				p.openInventory(new RegionSettingInterface(region).getInventory());
 				return true;
 			}

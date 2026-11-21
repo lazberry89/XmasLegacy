@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.lazberry.xmaslegacy.settings.Alert;
+import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
@@ -36,6 +38,11 @@ public class RegionDeleteConfirmListener implements Listener {
         if (!(inv.getHolder() instanceof RegionDeleteInterface rdi)) return;
 
         e.setCancelled(true);
+        if (!p.isOp() && !rdi.getRegion().getOwner().equals(p.getUniqueId())) {
+            p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
+            p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+            return;
+        }
         int slot = e.getRawSlot();
 
         if (slot == 11) {

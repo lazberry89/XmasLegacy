@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.scoreboard;
 
+import io.th0rgal.oraxen.utils.AdventureUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -16,6 +17,7 @@ import org.lazberry.xmaslegacy.plugin.Tasks;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.utils.BoardUtils;
+import org.lazberry.xmaslegacy.utils.FloodgateUtils;
 import org.lazberry.xmaslegacy.utils.UserHandler;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -70,7 +72,7 @@ public class UserScoreboard implements Tasks {
 		}
 		var party = pm.getParty(player.getUniqueId());
 		if (party == null) {
-			BoardUtils.getOrCreate(player, ColorUtils.chat("&6&l" + player.getName()), b -> {
+			BoardUtils.getOrCreate(player, soloTitle(player), b -> {
 				b.setLine(1, ColorUtils.chat(""));
 				b.setLine(2, ColorUtils.chat("&6&l소지금&f " + user.getDollars() + " &6$"));
 				b.setLine(3, ColorUtils.chat(""));
@@ -112,6 +114,19 @@ public class UserScoreboard implements Tasks {
 				}
 			});
 		}
+	}
+
+	/**
+	 * Animated Oraxen glyph (XmasResourcePack/oraxen, sidebar_snow): snow draped over the title row, snowfall below.
+	 * Shifts make it advance exactly 100px and cover the box's 2px padding on both sides.
+	 */
+	private static final String SNOW_TITLE = "<white><shift:-2><glyph:sidebar_snow><shift:-3>";
+
+	private @NotNull Component soloTitle(@NotNull Player player) {
+		// Bedrock gets no Java resource pack; without Oraxen the glyph tag can't be resolved
+		if (FloodgateUtils.isFloodgate(player) || !Bukkit.getPluginManager().isPluginEnabled("Oraxen"))
+			return ColorUtils.chat("&6&l" + player.getName());
+		return AdventureUtils.MINI_MESSAGE.deserialize(SNOW_TITLE);
 	}
 
 	private @NotNull Component IceLogo() {

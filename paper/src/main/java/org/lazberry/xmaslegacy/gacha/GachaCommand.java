@@ -35,6 +35,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull ... args) {
 		if (!(sender instanceof Player p)) return true;
+		if (!p.isOp()) return true;
 
 		if (args.length == 0) {
 			error(p, "사용법: /gacha <add | remove> ...");

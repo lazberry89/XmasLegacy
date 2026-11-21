@@ -23,6 +23,7 @@ public class NightmareCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(sender instanceof Player p)) return true;
+		if (!p.isOp()) return true;
 		if (args.length == 0) {
 			nightmareManager.blackPlayer(p);
 		} else nightmareManager.resetPlayer(p);

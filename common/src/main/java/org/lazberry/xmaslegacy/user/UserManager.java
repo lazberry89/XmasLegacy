@@ -79,7 +79,7 @@ public class UserManager {
 
     public boolean withdraw(UUID uuid, int amount) {
         User user = getUser(uuid);
-        if (user != null && user.getDollars() >= amount) {
+        if (amount > 0 && user != null && user.getDollars() >= amount) {
             user.setDollars(user.getDollars() - amount);
             return true;
         }
