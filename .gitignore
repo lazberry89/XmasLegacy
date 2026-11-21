@@ -19,3 +19,6 @@ hs_err_pid*
 
 # Common working directory
 run
+
+# Admin web keys (server-only secret)
+admin-keys.yml
