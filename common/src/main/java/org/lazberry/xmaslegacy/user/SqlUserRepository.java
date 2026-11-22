@@ -1,49 +1,37 @@
 package org.lazberry.xmaslegacy.user;
 
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lazberry.xmaslegacy.DatabaseProcessor;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.roles.Role;
 import org.lazberry.xmaslegacy.roles.ServerRoles;
 import org.lazberry.xmaslegacy.settings.RoleMastery;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 import org.lazberry.xmaslegacy.settings.Tier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
 
 import static org.lazberry.xmaslegacy.user.User.GSON;
 
-@Data
+@Slf4j
 @Components.Exclude(type = ServerType.LOBBY)
-public class SqlUserRepository implements UserRepository {
-	private final String url;
-	private final String user;
-	private final String password;
-
-	private static final @NotNull Logger log = LoggerFactory.getLogger(SqlUserRepository.class);
+public class SqlUserRepository extends DatabaseProcessor implements UserRepository {
 
 	@Inject
 	public SqlUserRepository(@ConfigValue(path = "web.database.url") String url,
 	                         @ConfigValue(path = "web.database.user") String user,
 	                         @ConfigValue(path = "web.database.password") String password) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
-		createTable();
+		super(url, user, password);
 	}
 
-	private @NotNull Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(url, user, password);
-	}
-
-	private void createTable() {
+	@Override
+	public void createTable() {
 		String sql = "CREATE TABLE IF NOT EXISTS users (" +
 				"uuid VARCHAR(36) PRIMARY KEY, " +
 				"name VARCHAR(16), " +
@@ -101,6 +89,27 @@ public class SqlUserRepository implements UserRepository {
 			}
 		}
 
+		Map<String, String> requiredColumns = getStringStringMap();
+
+		for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
+			String column = entry.getKey();
+			String definition = entry.getValue();
+			if (!existingColumns.contains(column.toLowerCase())) {
+				String alterSql = "ALTER TABLE users ADD COLUMN " + column + " " + definition;
+				try (Statement alterStmt = conn.createStatement()) {
+					alterStmt.executeUpdate(alterSql);
+					log.info("Successfully added missing column '{}' to table 'users'.", column);
+				} catch (SQLException e) {
+					// 1060: Duplicate column name (if column was already present)
+					if (e.getErrorCode() != 1060 && (e.getMessage() == null || !e.getMessage().contains("Duplicate column"))) {
+						log.error("Failed to add missing column '{}' to table 'users': {}", column, e.getMessage(), e);
+					}
+				}
+			}
+		}
+	}
+
+	private static @NotNull Map<String, String> getStringStringMap() {
 		Map<String, String> requiredColumns = new LinkedHashMap<>();
 		requiredColumns.put("name", "VARCHAR(16)");
 		requiredColumns.put("role", "VARCHAR(20)");
@@ -121,23 +130,7 @@ public class SqlUserRepository implements UserRepository {
 		requiredColumns.put("isMobile", "BOOLEAN DEFAULT FALSE");
 		requiredColumns.put("availablePrefix", "TEXT");
 		requiredColumns.put("equipPrefix", "VARCHAR(50)");
-
-		for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
-			String column = entry.getKey();
-			String definition = entry.getValue();
-			if (!existingColumns.contains(column.toLowerCase())) {
-				String alterSql = "ALTER TABLE users ADD COLUMN " + column + " " + definition;
-				try (Statement alterStmt = conn.createStatement()) {
-					alterStmt.executeUpdate(alterSql);
-					log.info("Successfully added missing column '{}' to table 'users'.", column);
-				} catch (SQLException e) {
-					// 1060: Duplicate column name (if column was already present)
-					if (e.getErrorCode() != 1060 && (e.getMessage() == null || !e.getMessage().contains("Duplicate column"))) {
-						log.error("Failed to add missing column '{}' to table 'users': {}", column, e.getMessage(), e);
-					}
-				}
-			}
-		}
+		return requiredColumns;
 	}
 
 	@Override

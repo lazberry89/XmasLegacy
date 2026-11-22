@@ -12,15 +12,17 @@ public abstract class DatabaseProcessor {
     private final String user;
     private final String password;
 
-    protected DatabaseProcessor(String url, String user, String password) {
+    public DatabaseProcessor(String url, String user, String password) {
         this.url = url;
         this.user = user;
         this.password = password;
+
+		createTable();
     }
 
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
 
-    public abstract void createTable();
+    protected abstract void createTable();
 }

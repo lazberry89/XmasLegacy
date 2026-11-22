@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.infoNpcs;
+package org.lazberry.xmaslegacy.npc;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

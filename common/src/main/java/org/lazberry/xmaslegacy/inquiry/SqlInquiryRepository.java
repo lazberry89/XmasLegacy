@@ -1,14 +1,13 @@
 package org.lazberry.xmaslegacy.inquiry;
 
-import org.jetbrains.annotations.Blocking;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
-import org.lazberry.xmaslegacy.framework.annotation.Components;
+import org.lazberry.xmaslegacy.DatabaseProcessor;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,26 +15,19 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Components.Include(type = ServerType.GLOBAL)
-public class SqlInquiryRepository {
-	private static final Logger logger = LoggerFactory.getLogger(SqlInquiryRepository.class);
-
-	private final String url;
-	private final String user;
-	private final String password;
+public class SqlInquiryRepository extends DatabaseProcessor {
 
 	@Inject
 	public SqlInquiryRepository(@ConfigValue(path = "web.database.url") String url,
 	                            @ConfigValue(path = "web.database.user") String user,
 	                            @ConfigValue(path = "web.database.password") String password) {
-		this.url = url;
-		this.user = user;
-		this.password = password;
-		createNewTable();
+		super(url, user, password);
 	}
 
-	@Blocking
-	private void createNewTable() {
+	@Override
+	protected void createTable() {
 		String sql = """
             CREATE TABLE IF NOT EXISTS inquiry_logs (
                 id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -48,12 +40,12 @@ public class SqlInquiryRepository {
             );
             """;
 
-		try (Connection conn = DriverManager.getConnection(url, user, password);
+		try (Connection conn = getConnection();
 		     Statement stmt = conn.createStatement()) {
 			stmt.execute(sql);
-			logger.info("[Inquiry] Checked and verified/created 'inquiry_logs' table.");
+			log.info("[Inquiry] Checked and verified/created 'inquiry_logs' table.");
 		} catch (SQLException e) {
-			logger.error("[Inquiry] Failed to initialize database table 'inquiry_logs'", e);
+			log.error("[Inquiry] Failed to initialize database table 'inquiry_logs'", e);
 		}
 	}
 
@@ -61,7 +53,7 @@ public class SqlInquiryRepository {
 	public CompletableFuture<Long> saveInquiryAndGet(@NotNull UUID uuid, @NotNull String name, @NotNull String message) {
 		return CompletableFuture.supplyAsync(() -> {
 			String sql = "INSERT INTO inquiry_logs (uuid, player_name, message, status) VALUES (?, ?, ?, 'PENDING')";
-			try (Connection conn = DriverManager.getConnection(url, user, password);
+			try (Connection conn = getConnection();
 			     PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 				pstmt.setString(1, uuid.toString());
 				pstmt.setString(2, name);
@@ -74,7 +66,7 @@ public class SqlInquiryRepository {
 					}
 				}
 			} catch (SQLException e) {
-				logger.error("Failed to save inquiry log for UUID: {}", uuid, e);
+				log.error("Failed to save inquiry log for UUID: {}", uuid, e);
 			}
 			return -1L;
 		});
@@ -85,14 +77,14 @@ public class SqlInquiryRepository {
 		return CompletableFuture.runAsync(() -> {
 			synchronized (this) {
 				String sql = "UPDATE inquiry_logs SET answer = ?, status = ? WHERE id = ?";
-				try (Connection conn = DriverManager.getConnection(url, user, password);
+				try (Connection conn = getConnection();
 				     PreparedStatement pstmt = conn.prepareStatement(sql)) {
 					pstmt.setString(1, answer);
 					pstmt.setString(2, status.name());
 					pstmt.setLong(3, id);
 					pstmt.executeUpdate();
 				} catch (SQLException e) {
-					logger.error("Failed to update inquiry resolution for ID: {}", id, e);
+					log.error("Failed to update inquiry resolution for ID: {}", id, e);
 				}
 			}
 		});
@@ -103,7 +95,7 @@ public class SqlInquiryRepository {
 		return CompletableFuture.supplyAsync(() -> {
 			List<Inquiry> list = new ArrayList<>();
 			String sql = "SELECT id, uuid, player_name, message, answer, status, created_at FROM inquiry_logs WHERE status = 'PENDING'";
-			try (Connection conn = DriverManager.getConnection(url, user, password);
+			try (Connection conn = getConnection();
 			     PreparedStatement pstmt = conn.prepareStatement(sql);
 			     ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
@@ -119,7 +111,7 @@ public class SqlInquiryRepository {
 					list.add(inquiry);
 				}
 			} catch (SQLException e) {
-				logger.error("Failed to fetch pending inquiries for cache warm-up", e);
+				log.error("Failed to fetch pending inquiries for cache warm-up", e);
 			}
 			return list;
 		});
@@ -130,7 +122,7 @@ public class SqlInquiryRepository {
 		return CompletableFuture.supplyAsync(() -> {
 			List<String> logs = new ArrayList<>();
 			String sql = "SELECT * FROM inquiry_logs WHERE uuid = ? ORDER BY created_at DESC";
-			try (Connection conn = DriverManager.getConnection(url, user, password);
+			try (Connection conn = getConnection();
 			     PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				pstmt.setString(1, uuid.toString());
 				ResultSet rs = pstmt.executeQuery();
@@ -142,7 +134,7 @@ public class SqlInquiryRepository {
 					));
 				}
 			} catch (SQLException e) {
-				logger.error("Failed to get logs for UUID: {}", uuid, e);
+				log.error("Failed to get logs for UUID: {}", uuid, e);
 			}
 			return logs;
 		});

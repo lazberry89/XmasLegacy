@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.infoNpcs;
+package org.lazberry.xmaslegacy.npc;
 
 public enum NpcType {
     MAIN,

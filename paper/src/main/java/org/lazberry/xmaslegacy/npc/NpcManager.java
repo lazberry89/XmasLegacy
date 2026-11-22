@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.infoNpcs;
+package org.lazberry.xmaslegacy.npc;
 
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Components;

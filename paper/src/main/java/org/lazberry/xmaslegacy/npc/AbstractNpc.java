@@ -1,4 +1,4 @@
-package org.lazberry.xmaslegacy.infoNpcs;
+package org.lazberry.xmaslegacy.npc;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
