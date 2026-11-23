@@ -8,9 +8,8 @@ import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.settings.ServerPrefix;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -27,7 +26,7 @@ public class SqlPrefixRepository extends DatabaseProcessor {
 	@Override
 	protected void createTable() {
 		String query = "CREATE TABLE IF NOT EXISTS unique_prefix (" +
-				"prefix TEXT PRIMARY KEY, " +
+				"prefix VARCHAR(64) PRIMARY KEY, " +
 				"uuid VARCHAR(36) NOT NULL, " +
 				"acquired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
 				");";
@@ -55,5 +54,52 @@ public class SqlPrefixRepository extends DatabaseProcessor {
 		});
 	}
 
-	public CompletableFuture<PrefixStatus> getPrefixStatus(ServerPrefix prefix) {}
+	public CompletableFuture<Boolean> grantPrefix(UUID uuid, ServerPrefix prefix) {
+		return CompletableFuture.supplyAsync(() -> {
+			String query = "INSERT IGNORE INTO unique_prefix (prefix, uuid) VALUES (?, ?)";
+
+			try (Connection conn = getConnection();
+			     PreparedStatement statement = conn.prepareStatement(query)) {
+
+				statement.setString(1, prefix.name());
+				statement.setString(2, uuid.toString());
+
+				return statement.executeUpdate() == 1; // 0 = someone already owns it
+			} catch (SQLException e) {
+				log.error("Failed to grant prefix '{}' to '{}'", prefix.name(), uuid, e);
+				return false;
+			}
+		});
+	}
+
+	public CompletableFuture<PrefixStatus> getPrefixStatus(ServerPrefix prefix) {
+		return CompletableFuture.supplyAsync(() -> {
+			String query = "SELECT * FROM unique_prefix WHERE prefix = ? LIMIT 1";
+
+			try (Connection conn = getConnection();
+				PreparedStatement statement = conn.prepareStatement(query)) {
+				statement.setString(1, prefix.name());
+
+				ResultSet result = statement.executeQuery();
+				if (result.next()) {
+					try {
+						ServerPrefix parsed = ServerPrefix.parse(
+								result.getString("prefix"), null);
+						UUID owner = UUID.fromString(result.getString("uuid"));
+						Timestamp givenAt = result.getTimestamp("acquired_at");
+
+						return new PrefixStatus(parsed, owner, givenAt);
+					} catch (IllegalArgumentException e) {
+						log.error("Failed to parse status from database. Check logs -> ", e);
+						return null;
+					}
+				} else {
+					return null;
+				}
+			} catch (SQLException e) {
+				log.error("Failed to send query to database. Check logs -> ", e);
+				return null;
+			}
+		});
+	}
 }

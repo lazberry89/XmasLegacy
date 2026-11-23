@@ -206,39 +206,6 @@ public class SqlUserRepository extends DatabaseProcessor implements UserReposito
 		return null;
 	}
 
-	private boolean getBooleanSafe(@NotNull ResultSet rs, @NotNull String column, boolean def) {
-		try {
-			return rs.getBoolean(column);
-		} catch (SQLException e) {
-			return def;
-		}
-	}
-
-	private int getIntSafe(@NotNull ResultSet rs, @NotNull String column, int def) {
-		try {
-			return rs.getInt(column);
-		} catch (SQLException e) {
-			return def;
-		}
-	}
-
-	private long getLongSafe(@NotNull ResultSet rs, @NotNull String column, long def) {
-		try {
-			return rs.getLong(column);
-		} catch (SQLException e) {
-			return def;
-		}
-	}
-
-	private @Nullable String getStringSafe(@NotNull ResultSet rs, @NotNull String column, @Nullable String def) {
-		try {
-			String val = rs.getString(column);
-			return val != null ? val : def;
-		} catch (SQLException e) {
-			return def;
-		}
-	}
-
 	@Override
 	public void saveUser(@NotNull User user) {
 		String sql = "REPLACE INTO users (uuid, name, role, dollars, inquireCount, playTime, Exp, roleExp, sinPoints, level, isNewUser, wantsCookie, tier, mastery, isImmuneToIcing, icingState, showBoard, isMobile, availablePrefix, equipPrefix) " +
