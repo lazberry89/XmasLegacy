@@ -162,3 +162,7 @@ commands:
     description: 받은 텔레포트 요청을 수락합니다.
 
   links:
+
+  web:
+    usage: /web <info | prereg [개수]>
+    description: 웹사이트 API 정보 조회 (OP)

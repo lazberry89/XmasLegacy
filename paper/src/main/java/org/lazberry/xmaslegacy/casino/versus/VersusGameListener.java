@@ -2,7 +2,9 @@ package org.lazberry.xmaslegacy.casino.versus;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -37,14 +39,20 @@ public class VersusGameListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    /** Fighters can only hurt each other, and only during the match; damage that involves no fighter is left alone. */
+    @EventHandler(ignoreCancelled = true)
     public void invalidateDamageByNonFighter(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Player victim)) return;
-        var damager = e.getDamager().getUniqueId();
-        var uuid = victim.getUniqueId();
-        var f = vm.getField();
+        Entity source = e.getDamager();
+        if (source instanceof Projectile projectile && projectile.getShooter() instanceof Entity shooter) source = shooter;
+        UUID damager = source.getUniqueId();
 
-        f.ifPresent(field -> e.setCancelled(!field.isFighter(uuid) || !field.isFighter(damager)));
+        vm.getField().ifPresent(field -> {
+            boolean victimFights = field.isFighter(victim.getUniqueId());
+            boolean damagerFights = field.isFighter(damager);
+            if (!victimFights && !damagerFights) return;
+            if (!(victimFights && damagerFights && field.isRunning())) e.setCancelled(true);
+        });
     }
 
     @EventHandler

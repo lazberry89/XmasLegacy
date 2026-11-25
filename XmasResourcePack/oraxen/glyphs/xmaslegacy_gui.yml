@@ -29,3 +29,11 @@ menu_logo:
   texture: xmaslegacy/menu_logo
   ascent: 30                          # 메뉴 제목 줄 기준 위로 30px. 아래 끝이 첫 버튼 위(약 GUI y=62)에서 끝남
   height: 45                          # 이미지 높이 그대로(1픽셀 = GUI 1픽셀)
+
+# 도감(FARM) 배경: 27칸 상자 위쪽(도감 칸 + 아래 바닐라 인벤토리로 넘어가는 연결부)을 덮고, 칸마다 등록할 작물의 실루엣을 보여줌
+# 텍스처: plugins/Oraxen/pack/textures/xmaslegacy/catalog_farm.png (176x84, 정지 이미지)
+# 생성: design/catalog/catalog_farm.py (슬롯 번호별 아이템 목록도 이 파일에 있음)
+catalog_farm:
+  texture: xmaslegacy/catalog_farm
+  ascent: 13 # 강화창과 같은 위치(창 맨 위)
+  height: 84 # 도감 칸(71) + 연결부(13). 그 아래 플레이어 인벤토리는 바닐라 그대로

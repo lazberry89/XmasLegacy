@@ -60,12 +60,18 @@ public class SlotMachineManager {
 				.findFirst();
 	}
 
-	public void createSlotMachine(String id, Location slot1, Location slot2, Location slot3, Location triggerLocation, int neededCoin,
+	public SlotMachine createSlotMachine(String id, Location triggerLocation, int neededCoin,
 	                              double multipliesForSilver, double multipliesForGold, double multipliesForDiamond) {
-		SlotMachine newMachine = new SlotMachine(id, slot1, slot2, slot3, triggerLocation, neededCoin, multipliesForSilver, multipliesForGold, multipliesForDiamond);
+		SlotMachine newMachine = new SlotMachine(id, triggerLocation, neededCoin, multipliesForSilver, multipliesForGold, multipliesForDiamond);
 		SlotAnimationController controller = new SlotAnimationController(plugin, newMachine);
 		machines.put(id, newMachine);
 		controllers.put(id, controller);
+		return newMachine;
+	}
+
+	public boolean removeSlotMachine(String id) {
+		controllers.remove(id);
+		return machines.remove(id) != null;
 	}
 
 	public void runSlotMachine(Player player, String id) {
@@ -77,6 +83,10 @@ public class SlotMachineManager {
 			return;
 		}
 
+		if (!machine.isReady()) {
+			InfoUtils.error(player, "아직 설치가 끝나지 않은 슬롯머신입니다.");
+			return;
+		}
 		if (!activeRunningMachines.add(id)) {
 			InfoUtils.error(player, "이미 이 슬롯머신이 작동 중입니다!");
 			return;

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.user.UserManager;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.KeyUtils;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -35,6 +36,7 @@ public class StockManager {
 	private final StockUpdater updater = new StockUpdater();
 	private final UserManager um;
 	private final XmasLegacy plugin;
+
 	private @Nullable StockItemBuilder builder = null;
 	private double feeRate = 0.03;
 	private Component icon = ColorUtils.chat("&#FF4545[&#F86E31주&#F1971D식&#EAC009]");
@@ -149,7 +151,7 @@ public class StockManager {
 
 		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
 		ItemStack cert = builder.createStockCertificate(stock, amount, currentPrice);
-		buyer.getInventory().addItem(cert);
+		InventoryHelper.giveItemOrDrop(buyer, cert);
 		return Response.SUCCESS;
 	}
 

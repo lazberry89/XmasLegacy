@@ -81,7 +81,7 @@ public class AirdropManager implements Initiator {
 	}
 
 	public boolean isSupplyChest(Block block) {
-		return block instanceof Chest supply && KeyUtils.hasKey(supply, key);
+		return block.getState() instanceof Chest supply && KeyUtils.hasKey(supply, key);
 	}
 
 	public void spawnAirDrop(Location location) {

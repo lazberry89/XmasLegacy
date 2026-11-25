@@ -21,13 +21,14 @@ public class CommonPrefixManager {
 		this.userManager = userManager;
 	}
 
-	public CompletableFuture<Boolean> grantPrefix(UUID uuid, ServerPrefix prefix) {
+	public CompletableFuture<Boolean> grantUniquePrefix(UUID uuid, ServerPrefix prefix, Runnable action) {
 		User user = userManager.getUser(uuid);
 		if (user == null) return CompletableFuture.completedFuture(false);
 
 		return prefixRepository.grantPrefix(uuid, prefix).handle((value, ex) -> {
 			if (value) {
 				user.addPrefix(prefix);
+				action.run();
 				return true;
 			}
 			return false;

@@ -15,6 +15,7 @@ import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -32,39 +33,60 @@ public class CoinFlipManager {
         return machineMap.computeIfAbsent(id, i -> new CoinFlip(i, location, coinItem));
     }
 
-    public void removeMachine(String id) {
-        machineMap.remove(id);
+    public boolean removeMachine(String id) {
+        return machineMap.remove(id) != null;
     }
 
-    public void flip(Player player, String id, CoinFlip.State selection, int injectedCoin) {
-        if (player == null || !player.isValid()) return;
+    public Map<String, CoinFlip> getMachines() {
+        return machineMap;
+    }
 
+    public Optional<CoinFlip> getMachineByBlock(Location loc) {
+        if (loc == null) return Optional.empty();
+        Location block = loc.getBlock().getLocation();
+        return machineMap.values().stream()
+                .filter(m -> block.equals(m.getLocation().getBlock().getLocation()))
+                .findFirst();
+    }
+
+    /**
+     * @param paid true when the stake was already taken from the player (the coin flip GUI holds the coins);
+     *             it is refunded if the flip cannot start.
+     */
+    public void flip(Player player, String id, CoinFlip.State selection, int injectedCoin, boolean paid) {
+        if (player == null || !player.isValid()) return;
+        if (!tryStart(player, id, selection, injectedCoin, paid) && paid && injectedCoin > 0) {
+            Casino.giveCoin(player, injectedCoin);
+        }
+    }
+
+    private boolean tryStart(Player player, String id, CoinFlip.State selection, int injectedCoin, boolean paid) {
         CoinFlip machine = machineMap.get(id);
         if (machine == null) {
             InfoUtils.error(player, "유효하지 않은 기계입니다.");
-            return;
+            return false;
         }
         if (machine.getResult() == CoinFlip.State.ROLLING) {
             InfoUtils.error(player, "이미 동전 던지기가 진행 중입니다.");
-            return;
+            return false;
         }
         if (selection == CoinFlip.State.ROLLING) {
             InfoUtils.error(player, "올바르지 않은 선택입니다.");
-            return;
+            return false;
         }
         if (injectedCoin <= 0) {
             InfoUtils.error(player, "카지노 코인을 넣어주세요!");
-            return;
+            return false;
         }
-        if (!Casino.hasEnoughCoins(player, injectedCoin)) {
+        if (!paid && !Casino.hasEnoughCoins(player, injectedCoin)) {
             InfoUtils.error(player, "카지노 코인이 부족합니다! (필요 코인: " + injectedCoin + "개)");
-            return;
+            return false;
         }
-        // The stake is taken here, so callers only pass the amount and never handle coins themselves.
-        Casino.removeCoins(player, injectedCoin);
+        if (!paid) Casino.removeCoins(player, injectedCoin);
         machine.setResult(CoinFlip.State.ROLLING);
         CoinFlip.State finalResult = result(machine, selection);
         startCoinFlipAnimation(player, machine, selection, finalResult, injectedCoin);
+        return true;
     }
 
     private void startCoinFlipAnimation(Player player, CoinFlip machine, CoinFlip.State selection, CoinFlip.State finalResult, int injectedCoin) {
