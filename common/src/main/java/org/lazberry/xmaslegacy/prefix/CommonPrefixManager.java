@@ -11,12 +11,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Components.Exclude(type = ServerType.LOBBY)
-public class UniquePrefixManager {
+public class CommonPrefixManager {
 	private final SqlPrefixRepository prefixRepository;
 	private final UserManager userManager;
 
 	@Inject
-	public UniquePrefixManager(SqlPrefixRepository prefixRepository, UserManager userManager) {
+	public CommonPrefixManager(SqlPrefixRepository prefixRepository, UserManager userManager) {
 		this.prefixRepository = prefixRepository;
 		this.userManager = userManager;
 	}

@@ -10,6 +10,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.framework.ServerType;
+import org.lazberry.xmaslegacy.prefix.MissionPrefix;
 import org.lazberry.xmaslegacy.user.UserManager;
 import org.lazberry.xmaslegacy.settings.*;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;

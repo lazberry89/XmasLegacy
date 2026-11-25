@@ -2,6 +2,7 @@ package org.lazberry.xmaslegacy.settings;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.lazberry.xmaslegacy.prefix.MissionPrefix;
 
 public interface ServerPrefix {
 	@NotNull Component prefix();
