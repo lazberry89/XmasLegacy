@@ -11,8 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Catalog state as one BIGINT per (player, catalog type): bit n = slot n registered.
@@ -37,12 +39,45 @@ public class SqlCatalogRepository extends DatabaseProcessor {
 				"bits BIGINT NOT NULL DEFAULT 0, " +
 				"PRIMARY KEY (uuid, type)" +
 				")";
+		String query2 = "CREATE TABLE IF NOT EXISTS catalog_sample (" +
+				"type VARCHAR(36) NOT NULL PRIMARY KEY," +
+				"sample MEDIUMTEXT NOT NULL" +
+				");";
 		try (Connection conn = getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(query)) {
-			stmt.execute();
+		     PreparedStatement statement = conn.prepareStatement(query);
+			 PreparedStatement statement2 = conn.prepareStatement(query2)) {
+			statement.execute();
+			statement2.execute();
 		} catch (SQLException e) {
-			log.error("Failed to create user_catalog table -> {}", e.getMessage(), e);
+			log.error("Failed to create catalog table.", e);
 		}
+	}
+
+	public CompletableFuture<Map<CatalogType, String>> loadSampleCatalog() {
+		String query = "SELECT type, sample FROM catalog_sample";
+		var result = new ConcurrentHashMap<CatalogType, String>(CatalogType.values().length);
+		return CompletableFuture.supplyAsync(() -> {
+			try (Connection conn = getConnection();
+			     PreparedStatement statement = conn.prepareStatement(query);
+			     ResultSet rs = statement.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("sample");
+					if (value == null) continue;
+
+					String typeStr = rs.getString("type");
+					try {
+						CatalogType type = CatalogType.valueOf(typeStr);
+						result.put(type, value);
+						log.info("Loaded sample inventory of type '{}'.", type.name());
+					} catch (IllegalArgumentException e) {
+						log.warn("Unknown catalog sample type '{}', skipped.", typeStr);
+					}
+				}
+			} catch (SQLException e) {
+				log.error("Failed to load sample catalog inventory.", e);
+			}
+			return result;
+		});
 	}
 
 	/** Loads every catalog type of the player. A player with no rows gets an empty progress. Completes with null on DB error. */
