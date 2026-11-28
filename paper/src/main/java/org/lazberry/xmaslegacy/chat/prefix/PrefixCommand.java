@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.chat.prefix;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,7 +40,7 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull... args) {
         if (!(sender instanceof Player p)) return true;
         // /prefix <grant | deprive | equip | unequip | list | inv | inventory> <Player> <ServerPrefixType> <Prefix>
-        if (p.isOp()) {
+        if (Perms.admin(p, "chat")) {
             if (args.length == 4) {
                 Player target = Bukkit.getPlayerExact(args[1]);
                 if (target == null) {
@@ -128,14 +130,14 @@ public class PrefixCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             List<String> commands = new ArrayList<>(List.of("inv", "inventory"));
-            if (sender.isOp()) {
+            if (Perms.admin(sender, "chat")) {
                 commands.addAll(List.of("grant", "deprive", "equip", "unequip"));
             }
             StringUtil.copyPartialMatches(args[0], commands, completions);
             return completions;
         }
 
-        if (!sender.isOp()) return List.of();
+        if (!Perms.admin(sender, "chat")) return List.of();
 
         if (args.length == 2) {
             return null;

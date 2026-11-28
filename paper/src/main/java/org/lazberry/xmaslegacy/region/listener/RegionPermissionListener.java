@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.region.listener;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +29,7 @@ public class RegionPermissionListener implements Listener {
 	}
 
 	private boolean hasPermission(Player p, Region region) {
-		return p.isOp() || region.getOwner().equals(p.getUniqueId());
+		return Perms.admin(p, "region") || region.getOwner().equals(p.getUniqueId());
 	}
 
 	@EventHandler

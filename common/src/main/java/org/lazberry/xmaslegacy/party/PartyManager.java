@@ -72,6 +72,19 @@ public class PartyManager implements Initiator {
 		return true;
 	}
 
+	/** Remembers that {@code leaderUuid}'s party invited {@code targetUuid}, for 3 minutes, across servers. */
+	public void invite(@NotNull UUID targetUuid, @NotNull UUID leaderUuid) {
+		JedisService.setWithExpire("party:invite:" + targetUuid, leaderUuid.toString(), 180);
+	}
+
+	/** True (and the invite is used up) if the target holds a live invite from this leader's party. */
+	public boolean consumeInvite(@NotNull UUID targetUuid, @NotNull UUID leaderUuid) {
+		String key = "party:invite:" + targetUuid;
+		if (!leaderUuid.toString().equals(JedisService.getFromJedis(key))) return false;
+		JedisService.removeKey(key);
+		return true;
+	}
+
 	public boolean joinParty(UUID leaderUuid, UUID joinUuid) {
 		if (isInParty(joinUuid)) return false;
 

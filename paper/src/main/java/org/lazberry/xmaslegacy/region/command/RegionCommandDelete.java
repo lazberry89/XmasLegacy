@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.region.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +31,7 @@ public class RegionCommandDelete implements SubCommand {
             Region region = rm.getRegion(args[0]);
             if (region != null) {
 
-                if (!player.isOp() && !region.getOwner().equals(player.getUniqueId())) {
+                if (!Perms.admin(player, "region") && !region.getOwner().equals(player.getUniqueId())) {
                     player.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
                     return;
                 }

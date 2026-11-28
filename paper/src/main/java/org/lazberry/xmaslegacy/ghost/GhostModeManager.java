@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.ghost;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +29,7 @@ public class GhostModeManager implements Initiator {
 	}
 
     public void ghostMode(Player p) {
-        if (!p.isOp()) return;
+        if (!Perms.admin(p, "ghost")) return;
         if (isGhostMode.contains(p.getUniqueId())) return;
 		ItemStack[] saveArmor = p.getInventory().getArmorContents();
         this.saveArmor.put(p.getUniqueId(), saveArmor);

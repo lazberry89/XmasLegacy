@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.api.wep;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,7 +36,7 @@ public class WebApiCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-		if (!sender.isOp()) {
+		if (!Perms.admin(sender, "api")) {
 			send(sender, "&c권한이 없습니다.");
 			return true;
 		}
@@ -96,7 +98,7 @@ public class WebApiCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-		if (!sender.isOp() || args.length != 1) return List.of();
+		if (!Perms.admin(sender, "api") || args.length != 1) return List.of();
 		return Stream.of("info", "prereg").filter(s -> s.startsWith(args[0].toLowerCase())).toList();
 	}
 }

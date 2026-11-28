@@ -1,11 +1,9 @@
 package org.lazberry.xmaslegacy.rank.command;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.rank.RankType;
 import org.lazberry.xmaslegacy.rank.board.RankBoardManager;
-import org.lazberry.xmaslegacy.utils.Axiom;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
 import org.lazberry.xmaslegacy.utils.ParseEnum;
 import org.lazberry.xmaslegacy.utils.SubCommand;
@@ -28,9 +26,12 @@ public record BoardCommandSpawn(RankBoardManager boardManager) implements SubCom
                 InfoUtils.error(player, "올바른 숫자를 입력해주세요. ('{}')", args[2]);
                 return;
             }
-            Location loc = Axiom.snapDegrees(player.getLocation());
-            boardManager.createRankBoard(type, loc, limit);
-            InfoUtils.info(player, "랭킹보드를 생성했습니다.");
-        }
+            if (limit < 1 || limit > 20) {
+                InfoUtils.error(player, "표시 인원은 1~20명이어야 합니다.");
+                return;
+            }
+            if (boardManager.createRankBoard(type, player.getLocation(), limit)) InfoUtils.info(player, "랭킹보드를 생성했습니다.");
+            else InfoUtils.error(player, "랭킹보드를 표시했지만 저장하지 못했습니다. 재시작하면 사라집니다.");
+        } else InfoUtils.error(player, "사용법: /board spawn <종류> <인원>");
     }
 }

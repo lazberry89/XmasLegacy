@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.mining.commands;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,7 +43,7 @@ public class MineCommands implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(sender instanceof Player p)) return true;
-		if (!p.isOp()) {
+		if (!Perms.admin(p, "mining")) {
 			InfoUtils.error(p, "You don't have permission to use this command!");
 			return true;
 		}
@@ -58,7 +60,7 @@ public class MineCommands implements CommandExecutor, TabCompleter {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-		if (!sender.isOp()) return Collections.emptyList();
+		if (!Perms.admin(sender, "mining")) return Collections.emptyList();
 		if (args.length == 1) return List.of("create", "remove");
 		if (args.length == 2) return List.of("internal", "external");
 		return Collections.emptyList();

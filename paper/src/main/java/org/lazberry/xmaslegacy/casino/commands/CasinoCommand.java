@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.casino.commands;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -63,7 +65,7 @@ public class CasinoCommand implements CommandExecutor, TabCompleter {
 			case "join" -> versus.join(p);
 			case "leave" -> versus.leave(p);
 			case "slot", "coinflip", "versus" -> {
-				if (!p.isOp()) {
+				if (!Perms.admin(p, "casino")) {
 					InfoUtils.error(p, "권한이 없습니다.");
 					return true;
 				}
@@ -81,7 +83,7 @@ public class CasinoCommand implements CommandExecutor, TabCompleter {
 	private void help(Player p) {
 		InfoUtils.info(p, "/casino shop &7- 입장권, 코인 구매");
 		InfoUtils.info(p, "/casino join | leave &7- 1대1 대결 참가 / 퇴장");
-		if (!p.isOp()) return;
+		if (!Perms.admin(p, "casino")) return;
 		InfoUtils.info(p, "/casino slot create <id> <코인> <은배수> <금배수> <다이아배수> &7- 바라보는 레버");
 		InfoUtils.info(p, "/casino slot reel <id> <1|2|3> &7- 바라보는 블록 | remove <id> | list");
 		InfoUtils.info(p, "/casino coinflip create <id> &7- 바라보는 블록 | remove <id> | list");
@@ -245,7 +247,7 @@ public class CasinoCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-		boolean op = sender.isOp();
+		boolean op = Perms.admin(sender, "casino");
 		List<String> options = new ArrayList<>();
 		if (args.length == 1) {
 			options.addAll(PLAYER_SUBS);

@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.mining.listeners;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -47,7 +49,7 @@ public class PortListener implements Listener {
     @EventHandler
     public void cancelBlockPlacing(BlockPlaceEvent e) {
         var player = e.getPlayer();
-        if (player.getWorld().equals(mm.getWorld()) && !player.isOp()) {
+        if (player.getWorld().equals(mm.getWorld()) && !Perms.admin(player, "mining")) {
             e.setCancelled(true);
             InfoUtils.error(player, "여기엔 블록을 설치할 수 없어요!");
         }
@@ -61,7 +63,7 @@ public class PortListener implements Listener {
         if (mm.getWorld() == null || !player.getWorld().equals(mm.getWorld())) {
             return;
         }
-        if (!mm.isInsideInternalField(brokenLocation) && !player.isOp()) {
+        if (!mm.isInsideInternalField(brokenLocation) && !Perms.admin(player, "mining")) {
             InfoUtils.error(player, "여기선 블록을 캘 수 없어요!");
             e.setCancelled(true);
             return;
@@ -77,7 +79,7 @@ public class PortListener implements Listener {
                 InfoUtils.warn(player, "강제로 로드를 시도합니다.");
                 UserHandler.loadUser(player, false);
             });
-        } else if (!player.isOp()) {
+        } else if (!Perms.admin(player, "mining")) {
 		    e.setCancelled(true);
 	    }
     }

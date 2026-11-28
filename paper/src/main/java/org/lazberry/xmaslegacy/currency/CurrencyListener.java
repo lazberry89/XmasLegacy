@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.currency;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +35,7 @@ public class CurrencyListener implements Listener {
 				economyManager.deposit(uuid, amount);
 				InfoUtils.info(player, "현금 &6{}원&f이 입금되었습니다.", amount);
 				item.setAmount(0);
+				Advancements.grant(player, "earn_money");
 			}
 		}
 	}

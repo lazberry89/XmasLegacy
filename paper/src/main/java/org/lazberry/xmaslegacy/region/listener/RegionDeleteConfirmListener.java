@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.region.listener;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +40,7 @@ public class RegionDeleteConfirmListener implements Listener {
         if (!(inv.getHolder() instanceof RegionDeleteInterface rdi)) return;
 
         e.setCancelled(true);
-        if (!p.isOp() && !rdi.getRegion().getOwner().equals(p.getUniqueId())) {
+        if (!Perms.admin(p, "region") && !rdi.getRegion().getOwner().equals(p.getUniqueId())) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
             p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             return;

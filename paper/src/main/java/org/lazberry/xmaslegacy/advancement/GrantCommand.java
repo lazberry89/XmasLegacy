@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.advancement;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,7 +26,7 @@ public class GrantCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(sender instanceof Player p)) return true;
-		if (!sender.isOp()) return true;
+		if (!Perms.admin(sender, "advancement")) return true;
 
 		if (args.length == 1) {
 			try {
@@ -33,13 +35,13 @@ public class GrantCommand implements CommandExecutor {
 				if (args[0].contains(":")) {
 					key = AdvancementKey.fromString(args[0]);
 				} else {
-					key = new AdvancementKey("xmaslegacy_global", args[0]);
+					key = new AdvancementKey(XmasLegacyAdvancements.NAMESPACE, args[0]);
 				}
 
 				var give = advancements.getApi().getAdvancement(key);
 				if (give != null) {
-					advancements.grantGlobalAdvancement(p, give);
-					p.sendMessage("§a[성공] 과제 지급 완료: " + key);
+					if (advancements.grantGlobalAdvancement(p, give)) p.sendMessage("§a[성공] 과제 지급 완료: " + key);
+					else p.sendMessage("§e[무시] 이미 완료한 과제입니다: " + key);
 				} else {
 					p.sendMessage("§c[실패] 해당 키를 가진 과제를 찾을 수 없습니다: " + key);
 				}

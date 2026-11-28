@@ -69,6 +69,7 @@ public class PartyCommandInvite implements SubCommand {
                 }, 15L);
             }
             else Bukkit.getScheduler().runTaskLater(plugin, () -> targetPlayer.sendMessage(inviteComp(current)), 2L);
+            pm.invite(target, current.getLeader());
             InfoUtils.info(player, "파티 초대 요청을 보냈습니다.");
         } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");
     }

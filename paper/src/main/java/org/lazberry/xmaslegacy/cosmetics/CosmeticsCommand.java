@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.cosmetics;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +34,7 @@ public class CosmeticsCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "cosmetics")) return true;
 		if (args.length == 2) {
 			Cosmetics cosmetic = csm.getEquippedCosmetics(args[1]);
 

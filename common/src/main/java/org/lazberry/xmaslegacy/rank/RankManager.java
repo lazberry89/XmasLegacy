@@ -41,7 +41,7 @@ public class RankManager implements Initiator {
 						log.error("Failed to load rank data for rank type {}", rank, throwable);
 						return;
 					}
-					warmUp(rankType, rank);
+					if (rank != null) warmUp(rankType, rank);
 				}));
 	}
 
@@ -58,9 +58,20 @@ public class RankManager implements Initiator {
 		var uuid = user.getUniqueId();
 
 		update(RankType.DOLLAR, uuid, user.getDollars());
-		update(RankType.EXP, uuid, user.getExp());
+		update(RankType.EXP, uuid, totalExp(user.getLevel(), user.getExp()));
 		update(RankType.ROLE_EXP, uuid, user.getRoleExp());
 		update(RankType.PLAYTIME, uuid, user.getPlayTime());
+	}
+
+	/** Exp resets on every level up, so ranking needs the sum. A level costs 100 + 50 * level, as in ExpManager. */
+	public static long totalExp(long level, long exp) {
+		return 100 * level + 25 * level * (level - 1) + exp;
+	}
+
+	public static int levelOf(long totalExp) {
+		int level = 0;
+		while (totalExp >= totalExp(level + 1, 0)) level++;
+		return level;
 	}
 
 	public void warmUp(RankType rankType, Map<UUID, Double> values) {

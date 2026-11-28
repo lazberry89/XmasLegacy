@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.enchant;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +33,7 @@ public class EnchantCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
-		if (args.length > 0 && !args[0].equalsIgnoreCase("shop") && !p.isOp()) return true;
+		if (args.length > 0 && !args[0].equalsIgnoreCase("shop") && !Perms.admin(p, "enchant")) return true;
 		if (args.length == 0) {
 			EnchantUserInterface eui = new EnchantUserInterface(ecm, p);
 			p.openInventory(eui.getInventory());
@@ -55,7 +57,7 @@ public class EnchantCommand implements CommandExecutor {
 			InventoryHelper.giveItemOrDrop(p, EnchantMaterial.BoosterFivePercent());
 			InventoryHelper.giveItemOrDrop(p, EnchantMaterial.BoosterTenPercent());
 		} else {
-			if (p.isOp()) p.getInventory().addItem(EnchantMaterial.PrismFractal());
+			if (Perms.admin(p, "enchant")) p.getInventory().addItem(EnchantMaterial.PrismFractal());
 		}
 		return true;
 	}

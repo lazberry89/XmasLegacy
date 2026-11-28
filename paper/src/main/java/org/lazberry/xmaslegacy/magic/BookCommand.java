@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.magic;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
@@ -30,7 +32,7 @@ public class BookCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "magic")) {
             InfoUtils.error(p, "관리자용 명령어에요!");
             return true;
         }

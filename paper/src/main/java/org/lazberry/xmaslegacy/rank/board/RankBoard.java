@@ -2,114 +2,95 @@ package org.lazberry.xmaslegacy.rank.board;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
+import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.lazberry.xmaslegacy.rank.RankManager;
 import org.lazberry.xmaslegacy.rank.RankType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
-@Getter
+/** One floating board. The world is kept by name because it may be loaded after this plugin. */
 public class RankBoard {
-	private final RankType rankType;
-	private final Location location;
-	private final int printLimit;
-	private TextDisplay existingDisplay;
+	private static final long TREND_PERIOD = 10 * 60 * 1000L;
+	private static final float SCALE = 1.15f;
 
-	private final Map<UUID, Integer> previousRanks = new HashMap<>();
+	@Getter private final RankType rankType;
+	@Getter private final String world;
+	@Getter private final double x, y, z;
+	@Getter private final int printLimit;
+	private @Nullable TextDisplay display;
+	private @Nullable Component shown;
 
-	public RankBoard(RankType rankType, Location location, int printLimit) {
+	/** Ranks at the last snapshot; arrows compare with this, so they stay visible instead of one refresh. */
+	private Map<UUID, Integer> baseline = Map.of();
+	private long baselineTime;
+
+	public RankBoard(@NotNull RankType rankType, @NotNull String world, double x, double y, double z, int printLimit) {
 		this.rankType = rankType;
-		this.location = location;
+		this.world = world;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 		this.printLimit = printLimit;
 	}
 
-	private String getTitleName(RankType type) {
-		return switch (type) {
-			case DOLLAR -> "자산 랭킹";
-			case EXP -> "경험치 랭킹";
-			case ROLE_EXP -> "직업 경험치 랭킹";
-			case PLAYTIME -> "플레이 시간 랭킹";
-		};
+	public void update(@NotNull List<RankManager.RankData> ranks, @NotNull Function<UUID, String> names) {
+		World w = Bukkit.getWorld(world);
+		if (w == null || !w.isChunkLoaded((int) Math.floor(x) >> 4, (int) Math.floor(z) >> 4)) return; // nobody can see it
+
+		Component text = RankBoardText.render(rankType, ranks.subList(0, Math.min(printLimit, ranks.size())), baseline, names);
+		refreshBaseline(ranks);
+
+		if (display == null || !display.isValid()) {
+			display = spawn(new Location(w, x, y, z));
+			shown = null;
+		}
+		if (!text.equals(shown)) {
+			display.text(text);
+			shown = text;
+		}
 	}
 
-	private Color getGlowColor(RankType type) {
-		return switch (type) {
-			case DOLLAR -> Color.ORANGE;
-			case EXP -> Color.GREEN;
-			case ROLE_EXP -> Color.RED;
-			case PLAYTIME -> Color.AQUA;
-		};
+	private void refreshBaseline(List<RankManager.RankData> ranks) {
+		long now = System.currentTimeMillis();
+		if (ranks.isEmpty() || now - baselineTime < TREND_PERIOD) return;
+		Map<UUID, Integer> current = new HashMap<>();
+		ranks.forEach(r -> current.put(r.uuid(), r.rank()));
+		baseline = current;
+		baselineTime = now;
 	}
 
-	public TextDisplay spawnOrUpdateDisplay(ArrayList<RankManager.RankData> ranks) {
-		if (existingDisplay == null || !existingDisplay.isValid()) {
-			existingDisplay = location.getWorld().spawn(location, TextDisplay.class, t -> {
-				t.setGlowColorOverride(getGlowColor(rankType));
-				t.setGlowing(true);
-				t.setAlignment(TextDisplay.TextAlignment.CENTER);
-				t.setBillboard(org.bukkit.entity.Display.Billboard.CENTER);
-			});
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("<gold><b>[ ").append(getTitleName(rankType)).append(" ]</b></gold>\n");
-		sb.append("<dark_gray>--------------------</dark_gray>\n");
-
-		Map<UUID, Integer> currentRanks = new HashMap<>();
-		int count = 0;
-
-		for (RankManager.RankData data : ranks) {
-			if (count >= printLimit) break;
-
-			int currentRank = data.rank();
-			UUID uuid = data.uuid();
-			double value = data.value();
-
-			String name = Bukkit.getOfflinePlayer(uuid).getName();
-			if (name == null) name = "Unknown";
-
-			String trendSymbol;
-			if (!previousRanks.containsKey(uuid)) {
-				trendSymbol = "<gray>-</gray>";
-			} else {
-				int prevRank = previousRanks.get(uuid);
-				if (currentRank < prevRank) {
-					trendSymbol = "<red>▲</red>";
-				} else if (currentRank > prevRank) {
-					trendSymbol = "<blue>▼</blue>";
-				} else {
-					trendSymbol = "<green>-</green>";
-				}
-			}
-
-			currentRanks.put(uuid, currentRank);
-			sb.append(String.format("<white>%d위. <yellow>%s</yellow> <dark_gray>-</dark_gray> <aqua>%.1f</aqua> %s</white>\n",
-					currentRank, name, value, trendSymbol));
-
-			count++;
-		}
-
-		previousRanks.clear();
-		previousRanks.putAll(currentRanks);
-
-		Component component = MiniMessage.miniMessage().deserialize(sb.toString().trim());
-		existingDisplay.text(component);
-
-		return existingDisplay;
+	private static TextDisplay spawn(Location location) {
+		return location.getWorld().spawn(location, TextDisplay.class, t -> {
+			// Never saved with the chunk: a crash would otherwise leave a frozen copy behind.
+			t.setPersistent(false);
+			t.setBillboard(Display.Billboard.VERTICAL);
+			t.setAlignment(TextDisplay.TextAlignment.CENTER);
+			t.setBackgroundColor(Color.fromARGB(190, 10, 18, 34));
+			t.setShadowed(true);
+			t.setLineWidth(400);
+			t.setBrightness(new Display.Brightness(15, 15));
+			Transformation base = t.getTransformation();
+			t.setTransformation(new Transformation(base.getTranslation(), base.getLeftRotation(),
+					new Vector3f(SCALE, SCALE, SCALE), base.getRightRotation()));
+		});
 	}
 
 	public void removeDisplay() {
-		if (existingDisplay != null && existingDisplay.isValid()) {
-			existingDisplay.remove();
-			existingDisplay = null;
-		}
+		if (display != null) display.remove();
+		display = null;
+		shown = null;
 	}
 }

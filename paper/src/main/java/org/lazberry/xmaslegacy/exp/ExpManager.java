@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.exp;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -114,6 +115,8 @@ public class ExpManager {
                         log.info("{} 님의 직업 마스터리가 {} (으)로 상승했습니다!", player.getName(), newMastery.name());
                     }
 
+                    // Every time, not only on a mastery change: players who already passed a step get it too.
+                    grantMasteryAdvancements(player, newMastery);
                     addExp(player, 1);
 
                     result[0] = true;
@@ -122,6 +125,14 @@ public class ExpManager {
         );
 
         return result[0];
+    }
+
+    private static void grantMasteryAdvancements(Player player, RoleMastery mastery) {
+        if (mastery.compareTo(RoleMastery.BRONZE) >= 0) Advancements.grant(player, "role_bronze");
+        if (mastery.compareTo(RoleMastery.GOLD) >= 0) Advancements.grant(player, "role_gold");
+        if (mastery.compareTo(RoleMastery.EMERALD) >= 0) Advancements.grant(player, "role_emerald");
+        if (mastery.compareTo(RoleMastery.IMMORTAL) >= 0) Advancements.grant(player, "role_immortal");
+        if (mastery.compareTo(RoleMastery.INFINITE) >= 0) Advancements.grant(player, "role_infinite");
     }
 
     @Contract(pure = true)

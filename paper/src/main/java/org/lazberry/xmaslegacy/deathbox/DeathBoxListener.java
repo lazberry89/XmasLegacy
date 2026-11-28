@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.deathbox;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,6 +48,7 @@ public class DeathBoxListener implements Listener {
         if (em.withdraw(dead.getUniqueId(), dm.getBoxCost())) {
             InfoUtils.info(dead, "사망 처리 비용 &6{}원&f이 출금되었습니다.", dm.getBoxCost());
             dm.dropDeathBox(dead, drops);
+            Advancements.grant(dead, "death_insurance");
         } else {
             InfoUtils.error(dead, "잔액이 부족하여 전용 상자가 생성되지 않습니다.");
         }

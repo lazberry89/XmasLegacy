@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.inquiry.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -33,7 +35,7 @@ public class InquiryContainerCommand implements CommandExecutor, TabCompleter {
 		if (!(sender instanceof Player p)) return true;
 
 		var uuid = p.getUniqueId();
-		if (!p.isOp()) {
+		if (!Perms.admin(p, "inquiry")) {
 			p.sendMessage(inquiryManager.getInquiryHistoryText(uuid));
 			inquiryManager.clearAllUnreadInquiries(uuid);
 			return true;
@@ -55,7 +57,7 @@ public class InquiryContainerCommand implements CommandExecutor, TabCompleter {
 
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-		if (args.length == 1 && sender.isOp()) return null;
+		if (args.length == 1 && Perms.admin(sender, "inquiry")) return null;
 		return List.of();
 	}
 }

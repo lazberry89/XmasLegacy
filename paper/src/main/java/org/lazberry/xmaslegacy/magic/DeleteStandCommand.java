@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.magic;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +26,7 @@ public class DeleteStandCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "magic")) {
             InfoUtils.error(p, "관리자용 명령어에요!");
             return true;
         }

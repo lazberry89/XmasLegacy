@@ -9,6 +9,7 @@ import org.lazberry.xmaslegacy.framework.annotation.Monitor;
 import org.lazberry.xmaslegacy.framework.monitor.Monitored;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Components
@@ -23,15 +24,28 @@ public class ProductProxySignal implements Monitored {
 
     @Monitor(lvl = Observation.AVERAGE)
     public void transmitProxyGrantSignal(UUID uuid, ProductType productType) {
-        productManager.addProductAsPended(uuid, productType).whenComplete((product, ex) -> {
+        transmit(productManager.addProductAsPended(uuid, productType), uuid, productType, null);
+    }
+
+    /** Same as above, but a repeated order id maps to the first purchase instead of making a new one. */
+    public void transmitProxyGrantSignal(UUID uuid, ProductType productType, String orderId) {
+        transmit(productManager.addOrderAsPended(uuid, productType, orderId), uuid, productType, orderId);
+    }
+
+    private void transmit(CompletableFuture<WebProduct> pended, UUID uuid, ProductType productType, String orderId) {
+        pended.whenComplete((product, ex) -> {
             if (ex != null) {
-                log.error("Failed to record web product. (receiver: {}, type: {})", uuid, productType.name(), ex);
+                log.error("Failed to record web product. (receiver: {}, type: {}, order: {})", uuid, productType.name(), orderId, ex);
+                return;
+            }
+            if (product == null) {
+                log.info("Order {} was already granted; ignoring the repeat. (receiver: {}, type: {})", orderId, uuid, productType.name());
                 return;
             }
             // Only the purchase number travels; paper resolves it through ProductRecordManager.
             JedisService.publish(channel, String.valueOf(product.getId()));
-            log.info("Web product signal sent by Proxy. (id: {}, receiver: {}, type: {})",
-                    product.getId(), uuid, productType.name());
+            log.info("Web product signal sent by Proxy. (id: {}, receiver: {}, type: {}, order: {})",
+                    product.getId(), uuid, productType.name(), orderId);
         });
     }
 }

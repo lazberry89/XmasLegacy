@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.enchant.transcendence.ability.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +34,7 @@ public class AbilityCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(sender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "enchant")) return true;
 		if (args.length >= 1) {
 			String name = args[0].toUpperCase();
 			AbilityType type = ParseEnum.of(AbilityType.class).parseOrDefault(name, AbilityType.SONIC_HUNTER);

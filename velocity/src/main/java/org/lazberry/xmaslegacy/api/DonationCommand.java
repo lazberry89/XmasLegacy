@@ -11,17 +11,22 @@ import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Console command the web store runs after a payment:
  * <pre>donation action:GRANT target:&lt;uuid&gt; product:&lt;product&gt;</pre>
  * Arguments are {@code key:value} pairs in any order. {@code product} accepts the product key
  * ({@code starter_pack}) or the enum name ({@code STARTER_PACK}).
+ * <p>
+ * Optional {@code order:<id>} (letters, digits, {@code _ -}, up to 64): running the command again with the
+ * same order id never grants twice, so the web store can retry safely. Without it every run is a new purchase.
  */
 @Slf4j
 @Commands(command = "donation")
 public class DonationCommand implements SimpleCommand {
-    private static final String USAGE = "Usage: donation action:GRANT target:<uuid> product:<product>";
+    private static final String USAGE = "Usage: donation action:GRANT target:<uuid> product:<product> [order:<id>]";
+    private static final Pattern ORDER_ID = Pattern.compile("[A-Za-z0-9_-]{1,64}");
 
     private final ProductProxySignal signal;
 
@@ -71,9 +76,17 @@ public class DonationCommand implements SimpleCommand {
             return;
         }
 
-        signal.transmitProxyGrantSignal(uuid, product);
+        String order = args.get("order");
+        if (order == null) {
+            signal.transmitProxyGrantSignal(uuid, product);
+        } else if (ORDER_ID.matcher(order).matches()) {
+            signal.transmitProxyGrantSignal(uuid, product, order);
+        } else {
+            fail(invocation, "Invalid order id: " + order + " (letters, digits, _ -, up to 64)");
+            return;
+        }
         invocation.source().sendMessage(Component.text(
-                "Donation accepted. (receiver: " + uuid + ", product: " + product.name() + ")", NamedTextColor.GREEN));
+                "Donation accepted. (receiver: " + uuid + ", product: " + product.name() + (order == null ? "" : ", order: " + order) + ")", NamedTextColor.GREEN));
     }
 
     private static ProductType findProduct(String value) {

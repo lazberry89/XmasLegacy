@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.bags;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -36,7 +38,7 @@ public class BagCommand implements CommandExecutor, TabCompleter {
 			p.openInventory(bm.getBag(p.getUniqueId()).getInventory());
 			return true;
 		} else if (args.length == 1) {
-			if (!p.isOp()) {
+			if (!Perms.admin(p, "bags")) {
 				p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 				p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 				return true;
@@ -59,7 +61,7 @@ public class BagCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 		if (strings.length == 1) {
-			if (!commandSender.isOp()) return List.of();
+			if (!Perms.admin(commandSender, "bags")) return List.of();
 			return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
 		}
 		return List.of();

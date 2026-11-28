@@ -19,6 +19,10 @@ dependencies {
     compileOnly("io.th0rgal:oraxen:1.213.0")
     compileOnly("com.frengor:ultimateadvancementapi:2.8.2")
     compileOnly("net.luckperms:api:5.5")
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 }
 
 java {
@@ -26,6 +30,10 @@ java {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+    }
+
     runServer {
         minecraftVersion("1.21.11")
         jvmArgs("-Xms2G", "-Xmx2G")

@@ -6,9 +6,12 @@ import org.lazberry.xmaslegacy.framework.InitiatePriority;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
+import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.RedisClient;
 import redis.clients.jedis.params.SetParams;
@@ -26,6 +29,15 @@ public class JedisService implements Initiator {
 	private static final Logger log = LoggerFactory.getLogger(JedisService.class);
 	private static RedisClient redisClient = null;
 	private static final Set<JedisPubSub> activeSubscribers = ConcurrentHashMap.newKeySet();
+	/** Redis AUTH password from config.yml (redis.password); empty means Redis has no requirepass. */
+	private static volatile String password = "";
+
+	public JedisService() {}
+
+	@Inject
+	public JedisService(@ConfigValue(path = "redis.password") String redisPassword) {
+		password = redisPassword == null ? "" : redisPassword;
+	}
 
 	@Override
 	@Priority(InitiatePriority.FAST)
@@ -213,9 +225,9 @@ public class JedisService implements Initiator {
 				closeJedis();
 			}
 
-			redisClient = RedisClient.builder()
-					.hostAndPort("localhost", 6379)
-					.build();
+			var builder = RedisClient.builder().hostAndPort("localhost", 6379);
+			if (!password.isEmpty()) builder.clientConfig(DefaultJedisClientConfig.builder().password(password).build());
+			redisClient = builder.build();
 
 			log.info("Redis (RedisClient) initialized successfully.");
 		} catch (Exception e) {

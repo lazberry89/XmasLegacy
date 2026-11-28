@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.filter;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,7 +41,7 @@ public class RuleCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
         if (!(commandSender instanceof Player p)) return false;
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "filter")) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 관리자 전용입니다. 관리자에게 문의하세요!"));
             p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
             return true;

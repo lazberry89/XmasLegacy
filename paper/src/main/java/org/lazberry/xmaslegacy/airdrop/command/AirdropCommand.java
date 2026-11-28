@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.airdrop.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,7 +37,7 @@ public class AirdropCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "airdrop")) {
             InfoUtils.error(p, "명령어를 실행할 수 없습니다.");
             return true;
         }

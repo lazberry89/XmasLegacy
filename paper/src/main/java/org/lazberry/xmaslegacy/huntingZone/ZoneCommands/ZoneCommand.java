@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.huntingZone.ZoneCommands;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +38,7 @@ public class ZoneCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
-		if (!p.isOp()) {
+		if (!Perms.admin(p, "huntingzone")) {
 			InfoUtils.warn(p, "관리자용 명령어에요!");
 			return true;
 		}

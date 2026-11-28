@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.ghost;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +29,7 @@ public class GhostListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         Player p = e.getPlayer();
-        if (!p.isOp()) return;
+        if (!Perms.admin(p, "ghost")) return;
         if (gmm.isGhostMode(p)) {
             gmm.toggle(p);
         }

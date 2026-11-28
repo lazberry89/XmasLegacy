@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.inquiry.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +32,7 @@ public class InquiryAnswerCommand implements CommandExecutor, TabCompleter {
 	@Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
-		if (!p.isOp()) {
+		if (!Perms.admin(p, "inquiry")) {
 			InfoUtils.error(p, "사용할 권한이 없습니다.");
 			return true;
 		}

@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.region.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,7 +53,7 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 		if (!(commandSender instanceof Player p)) return true;
 		try {
 			if (args.length == 0) {
-				if (p.isOp()) p.getInventory().addItem(RegionManager.RegionTicket());
+				if (Perms.admin(p, "region")) p.getInventory().addItem(RegionManager.RegionTicket());
 				else p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 사용법: /구역 <ID> <설정> <값>"));
 				return true;
 			}
@@ -62,7 +64,7 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 아이디가 잘못되었습니다!"));
 					return true;
 				}
-				if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
+				if (!Perms.admin(p, "region") && !region.getOwner().equals(p.getUniqueId())) {
 					p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
 					return true;
 				}
@@ -99,7 +101,7 @@ public class RegionCommand implements CommandExecutor, TabCompleter {
 		boolean isEnglish = lowerLabel.equals("region") || lowerLabel.equals("rg");
 
 		if (args.length == 1) {
-			List<Region> targetList = p.isOp() ? rm.getRegions() : rm.getRegion(p);
+			List<Region> targetList = Perms.admin(p, "region") ? rm.getRegions() : rm.getRegion(p);
 			if (targetList.isEmpty()) return List.of();
 
 			return targetList.stream()

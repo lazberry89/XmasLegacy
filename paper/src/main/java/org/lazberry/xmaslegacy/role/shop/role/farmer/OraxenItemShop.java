@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
@@ -96,6 +97,8 @@ public class OraxenItemShop implements InventoryHolder {
 			InventoryHelper.giveItemOrDrop(p, item);
 			p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 			InfoUtils.info(p, "구매하였습니다.");
+			User user = userManager.getUser(p.getUniqueId());
+			if (user != null && user.hasRole()) Advancements.grant(p, "use_role_shop");
 		} else {
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 			InfoUtils.error(p, "잔액이 부족합니다.");
@@ -123,6 +126,8 @@ public class OraxenItemShop implements InventoryHolder {
 		}
 		p.getInventory().setStorageContents(storage);
 		user.addDollars((long) e.price() * amount);
+		Advancements.grant(p, "earn_money");
+		if (user.hasRole()) Advancements.grant(p, "use_role_shop");
 		p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 	}
 

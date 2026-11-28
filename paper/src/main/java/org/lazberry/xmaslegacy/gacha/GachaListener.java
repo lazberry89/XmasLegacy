@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.gacha;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -41,7 +43,7 @@ public class GachaListener implements Listener {
         Player p = (Player) e.getWhoClicked();
         e.setCancelled(true);
 
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "gacha")) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 관리자만 재고를 꺼낼 수 있어요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             return;

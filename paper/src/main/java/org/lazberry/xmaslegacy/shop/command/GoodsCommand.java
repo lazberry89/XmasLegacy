@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.shop.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -39,7 +41,7 @@ public class GoodsCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player player)) return true;
-		if (!player.isOp()) return true;
+		if (!Perms.admin(player, "shop")) return true;
 		if (args.length == 0) {
 			InfoUtils.error(player, "유효한 명령어가 아닙니다.");
 			return true;

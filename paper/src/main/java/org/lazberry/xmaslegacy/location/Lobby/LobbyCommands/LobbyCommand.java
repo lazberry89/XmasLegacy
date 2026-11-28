@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.location.Lobby.LobbyCommands;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,7 +40,7 @@ public class LobbyCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "location")) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 죄송한데, 관리자용 명령어에요!"));
             p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
             return true;

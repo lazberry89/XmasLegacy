@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.blueprint.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.blueprint.BluePrintManager;
@@ -15,7 +17,7 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 
 	@Override
 	public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-		if (!player.isOp()) {
+		if (!Perms.admin(player, "blueprint")) {
 			InfoUtils.error(player, "명령어를 사용할 권한이 없습니다.");
 			return;
 		}

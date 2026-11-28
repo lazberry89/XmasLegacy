@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.npc;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +31,7 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(sender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "npc")) return true;
 		if (args.length == 1) {
 			AbstractNpc npc;
 			try {

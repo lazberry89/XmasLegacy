@@ -1,10 +1,7 @@
 package org.lazberry.xmaslegacy.rank;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.framework.ServerType;
@@ -12,7 +9,6 @@ import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.user.User;
 import org.lazberry.xmaslegacy.user.UserManager;
-import org.lazberry.xmaslegacy.utils.UserHandler;
 
 @Listeners
 @Components.Exclude(type = ServerType.LOBBY)
@@ -26,25 +22,13 @@ public class RankListener implements Listener {
 		this.rankManager = rankManager;
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void updateUserOnJoin(PlayerJoinEvent event) {
-		updateProcess(event.getPlayer());
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
+	/**
+	 * Before ServerJoinListener (HIGHEST) unloads the user. Joins need nothing: RankTask updates online players.
+	 * Never load a user here, it would put the leaving player back into the cache with old data.
+	 */
+	@EventHandler
 	public void updateUserOnLeave(PlayerQuitEvent event) {
-		updateProcess(event.getPlayer());
-	}
-
-	private void updateProcess(Player player) {
-		var uuid = player.getUniqueId();
-
-		User user = userManager.getUser(uuid);
-		if (user == null) {
-			UserHandler.loadUser(player, false, rankManager::updateUser);
-			return;
-		}
-		rankManager.updateUser(user);
+		User user = userManager.getUser(event.getPlayer().getUniqueId());
+		if (user != null) rankManager.updateUser(user);
 	}
 }
-

@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.passive.listeners;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -95,6 +96,7 @@ public class HunterPassiveListener extends PassiveListeners implements Listener 
 
                 em.addRoleExp(player, expToGive);
                 u.addDollars(moneyToGive);
+                Advancements.grant(player, "earn_money");
 
                 sendExpAlert(player, expToGive);
                 InfoUtils.info(player, "&a+{}원 &7({} 처치)", moneyToGive, victim.getName());

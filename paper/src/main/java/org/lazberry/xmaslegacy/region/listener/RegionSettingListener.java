@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.region.listener;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Sound;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
@@ -68,7 +70,7 @@ public class RegionSettingListener implements Listener {
 
         int slot = e.getRawSlot();
         var region = rsi.getRegion();
-        if (!p.isOp() && !region.getOwner().equals(p.getUniqueId())) {
+        if (!Perms.admin(p, "region") && !region.getOwner().equals(p.getUniqueId())) {
             p.sendMessage(ColorUtils.chat(Alert.RED + " 권한이 없습니다!"));
             p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
             return;

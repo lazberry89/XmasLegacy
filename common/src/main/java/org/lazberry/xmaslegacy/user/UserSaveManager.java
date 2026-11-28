@@ -64,8 +64,7 @@ public class UserSaveManager {
 			loaded = new User(uuid, ServerRoles.USER, name);
 			loaded.setNewUser(true);
 			loaded.setMobile(isFloodgate);
-			if (isFloodgate) loaded.addDollars(5000);
-			else loaded.addDollars(2500);
+			// Starting money is given once, on the first join (UserHandler, Constants.BASIC_MONEY_*).
 
 			synchronized (loaded.getLock()) {
 				try {

@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.npc;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -101,6 +102,7 @@ public abstract class AbstractNpc {
 	}
 
     protected void sendCaption(@NotNull Player player) {
+	    Advancements.grant(player, "talk_npc");
 	    player.playSound(player, this.conversationSound, 1.0f, 1.0f);
 	    Component txt = this.name.append(ColorUtils.chat(" &f" + next(player)));
 	    player.sendActionBar(txt);

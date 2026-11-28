@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.casino.games.SlotMachine;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import lombok.Data;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -99,6 +100,7 @@ public class SlotMachineManager {
 			return;
 		}
 		Casino.removeCoins(player, neededCoins);
+		Advancements.grant(player, "casino_slot");
 		setLeverPowered(machine.getTriggerLocation(), true);
 
 		Symbol s1 = drawRandomSymbol();
@@ -119,6 +121,7 @@ public class SlotMachineManager {
 
 					if (payoutAmount > 0) Casino.giveCoin(player, payoutAmount);
 
+					if (slot1 == Symbol.DIAMOND) Advancements.grant(player, "casino_jackpot");
 					if (slot1 == Symbol.NO_LUCK) {
 						Casino.sendIconAlert(player, "NO LUCK 3개 매치! 배수 없이 판돈만 돌려받습니다.");
 						return;

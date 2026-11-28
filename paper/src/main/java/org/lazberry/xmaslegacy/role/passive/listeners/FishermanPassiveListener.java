@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.passive.listeners;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -127,6 +128,7 @@ public class FishermanPassiveListener extends PassiveListeners implements Listen
                                     rm.fisherman().getJunkDollarMax() + 1
                             );
                             u.addDollars(amount);
+                            Advancements.grant(player, "earn_money");
                             InfoUtils.info(player, "쓰레기 아이템 치환됨. &6({} -> {}원)", material.name(), amount);
                         } else askParseTreasureToDollar(player, item);
                     }
@@ -199,6 +201,7 @@ public class FishermanPassiveListener extends PassiveListeners implements Listen
                                     rm.fisherman().getTreasureDollarMax() + 1
                             );
                             u.addDollars(price);
+                            Advancements.grant(player, "earn_money");
                             InfoUtils.info(player, "보물 아이템을 판매했습니다. &6({} -> {}원)", item.getType().name(), price);
                         });
                     }

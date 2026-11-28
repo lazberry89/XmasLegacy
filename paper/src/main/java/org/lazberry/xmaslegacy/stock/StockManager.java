@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.stock;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
@@ -152,6 +153,7 @@ public class StockManager {
 		if (builder == null) builder = new StockItemBuilder(plugin, certificateItem);
 		ItemStack cert = builder.createStockCertificate(stock, amount, currentPrice);
 		InventoryHelper.giveItemOrDrop(buyer, cert);
+		Advancements.grant(buyer, "buy_stock");
 		return Response.SUCCESS;
 	}
 
@@ -174,6 +176,7 @@ public class StockManager {
 		int finalRevenue = (int) Math.floor(totalRevenue);
 
 		user.addDollars(finalRevenue);
+		Advancements.grant(owner, "earn_money");
 		certItem.setAmount(0);
 
 		return Response.SUCCESS;

@@ -49,6 +49,10 @@ commands:
     usage: /cos <add | remove | equip | unequip> <Name>
     description: 치장을 관리합니다.
   
+  도감: #0
+    usage: /도감
+    description: 도감을 열고 아이템을 등록합니다.
+
   직업선택: #0
     usage: /직업선택
 

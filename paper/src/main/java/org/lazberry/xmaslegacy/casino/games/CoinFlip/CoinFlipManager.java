@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.casino.games.CoinFlip;
 
+import java.util.UUID;
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.Location;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
@@ -22,6 +24,9 @@ import java.util.concurrent.ThreadLocalRandom;
 @Components.Include(type = ServerType.MAIN)
 public class CoinFlipManager {
     private final Map<String, CoinFlip> machineMap = new ConcurrentHashMap<>();
+    private static final int STREAK_GOAL = 5;
+    /** Wins in a row; kept until the server restarts. */
+    private final Map<UUID, Integer> streaks = new ConcurrentHashMap<>();
     private final XmasLegacy plugin;
 
     @Inject
@@ -109,7 +114,11 @@ public class CoinFlipManager {
                         player.playSound(player.getLocation(), org.bukkit.Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.2f);
                         Casino.sendIconAlert(player, "동전 던지기 승리! 코인&6 " + amount + "&f개를 획득하셨습니다.");
                         Casino.giveCoin(player, amount);
+                        Advancements.grant(player, "casino_coinflip");
+                        if (streaks.merge(player.getUniqueId(), 1, Integer::sum) >= STREAK_GOAL)
+                            Advancements.grant(player, "casino_coinflip_streak");
                     } else {
+                        streaks.remove(player.getUniqueId());
                         player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1.0f, 0.8f);
                         InfoUtils.error(player, "아쉽게도 패배하셨습니다...");
                     }

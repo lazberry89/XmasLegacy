@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.teleporter.listener;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -63,7 +64,9 @@ public class TeleporterListener implements Listener {
                 return;
             }
             Location destination = optional.get();
+            boolean casino = tm.isCasinoEntrance(to);
             player.teleport(destination);
+            if (casino) Advancements.grant(player, "casino_enter");
             tm.applyCooldown(player.getUniqueId());
             player.playSound(destination, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         }

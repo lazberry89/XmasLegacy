@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.rank.database;
 
+import org.lazberry.xmaslegacy.rank.RankManager;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
 import org.lazberry.xmaslegacy.framework.annotation.ConfigValue;
@@ -40,18 +41,19 @@ public class SqlRankRepository implements RankRepository {
 		return CompletableFuture.supplyAsync(() -> {
 			synchronized (this) {
 				Map<UUID, Double> rankData = new HashMap<>();
-				String query = "SELECT uuid, dollars, Exp, roleExp, playTime FROM users";
+				String query = "SELECT uuid, dollars, Exp, level, roleExp, playTime FROM users";
 
-				try (PreparedStatement preparedStatement = getConnection().prepareStatement(query);
+				try (Connection connection = getConnection();
+				     PreparedStatement preparedStatement = connection.prepareStatement(query);
 				     ResultSet resultSet = preparedStatement.executeQuery()) {
 
 					while (resultSet.next()) {
 						UUID uuid = UUID.fromString(resultSet.getString("uuid"));
 						double value = switch (rankType) {
-							case DOLLAR -> resultSet.getInt("dollars");
-							case EXP -> resultSet.getInt("Exp");
+							case DOLLAR -> resultSet.getLong("dollars");
+							case EXP -> RankManager.totalExp(resultSet.getInt("level"), resultSet.getInt("Exp"));
 							case ROLE_EXP -> resultSet.getInt("roleExp");
-							case PLAYTIME -> resultSet.getInt("playTime");
+							case PLAYTIME -> resultSet.getLong("playTime");
 						};
 						rankData.put(uuid, value);
 					}

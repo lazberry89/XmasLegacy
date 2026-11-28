@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.location;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,7 +27,7 @@ public final class MainSpawnManager extends SavedLocation {
         Location to = super.getSpawn();
         if (to == null) {
             log.error("{} spawn is not set! Should set spawn first.", getType());
-            if (!player.isOp()) player.kick(ColorUtils.chat("메인 서버가 미설정 상태입니다!"), PlayerKickEvent.Cause.PLUGIN);
+            if (!Perms.admin(player, "location")) player.kick(ColorUtils.chat("메인 서버가 미설정 상태입니다!"), PlayerKickEvent.Cause.PLUGIN);
             return;
         }
 

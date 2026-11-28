@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import io.papermc.paper.event.entity.EntityKnockbackEvent;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Location;
@@ -109,7 +111,7 @@ public class EffectListener implements Listener {
     public void cancelCommandExecutionWhenStunned(PlayerCommandPreprocessEvent e) {
         var p = e.getPlayer();
         if (StunUtils.isStunned(p.getUniqueId())) {
-            if (!p.isOp()) e.setCancelled(true);
+            if (!Perms.admin(p, "effect")) e.setCancelled(true);
         }
     }
 

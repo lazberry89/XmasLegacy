@@ -18,5 +18,10 @@ web:
 
   database:
     url: "jdbc:mysql://localhost:3306/xmas_legacy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"
-    user: "husksync"
-    password: "husksync"
+    # Set per server in the copied config. Never commit real credentials.
+    user: ""
+    password: ""
+
+# Redis AUTH password (requirepass in redis.conf). Leave empty if Redis has none.
+redis:
+  password: ""

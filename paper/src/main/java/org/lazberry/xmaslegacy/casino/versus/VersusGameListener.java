@@ -1,5 +1,8 @@
 package org.lazberry.xmaslegacy.casino.versus;
 
+import java.util.Map;
+import java.util.HashMap;
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -31,7 +34,10 @@ import java.util.UUID;
 public class VersusGameListener implements Listener {
     private final VersusManager vm;
     private final XmasLegacy plugin;
+    private static final int STREAK_GOAL = 3;
     private final Set<UUID> spectatingLosers = new HashSet<>();
+    /** Wins in a row; kept until the server restarts. */
+    private final Map<UUID, Integer> streaks = new HashMap<>();
 
     @Inject
     public VersusGameListener(VersusManager vm, XmasLegacy plugin) {
@@ -115,6 +121,11 @@ public class VersusGameListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> f.setCanStart(true), 20 * 8L);
                 return;
             }
+
+            streaks.remove(loser);
+            int streak = streaks.merge(winner, 1, Integer::sum);
+            Advancements.grant(Bukkit.getPlayer(winner), "casino_versus");
+            if (streak >= STREAK_GOAL) Advancements.grant(Bukkit.getPlayer(winner), "casino_versus_streak");
 
             f.setCanStart(false);
             var titleWin = TitleUtil.create("&6&l승리!", "5초뒤 복귀합니다.");

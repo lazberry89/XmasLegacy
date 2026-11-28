@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.currency;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,10 +36,10 @@ public class OperatorCurrency implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
-		if (args.length == 1 && p.isOp()) {
+		if (args.length == 1 && Perms.admin(p, "currency")) {
 			InventoryHelper.giveItemOrDrop(p, CurrencyManager.currency(XmasLegacy.getInstance()));
 		}
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "currency")) return true;
 		if (args.length == 3) {
 			Player target = Bukkit.getPlayerExact(args[1]);
 			if (target == null) {

@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.icing;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,7 +28,7 @@ public class IcingCommand implements CommandExecutor {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull ...args) {
 		var plugin = XmasLegacy.getInstance();
 		if (!(commandSender instanceof Player p)) return true;
-		if (!p.isOp()) {
+		if (!Perms.admin(p, "icing")) {
 			InfoUtils.error(p, "관리자용 명령어에요!");
 			return true;
 		}

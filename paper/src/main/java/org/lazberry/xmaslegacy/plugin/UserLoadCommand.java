@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.plugin;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,7 +27,7 @@ public class UserLoadCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "plugin")) return true;
 
 		var uuid = p.getUniqueId();
 		us.load(uuid, p.getName(), FloodgateUtils.isFloodgate(uuid));

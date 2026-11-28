@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.rank.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,12 +31,13 @@ public class BoardCommand implements CommandExecutor, TabCompleter {
     @Inject
     public BoardCommand(RankBoardManager boardManager) {
         commands.put("spawn", new BoardCommandSpawn(boardManager));
+        commands.put("remove", new BoardCommandRemove(boardManager));
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player p)) return true;
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "rank")) {
             InfoUtils.error(p, "권한이 없습니다.");
             return true;
         }
@@ -54,6 +57,7 @@ public class BoardCommand implements CommandExecutor, TabCompleter {
         return switch (args.length) {
             case 1 -> List.of("spawn", "remove");
             case 2 -> Stream.of(RankType.values()).map(RankType::name).toList();
+            case 3 -> args[0].equalsIgnoreCase("spawn") ? List.of("5", "10") : List.of();
             default -> List.of();
         };
     }

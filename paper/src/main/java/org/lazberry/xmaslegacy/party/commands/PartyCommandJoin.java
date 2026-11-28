@@ -40,6 +40,10 @@ public class PartyCommandJoin implements SubCommand {
                 InfoUtils.error(player, "파티가 가득 찼습니다.");
                 return;
             }
+            if (!pm.consumeInvite(uuid, party.getLeader())) {
+                InfoUtils.error(player, "초대받은 파티에만 참가할 수 있습니다. 파티장에게 초대를 요청하세요.");
+                return;
+            }
             if (pm.joinParty(party.getLeader(), uuid)) InfoUtils.info(player, "파티에 참가했습니다.");
             else InfoUtils.error(player, "파티에 참가하지 못했습니다. 파티가 가득 찼거나 이미 파티에 소속되어있을 수 있습니다.");
         } else InfoUtils.error(player, "유효하지 않은 명령어입니다.");

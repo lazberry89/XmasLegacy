@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.stock.commands.display;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,7 +42,7 @@ public class DisplayCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(sender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "stock")) return true;
 
 		if (args.length == 0) {
 			InfoUtils.error(p, "사용법: /display <spawn|undo|clear> [인자...]");

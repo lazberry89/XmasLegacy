@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.rank;
 
+import org.jetbrains.annotations.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 @Components.Exclude(type = ServerType.LOBBY)
 public class ProxyRankManager implements Initiator {
 	private final Map<RankType, ArrayList<RankManager.RankData>> cachedRanks = new ConcurrentHashMap<>();
+	private final Map<UUID, String> names = new ConcurrentHashMap<>();
 	private final UserManager userManager;
 	private final RankManager rankManager;
 
@@ -82,7 +84,19 @@ public class ProxyRankManager implements Initiator {
 	}
 
 	public ArrayList<RankManager.RankData> getRankList(RankType rankType) {
-		return cachedRanks.get(rankType);
+		return cachedRanks.getOrDefault(rankType, new ArrayList<>());
+	}
+
+	/** Off the main thread: an unknown name costs a Redis or disk read. */
+	private void cacheName(UUID uuid) {
+		if (names.containsKey(uuid)) return;
+		User user = userManager.getProxyUser(uuid);
+		String name = user != null ? user.getName() : Bukkit.getOfflinePlayer(uuid).getName();
+		if (name != null) names.put(uuid, name);
+	}
+
+	public @NotNull String getName(@NotNull UUID uuid) {
+		return names.getOrDefault(uuid, "알 수 없음");
 	}
 
 	public int getRank(RankType rankType, UUID uuid) {
@@ -103,6 +117,7 @@ public class ProxyRankManager implements Initiator {
 					log.error("Failed to update rank cache.", ex);
 					return;
 				}
+				list.forEach(r -> cacheName(r.uuid()));
 				cachedRanks.put(type, list);
 			}));
 	}

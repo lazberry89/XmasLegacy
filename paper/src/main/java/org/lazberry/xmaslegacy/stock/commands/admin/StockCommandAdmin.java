@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.stock.commands.admin;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.InfoUtils;
@@ -30,7 +32,7 @@ public class StockCommandAdmin implements SubCommand {
 
     @Override
     public void execute(@NotNull Player player, @NotNull String @NotNull ... args) {
-		if (!player.isOp()) {
+		if (!Perms.admin(player, "stock")) {
 			InfoUtils.error(player, "You don't have permission to use this command.");
 			return;
 		}

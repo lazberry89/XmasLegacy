@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.cosmetics;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +17,7 @@ public class TestHeadCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "cosmetics")) return true;
 		ItemStack head = p.getInventory().getItemInMainHand();
 		if (head.getType().isAir()) return false;
 		p.getInventory().setHelmet(head);

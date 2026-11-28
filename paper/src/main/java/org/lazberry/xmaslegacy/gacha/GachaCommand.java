@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.gacha;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +37,7 @@ public class GachaCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NonNull ... args) {
 		if (!(sender instanceof Player p)) return true;
-		if (!p.isOp()) return true;
+		if (!Perms.admin(p, "gacha")) return true;
 
 		if (args.length == 0) {
 			error(p, "사용법: /gacha <add | remove> ...");

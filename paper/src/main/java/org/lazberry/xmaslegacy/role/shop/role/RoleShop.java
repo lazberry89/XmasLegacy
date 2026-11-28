@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.shop.role;
 
+import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -36,6 +37,8 @@ public abstract class RoleShop {
 		if (InventoryHelper.removeItem(p, material, amount)) {
 			p.playSound(p, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 			user.addDollars(price * amount);
+			Advancements.grant(p, "earn_money");
+			if (user.hasRole()) Advancements.grant(p, "use_role_shop");
 		} else p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 1.0f);
 	}
 }

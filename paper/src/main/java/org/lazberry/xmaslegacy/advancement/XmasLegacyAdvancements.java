@@ -8,13 +8,16 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDispla
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
+import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.currency.CurrencyManager;
 import org.lazberry.xmaslegacy.enchant.material.EnchantMaterial;
 import org.lazberry.xmaslegacy.food.AgeableCrops;
@@ -26,9 +29,19 @@ import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+@Slf4j
 @Getter
 @Components.Exclude(type = ServerType.LOBBY)
 public class XmasLegacyAdvancements implements Initiator {
+	public static final String NAMESPACE = "xmaslegacy_global";
+
+	private final Map<UUID, Set<String>> pending = new HashMap<>();
 	private final XmasLegacy plugin;
 	private final UltimateAdvancementAPI api;
 	private final AdvancementBuilder builder;
@@ -46,10 +59,17 @@ public class XmasLegacyAdvancements implements Initiator {
 	@Override
 	public void init() {
 		setupGlobalAdvancement();
+		Advancements.setGranter(this::grant);
+	}
+
+	@Override
+	public void close() {
+		Advancements.setGranter(null);
+		pending.clear();
 	}
 
 	public void setupGlobalAdvancement() {
-		globalTab = api.createAdvancementTab("xmaslegacy_global");
+		globalTab = api.createAdvancementTab(NAMESPACE);
 		AdvancementDisplay rootDisplay = new AdvancementDisplay(
 				Material.ICE,
 				"얼어붙은 세계",
@@ -87,6 +107,46 @@ public class XmasLegacyAdvancements implements Initiator {
 				3, 3, earnMoney, "직업을 얻고 직업상점을 이용하세요.");
 
 
+		// --- 🎰 [카지노: 주식 투자자에서 오른쪽으로 (Y = 0~2)] ---
+		var casinoEnter = builder.register("casino_enter", Casino.entranceTicket(), "한탕의 유혹", AdvancementFrameType.TASK,
+				4, 0, buyStock, "카지노에 입장하세요.");
+
+		var coinFlipWin = builder.register("casino_coinflip", Casino.coin(1), "앞이냐 뒤냐", AdvancementFrameType.TASK,
+				5, 0, casinoEnter, "코인플립에서 승리하세요.");
+
+		builder.register("casino_coinflip_streak", ItemBuilder.of(plugin, Material.GOLD_NUGGET).setGlint(true).build(), "동전의 신", AdvancementFrameType.CHALLENGE,
+				6, 0, coinFlipWin, "코인플립에서 5연승하세요.");
+
+		var slotSpin = builder.register("casino_slot", Material.LEVER, "레버를 당겨라", AdvancementFrameType.TASK,
+				5, 1, casinoEnter, "슬롯머신을 돌려보세요.");
+
+		builder.register("casino_jackpot", ItemBuilder.of(plugin, Material.GOLD_BLOCK).setGlint(true).build(), "잭팟", AdvancementFrameType.CHALLENGE,
+				6, 1, slotSpin, "슬롯머신에서 잭팟을 터뜨리세요.");
+
+		var versusWin = builder.register("casino_versus", Material.IRON_SWORD, "승부사", AdvancementFrameType.TASK,
+				5, 2, casinoEnter, "대결에서 승리하세요.");
+
+		builder.register("casino_versus_streak", Material.NETHERITE_SWORD, "무패의 투사", AdvancementFrameType.GOAL,
+				6, 2, versusWin, "대결에서 3연승하세요.");
+
+
+		// --- ⚒ [직업 숙련도: 백수 탈출에서 오른쪽으로 (Y = 3)] ---
+		var roleBronze = builder.register("role_bronze", Material.COPPER_INGOT, "견습 딱지 떼기", AdvancementFrameType.TASK,
+				4, 3, useRoleShop, "직업 숙련도 BRONZE를 달성하세요.");
+
+		var roleGold = builder.register("role_gold", Material.GOLD_INGOT, "숙련공", AdvancementFrameType.GOAL,
+				5, 3, roleBronze, "직업 숙련도 GOLD를 달성하세요.");
+
+		var roleEmerald = builder.register("role_emerald", Material.EMERALD, "장인의 손길", AdvancementFrameType.GOAL,
+				6, 3, roleGold, "직업 숙련도 EMERALD를 달성하세요.");
+
+		var roleImmortal = builder.register("role_immortal", Material.NETHER_STAR, "불멸의 장인", AdvancementFrameType.CHALLENGE,
+				7, 3, roleEmerald, "직업 숙련도 IMMORTAL을 달성하세요.");
+
+		builder.register("role_infinite", ItemBuilder.of(plugin, Material.END_CRYSTAL).setGlint(true).build(), "끝없는 길", AdvancementFrameType.CHALLENGE,
+				8, 3, roleImmortal, "직업 숙련도 INFINITE를 달성하세요.", "더 이상 오를 곳이 없습니다.");
+
+
 		// --- 🌾 [중간 브랜치: 생존/농사 (Y = 3)] ---
 		var torchFlowerPlantBase = builder.register("plant_torch_flower", Material.TORCHFLOWER_SEEDS, "온기를 심다", AdvancementFrameType.TASK,
 				2, 4, talkToNpcBase, "한기를 유지하기 위해", "작물을 재배하세요.");
@@ -114,34 +174,84 @@ public class XmasLegacyAdvancements implements Initiator {
 		builder.register("booster_all_use", EnchantMaterial.BoosterTenPercent(), "혼자가 아니야", AdvancementFrameType.CHALLENGE,
 				6, 5, boosterUse, "모든 강화서의 도움을 받으세요.");
 
+
+		// --- 📖 [도감: 첫 인사에서 아래로 (Y = 6~10)] ---
+		// 4 type completions hang in the x=3 column; the all-complete node sits at (4,6) so its line runs along the empty y=6 row.
+		var catalogFirst = builder.register("catalog_first", Material.WRITABLE_BOOK, "첫 기록", AdvancementFrameType.TASK,
+				2, 6, talkToNpcBase, "도감에 아이템을 처음으로 등록하세요.");
+
+		builder.register("catalog_farm", Material.WHEAT, "프로 농사꾼", AdvancementFrameType.CHALLENGE,
+				3, 7, catalogFirst, "농사 도감을 모두 채우세요.");
+
+		builder.register("catalog_fish", Material.TROPICAL_FISH, "시간은 강태공을 이겨", AdvancementFrameType.CHALLENGE,
+				3, 8, catalogFirst, "낚시 도감을 모두 채우세요.");
+
+		builder.register("catalog_mine", Material.DIAMOND, "보석을 주렁주렁", AdvancementFrameType.CHALLENGE,
+				3, 9, catalogFirst, "광물 도감을 모두 채우세요.");
+
+		builder.register("catalog_hunt", Material.BONE, "닳아버린 칼날", AdvancementFrameType.CHALLENGE,
+				3, 10, catalogFirst, "사냥 도감을 모두 채우세요.");
+
+		builder.register("catalog_all", ItemBuilder.of(plugin, Material.KNOWLEDGE_BOOK).setGlint(true).build(), "엘리안을 위하여", AdvancementFrameType.CHALLENGE,
+				4, 6, catalogFirst, "농사·낚시·광물·사냥 도감을", "모두 완성하세요.");
+
 		builder.buildAndRegister(globalTab, root);
-		globalTab.automaticallyShowToPlayers();
+		globalTab.automaticallyShowToPlayers().automaticallyGrantRootAdvancement();
 	}
 
-	public void grantGlobalAdvancement(Player player, String id) {
-		var key = new AdvancementKey(plugin, id);
-		var advancement = api.getAdvancement(key);
-
-		grantGlobalAdvancement(player, advancement);
-	}
-
-	public void grantGlobalAdvancement(Player player, Advancement advancement) {
-		if (advancement != null) {
-			advancement.grant(player);
-
-			var display = advancement.getDisplay();
-			String title = display.getTitle();
-			String name = player.getName();
-			AdvancementFrameType type = display.getFrame();
-
-			Component prefix = ColorUtils.chat("&f" + name + "이(가) ");
-			Component advance = titleMaker(type, title)
-					.hoverEvent(HoverEvent.showText(ColorUtils.chat(display.getCompactDescription())));
-			Component end = ColorUtils.chat(" &f도전을 완료했습니다.");
-
-			Bukkit.broadcast(prefix.append(advance).append(end));
-			player.playSound(player, getSoundByAdvancementType(type), 1.0f, 1.0f);
+	/**
+	 * Grants once: does nothing if the player already has it (checked against the advancement plugin's own storage).
+	 * Not loaded yet players get it when their data arrives.
+	 */
+	private void grant(@NotNull Player player, @NotNull String id) {
+		if (!Bukkit.isPrimaryThread()) {
+			if (plugin.isEnabled()) Bukkit.getScheduler().runTask(plugin, () -> grant(player, id));
+			return;
 		}
+		if (!player.isOnline()) return;
+
+		var advancement = globalTab.getAdvancement(new AdvancementKey(NAMESPACE, id));
+		if (advancement == null) {
+			log.warn("Unknown advancement id: {}", id);
+			return;
+		}
+		// A failing advancement database must never break the shop, casino etc. that triggered this.
+		try {
+			if (api.isLoaded(player)) grantGlobalAdvancement(player, advancement);
+			else pending.computeIfAbsent(player.getUniqueId(), u -> new LinkedHashSet<>()).add(id);
+		} catch (RuntimeException e) {
+			log.error("Failed to grant advancement '{}' to {}", id, player.getName(), e);
+		}
+	}
+
+	/** Player's advancement data arrived: grant what was earned while it was loading. */
+	public void grantPending(@NotNull Player player) {
+		Set<String> ids = pending.remove(player.getUniqueId());
+		if (ids != null) ids.forEach(id -> grant(player, id));
+	}
+
+	public void forgetPending(@NotNull UUID uuid) {
+		pending.remove(uuid);
+	}
+
+	/** @return false if the player already had it; then nothing is announced. */
+	public boolean grantGlobalAdvancement(Player player, Advancement advancement) {
+		if (advancement.isGranted(player)) return false;
+		advancement.grant(player);
+
+		var display = advancement.getDisplay();
+		String title = display.getTitle();
+		String name = player.getName();
+		AdvancementFrameType type = display.getFrame();
+
+		Component prefix = ColorUtils.chat("&f" + name + "이(가) ");
+		Component advance = titleMaker(type, title)
+				.hoverEvent(HoverEvent.showText(ColorUtils.chat(display.getCompactDescription())));
+		Component end = ColorUtils.chat(" &f도전을 완료했습니다.");
+
+		Bukkit.broadcast(prefix.append(advance).append(end));
+		player.playSound(player, getSoundByAdvancementType(type), 1.0f, 1.0f);
+		return true;
 	}
 
 	private Component titleMaker(AdvancementFrameType type, String title) {

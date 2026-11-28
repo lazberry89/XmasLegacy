@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.casino.games.SlotMachine;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +32,7 @@ public class SlotMachineListener implements Listener {
     public void preventMachineTriggerBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         Block block = e.getBlock();
-        if (p.isOp() || block.getType() != Material.LEVER) return;
+        if (Perms.admin(p, "casino") || block.getType() != Material.LEVER) return;
 
         Location loc = block.getLocation();
         smm.getMachineByTrigger(loc).ifPresent(m -> {

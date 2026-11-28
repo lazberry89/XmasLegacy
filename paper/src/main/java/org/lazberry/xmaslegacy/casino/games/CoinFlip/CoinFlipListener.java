@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.casino.games.CoinFlip;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +45,7 @@ public class CoinFlipListener implements Listener {
 
 	@EventHandler
 	public void preventBreak(BlockBreakEvent e) {
-		if (e.getPlayer().isOp()) return;
+		if (Perms.admin(e.getPlayer(), "casino")) return;
 		if (manager.getMachineByBlock(e.getBlock().getLocation()).isPresent()) e.setCancelled(true);
 	}
 

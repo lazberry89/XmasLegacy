@@ -1,4 +1,5 @@
 # TODO
 
-- [2026-11-26] TODO `catalog/` — 저장소(`SqlCatalogRepository.load/register`)와 `CatalogProgress`만 있고 연결이 없음. `CatalogManager`가 비어 있어 접속 시 load→캐시, 칸 등록 시 `progress.register`가 true일 때만 `repository.register`, 퇴장 시 캐시 제거, GUI(`catalog/gui` 비어 있음) 연결이 필요.
-- [2026-11-26] TODO `catalog/CatalogType` — 도감 종류별 칸→아이템 목록이 코드에 없음. 농사 도감 순서는 `design/catalog/catalog_farm.py`의 `SLOTS`(0~21 작물/금별, 23~25 특수, 22·26 빈칸)와 맞춰야 함. 도감은 최대 27칸.
+- [2026-11-29] TODO `catalog/` — 도감 완성 아이템 보상 미정. `CatalogProgress.rewardGranted`는 Redis/DB에 저장까지 되지만 지급 코드가 없어 항상 false. 보상을 줄 때 `CatalogManager.grantAdvancements`의 완성 지점에서 처리.
+- [2026-11-29] TODO `catalog/` — 샘플은 DB(`catalog_sample`)에 있음. 운영 전 `/도감 샘플 <종류>`로 채워야 도감이 열림. 농사 도감 순서는 `design/catalog/catalog_farm.py`의 `SLOTS`와 맞춰야 실루엣과 일치(0~21 작물/금별, 23~25 특수, 22·26 빈칸). 유저가 등록을 시작한 뒤에는 칸 순서를 바꾸면 안 됨.
+- [2026-11-29] TODO 서버 설정 — wild의 UltimateAdvancementAPI가 SQLite(main은 MySQL `xmas_legacy`). 같은 MySQL로 맞춰야 도전과제가 서버 간 공유됨.

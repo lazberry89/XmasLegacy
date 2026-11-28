@@ -81,6 +81,19 @@ public class ProductRecordManager implements Initiator {
         });
     }
 
+    /**
+     * Like {@link #addProductAsPended(UUID, ProductType)}, but at most once per web order id.
+     * @return the pending purchase, or null if this order was already granted (a retry after success).
+     */
+    public CompletableFuture<WebProduct> addOrderAsPended(UUID receiver, ProductType type, String orderId) {
+        return repository.saveOrderProduct(receiver, type, orderId)
+                .thenCompose(repository::getUngrantedProduct)
+                .thenApply(product -> {
+                    if (product != null) remember(product);
+                    return product;
+                });
+    }
+
     public boolean hasPendedProduct(UUID uuid) {
         return !JedisService.smembers(userKey(uuid)).isEmpty();
     }

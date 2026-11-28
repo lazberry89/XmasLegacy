@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.blueprint.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,7 +46,7 @@ public class BlueprintCommand implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 		if (!(commandSender instanceof Player p)) return true;
 		if (args.length == 0) {
-			if (p.isOp()) InventoryHelper.giveItemOrDrop(p, selectionManager.tool());
+			if (Perms.admin(p, "blueprint")) InventoryHelper.giveItemOrDrop(p, selectionManager.tool());
 			else InfoUtils.error(p, "올바른 명령어가 아닙니다.");
 			return true;
 		}

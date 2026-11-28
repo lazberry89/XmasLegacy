@@ -73,15 +73,12 @@ public class TeleporterManager implements Initiator {
     }
 
     public boolean checkEnterCasino(Player player, Location to) {
-        var optional = getPortalEntry(to);
-        if (optional.isEmpty()) return false;
+        if (getPortalEntry(to).isEmpty()) return false;
+        return !isCasinoEntrance(to) || Casino.hasTicket(player);
+    }
 
-        PortalEntry portal = optional.get();
-        String id = portal.id();
-        if (id.equalsIgnoreCase("hallToCasino")) {
-            return Casino.hasTicket(player);
-        }
-        return true;
+    public boolean isCasinoEntrance(Location loc) {
+        return getPortalEntry(loc).map(p -> p.id().equalsIgnoreCase("hallToCasino")).orElse(false);
     }
 
     public boolean registerWay(String id, Teleporter entrance, Location destination) {

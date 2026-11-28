@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.teleporter.command;
 
+import org.lazberry.xmaslegacy.utils.Perms;
+
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -44,7 +46,7 @@ public class TeleporterCommand implements CommandExecutor, TabCompleter {
             log.error("Only Player could execute a command.");
             return true;
         }
-        if (!p.isOp()) {
+        if (!Perms.admin(p, "teleporter")) {
             InfoUtils.error(p, "You don't have permission to use this command!");
             return true;
         }

@@ -1,102 +1,68 @@
 package org.lazberry.xmaslegacy.rank.board;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
-import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
-import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.rank.RankType;
-import org.lazberry.xmaslegacy.utils.ConfigBuilder;
 import org.lazberry.xmaslegacy.utils.ParseEnum;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
+/**
+ * rank_board.yml. Positions are plain values, not serialized Locations: a Location whose world is not loaded yet
+ * makes the whole file unreadable, and the next save would then erase every board.
+ */
 @Slf4j
 @Components.Exclude(type = ServerType.LOBBY)
-public class RankBoardConfig implements Initiator {
-	private final File dataFolder;
-	private @Getter YamlConfiguration config;
-	private File file;
+public class RankBoardConfig {
+	private final File file;
 
 	@Inject
 	public RankBoardConfig(XmasLegacy plugin) {
-		this.dataFolder = plugin.getDataFolder();
+		this.file = new File(plugin.getDataFolder(), "rank_board.yml");
 	}
 
-	@Override
-	public void init() {
-		file = new File(dataFolder, "rank_board.yml");
-
-		if (!dataFolder.exists() && !dataFolder.mkdirs()) {
-			log.error("Failed to create directories for rank board.");
-			return;
-		}
-
-		if (!file.exists()) {
-			try {
-				if (file.createNewFile()) {
-					log.info("Successfully created rank board files.");
-				}
-			} catch (IOException e) {
-				log.error("Exception occurred while initiating rank board files.", e);
-			}
-		}
-		this.config = YamlConfiguration.loadConfiguration(file);
-	}
-
-	public void saveSync(Map<RankType, RankBoard> values) {
-		synchronized (this) {
-			var builder = ConfigBuilder.create();
-			for (var entry : values.entrySet()) {
-				String path = entry.getKey().name() + ".";
-				RankBoard board = entry.getValue();
-
-				builder.set(path + "location", board.getLocation());
-				builder.set(path + "print-limit", board.getPrintLimit());
-			}
-			config = builder.save(file).build();
+	public boolean save(@NotNull Map<RankType, RankBoard> boards) {
+		var config = new YamlConfiguration();
+		boards.forEach((type, board) -> {
+			String path = type.name() + ".";
+			config.set(path + "world", board.getWorld());
+			config.set(path + "x", board.getX());
+			config.set(path + "y", board.getY());
+			config.set(path + "z", board.getZ());
+			config.set(path + "print-limit", board.getPrintLimit());
+		});
+		try {
+			config.save(file);
+			return true;
+		} catch (IOException e) {
+			log.error("Failed to save rank boards.", e);
+			return false;
 		}
 	}
 
-	public Map<RankType, RankBoard> loadSync() {
-		synchronized (this) {
-			config = YamlConfiguration.loadConfiguration(file);
-			Map<RankType, RankBoard> result = new HashMap<>();
+	public @NotNull Map<RankType, RankBoard> load() {
+		Map<RankType, RankBoard> result = new EnumMap<>(RankType.class);
+		if (!file.exists()) return result;
 
-			var section = config.getKeys(false);
-			if (section.isEmpty()) {
-				log.warn("No rank board configuration found. Skipping...");
-				return new HashMap<>();
+		var config = YamlConfiguration.loadConfiguration(file);
+		for (String key : config.getKeys(false)) {
+			RankType type = ParseEnum.of(RankType.class).parse(key);
+			String world = config.getString(key + ".world");
+			if (type == null || world == null) {
+				log.error("Unreadable rank board '{}', skipped. Place it again with /board spawn.", key);
+				continue;
 			}
-			for (String key : section) {
-				RankType type = ParseEnum.of(RankType.class).parse(key);
-				Location loc = config.getLocation(key + ".location");
-				int limit = config.getInt(key + ".print-limit", 1);
-
-				if (type == null || loc == null) {
-					log.error("Failed to parse Ranking board from configuration. Skipping...");
-					continue;
-				}
-				RankBoard board = new RankBoard(type, loc, limit);
-				result.put(type, board);
-			}
-			return result;
+			result.put(type, new RankBoard(type, world, config.getDouble(key + ".x"), config.getDouble(key + ".y"),
+					config.getDouble(key + ".z"), config.getInt(key + ".print-limit", 10)));
 		}
-	}
-
-	public CompletableFuture<Void> saveAsync(Map<RankType, RankBoard> values) {
-		return CompletableFuture.runAsync(() -> saveSync(values));
-	}
-
-	public CompletableFuture<Map<RankType, RankBoard>> loadAsync() {
-		return CompletableFuture.supplyAsync(this::loadSync);
+		return result;
 	}
 }
