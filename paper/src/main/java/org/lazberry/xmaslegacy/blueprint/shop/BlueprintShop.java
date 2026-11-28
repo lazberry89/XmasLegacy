@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.blueprint.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BlueprintShop implements InventoryHolder {
+public class BlueprintShop implements ReadOnlyGui {
 	private final Set<ItemStack> lowItems = ConcurrentHashMap.newKeySet();
 	private final Set<ItemStack> mediumItems = ConcurrentHashMap.newKeySet();
 	private final Set<ItemStack> highItems = ConcurrentHashMap.newKeySet();

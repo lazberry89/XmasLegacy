@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.role.shop.role.fisherman;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -13,7 +13,7 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class FishSellingShop extends RoleShop implements InventoryHolder {
+public class FishSellingShop extends RoleShop implements ReadOnlyGui {
 	private final XmasLegacy plugin;
 	private final Inventory inv;
 

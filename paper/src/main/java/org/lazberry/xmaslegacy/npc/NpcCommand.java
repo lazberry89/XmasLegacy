@@ -37,6 +37,7 @@ public class NpcCommand implements CommandExecutor, TabCompleter {
 			try {
 				NpcType type = NpcType.valueOf(args[0].toUpperCase());
 				npc = ncm.getNpcInstance(type);
+				if (npc == null) throw new IllegalArgumentException("no such npc"); // BOOK has none
 				npc.sendCaption(p);
 			} catch (IllegalArgumentException e) {
 				InfoUtils.error(p, "등록되지 않은 가이드이거나 잘못된 명령어입니다.");

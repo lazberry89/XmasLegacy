@@ -21,6 +21,8 @@ public class RegionConfig implements Initiator {
     private final File dataFolder;
     private final File file;
     private YamlConfiguration config;
+    /** Regions whose world is not loaded; written back unchanged instead of being lost. */
+    private final Map<UUID, List<String>> unresolved = new HashMap<>();
 
     @Inject
     public RegionConfig(XmasLegacy plugin) {
@@ -56,17 +58,15 @@ public class RegionConfig implements Initiator {
         try {
             ensureFile();
             var builder = ConfigBuilder.create();
+            Map<UUID, List<String>> all = new HashMap<>();
+            unresolved.forEach((uuid, list) -> all.put(uuid, new ArrayList<>(list)));
             for (var entry : regions.entrySet()) {
-                var uuid = entry.getKey();
-                var regionList = entry.getValue();
-                if (regionList == null || regionList.isEmpty()) continue;
-
-                List<String> gsonValue = regionList.stream()
-                        .filter(Objects::nonNull)
-                        .map(Region::toGson)
-                        .toList();
-                builder.set(uuid.toString(), gsonValue);
+            	if (entry.getValue() == null) continue;
+            	for (Region region : entry.getValue()) {
+            		if (region != null) all.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(region.toGson());
+            	}
             }
+            all.forEach((uuid, list) -> builder.set(uuid.toString(), list));
             this.config = builder.save(file).build();
             log.info("[Region] Successfully saved {} user region entries to regions.yml", regions.size());
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class RegionConfig implements Initiator {
     public synchronized Map<UUID, List<Region>> loadSync() {
         ensureFile();
         this.config = YamlConfiguration.loadConfiguration(file);
-
+        unresolved.clear();
         var section = config.getKeys(false);
         if (section.isEmpty()) return new HashMap<>();
 
@@ -89,12 +89,13 @@ public class RegionConfig implements Initiator {
                 List<?> loaded = config.getList(key);
                 if (loaded == null || loaded.isEmpty()) continue;
 
-                List<Region> regions = new ArrayList<>(loaded.stream()
-                        .filter(String.class::isInstance)
-                        .map(String.class::cast)
-                        .map(Region::fromGson)
-                        .filter(r -> r != null && r.isValid())
-                        .toList());
+                List<Region> regions = new ArrayList<>();
+                for (Object raw : loaded) {
+                	if (!(raw instanceof String json)) continue;
+                	Region region = Region.fromGson(json);
+                	if (region != null && region.isValid()) regions.add(region);
+                	else unresolved.computeIfAbsent(uuid, k -> new ArrayList<>()).add(json);
+                }
 
                 if (!regions.isEmpty()) {
                     result.put(uuid, regions);

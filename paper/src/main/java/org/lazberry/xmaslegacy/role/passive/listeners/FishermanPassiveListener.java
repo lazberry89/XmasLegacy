@@ -96,7 +96,7 @@ public class FishermanPassiveListener extends PassiveListeners implements Listen
         return false;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void roastFishWhenFishing(PlayerFishEvent e) {
         var player = e.getPlayer();
         PlayerFishEvent.State state = e.getState();

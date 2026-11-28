@@ -1,15 +1,15 @@
 package org.lazberry.xmaslegacy.gacha;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.framework.annotation.ConsumableClass;
 
 @ConsumableClass
-public class BundleTypeInterface implements InventoryHolder {
+public class BundleTypeInterface implements ReadOnlyGui {
     private final @NotNull Inventory inv;
 
 	public BundleTypeInterface(@NotNull GachaManager gm) {

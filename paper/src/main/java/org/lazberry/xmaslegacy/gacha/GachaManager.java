@@ -12,7 +12,6 @@ import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
-import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
 
 import java.util.*;
@@ -21,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Setter
 @Components.Exclude(type = ServerType.LOBBY)
-public class GachaManager implements Initiator {
+public class GachaManager {
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull Map<String, Gacha> normalGachas = new ConcurrentHashMap<>();
 	private final @NotNull Map<String, Gacha> highEndGachas = new ConcurrentHashMap<>();
@@ -32,17 +31,14 @@ public class GachaManager implements Initiator {
 	private Material chromatic_bundle = Material.ENDER_CHEST;
 	private Material chromatic_box = Material.DRAGON_EGG;
 
-	private final @NotNull List<ItemStack> bundles = new ArrayList<>();
+
 
 	@Inject
 	public GachaManager(@NotNull XmasLegacy plugin) {
 		this.plugin = plugin;
 	}
 
-	@Override
-	public void init() {
-		appendBundles();
-	}
+
 
 	public void addGacha(@NotNull String key, @NotNull ItemStack item, @NotNull GachaGrade grade, double chance, @NotNull BundleType... types) {
 		BundleType[] targetTypes = (types.length == 0) ? new BundleType[]{BundleType.NORMAL} : types;
@@ -73,7 +69,8 @@ public class GachaManager implements Initiator {
 			totalWeight += gacha.getChance();
 		}
 
-		double pivot = ThreadLocalRandom.current().nextDouble(0, totalWeight);
+		if (totalWeight <= 0) return null;
+		double pivot =  ThreadLocalRandom.current().nextDouble(0, totalWeight);
 
 		double cumulativeWeight = 0;
 		for (Gacha gacha : targetMap.values()) {
@@ -164,7 +161,6 @@ public class GachaManager implements Initiator {
 				.setName(ColorUtils.chat("&6&l크로마틱 번들"))
 				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)), ColorUtils.chat(Alert.YELLOW + " 해당 번들은 추가 아이템을 포함합니다."))
 				.setGlint(true)
-				.setItemModel("")
 				.setMaxStackSize(16)
 				.hideAllFlags()
 				.build().clone();
@@ -172,25 +168,18 @@ public class GachaManager implements Initiator {
 
 	public @NotNull ItemStack ChromaticBox() {
 		return ItemBuilder.of(plugin, chromatic_box)
-				.setItemModel("")
 				.setMaxStackSize(4)
 				.setName(ColorUtils.chat("&6&l크로마틱 히든 꾸러미"))
 				.setLore(ColorUtils.chat("&7우클릭하여 번들을 열 수 있어요!"), ColorUtils.chat(String.format("&7(%s&7 이 아이템은 확률형 아이템을 포함합니다.)", Alert.YELLOW)), ColorUtils.chat(Alert.XmasLegacy + "&7해당 상품은 특별 &6한정판 상품&r을 추가로 포함합니다."))
 				.setGlint(true)
 				.setTag("gacha", "CHROMATIC_BOX")
-				.setItemModel("")
 				.hideAllFlags()
 				.build().clone();
 	}
-	private void appendBundles() {
-		this.bundles.add(Bundle());
-		this.bundles.add(HighEndBundle());
-		this.bundles.add(ChromaticBundle());
-		this.bundles.add(ChromaticBox());
-	}
+
 
 	public @NotNull List<ItemStack> getBundles() {
-		return List.copyOf(this.bundles);
+		return List.of(Bundle(), HighEndBundle(), ChromaticBundle(), ChromaticBox());
 	 }
 
 	public void clear() {

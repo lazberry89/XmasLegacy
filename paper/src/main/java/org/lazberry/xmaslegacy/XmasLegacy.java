@@ -32,7 +32,8 @@ public final class XmasLegacy extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-		LazberryRegistryFramework.cleanUp(this, XmasLegacy.class);
+		// First: cleanUp empties the container the initializers live in.
 		Reflections.runInitializers(false);
+		LazberryRegistryFramework.cleanUp(this, XmasLegacy.class);
 	}
 }

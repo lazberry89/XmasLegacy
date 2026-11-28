@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.passive.listeners;
 
+import org.bukkit.event.EventPriority;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -67,7 +68,8 @@ public class MinerPassiveListener extends PassiveListeners implements Listener {
         return ThreadLocalRandom.current().nextInt(m.getExpLowMin(), m.getExpLowMax() + 1);
     }
 
-    @EventHandler
+    // After protection: a refused break still paid out.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBreakOre(BlockBreakEvent e) {
         var player = e.getPlayer();
         Block block = e.getBlock();

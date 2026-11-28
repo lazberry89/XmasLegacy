@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.enchant.listener;
 
+import org.bukkit.inventory.EquipmentSlot;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.DeathProtection;
 import org.bukkit.*;
@@ -76,15 +77,10 @@ public class EnchantItemListener implements Listener {
 
             var totem = e.getItem().clone();
             totem.setData(DataComponentTypes.DEATH_PROTECTION, DeathProtection.deathProtection());
-            var savedItem = player.getInventory().getItemInMainHand().clone();
-            var inv = player.getInventory();
-
-            inv.setItemInMainHand(totem);
+            // Only on the client: swapping the real item for a tick lost or copied it if the hand changed meanwhile.
+            player.sendEquipmentChange(player, EquipmentSlot.HAND, totem);
             player.playEffect(EntityEffect.PROTECTED_FROM_DEATH);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-				totem.setAmount(0);
-                inv.setItemInMainHand(savedItem);
-            }, 1L);
+            Bukkit.getScheduler().runTaskLater(plugin, player::updateInventory, 1L);
             InfoUtils.info(player, "부활의 표식을 사용하여 아이템이 복구됨.");
         } else {
             e.setCancelled(true);

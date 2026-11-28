@@ -27,6 +27,7 @@ public class StockMarketTask implements Tasks {
 	private final StockShopManager ssm;
 	private @Nullable BukkitTask task;
 	private @Getter boolean isOpen = false;
+	private boolean worldMissingLogged = false;
 
 	@Inject
 	public StockMarketTask(StockManager sm, StockConfig sc, StockDisplayManager sdm, StockShopManager ssm) {
@@ -39,10 +40,12 @@ public class StockMarketTask implements Tasks {
 	@Override
 	public void startTask(@NotNull XmasLegacy plugin) {
 		this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+			if (sm.getWorld() == null) sm.setWorld(sc.getTargetWorldName()); // it may load after this plugin
 			World world = sm.getWorld();
 			if (world == null) {
-				log.error("World not found. Stopping scheduler.");
-				return;
+			    if (!worldMissingLogged) log.error("Stock market world '{}' is not loaded. Waiting for it.", sc.getTargetWorldName());
+			    worldMissingLogged = true;
+			    return;
 			}
 
 			long currentTime = world.getTime();

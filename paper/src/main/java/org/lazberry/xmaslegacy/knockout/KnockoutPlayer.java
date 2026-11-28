@@ -82,19 +82,19 @@ public class KnockoutPlayer {
 
 	public void cleanup() {
 		OptionalUtils.ifNotNull(Bukkit.getPlayer(uuid), player -> {
+				player.removeCustomChatCompletions(completions);
+				clear(player);
+			});
+		}
+
+		public static void clear(Player player) {
 			GlowUtils.clearGlow(player);
 			StunUtils.release(player.getUniqueId());
-			player.removeCustomChatCompletions(completions);
-
-			if (player.getPersistentDataContainer().has(key)) {
-				player.getPersistentDataContainer().remove(key);
-			}
-
+			player.getPersistentDataContainer().remove(key);
 			player.removePotionEffect(PotionEffectType.DARKNESS);
 			player.removePotionEffect(PotionEffectType.WITHER);
 			player.setPose(Pose.STANDING, true);
-		});
-	}
+		}
 
 	public State touch() {
 		if (System.currentTimeMillis() - lastClickedMillis <= 1000) return State.TOO_FAST;

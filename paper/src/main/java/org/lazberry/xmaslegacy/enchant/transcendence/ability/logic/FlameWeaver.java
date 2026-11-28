@@ -171,6 +171,8 @@ public class FlameWeaver extends Ability {
 			KeyUtils.set(f, fireBall, (byte) 1);
 			GlowUtils.glow(f, NamedTextColor.RED);
 			f.setShooter(p);
+			f.setYield(0); // whenHit does the explosion; the vanilla one breaks blocks
+			f.setIsIncendiary(false);
 			new BukkitRunnable() {
 				@Override
 				public void run() {

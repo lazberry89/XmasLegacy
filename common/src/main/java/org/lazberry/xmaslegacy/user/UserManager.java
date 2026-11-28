@@ -52,6 +52,19 @@ public class UserManager {
 		return user;
 	}
 
+	/**
+	 * A player online anywhere on the network, by name. Unlike Bukkit.getOfflinePlayer(name) this never asks Mojang
+	 * (which freezes the main thread for unknown names) and it finds Bedrock players too.
+	 */
+	public @Nullable UUID findOnlineByName(@NotNull String name) {
+		for (UUID uuid : JedisService.getAllProxyUsers()) {
+			if (JedisService.getUserServer(uuid) == null) continue;
+			User user = getProxyUser(uuid);
+			if (user != null && name.equalsIgnoreCase(user.getName())) return uuid;
+		}
+		return null;
+	}
+
 	public Optional<User> getOptionalUser(UUID uuid) {
 		return Optional.ofNullable(getUser(uuid));
 	}
@@ -62,6 +75,10 @@ public class UserManager {
 
 	public void addUser(@NotNull User user) {
         users.put(user.getUniqueId(), user);
+    }
+
+    public void addUserIfAbsent(@NotNull User user) {
+    	users.putIfAbsent(user.getUniqueId(), user);
     }
 
     public @Nullable User removeUser(@NotNull UUID uuid) {
@@ -86,11 +103,12 @@ public class UserManager {
         return false;
     }
 
-    public void deposit(UUID uuid, int amount) {
+    /** @return false if the user is not loaded; nothing was paid then. */
+    public boolean deposit(UUID uuid, long amount) {
         User user = getUser(uuid);
-        if (user != null) {
-            user.setDollars(user.getDollars() + amount);
-        }
+        if (user == null || amount < 0) return false;
+        user.addDollars(amount);
+        return true;
     }
 	public Role getRole(UUID uuid) {
 		if (users.containsKey(uuid)) {

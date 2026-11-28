@@ -56,6 +56,7 @@ public class WarmthZone {
     }
 
     public void applyWarmthEffect(UserManager userManager) {
+        if (!world.isChunkLoaded((int) id, (int) (id >> 32))) return; // nobody there; getChunk() would load it
         var entities = getChunk().getEntities();
         if (entities.length == 0) return;
 

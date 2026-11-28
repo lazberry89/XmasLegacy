@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.plugin.links;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.ServerLinks;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -47,11 +48,16 @@ public class ServerLinkConfig extends AbstractDataSerializer<Map<ServerLinks.Typ
     @Override
     public Map<ServerLinks.Type, URI> loadSync() {
         synchronized (this) {
+            setConfig(YamlConfiguration.loadConfiguration(getFile())); // edits made to the file since
             ConfigBuilder builder = ConfigBuilder.of(getConfig());
             final var result = new HashMap<ServerLinks.Type, URI>();
             for (String key : getConfig().getKeys(false)) {
                 try {
                     ServerLinks.Type type = ParseEnum.of(ServerLinks.Type.class).parse(key);
+                    if (type == null) {
+                        log.error("Unknown server link type in config: {}", key);
+                        continue;
+                    }
                     String value = builder.getValue(key, String.class);
                     if (value == null) {
                         log.error("Failed to parse URI value in config.");

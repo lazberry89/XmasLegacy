@@ -40,8 +40,8 @@ public class WhisperCommand implements CommandExecutor, TabCompleter {
         }
         var value = args[0].toLowerCase();
 		switch (value) {
-			case "mute" -> new WhisperCommandMute().execute(p, args);
-			case "unmute" -> new WhisperCommandUnmute().execute(p, args);
+			case "mute", "차단" -> new WhisperCommandMute().execute(p, args);
+			case "unmute", "허용" -> new WhisperCommandUnmute().execute(p, args);
 			default -> new WhisperCommandPlayer(whisperManager).execute(p, args);
 		}
 		return true;

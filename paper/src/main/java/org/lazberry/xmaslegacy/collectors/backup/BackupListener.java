@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.collectors.backup;
 
+import org.lazberry.xmaslegacy.joinListeners.PlayerDataReadyEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.collectors.game.CollectorsManager;
 import org.lazberry.xmaslegacy.framework.annotation.Inject;
@@ -21,8 +21,9 @@ public class BackupListener implements Listener {
         this.cm = cm;
     }
 
+    // Not on join: the synced inventory arrives later and would overwrite the backup.
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void loadBackupWhenJoin(PlayerJoinEvent e) {
+    public void loadBackupWhenJoin(PlayerDataReadyEvent e) {
         var player = e.getPlayer();
         var uuid = player.getUniqueId();
         if (cm.hasBackup(uuid)) {

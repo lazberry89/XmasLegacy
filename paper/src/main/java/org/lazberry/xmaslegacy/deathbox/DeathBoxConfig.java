@@ -24,6 +24,8 @@ import java.util.concurrent.CompletableFuture;
 public class DeathBoxConfig implements Initiator {
     private final File dataFolder;
     private YamlConfiguration config;
+    /** Stored boxes whose world is missing or whose data is broken; kept as they are. */
+    private final List<Map<?, ?>> unresolved = new ArrayList<>();
     private File file;
 
     @Inject
@@ -96,8 +98,10 @@ public class DeathBoxConfig implements Initiator {
                 serializedList.add(data);
             }
 
+            List<Object> all = new ArrayList<>(serializedList);
+            all.addAll(unresolved); // boxes that could not be restored this time must survive the save
             this.config = ConfigBuilder.of(file)
-                    .set("death_boxes", serializedList)
+                    .set("death_boxes", all)
                     .save(file)
                     .build();
         }
@@ -112,6 +116,7 @@ public class DeathBoxConfig implements Initiator {
             List<DeathBox> loadedBoxes = new ArrayList<>();
             this.config = YamlConfiguration.loadConfiguration(file);
 
+            unresolved.clear();
             List<Map<?, ?>> rawList = this.config.getMapList("death_boxes");
             if (rawList.isEmpty()) return loadedBoxes;
 
@@ -119,7 +124,10 @@ public class DeathBoxConfig implements Initiator {
                 try {
                     String worldName = (String) data.get("world");
                     World world = Bukkit.getWorld(worldName);
-                    if (world == null) continue;
+                    if (world == null) {
+                        unresolved.add(data);
+                        continue;
+                    }
 
                     UUID uuid = UUID.fromString((String) data.get("uuid"));
                     int x = ((Number) data.get("x")).intValue();
@@ -141,6 +149,7 @@ public class DeathBoxConfig implements Initiator {
 
                 } catch (Exception e) {
                     log.error("Failed to parse death box data: {}", data, e);
+                    unresolved.add(data);
                 }
             }
             return loadedBoxes;

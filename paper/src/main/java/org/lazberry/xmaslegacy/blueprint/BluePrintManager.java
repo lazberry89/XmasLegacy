@@ -95,14 +95,14 @@ public class BluePrintManager implements Initiator {
 
     public BluePrint createBluePrint(String id, @Nullable String builder, Location origin, Location loc1, Location loc2) {
         BluePrint bluePrint = new BluePrint(id);
+        BluePrint scanned = bluePrint;
         Axiom.loopArea(loc1, loc2, l -> {
             var block = l.getBlock();
             if (block.getType().isAir()) return;
-
-            bluePrint.addBlock(origin, l, block);
+            scanned.addBlock(origin, l, block);
         });
 	    float originYaw = Axiom.snapDegrees(origin.getYaw());
-	    if (originYaw != 0f) return rotate(bluePrint, -originYaw);
+	    if (originYaw != 0f) bluePrint = rotate(bluePrint, -originYaw);
 
 		if (builder != null) bluePrint.setBuilder(builder);
         return bluePrint;

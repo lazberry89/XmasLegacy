@@ -79,6 +79,10 @@ public class GoodsConfig implements Initiator {
 					log.warn("Failed to load goods.{}", key, e);
 					continue;
 				}
+				if (item.length == 0 || item[0] == null) {
+				    log.warn("goods.{} has no item", key);
+				    continue;
+				}
 				int price = config.getInt(path + "initial-price");
 				boolean changeName = config.getBoolean(path + "change_name", false);
 				Goods g = new Goods(key, item[0], price, changeName);

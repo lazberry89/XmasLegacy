@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.LazberryRegistryFramework.annotation.Listeners;
 import org.lazberry.xmaslegacy.RuleManager;
@@ -48,9 +47,8 @@ public class ChatPrefixListener implements Listener {
 
 		String server = JedisService.getUserServer(uuid);
 		if (server == null) {
-			InfoUtils.error(p, "현재 접속중이 서버를 인식할 수 없습니다. 재접속하세요.");
-			p.kick(ColorUtils.chat("&c서버간의 동기화 문제로 인하여 추방되었습니다."),
-					PlayerKickEvent.Cause.CHAT_VALIDATION_FAILED);
+			// Async thread: kicking here throws. It is also normal for a moment right after a server switch.
+			InfoUtils.error(p, "아직 접속 처리 중입니다. 잠시 후 다시 입력해주세요.");
 
 			return;
 		}

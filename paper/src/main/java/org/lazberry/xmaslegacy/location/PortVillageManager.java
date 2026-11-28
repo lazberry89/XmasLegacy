@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.location;
 
+import org.lazberry.xmaslegacy.utils.ServerTransfer;
+import org.lazberry.xmaslegacy.utils.Perms;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,12 +28,13 @@ public final class PortVillageManager extends SavedLocation {
             Bukkit.getOnlinePlayers().stream()
                     .filter(Objects::nonNull)
                     .filter(Entity::isValid)
-                    .filter(Player::isOp)
+                    .filter(p -> Perms.admin(p, "location"))
                     .forEach(o -> {
                         InfoUtils.error(o, "얼어붙은 항구의 스폰 위치가 설정되지 않았습니다.");
-                        InfoUtils.error(o, "명령어를 사용하여 즉시 등록하여 주세요.");
-                    });
-            return;
-        }
+                                    InfoUtils.error(o, "명령어를 사용하여 즉시 등록하여 주세요.");
+                                });
+                            return;
+                        }
+                        ServerTransfer.dramaticTeleport(player, to);
     }
 }

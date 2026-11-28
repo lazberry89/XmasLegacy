@@ -44,11 +44,18 @@ public final class Casino {
 
 	/** Online: inventory, overflow goes to the bag. Left this server: delivered through the mailbox. */
 	public static void giveCoin(Player player, int amount) {
-		InventoryHelper.giveItemOrKeep(player, coin(amount));
+		InventoryHelper.giveItemOrKeep(player, coins(amount));
 	}
 
 	public static void giveCoin(UUID uuid, int amount) {
-		InventoryHelper.giveItemOrKeep(uuid, coin(amount));
+		InventoryHelper.giveItemOrKeep(uuid, coins(amount));
+	}
+
+	/** In stacks of 99: a bigger one cannot be stored in the bag or the mailbox. */
+	private static ItemStack[] coins(int amount) {
+		ItemStack[] stacks = new ItemStack[(amount + 98) / 99];
+		for (int i = 0; i < stacks.length; i++) stacks[i] = coin(Math.min(99, amount - i * 99));
+		return stacks;
 	}
 
 	public static int countCoins(Player player) {

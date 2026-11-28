@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.chat.whisper;
 
+import org.lazberry.xmaslegacy.framework.annotation.Inject;
+import org.lazberry.xmaslegacy.user.UserManager;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.lazberry.xmaslegacy.JedisService;
 import org.lazberry.xmaslegacy.framework.ServerType;
@@ -17,7 +17,12 @@ import java.util.UUID;
 public class WhisperManager {
     private static final String WHISPER_CHANNEL = "whisper_global";
 
-	public WhisperManager() {}
+	private final UserManager userManager;
+
+	@Inject
+	public WhisperManager(UserManager userManager) {
+		this.userManager = userManager;
+	}
 
 	/**
 	 * Sending whisper to Proxy user.
@@ -34,13 +39,11 @@ public class WhisperManager {
 		String senderName = sender.getName();
 		UUID senderId = sender.getUniqueId();
 
-		OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(receiver);
-		UUID targetPlayerId = targetPlayer.getUniqueId();
-
-		if (JedisService.getUserServer(targetPlayerId) == null) return false;
+		UUID targetPlayerId = userManager.findOnlineByName(receiver);
+		if (targetPlayerId == null) return false;
 
 	    JedisService.publish(WHISPER_CHANNEL, new Whisper(senderName, receiver, senderServer,
-			    senderId, targetPlayer.getUniqueId(), message).toJson());
+			    senderId, targetPlayerId, message).toJson());
 		sender.sendMessage(whisperSent(receiver, message));
 		logWhisper(senderName, receiver, message);
 		return true;

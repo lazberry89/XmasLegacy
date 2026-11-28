@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.inquiry;
 
+import org.lazberry.xmaslegacy.utils.Perms;
 import lombok.extern.slf4j.Slf4j;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -110,7 +111,7 @@ public class ServerInquiryManager extends AbstractInquirySubscriber implements I
         Bukkit.getOnlinePlayers().stream()
                 .filter(Player::isValid)
                 .filter(Player::isOnline)
-		        .filter(Player::isOp)
+		        .filter(p -> Perms.admin(p, "inquiry"))
                 .forEach(consumer);
     }
 }

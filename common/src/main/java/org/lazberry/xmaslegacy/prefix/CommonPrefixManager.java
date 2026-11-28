@@ -26,7 +26,7 @@ public class CommonPrefixManager {
 		if (user == null) return CompletableFuture.completedFuture(false);
 
 		return prefixRepository.grantPrefix(uuid, prefix).handle((value, ex) -> {
-			if (value) {
+			if (Boolean.TRUE.equals(value)) { // null when the query failed
 				user.addPrefix(prefix);
 				action.run();
 				return true;

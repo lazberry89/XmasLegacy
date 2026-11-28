@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.role.shop.role.hunter;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -15,7 +15,7 @@ import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
 import java.util.Objects;
 
-public class HunterSellingShop extends RoleShop implements InventoryHolder {
+public class HunterSellingShop extends RoleShop implements ReadOnlyGui {
     private final XmasLegacy plugin;
     private final Inventory inv;
 

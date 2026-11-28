@@ -16,8 +16,8 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * rank_board.yml. Positions are plain values, not serialized Locations: a Location whose world is not loaded yet
- * makes the whole file unreadable, and the next save would then erase every board.
+  * rank_board.yml. Positions are plain values, not serialized Locations: a Location whose world is not loaded yet
+  * is read as null, and the next save would then erase that board.
  */
 @Slf4j
 @Components.Exclude(type = ServerType.LOBBY)

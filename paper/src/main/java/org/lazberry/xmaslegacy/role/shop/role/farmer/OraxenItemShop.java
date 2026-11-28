@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.lazberry.xmaslegacy.advancement.Advancements;
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * because Oraxen registers its items after this plugin's components are created.
  */
 @Slf4j
-public class OraxenItemShop implements InventoryHolder {
+public class OraxenItemShop implements ReadOnlyGui {
 	public enum Mode { BUY, SELL }
 
 	/** {@code factory} builds a non-Oraxen item (sold only); without it the item is the Oraxen item {@code id}. */

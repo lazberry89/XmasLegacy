@@ -101,7 +101,7 @@ public class UserScoreboard implements Tasks {
 					String nameStr = (memberPlayer != null) ? memberPlayer.getName() : "&k???";
 
 					String leaderPrefix = "";
-					if (pm.isLeader(member)) leaderPrefix = "&7&l[&6★&7&l]";
+					if (member.equals(party.getLeader())) leaderPrefix = "&7&l[&6★&7&l]";
 					b.setLine(line++, ColorUtils.chat(leaderPrefix + "&e" + nameStr));
 
 					if (memberPlayer != null && memberPlayer.isOnline()) b.setLine(line++, healthBar(memberPlayer));

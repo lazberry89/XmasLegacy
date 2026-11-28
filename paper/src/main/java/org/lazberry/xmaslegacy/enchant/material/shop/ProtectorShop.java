@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.enchant.material.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class ProtectorShop implements InventoryHolder {
+public class ProtectorShop implements ReadOnlyGui {
     private final int[] priceBySlot = {0, 1, 0, 0, 50000, 0, 0, 200000, 0};
     private final Inventory inv;
 

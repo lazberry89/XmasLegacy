@@ -1,10 +1,10 @@
 package org.lazberry.xmaslegacy.stock.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -13,7 +13,7 @@ import org.lazberry.xmaslegacy.stock.StockItemBuilder;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class StockSelectedShop implements InventoryHolder {
+public class StockSelectedShop implements ReadOnlyGui {
     private final Inventory inv;
     private final StockItemBuilder builder;
     private final @Getter Stock stock;

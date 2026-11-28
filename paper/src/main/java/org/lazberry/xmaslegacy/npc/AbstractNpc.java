@@ -76,7 +76,7 @@ public abstract class AbstractNpc {
 		if (catchKey(player, checkKey)) {
 			ItemStack give = CurrencyManager.currency(plugin);
 			give.setAmount(5);
-			player.getInventory().addItem(give);
+			InventoryHelper.giveItemOrDrop(player, give); // given once ever: must not vanish in a full inventory
 			InfoUtils.info(player, "재화를 클릭하여 현금 입금을 해보세요!");
 		}
 	}
@@ -85,10 +85,10 @@ public abstract class AbstractNpc {
 		if (catchKey(player, foodKey)) {
 			ItemStack item = AgeableCrops.SunFlowerBread();
 			item.setAmount(5);
-			player.getInventory().addItem(item);
+			InventoryHelper.giveItemOrDrop(player, item);
 			InfoUtils.info(player, "태양초 음식이 제공되었습니다.");
 			InfoUtils.warn(player, "관련 서적도 제공되었습니다. 필히 열람하십시오.");
-			player.getInventory().addItem(Documents.IcingDocument());
+			InventoryHelper.giveItemOrDrop(player, Documents.IcingDocument());
 		}
 	}
 

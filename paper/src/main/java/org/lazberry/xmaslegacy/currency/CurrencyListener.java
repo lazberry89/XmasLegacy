@@ -32,7 +32,10 @@ public class CurrencyListener implements Listener {
 			if (item.getType().isAir()) return;
 			if (CurrencyManager.isMoney(item)) {
 				int amount = 100 * item.getAmount();
-				economyManager.deposit(uuid, amount);
+				if (!economyManager.deposit(uuid, amount)) { // keep the item: nothing was paid
+					InfoUtils.error(player, "유저 정보가 로드되지 않아 입금할 수 없습니다.");
+					return;
+				}
 				InfoUtils.info(player, "현금 &6{}원&f이 입금되었습니다.", amount);
 				item.setAmount(0);
 				Advancements.grant(player, "earn_money");

@@ -44,7 +44,12 @@ public class RegionCreateListener implements Listener {
 			Region region = new Region(p, p.getLocation());
 			if (region.isValid() && !rm.hasRegion(p.getLocation())) {
 				if (InventoryHelper.removeItem(p, RegionManager.RegionTicket(), 1)) {
-					rm.addRegion(p, region);
+					if (!rm.addRegion(p, region)) {
+						InventoryHelper.giveItemOrKeep(p, RegionManager.RegionTicket());
+						InfoUtils.error(p, "구역 생성이 거부되었습니다. 티켓을 돌려드렸습니다.");
+						p.closeInventory();
+						return;
+					}
 					InfoUtils.info(p, "구역이 성공적으로 생성되었습니다!");
 					p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
 					p.closeInventory(InventoryCloseEvent.Reason.PLUGIN);

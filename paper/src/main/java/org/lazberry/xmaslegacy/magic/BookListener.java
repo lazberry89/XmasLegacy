@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.magic;
 
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,6 +25,7 @@ public class BookListener implements Listener {
 
 	@EventHandler
 	public void onBookClick(PlayerInteractEntityEvent e) {
+		if (e.getHand() != EquipmentSlot.HAND) return; // once per hand otherwise
 		var player = e.getPlayer();
 		var target = e.getRightClicked();
 

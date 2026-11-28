@@ -90,15 +90,16 @@ final class PackageScanner {
 
                     targetClasses.add(clazz);
                 }
-            } catch (Exception e) {
-                if (LazberryRegistryFramework.isDebug()) log.warn("{} Failed to load class for scanning: {}", icon, classInfo.getName());
+            // LinkageError: a class of an optional plugin that is missing here must not stop the whole boot
+            } catch (Exception | LinkageError e) {
+            if (LazberryRegistryFramework.isDebug()) log.warn("{} Failed to load class for scanning: {}", icon, classInfo.getName());
             }
         }
 
         for (Class<?> targetClass : targetClasses) {
             try {
                 DependencyContainer.getOrCreateBean(targetClass);
-            } catch (Exception e) {
+                } catch (Exception | LinkageError e) {
                 StructuralLog.logAssemblyFailure(DependencyContainer.constructionStack(), targetClass, e);
                 if (LazberryRegistryFramework.isDebug()) log.error("{} Error StackTrace:", icon, e);
             }

@@ -46,17 +46,13 @@ public class DeathBoxManager implements Initiator {
     public void init() {
         setExpireTime(config.getExpireTime());
         setHideName(config.ifHideName());
-        config.loadAll().whenComplete((l, e) -> {
-            if (e == null) {
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    l.forEach(d -> {
-                        deathBoxes.put(d.getLocation(), d);
-                        boxQueue.add(d);
-                    });
-                    expireClearTask();
-                });
-            } else log.error("Failed to load death boxes from config.", e);
+        // On the main thread: restoring a box places its chest. Off it every box failed to load and was then
+        // erased from the file on shutdown.
+        config.loadSync().forEach(d -> {
+            deathBoxes.put(d.getLocation(), d);
+            boxQueue.add(d);
         });
+        expireClearTask();
     }
 
     @Override
@@ -72,11 +68,9 @@ public class DeathBoxManager implements Initiator {
         if (task == null) synchronized (this) {
             if (task == null) {
                 task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-                    while (!boxQueue.isEmpty()) {
-                        DeathBox box = boxQueue.peek();
-                        if (box != null && (box.isExpired() || box.isEmpty())) {
-                            removeDeathBox(box);
-                        } else break;
+                    // All of them, not only the oldest: restored boxes have different times left.
+                    for (DeathBox box : queueSnapshot()) {
+                        if (box.isExpired() || box.isEmpty()) removeDeathBox(box);
                     }
                 }, 0L, 20L);
             }
@@ -93,11 +87,28 @@ public class DeathBoxManager implements Initiator {
     }
 
     public void dropDeathBox(Player dead, List<ItemStack> drops) {
-        var box = new DeathBox(dead, drops.toArray(ItemStack[]::new), expireTime, hideName);
+        var box = new DeathBox(dead, freeSpot(dead.getLocation()), drops.toArray(ItemStack[]::new), expireTime, hideName);
         deathBoxes.put(box.getLocation(), box);
         boxQueue.add(box);
 
         drops.clear();
+    }
+
+    /** Never on top of another box or a container, and inside the world (deaths in the void). */
+    private Location freeSpot(Location death) {
+        var world = death.getWorld();
+        int bottom = Math.clamp(death.getBlockY(), world.getMinHeight(), world.getMaxHeight() - 1);
+        for (int y = bottom; y < Math.min(bottom + 16, world.getMaxHeight()); y++) {
+            var block = world.getBlockAt(death.getBlockX(), y, death.getBlockZ());
+            if (!deathBoxes.containsKey(block.getLocation()) && (block.isEmpty() || block.isReplaceable()))
+                return block.getLocation();
+        }
+        for (int y = bottom; y < world.getMaxHeight(); y++) {
+            var block = world.getBlockAt(death.getBlockX(), y, death.getBlockZ());
+            if (!deathBoxes.containsKey(block.getLocation()) && !(block.getState(false) instanceof org.bukkit.block.TileState))
+                return block.getLocation();
+        }
+        return world.getBlockAt(death.getBlockX(), bottom, death.getBlockZ()).getLocation();
     }
 
     public void removeDeathBox(Location loc) {

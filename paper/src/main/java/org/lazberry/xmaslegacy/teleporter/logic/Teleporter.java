@@ -37,6 +37,7 @@ public class Teleporter {
     }
 
     public void playParticleEffect() {
+        if (!loc1.isWorldLoaded() || !loc1.isChunkLoaded()) return; // runs 4 times a second; getBlock() would load the chunk
         forEachBlock(b -> {
 			World world = b.getWorld();
 			Location loc = b.getLocation().add(0.5, 0.5, 0.5);

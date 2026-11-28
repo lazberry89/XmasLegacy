@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.bags;
 
+import org.jetbrains.annotations.Nullable;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,15 +37,22 @@ public class BagManager implements Initiator {
 		return bags.containsKey(uuid);
 	}
 
-	public Bag getBag(UUID uuid) {
-		return bags.computeIfAbsent(uuid, Bag::new);
+	/**
+	 * null until the real bag is loaded. Creating an empty one instead would be saved over the real bag,
+	 * and items put into it would vanish as soon as the real one arrives.
+	 */
+	public @Nullable Bag getBag(UUID uuid) {
+		return bags.get(uuid);
+	}
+
+	/** @return what did not fit; everything if the bag is not loaded. */
+	private List<ItemStack> addToBag(UUID uuid, ItemStack item) {
+		Bag bag = getBag(uuid);
+		return bag == null ? List.of(item.clone()) : bag.addItem(item.clone());
 	}
 
 	public void addItem(Player p, ItemStack item) {
-		ItemStack clone = item.clone();
-		UUID uuid = p.getUniqueId();
-
-		List<ItemStack> result = getBag(uuid).addItem(clone);
+		List<ItemStack> result = addToBag(p.getUniqueId(), item);
 		if (!result.isEmpty()) {
             result.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 0.6f, 1.0f);
@@ -53,25 +61,22 @@ public class BagManager implements Initiator {
 		}
 	}
 
-	public void addItem(UUID uuid, ItemStack item) {
-		var bag = getBag(uuid);
-		bag.addItem(item);
-	}
+
 
 	public void addAll(Player p, Collection<ItemStack> items) {
 		if (items.isEmpty()) return;
 
 		var uuid = p.getUniqueId();
 		for (var item : items) {
-			var cloned = item.clone();
-			List<ItemStack> remain = getBag(uuid).addItem(cloned);
+			List<ItemStack> remain = addToBag(uuid, item);
 			remain.forEach(i -> p.getWorld().dropItemNaturally(p.getLocation(), i));
 		}
 	}
 
 	public List<ItemStack> getBagContents(UUID uuid) {
-		ItemStack[] contents = getBag(uuid).getContents();
-		if (contents == null) return Collections.emptyList();
+		Bag bag = getBag(uuid);
+		if (bag == null) return Collections.emptyList();
+		ItemStack[] contents = bag.getContents();
 
 		return Arrays.stream(contents)
 				.filter(item -> item != null && !item.getType().isAir())

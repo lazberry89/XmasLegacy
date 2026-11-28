@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.region;
 
+import org.bukkit.World;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -12,7 +13,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 import org.lazberry.xmaslegacy.XmasLegacy;
 import org.lazberry.xmaslegacy.framework.Initiator;
 import org.lazberry.xmaslegacy.framework.ServerType;
@@ -30,7 +30,10 @@ import java.util.*;
 @Slf4j
 @Components.Exclude(type = ServerType.LOBBY)
 public class RegionManager implements Initiator {
-	private final Map<Long, Region> regions = new HashMap<>();
+	/** The same chunk coordinates exist in every world. */
+	private record Position(UUID world, long chunk) {}
+
+	private final Map<Position, Region> regions = new HashMap<>();
 	private final Map<UUID, List<Region>> userRegionsMap = new HashMap<>();
 	private final RegionDisplayManager displayManager;
 	private final RegionConfig config;
@@ -53,8 +56,8 @@ public class RegionManager implements Initiator {
 		restored.values().forEach(r ->
 			r.forEach(region -> {
 				if (region != null && region.isValid()) {
-					regions.put(region.getKey(), region);
-					displayManager.spawnIndicatorDisplay(region);
+					regions.put(position(region), region);
+					if (displayManager.isLoaded(region)) displayManager.spawnIndicatorDisplay(region);
 				}
 			}));
 		log.info("[Region] Restored {} regions from config.", regions.size());
@@ -82,15 +85,16 @@ public class RegionManager implements Initiator {
 		return value != null && value.equals("beacon");
 	}
 
-	public void addRegion(Player p, Region region) {
-		if (region == null || !region.isValid()) return;
+	/** @return false if it was refused. */
+	public boolean addRegion(Player p, Region region) {
+		if (region == null || !region.isValid()) return false;
 		var event = new RegionGenerateEvent(p, region, region.getOwner(), region.getId());
 		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled()) return;
-
-		regions.put(region.getKey(), region);
+		if (event.isCancelled()) return false;
+		regions.put(position(region), region);
 		userRegionsMap.computeIfAbsent(p.getUniqueId(), k -> new ArrayList<>()).add(region);
 		config.saveSync(userRegionsMap);
+		return true;
 	}
 
 	public void removeRegion(Region region) {
@@ -103,9 +107,7 @@ public class RegionManager implements Initiator {
 
 		// 인디케이터 디스플레이 및 인터랙션 엔티티 확실하게 제거
 		displayManager.removeDisplay(region);
-
-		regions.remove(region.getKey());
-
+		regions.remove(position(region));
 		List<Region> userRegions = userRegionsMap.get(ownerUUID);
 		if (userRegions != null) {
 			if (userRegions.remove(region)) {
@@ -123,14 +125,27 @@ public class RegionManager implements Initiator {
 		if (userRegions != null) {
 			userRegions.forEach(region -> {
 				displayManager.removeDisplay(region);
-				regions.remove(region.getKey());
-			});
+				regions.remove(position(region));
+				});
 			config.saveSync(userRegionsMap);
 		}
 	}
 
-	public @Nullable Region getRegion(long key) {
-		return regions.get(key);
+	public @Nullable Region getRegion(World world, long key) {
+		return regions.get(new Position(world.getUID(), key));
+	}
+
+	private static Position position(Region region) {
+		return new Position(region.getWorld().getUID(), region.getKey());
+	}
+
+	/** From the coordinates: Location.getChunk() loads the chunk, and this runs on every move. */
+	private static Position position(Location loc) {
+		return new Position(loc.getWorld().getUID(), Chunk.getChunkKey(loc));
+	}
+
+	public void save() {
+		config.saveSync(userRegionsMap);
 	}
 
 	public List<Region> getRegion(Player p) {
@@ -142,8 +157,8 @@ public class RegionManager implements Initiator {
 	}
 
 	public @Nullable Region getRegionAt(Location loc) {
-		if (loc == null) return null;
-		return regions.get(loc.getChunk().getChunkKey());
+		if (loc == null || loc.getWorld() == null) return null;
+		return regions.get(position(loc));
 	}
 
 	public @Nullable Region getRegion(String id) {
@@ -154,18 +169,15 @@ public class RegionManager implements Initiator {
 				.orElse(null);
 	}
 
-	public boolean hasRegion(long chunkKey) {
-		return regions.containsKey(chunkKey);
-	}
+
 
 	public boolean hasRegion(@Nullable Chunk chunk) {
 		if (chunk == null) return false;
-		return regions.containsKey(chunk.getChunkKey());
+		return regions.containsKey(new Position(chunk.getWorld().getUID(), chunk.getChunkKey()));
 	}
 
 	public boolean hasRegion(@Nullable Location loc) {
-		if (loc == null) return false;
-		return regions.containsKey(loc.getChunk().getChunkKey());
+		return getRegionAt(loc) != null;
 	}
 
 	public void sendRegionFormat(@NotNull Player p, @NotNull List<Region> regions) {
@@ -210,8 +222,5 @@ public class RegionManager implements Initiator {
 		return new ArrayList<>(regions.values());
 	}
 
-	@Unmodifiable
-	public Map<Long, Region> getRegionMap() {
-		return new HashMap<>(this.regions);
-	}
+
 }

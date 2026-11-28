@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.blueprint.command;
 
+import org.lazberry.xmaslegacy.XmasLegacy;
+import org.bukkit.Bukkit;
 import org.lazberry.xmaslegacy.utils.Perms;
 
 import org.bukkit.entity.Player;
@@ -31,7 +33,7 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 				.skip(1)
 				.skip(2)
 				.filter(s -> !s.isBlank())
-				.collect(Collectors.joining(" "));
+				.collect(Collectors.joining("_")); // as the other blueprint commands look it up
 
 		var uuid = player.getUniqueId();
 		var optionalFirst = selectionManager.getFirstSelection(uuid);
@@ -43,14 +45,15 @@ public record BlueprintCommandCreate(BluePrintManager manager, BlueprintSelectio
 
 			var current = player.getLocation();
 
-			manager.createAndSave(id, builder, current, first, second).whenComplete((bluePrint, ex) -> {
-				if (bluePrint != null) {
+			// Saved on another thread; items are given on the main one.
+			manager.createAndSave(id, builder, current, first, second).whenComplete((bluePrint, ex) -> Bukkit.getScheduler().runTask(XmasLegacy.getInstance(), () -> {
+			    if (bluePrint != null) {
 					InfoUtils.info(player, "성공적으로 도면을 완성했습니다.");
 					InventoryHelper.giveItemOrDrop(player, bluePrint.getItem());
-				} else if (ex != null) {
-					InfoUtils.error(player, "도면 생성에 실패하였습니다.(이미 존재하거나 저장에 실패했습니다.)", ex);
-				}
-			});
+				    } else {
+				        InfoUtils.error(player, "도면 생성에 실패하였습니다.(이미 존재하거나 저장에 실패했습니다.)");
+				    }
+				}));
 
 
 		} else {

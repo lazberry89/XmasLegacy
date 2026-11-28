@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.passive.listeners;
 
+import org.bukkit.event.Event;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,23 +70,24 @@ public class BlackSmithPassiveListener extends PassiveListeners implements Liste
         if (item == null || item.getType().isAir()) return;
 
         var player = e.getPlayer();
-        RoleTool.isTool(item, r ->
+        RoleTool.isTool(item, r -> {
+            if (r != ServerRoles.BLACKSMITH) return;
+            e.setUseItemInHand(Event.Result.DENY); // the tool is a placeable block
             canUsePassive(player, u -> {
-                if (r == ServerRoles.BLACKSMITH) {
-                    if (!player.isSneaking()) {
-                        if (player.getCooldown(item) > 0) return;
+                if (!player.isSneaking()) {
+                    if (player.getCooldown(item) > 0) return;
 
-                        ecm.openInterface(player);
-                        player.setCooldown(item, 20 * 30);
+                    ecm.openInterface(player);
+                    player.setCooldown(item, 20 * 30);
 
-                        var giveItem = EnchantMaterial.PrismFractal();
-                        giveItem.setAmount(5);
-                        InventoryHelper.giveItemOrDrop(player, giveItem);
-                    } else {
-                        player.openInventory(shopManager.getMaterialShop().getInventory());
-                        player.playSound(player, Sound.BLOCK_AMETHYST_BLOCK_FALL, 1.0f, 1.0f);
-                    }
+                    var giveItem = EnchantMaterial.PrismFractal();
+                    giveItem.setAmount(5);
+                    InventoryHelper.giveItemOrDrop(player, giveItem);
+                } else {
+                    player.openInventory(shopManager.getMaterialShop().getInventory());
+                    player.playSound(player, Sound.BLOCK_AMETHYST_BLOCK_FALL, 1.0f, 1.0f);
                 }
-            }));
+            });
+        });
     }
 }

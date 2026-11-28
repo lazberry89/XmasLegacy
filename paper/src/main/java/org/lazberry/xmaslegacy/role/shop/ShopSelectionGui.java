@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.role.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class ShopSelectionGui implements InventoryHolder {
+public class ShopSelectionGui implements ReadOnlyGui {
     private final XmasLegacy plugin;
     private final Inventory inv;
 

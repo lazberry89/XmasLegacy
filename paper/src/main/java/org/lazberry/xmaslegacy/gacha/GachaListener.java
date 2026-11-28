@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.gacha;
 
+import org.bukkit.inventory.EquipmentSlot;
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.Perms;
 
 import org.bukkit.NamespacedKey;
@@ -13,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.settings.Alert;
@@ -60,7 +61,7 @@ public class GachaListener implements Listener {
         if (gacha == null) return;
 
         ItemStack result = gacha.getItem();
-        p.getInventory().addItem(result);
+        InventoryHelper.giveItemOrDrop(p, result);
     }
 
     @EventHandler
@@ -74,6 +75,7 @@ public class GachaListener implements Listener {
 
         try {
             String value = click.getPersistentDataContainer().get(KeyUtils.get("gacha"), PersistentDataType.STRING);
+            if (value == null) return;
             BundleType type = BundleType.valueOf(value);
             p.openInventory(new GachaStockInterface(plugin, type, gm).getInventory());
             p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
@@ -88,8 +90,7 @@ public class GachaListener implements Listener {
     @EventHandler
     public void onBundleUse(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (!e.getAction().isRightClick()) return;
-
+        if (e.getHand() != EquipmentSlot.HAND || !e.getAction().isRightClick()) return;
         ItemStack item = p.getInventory().getItemInMainHand();
         if (item.getType().isAir()) return;
 
@@ -102,21 +103,22 @@ public class GachaListener implements Listener {
         if (value == null) return;
         try {
             BundleType grade = BundleType.valueOf(value);
-            this.Random(p, grade);
+            e.setCancelled(true); // some bundles are placeable blocks
+            if (this.Random(p, grade)) item.subtract();
         } catch (IllegalArgumentException err) {
             plugin.getSLF4JLogger().error("Bundle type setting error : {}", value, err);
             InfoUtils.error(p, "문제가 발생했습니다. 관리자에게 문의하세요.");
         }
     }
-    @Contract(pure = true)
-    private void Random(@NotNull Player p, @NotNull BundleType type) {
+    /** @return false if nothing was given. */
+    private boolean Random(@NotNull Player p, @NotNull BundleType type) {
         Gacha gacha = gm.getRandomItem(type);
         if (gacha == null) {
             InfoUtils.error(p, "현재 등록된 아이템이 없어요! 관리자에게 문의하세요.");
-            return;
+            return false;
         }
         GachaGrade grade = gacha.getGrade();
-        p.getInventory().addItem(gacha.getItem());
+        InventoryHelper.giveItemOrKeep(p, gacha.getItem());
         switch (grade) {
             case NORMAL, RARE -> InfoUtils.info(p, "아이템을 획득하였습니다! " + grade.getColor() + grade.name() + "[" + gacha.getKey() + "]");
             case MYTHIC -> {
@@ -154,9 +156,10 @@ public class GachaListener implements Listener {
                    
                    
                    """, grade, gacha.getKey()
-                );
-                p.sendMessage(ColorUtils.chat(msg));
-            }
-        }
+                   		);
+                   		p.sendMessage(ColorUtils.chat(msg));
+                   	}
+                   }
+                   return true;
     }
 }

@@ -33,6 +33,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Components.Include(type = ServerType.MAIN)
 public class StockManager {
+	/** One inventory's worth of certificates (36 x 64). */
+	public static final int MAX_BUY = 2304;
+
 	private final Map<String, Stock> stocks = new ConcurrentHashMap<>();
 	private final StockUpdater updater = new StockUpdater();
 	private final UserManager um;
@@ -64,7 +67,7 @@ public class StockManager {
 	}
 
 	public boolean exists(String name) {
-		return stocks.containsKey(name);
+	    return getStock(name).isPresent();
 	}
 
 	public boolean isStockCertificate(@Nullable ItemStack item) {
@@ -88,7 +91,10 @@ public class StockManager {
 	}
 
 	public Optional<Stock> getStock(@NotNull String name) {
-		return Optional.ofNullable(stocks.get(name));
+		Stock exact = stocks.get(name);
+		if (exact != null) return Optional.of(exact);
+		// Commands lower-case what is typed, registration does not.
+		return stocks.values().stream().filter(s -> s.getName().equalsIgnoreCase(name)).findFirst();
 	}
 
 	public Collection<Stock> getStocks() {
@@ -135,17 +141,18 @@ public class StockManager {
 	@Contract(mutates = "this")
 	@Flow(source = "this.stocks", targetIsContainer = true)
 	public @Nullable Stock removeStock(String name) {
-		return stocks.remove(name);
+	    Stock stock = getStock(name).orElse(null);
+	    return stock == null ? null : stocks.remove(stock.getName());
 	}
 
 	public Response buyStock(@NotNull Player buyer, @NotNull Stock stock, int amount) {
 		if (!isOpen()) return Response.TIMEOUT;
 		var user = um.getUser(buyer.getUniqueId());
-		if (user == null || amount <= 0) return Response.NOT_APPROPRIATE;
+		if (user == null || amount <= 0 || amount > MAX_BUY) return Response.NOT_APPROPRIATE;
 
 		double currentPrice = stock.getCurrentPrice();
 		double totalCost = (currentPrice * amount) * (1 + feeRate);
-		int finalCost = (int) Math.ceil(totalCost);
+		long finalCost = (long) Math.ceil(totalCost); // an int stops at 2.1 billion: anything beyond was nearly free
 
 		if (user.getDollars() < finalCost) return Response.NOT_ENOUGH;
 		user.addDollars(-finalCost);
@@ -173,7 +180,7 @@ public class StockManager {
 		double currentPrice = stock.getCurrentPrice();
 
 		double totalRevenue = (currentPrice * amount) * (1 - feeRate);
-		int finalRevenue = (int) Math.floor(totalRevenue);
+		long finalRevenue = (long) Math.floor(totalRevenue);
 
 		user.addDollars(finalRevenue);
 		Advancements.grant(owner, "earn_money");

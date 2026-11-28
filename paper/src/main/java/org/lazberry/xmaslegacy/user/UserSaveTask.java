@@ -65,7 +65,7 @@ public class UserSaveTask implements Tasks {
 		CompletableFuture.runAsync(() ->
 				playerData.forEach((uuid, name) -> {
 					boolean isFloodgate = FloodgateUtils.isFloodgate(uuid);
-					saveManager.load(uuid, name, isFloodgate);
+					saveManager.loadIfAbsent(uuid, name, isFloodgate);
 				}));
 	}
 }

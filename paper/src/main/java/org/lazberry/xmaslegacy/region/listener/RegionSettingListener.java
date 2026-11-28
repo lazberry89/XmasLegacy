@@ -45,7 +45,7 @@ public class RegionSettingListener implements Listener {
 		Long value = KeyUtils.get(interaction, RegionDisplayManager.key, PersistentDataType.LONG);
 		if (value == null) return;
 
-		var region = regionManager.getRegion(value);
+		var region = regionManager.getRegion(interaction.getWorld(), value);
 		if (region == null) {
 			InfoUtils.error(player, "연결이 끊긴 인디케이터입니다.");
 			interaction.remove();
@@ -80,11 +80,13 @@ public class RegionSettingListener implements Listener {
             case 0 -> {}
             case 2 -> {
                 region.toggleEntry();
+                regionManager.save();
                 p.playSound(p, Sound.BLOCK_TRIPWIRE_CLICK_ON, 1.0f, 1.0f);
                 rsi.updateInventory(p);
             }
             case 3 -> {
                 region.toggleInteraction();
+                regionManager.save();
                 p.playSound(p, Sound.BLOCK_TRIPWIRE_CLICK_ON, 1.0f, 1.0f);
                 rsi.updateInventory(p);
             }

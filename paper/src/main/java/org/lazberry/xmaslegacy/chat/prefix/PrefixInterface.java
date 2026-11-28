@@ -1,11 +1,11 @@
 package org.lazberry.xmaslegacy.chat.prefix;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ConsumableClass
-public class PrefixInterface implements InventoryHolder {
+public class PrefixInterface implements ReadOnlyGui {
 	private final @NotNull Inventory inv;
 	private final @NotNull XmasLegacy plugin;
 	private final @NotNull UserManager um;

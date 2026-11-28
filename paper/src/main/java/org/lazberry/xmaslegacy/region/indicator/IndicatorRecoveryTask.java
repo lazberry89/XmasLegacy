@@ -38,7 +38,9 @@ public class IndicatorRecoveryTask implements Tasks {
     }
 
     private Collection<Region> invalidRegions() {
+        // Only loaded chunks: otherwise every region chunk was loaded from disk every 5 seconds.
         return regionManager.getRegions().stream()
+        		.filter(displayManager::isLoaded)
                 .filter(r -> r.getIndicator() == null || !r.getIndicator().isValid()
                           || r.getInteraction() == null || !r.getInteraction().isValid())
                 .toList();

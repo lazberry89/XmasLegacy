@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.bags;
 
+import java.util.UUID;
 import org.lazberry.xmaslegacy.utils.Perms;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,7 +35,7 @@ public class BagCommand implements CommandExecutor, TabCompleter {
 	public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull ...args) {
 		if (!(commandSender instanceof Player p)) return false;
 		if (args.length == 0) {
-			p.openInventory(bm.getBag(p.getUniqueId()).getInventory());
+			openBag(p, p.getUniqueId());
 			return true;
 		} else if (args.length == 1) {
 			if (!Perms.admin(p, "bags")) {
@@ -43,9 +43,13 @@ public class BagCommand implements CommandExecutor, TabCompleter {
 				p.playSound(p, Sound.BLOCK_ANVIL_LAND, 0.3f, 1.0f);
 				return true;
 			} else {
-				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-				if (target.hasPlayedBefore()) {
-					p.openInventory(bm.getBag(target.getUniqueId()).getInventory());
+				// Online only: an offline bag is not loaded here, and edits to it would be lost.
+				Player target = Bukkit.getPlayerExact(args[0]);
+				if (target == null) {
+					p.sendMessage(ColorUtils.chat(Alert.RED + " 이 서버에 접속 중인 플레이어가 아닙니다."));
+					return true;
+				}
+				if (openBag(p, target.getUniqueId())) {
 					p.sendMessage(ColorUtils.chat(Alert.YELLOW + " 플레이어 &6" + target.getName() + "&f의 가방을 조회중입니다."));
 					p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
 					return true;
@@ -55,6 +59,16 @@ public class BagCommand implements CommandExecutor, TabCompleter {
 		} else {
 			p.sendMessage(ColorUtils.chat("&cUsage: &7/bag"));
 		}
+		return true;
+	}
+
+	private boolean openBag(Player viewer, UUID owner) {
+		Bag bag = bm.getBag(owner);
+		if (bag == null) {
+			viewer.sendMessage(ColorUtils.chat(Alert.RED + " 가방을 불러오는 중입니다. 잠시 후 다시 시도해주세요."));
+			return false;
+		}
+		viewer.openInventory(bag.getInventory());
 		return true;
 	}
 

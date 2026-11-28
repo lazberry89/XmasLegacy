@@ -5,7 +5,8 @@ main: org.lazberry.xmaslegacy.XmasLegacy
 api-version: '1.21.11'
 load: POSTWORLD
 depend: [floodgate, WorldEdit]
-softdepend: [oraxen, UltimateAdvancementAPI, LuckPerms, HuskSync]
+# Names are case-sensitive. Multiverse-Core first: saved positions in its worlds cannot be read before it loads them.
+softdepend: [Oraxen, UltimateAdvancementAPI, LuckPerms, HuskSync, Multiverse-Core]
 commands:
   문의: #0
     usage: /문의 <내용>

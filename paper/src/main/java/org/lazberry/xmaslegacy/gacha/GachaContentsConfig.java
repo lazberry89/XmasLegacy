@@ -60,8 +60,8 @@ public class GachaContentsConfig implements Initiator {
         gm.clear();
     }
 
-    public void setInfo(Gacha gacha) {
-        String path = "gacha." + gacha.getKey() + ".";
+    public void setInfo(BundleType type, Gacha gacha) {
+    String path = "gacha." + type.name() + "." + gacha.getKey() + ".";
         config.set(path + "item", InventorySerializer.serializeContents(gacha.getItem()));
         config.set(path + "grade", gacha.getGrade().name());
         config.set(path + "chance", gacha.getChance());
@@ -70,7 +70,8 @@ public class GachaContentsConfig implements Initiator {
     public void saveSync() {
         synchronized (this) {
             config.set("gacha", null);
-            gm.getAll().forEach(this::setInfo);
+            for (BundleType type : BundleType.values())
+            	gm.getAllSortedByChance(type).forEach(gacha -> setInfo(type, gacha));
 
             try {
                 config.save(file);
@@ -89,30 +90,35 @@ public class GachaContentsConfig implements Initiator {
             ConfigurationSection section = config.getConfigurationSection("gacha");
             if (section == null) return;
 
-            for (String key : section.getKeys(false)) {
-                String path = "gacha." + key + ".";
-
-                ItemStack resultItem = null;
-                try {
-                    String serialized = config.getString(path + "item");
-                    if (serialized != null) {
-                        ItemStack[] items = InventorySerializer.deserializeContents(serialized);
-                        if (items.length > 0) resultItem = items[0];
-                    }
-                } catch (Exception ignored) {}
-
-                if (resultItem == null)
-                    resultItem = new ItemStack(Material.BARRIER);
-
-                GachaGrade grade = ParseEnum.of(GachaGrade.class).parseOrDefault(config.getString(path + "grade"), GachaGrade.NORMAL);
-                double chance = config.getDouble(path + "chance", 0.0);
-
-                gm.addGacha(key, resultItem, grade, chance);
+            // Files written before the bundle type was saved have the items directly under "gacha".
+            loadItems(section, BundleType.NORMAL);
+            for (BundleType type : BundleType.values()) {
+            	ConfigurationSection items = section.getConfigurationSection(type.name());
+            	if (items != null) loadItems(items, type);
             }
-        }
-    }
+            		}
+            	}
 
-    public CompletableFuture<Void> loadAll() {
+            	private void loadItems(ConfigurationSection section, BundleType type) {
+		for (String key : section.getKeys(false)) {
+			if (!section.isString(key + ".item")) continue;
+			ItemStack resultItem = null;
+			try {
+				ItemStack[] items = InventorySerializer.deserializeContents(section.getString(key + ".item"));
+				if (items.length > 0) resultItem = items[0];
+			} catch (Exception e) {
+				log.warn("Failed to read gacha item {}", key, e);
+			}
+			if (resultItem == null)
+				resultItem = new ItemStack(Material.BARRIER);
+
+			GachaGrade grade = ParseEnum.of(GachaGrade.class).parseOrDefault(section.getString(key + ".grade"), GachaGrade.NORMAL);
+			double chance = section.getDouble(key + ".chance", 0.0);
+			gm.addGacha(key, resultItem, grade, chance, type);
+		}
+	}
+
+	public CompletableFuture<Void> loadAll() {
         return CompletableFuture.runAsync(this::loadSync);
     }
 }

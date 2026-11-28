@@ -39,7 +39,7 @@ public class Region {
 				} catch (IllegalArgumentException ignored) {}
 
 				// 3) 어떤 경우에도 null이 되지 않도록 첫 번째 기본 월드로 안전하게 폴백
-				return Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().getFirst();
+				return null; // not some other world: the region would be moved there for good on the next save
 			}).create();
 
     public String toGson() {
@@ -88,7 +88,7 @@ public class Region {
 
     public boolean isInside(@NotNull Location loc) {
         if (this.world == null || !this.world.equals(loc.getWorld())) return false; // 월드가 다르면 바로 컷
-        return loc.getChunk().getChunkKey() == this.key;
+        return Chunk.getChunkKey(loc) == this.key;
     }
 
     public boolean isInside(@NotNull Chunk c) {

@@ -42,7 +42,9 @@ public class SqlBagRepository implements BagRepository {
     private void createTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE + " (" +
                 "uuid VARCHAR(36) PRIMARY KEY," +
-                "contents TEXT)";
+                "contents MEDIUMTEXT)";
+                // TEXT holds 64KB; a bag with filled shulkers is larger and could not be saved.
+                String widen = "ALTER TABLE " + TABLE + " MODIFY contents MEDIUMTEXT";
         // Items for players who are not on the server giving them. Rows are only inserted by
         // anyone and only removed by the server the player is on, so the bag row never races.
         String mailbox = "CREATE TABLE IF NOT EXISTS bag_mailbox (" +
@@ -52,9 +54,11 @@ public class SqlBagRepository implements BagRepository {
                 "INDEX idx_uuid (uuid))";
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
-             PreparedStatement mailboxStatement = connection.prepareStatement(mailbox)) {
-            preparedStatement.execute();
-            mailboxStatement.execute();
+             PreparedStatement mailboxStatement = connection.prepareStatement(mailbox);
+                  PreparedStatement widenStatement = connection.prepareStatement(widen)) {
+                 preparedStatement.execute();
+                 mailboxStatement.execute();
+                 widenStatement.execute();
         } catch (SQLException e) {
             log.error("Failed to create table '{}'. If this exception is not successfully solved, " +
                     "entire user's bag will be extinguished.", TABLE, e);

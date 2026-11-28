@@ -41,7 +41,7 @@ public class RegionCommandSetting implements SubCommand {
 
             String settingType = args[1].toLowerCase();
             boolean isAllow = args[2].equals("허용") || args[2].equalsIgnoreCase("allow");
-            boolean isDeny = args[2].equals("차단") || args[2].equalsIgnoreCase("deny");
+            boolean isDeny = args[2].equals("차단") || args[2].equalsIgnoreCase("deny") || args[2].equalsIgnoreCase("block");
 
             switch (settingType) {
                 case "interaction", "상호작용" -> {
@@ -63,7 +63,8 @@ public class RegionCommandSetting implements SubCommand {
                     } else InfoUtils.error(player, "유효하지 않은 값입니다.");
                 }
                 default -> InfoUtils.error(player, "유효하지 않은 설정 종류입니다. (상호작용/입장)");
-            }
+                }
+                rm.save();
         } catch (Exception e) {
             log.error("Exception occurred while executing Region Setting Command.", e);
         }

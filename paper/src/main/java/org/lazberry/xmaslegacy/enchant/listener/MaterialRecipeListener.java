@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.enchant.listener;
 
+import java.util.Arrays;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
@@ -40,6 +41,7 @@ public class MaterialRecipeListener implements Listener {
 			validateCraftingMatrix(event.getInventory(), 9, "essence_enchant", EnchantMaterial::TotemOfEnchant);
 		} else if (key.equals(MaterialRecipeManager.KEY_FIVE_PERCENT)) {
 			validateCraftingMatrix(event.getInventory(), 9, "totem_of_enchant", EnchantMaterial::BoosterFivePercent);
+			if (isPlainDiamonds(event.getInventory())) event.getInventory().setResult(new ItemStack(Material.DIAMOND_BLOCK));
 		} else if (key.equals(MaterialRecipeManager.KEY_TEN_PERCENT)) {
 			validateCraftingMatrix(event.getInventory(), 4, "booster_five_percent", EnchantMaterial::BoosterTenPercent);
 		}
@@ -62,7 +64,7 @@ public class MaterialRecipeListener implements Listener {
 				event.setCancelled(true);
 			}
 		} else if (key.equals(MaterialRecipeManager.KEY_FIVE_PERCENT)) {
-			if (!isMatrixValid(inv, 9, "totem_of_enchant")) {
+			if (!isMatrixValid(inv, 9, "totem_of_enchant") && !isPlainDiamonds(inv)) {
 				event.setCancelled(true);
 			}
 		} else if (key.equals(MaterialRecipeManager.KEY_TEN_PERCENT)) {
@@ -78,6 +80,13 @@ public class MaterialRecipeListener implements Listener {
 		} else {
 			inv.setResult(null);
 		}
+	}
+
+	/** This recipe has the same shape as the vanilla diamond block and hides it. */
+	private boolean isPlainDiamonds(CraftingInventory inv) {
+		ItemStack plain = new ItemStack(Material.DIAMOND);
+		ItemStack[] matrix = inv.getMatrix();
+		return matrix.length == 9 && Arrays.stream(matrix).allMatch(plain::isSimilar);
 	}
 
 	private boolean isMatrixValid(CraftingInventory inv, int requiredCount, String expectedTag) {

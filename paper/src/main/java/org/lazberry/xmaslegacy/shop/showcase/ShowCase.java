@@ -66,6 +66,7 @@ public class ShowCase {
 		Location spawnLoc = loc.clone().add(0.5, 1.1, 0.5);
 
 		loc.getWorld().spawn(loc.clone().add(0, 1, 0), BlockDisplay.class, b -> {
+			b.setPersistent(false); // like the other parts; spawned again on start
 			b.setBlock(data);
 			Transformation transformation = new Transformation(
 					new org.joml.Vector3f(0, 0, 0),

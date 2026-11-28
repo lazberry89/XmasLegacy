@@ -1,16 +1,16 @@
 package org.lazberry.xmaslegacy.region.screen;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import org.lazberry.xmaslegacy.XmasLegacy;
 
-public class RegionCreateInterface implements InventoryHolder {
+public class RegionCreateInterface implements ReadOnlyGui {
     private final @NotNull XmasLegacy plugin;
     private final @NotNull Inventory inv;
 

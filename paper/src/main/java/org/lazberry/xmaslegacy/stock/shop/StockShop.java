@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.stock.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class StockShop implements InventoryHolder {
+public class StockShop implements ReadOnlyGui {
     private final ItemStack[] stockBySlot = new ItemStack[54];
     private final Inventory inv;
 

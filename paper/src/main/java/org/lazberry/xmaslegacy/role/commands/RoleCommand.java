@@ -38,7 +38,7 @@ public class RoleCommand implements CommandExecutor, TabCompleter {
 			InfoUtils.error(p, "관리자 전용 명령어에요!");
 			return true;
 		}
-		var subCommand = commands.get(args[0].toLowerCase());
+		var subCommand = args.length == 0 ? null : commands.get(args[0].toLowerCase());
 		if (subCommand == null) {
 			InfoUtils.error(p, "올바르지 않은 명령어에요!");
 			return true;

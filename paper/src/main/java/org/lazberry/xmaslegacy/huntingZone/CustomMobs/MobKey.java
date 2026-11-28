@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.huntingZone.CustomMobs;
 
+import org.lazberry.xmaslegacy.huntingZone.CustomMobs.Unrated.IceCube;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.Unrated.HunterZombie;
 import org.lazberry.xmaslegacy.huntingZone.CustomMobs.Unrated.IcedZombie;
@@ -9,7 +10,7 @@ import org.lazberry.xmaslegacy.huntingZone.ZoneType;
 public enum MobKey {
     ICED_ZOMBIE(ZoneType.ICE_STAGE, IcedZombie.class),
     HUNTER_ZOMBIE(ZoneType.ICE_STAGE, HunterZombie.class),
-    ICE_CUBE(ZoneType.ICE_STAGE, IcedZombie.class),
+    ICE_CUBE(ZoneType.ICE_STAGE, IceCube.class),
     KNIGHT_SKELETON(ZoneType.SOUL_GRAVEYARD, KnightSkeleton.class);
 
 	private final ZoneType type;

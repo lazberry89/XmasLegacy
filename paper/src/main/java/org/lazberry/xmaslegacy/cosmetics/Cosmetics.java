@@ -35,6 +35,7 @@ public class Cosmetics {
 
 	private void spawnCosmeticDisplay(@NotNull Player p) {
 		ItemDisplay display = p.getWorld().spawn(p.getLocation(), ItemDisplay.class);
+		display.setPersistent(false);
 		display.setItemStack(model);
 		display.setInvisible(true);
 		display.setInvulnerable(true);

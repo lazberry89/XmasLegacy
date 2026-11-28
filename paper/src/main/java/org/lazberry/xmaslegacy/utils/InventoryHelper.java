@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.utils;
 
+import java.util.Arrays;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,13 +34,17 @@ public class InventoryHelper {
 				.hideAllFlags().build();
 	}
 
+    /** addItem may shrink the stacks it is given, which would corrupt shared templates such as shop goods. */
+    private static ItemStack[] clones(ItemStack... items) {
+        return Arrays.stream(items).filter(Objects::nonNull).map(ItemStack::clone).toArray(ItemStack[]::new);
+    }
+
     public static void giveItemOrDrop(@Nullable Player p, ItemStack... items) {
         if (items.length == 0 || p == null || !p.isOnline()) return;
 
         var loc = p.getLocation();
         var world = loc.getWorld();
-        final var remains = p.getInventory().addItem(items);
-
+        final var remains = p.getInventory().addItem(clones(items));
         var itemList = remains.values();
         if (itemList.isEmpty()) return;
 
@@ -59,7 +64,7 @@ public class InventoryHelper {
             return;
         }
 
-        final var remains = p.getInventory().addItem(items);
+        final var remains = p.getInventory().addItem(clones(items));
         var remainItems = remains.values();
         if (remainItems.isEmpty()) return;
 

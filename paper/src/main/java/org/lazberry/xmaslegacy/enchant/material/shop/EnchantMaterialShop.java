@@ -1,8 +1,8 @@
 package org.lazberry.xmaslegacy.enchant.material.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -14,7 +14,7 @@ import org.lazberry.xmaslegacy.utils.ItemBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnchantMaterialShop implements InventoryHolder {
+public class EnchantMaterialShop implements ReadOnlyGui {
     private final List<ItemStack> showItems = new ArrayList<>();
     private final Inventory inv;
     private int currentSlot;

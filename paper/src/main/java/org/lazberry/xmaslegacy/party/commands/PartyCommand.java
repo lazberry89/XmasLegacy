@@ -30,6 +30,8 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
 
 	@Inject
     public PartyCommand(PartyManager pm) {
+		this.commands.put("help", new PartyCommandHelp());
+		this.commands.put("도움", new PartyCommandHelp());
 		this.commands.put("invite", new PartyCommandInvite(pm));
 		this.commands.put("초대", new PartyCommandInvite(pm));
 		this.commands.put("join", new PartyCommandJoin(pm));
@@ -56,7 +58,7 @@ public class PartyCommand implements CommandExecutor, TabCompleter {
         if (!(sender instanceof Player p)) return true;
 		if (args.length == 0) return true;
 
-		SubCommand sub = commands.get(args[0]);
+		SubCommand sub = commands.get(args[0].toLowerCase());
 		if (sub == null) {
 			InfoUtils.error(p, "유효하지 않는 명령어입니다.");
 			return true;

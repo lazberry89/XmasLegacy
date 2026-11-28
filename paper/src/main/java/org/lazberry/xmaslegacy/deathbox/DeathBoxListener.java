@@ -1,5 +1,8 @@
 package org.lazberry.xmaslegacy.deathbox;
 
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.lazberry.xmaslegacy.advancement.Advancements;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -69,6 +72,24 @@ public class DeathBoxListener implements Listener {
 			e.getPlayer().openInventory(box.getInventory());
 		});
 	}
+
+    /** A broken box dropped a free chest and left its items unreachable. */
+    @EventHandler(ignoreCancelled = true)
+    public void protectFromBreaking(BlockBreakEvent e) {
+        if (dm.getDeathBox(e.getBlock().getLocation()).isEmpty()) return;
+        e.setCancelled(true);
+        InfoUtils.warn(e.getPlayer(), "시체상자는 우클릭으로 열어주세요.");
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void protectFromExplosion(EntityExplodeEvent e) {
+        e.blockList().removeIf(b -> dm.getDeathBox(b.getLocation()).isPresent());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void protectFromExplosion(BlockExplodeEvent e) {
+        e.blockList().removeIf(b -> dm.getDeathBox(b.getLocation()).isPresent());
+    }
 
     @EventHandler
     public void removeDeathBoxWhenEmpty(InventoryCloseEvent e) {

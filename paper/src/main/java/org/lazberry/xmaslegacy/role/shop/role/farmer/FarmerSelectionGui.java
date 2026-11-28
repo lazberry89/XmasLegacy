@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.role.shop.role.farmer;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class FarmerSelectionGui implements InventoryHolder {
+public class FarmerSelectionGui implements ReadOnlyGui {
     private final Inventory inv;
 
     // 0 1 2 3 4 5 6 7 8

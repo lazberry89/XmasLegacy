@@ -61,7 +61,8 @@ public class PartyManager implements Initiator {
 	}
 
 	public boolean isInParty(UUID uuid) {
-		return JedisService.getFromJedis("user:" + uuid + ":party") != null;
+		// Through getParty: a mapping whose party is gone must not lock the player out of every party.
+		return getParty(uuid) != null;
 	}
 
 	public boolean createParty(@NotNull UUID leaderUuid) {
@@ -103,10 +104,9 @@ public class PartyManager implements Initiator {
 
 	public boolean leaveParty(UUID uuid) {
 		Party party = getParty(uuid);
-		if (party == null) return false;
-
 		removeUserPartyMapping(uuid);
-
+		// A stale mapping to a party without this player must not disband that party.
+		if (party == null || !party.isInParty(uuid)) return false;
 		boolean isStillAlive = party.leaveParty(uuid);
 
 		if (!isStillAlive) {
@@ -136,6 +136,8 @@ public class PartyManager implements Initiator {
 		if (party == null) return false;
 
 		if (!party.getLeader().equals(currentLeaderUuid)) return false;
-		return party.changeLeader(newLeaderUuid);
+		if (!party.changeLeader(newLeaderUuid)) return false;
+		saveParty(party);
+		return true;
 	}
 }

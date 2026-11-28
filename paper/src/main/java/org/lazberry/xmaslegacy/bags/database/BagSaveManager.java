@@ -1,5 +1,9 @@
 package org.lazberry.xmaslegacy.bags.database;
 
+import org.lazberry.xmaslegacy.utils.ServerUtils;
+import org.lazberry.xmaslegacy.user.UserSaveManager;
+import org.lazberry.xmaslegacy.XmasLegacy;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,9 +26,11 @@ import java.util.concurrent.CompletableFuture;
 public class BagSaveManager implements Initiator {
     private final SqlBagRepository bagRepository;
     private final BagManager bagManager;
+    private final UserSaveManager userSaveManager;
 
     @Inject
-    public BagSaveManager(SqlBagRepository bagRepository, BagManager bagManager) {
+    public BagSaveManager(SqlBagRepository bagRepository, BagManager bagManager, UserSaveManager userSaveManager) {
+        this.userSaveManager = userSaveManager;
         this.bagRepository = bagRepository;
         this.bagManager = bagManager;
     }
@@ -68,11 +74,15 @@ public class BagSaveManager implements Initiator {
                         return bag;
                     }
                     return new Bag(uuid);
-                })
-                .exceptionally(ex -> {
-                    log.error("Failed to load bag from database for user {}", uuid, ex);
-                    return new Bag(uuid);
-                });
+                    // A failed read stays a failure: an empty bag would later be saved over the real one.
+                    });
+    }
+
+    /** Waits for the previous server to finish saving first. */
+    public CompletableFuture<Bag> loadBagWhenJoin(UUID uuid) {
+        String server = ServerUtils.getServerType(XmasLegacy.getInstance()).name();
+        return CompletableFuture.runAsync(() -> userSaveManager.awaitPreviousServer(uuid, server), Thread::startVirtualThread)
+                .thenCompose(v -> loadBag(uuid));
     }
 
     public CompletableFuture<Bag> loadBag(UUID uuid) {
@@ -97,10 +107,13 @@ public class BagSaveManager implements Initiator {
     }
 
     public CompletableFuture<Void> saveBag(Bag bag) {
-        return CompletableFuture.runAsync(() ->
-            setJedis(bag)).thenCompose(v ->
-                bagRepository.save(bag)
-        ).thenApply(success -> {
+        // Redis right away, on the calling thread: the next server may read it at any moment.
+        try {
+            setJedis(bag);
+        } catch (RuntimeException e) {
+            log.error("Failed to cache bag of {} in Redis.", bag.getOwner(), e);
+        }
+        return bagRepository.save(bag).thenApply(success -> {
             if (!success) log.error("Failed to persist bag for user {} to database during save chain.", bag.getOwner());
             return null;
         });
@@ -111,6 +124,7 @@ public class BagSaveManager implements Initiator {
                 .filter(Player::isValid)
                 .map(Player::getUniqueId)
                 .map(bagManager::getBag)
+                .filter(Objects::nonNull)
                 .map(this::saveBag)
                 .toArray(CompletableFuture[]::new);
         try {

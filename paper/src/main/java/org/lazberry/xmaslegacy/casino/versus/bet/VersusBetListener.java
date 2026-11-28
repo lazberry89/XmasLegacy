@@ -80,7 +80,7 @@ public class VersusBetListener implements Listener {
     public void givebackCoinWhenClose(InventoryCloseEvent e) {
         if (!(e.getPlayer() instanceof Player p)) return;
         if (!(e.getInventory().getHolder() instanceof VersusBetInterface bet)) return;
-        if (e.getReason() == InventoryCloseEvent.Reason.PLUGIN) return;
+        // Whatever the reason: after a bet the slot is already empty.
 
         ItemStack item = bet.getInventory().getItem(4);
         if (item == null || item.getType().isAir()) return;

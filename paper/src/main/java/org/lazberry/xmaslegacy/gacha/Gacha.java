@@ -28,7 +28,7 @@ public class Gacha {
 	private final @NotNull @Getter ItemStack showItem;
 
 	public Gacha(@NotNull ItemStack item, @NotNull String key, @NotNull GachaGrade grade, double chance) {
-		this.item = Objects.requireNonNull(item, "Item cannot be null!");
+		this.item = Objects.requireNonNull(item, "Item cannot be null!").clone(); // not the admin's stack in hand
 		this.key = Objects.requireNonNull(key, "Key cannot be null!");
 		this.grade = Objects.requireNonNull(grade, "Grade cannot be null!");
 		this.chance = chance;

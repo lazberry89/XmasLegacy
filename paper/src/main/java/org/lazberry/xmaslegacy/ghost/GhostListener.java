@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.ghost;
 
-import org.lazberry.xmaslegacy.utils.Perms;
+import org.bukkit.event.EventPriority;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -26,10 +26,10 @@ public class GhostListener implements Listener {
 		this.gmm = gmm;
     }
 
-    @EventHandler
+    // Before the inventory is saved, and for everyone: the permission may be gone by now.
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLeave(PlayerQuitEvent e) {
-        Player p = e.getPlayer();
-        if (!Perms.admin(p, "ghost")) return;
+    	Player p = e.getPlayer();
         if (gmm.isGhostMode(p)) {
             gmm.toggle(p);
         }

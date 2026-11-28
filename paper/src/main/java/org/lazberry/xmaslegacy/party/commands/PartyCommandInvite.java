@@ -90,7 +90,7 @@ public class PartyCommandInvite implements SubCommand {
                 .clickEvent(ClickEvent.callback(audience -> {
                     if (audience instanceof Player p && p.isOnline()) {
                         var uuid  = p.getUniqueId();
-                        if (pm.joinParty(party.getLeader(), uuid)) {
+                        if (pm.consumeInvite(uuid, party.getLeader()) && pm.joinParty(party.getLeader(), uuid)) {
                             InfoUtils.info(p, "파티에 참가했습니다.");
                             party.getMembers().stream().map(Bukkit::getPlayer)
                                     .filter(Objects::nonNull)
@@ -116,8 +116,7 @@ public class PartyCommandInvite implements SubCommand {
                     int buttonId = response.clickedButtonId();
 
                     if (buttonId == 0) {
-
-                        if (pm.joinParty(party.getLeader(), uuid)) {
+                    if (pm.consumeInvite(uuid, party.getLeader()) && pm.joinParty(party.getLeader(), uuid)) {
                             InfoUtils.info(player, "파티에 참가했습니다.");
                             party.getMembers().stream()
                                     .map(Bukkit::getPlayer)

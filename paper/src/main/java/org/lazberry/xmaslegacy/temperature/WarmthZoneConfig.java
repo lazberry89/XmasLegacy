@@ -50,7 +50,8 @@ public class WarmthZoneConfig implements Initiator {
             for (var zone : zones) {
                 String key = zone.getId() + ".";
                 builder.set(key + "world", zone.getWorld().getName());
-                builder.set(key + "warmth-level", zone.getLevel());
+                // The name: the enum object itself is written as a Java tag that makes the file unreadable.
+                builder.set(key + "warmth-level", zone.getLevel().name());
                 builder.set(key + "show-particle", zone.isShowParticle());
                 builder.set(key + "regenerate", zone.isRegenerate());
             }

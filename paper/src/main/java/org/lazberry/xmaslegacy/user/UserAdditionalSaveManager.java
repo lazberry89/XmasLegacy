@@ -1,5 +1,7 @@
 package org.lazberry.xmaslegacy.user;
 
+import org.lazberry.xmaslegacy.utils.ServerUtils;
+import org.lazberry.xmaslegacy.XmasLegacy;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Blocking;
@@ -37,7 +39,8 @@ public class UserAdditionalSaveManager implements Initiator {
                 try {
                     isFloodgate = FloodgateUtils.isFloodgate(uuid);
                 } catch (Throwable ignored) {}
-                userSaveManager.load(uuid, name, isFloodgate);
+                // Like a join, so the network keeps listing the player on this server.
+                userSaveManager.onJoinAsync(uuid, name, ServerUtils.getServerType(XmasLegacy.getInstance()).name(), isFloodgate).join();
                 log.info("Loaded user info for online player {} ({}) on reload.", name, uuid);
             } catch (Exception e) {
                 log.error("Failed to load user info for player {} on reload", p.getName(), e);
@@ -49,6 +52,7 @@ public class UserAdditionalSaveManager implements Initiator {
     @Priority(InitiatePriority.FAST)
     public void close() {
         userSaveManager.saveAll();
+        if (Bukkit.isStopping()) userSaveManager.signOffAll(); // not on a plugin reload: the players stay
         userSaveManager.clearCache();
     }
 }

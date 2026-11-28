@@ -24,6 +24,10 @@ public class RegionDisplayManager {
 
     public RegionDisplayManager() {}
 
+    public boolean isLoaded(Region region) {
+    	return region.getWorld() != null && region.getWorld().isChunkLoaded(region.getChunkX(), region.getChunkZ());
+    }
+
     public void spawnIndicatorDisplay(Region region) {
         if (region == null || region.getWorld() == null || !region.isValid()) return;
 
@@ -40,6 +44,7 @@ public class RegionDisplayManager {
         Location centerLoc = region.getTrueCenter(chunk).clone().add(0, 0.5, 0);
 
         world.spawn(centerLoc, BlockDisplay.class, b -> {
+            b.setPersistent(false); // IndicatorRecoveryTask brings it back; saved ones pile up after a crash
             b.setBlock(beacon);
             b.setGravity(false);
             b.setGlowColorOverride(Color.AQUA);
@@ -64,6 +69,7 @@ public class RegionDisplayManager {
         });
 
         world.spawn(centerLoc, Interaction.class, i -> {
+           i.setPersistent(false);
            i.setInteractionHeight(0.8f);
            i.setInteractionWidth(0.8f);
            i.setResponsive(true);
@@ -94,13 +100,9 @@ public class RegionDisplayManager {
         region.setInteraction(null);
 
         World world = region.getWorld();
-        if (world != null) {
-            var chunk = world.getChunkAt(region.getChunkX(), region.getChunkZ());
-            if (!chunk.isLoaded()) {
-                chunk.load(true);
-            }
-
-            for (Entity entity : chunk.getEntities()) {
+        if (isLoaded(region)) {
+        	var chunk = world.getChunkAt(region.getChunkX(), region.getChunkZ());
+        	for (Entity entity : chunk.getEntities()) {
                 if (isIndicatorDisplay(entity)) {
                     Long storedKey = KeyUtils.get(entity, key, PersistentDataType.LONG);
                     if (storedKey != null && storedKey == region.getKey()) {

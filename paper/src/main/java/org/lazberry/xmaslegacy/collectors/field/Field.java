@@ -42,7 +42,7 @@ public class Field {
 	public void spawnDropContainers(int count) {
 		if (count <= 0) return;
 
-		List<Location> dropLocs = snapshotOfDropLocations();
+		List<Location> dropLocs = new ArrayList<>(potentialDropLocations);
 		if (dropLocs.size() < count) return;
 
 		cleanDropContainers();

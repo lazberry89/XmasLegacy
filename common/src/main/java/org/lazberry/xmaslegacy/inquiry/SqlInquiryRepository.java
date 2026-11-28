@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.inquiry;
 
+import java.util.concurrent.CompletionException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
@@ -66,9 +67,9 @@ public class SqlInquiryRepository extends DatabaseProcessor {
 					}
 				}
 			} catch (SQLException e) {
-				log.error("Failed to save inquiry log for UUID: {}", uuid, e);
-			}
-			return -1L;
+					throw new CompletionException(e); // an id of -1 would be announced as a real inquiry
+				}
+				throw new IllegalStateException("No inquiry id generated.");
 		});
 	}
 

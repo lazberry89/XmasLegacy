@@ -112,6 +112,7 @@ public class BlueprintPreviewManager implements Initiator {
 			Location spawnLoc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
 			BlockDisplay display = loc.getWorld().spawn(spawnLoc, BlockDisplay.class, entity -> {
+				entity.setPersistent(false);
 				entity.setBlock(blockData);
 				entity.setBrightness(new Display.Brightness(15, 15));
 

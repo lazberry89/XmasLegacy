@@ -34,17 +34,12 @@ public class RegionPermissionListener implements Listener {
 
 	@EventHandler
 	public void regionEnterEvent(PlayerMoveEvent e) {
+		if (!e.hasChangedBlock()) return;
 		Region region = rm.getRegionAt(e.getTo());
-		if (region == null) return;
-
-		if (region.isInside(e.getTo())) {
-			Player p = e.getPlayer();
-			if (hasPermission(p, region)) return;
-
-			if (!region.isEntryAllowed()) {
-				e.setCancelled(true);
-			}
-		}
+		if (region == null || region.isEntryAllowed() || hasPermission(e.getPlayer(), region)) return;
+		// Someone already inside must be able to walk out.
+		if (region.equals(rm.getRegionAt(e.getFrom()))) return;
+		e.setCancelled(true);
 	}
 
 	@EventHandler

@@ -1,9 +1,9 @@
 package org.lazberry.xmaslegacy.casino.shop;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.lazberry.xmaslegacy.XmasLegacy;
@@ -11,7 +11,7 @@ import org.lazberry.xmaslegacy.casino.Casino;
 import org.lazberry.xmaslegacy.utils.ColorUtils;
 import org.lazberry.xmaslegacy.utils.ItemBuilder;
 
-public class CasinoShop implements InventoryHolder {
+public class CasinoShop implements ReadOnlyGui {
     private final Inventory inv;
     private final XmasLegacy plugin;
     private final ItemStack[] plans;

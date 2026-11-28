@@ -75,6 +75,9 @@ public abstract class AbstractDataProcessor implements Initiator {
         return CompletableFuture.runAsync(this::saveSync);
     }
     public CompletableFuture<Void> loadAll() {
-        return CompletableFuture.runAsync(this::loadSync);
+        return CompletableFuture.runAsync(() -> {
+            this.config = YamlConfiguration.loadConfiguration(file); // edits made to the file since
+            loadSync();
+        });
     }
 }

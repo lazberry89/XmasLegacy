@@ -32,7 +32,7 @@ public final class MainSpawnManager extends SavedLocation {
         }
 
 	    StunUtils.stun(player.getUniqueId(), 60L, "이동");
-        TitleUtil.create("정보 로드중..", "", 5, 50, 5);
+        player.showTitle(TitleUtil.create("정보 로드중..", "", 5, 50, 5));
         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 2, false, false, false));
 
         player.teleport(to);

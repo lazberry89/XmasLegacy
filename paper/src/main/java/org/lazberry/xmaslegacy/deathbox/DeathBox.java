@@ -54,10 +54,10 @@ public class DeathBox implements InventoryHolder {
         world.setType(location, Material.CHEST);
     }
 
-    public DeathBox(@NotNull Player player, @Nullable ItemStack[] contents, long expireTime, boolean hide) {
+    public DeathBox(@NotNull Player player, @NotNull Location location, @Nullable ItemStack[] contents, long expireTime, boolean hide) {
         if (contents == null || contents.length == 0) setExpired(true);
         this.uuid = player.getUniqueId();
-        this.location = player.getLocation().getBlock().getLocation();
+        this.location = location;
         this.world = location.getWorld();
         this.previousBlock = location.getBlock().getType();
         this.spawnedTime = System.currentTimeMillis();

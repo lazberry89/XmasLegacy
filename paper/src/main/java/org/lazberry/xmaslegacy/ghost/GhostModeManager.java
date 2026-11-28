@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.ghost;
 
+import org.lazberry.xmaslegacy.utils.InventoryHelper;
 import org.lazberry.xmaslegacy.utils.Perms;
 
 import org.bukkit.Bukkit;
@@ -46,14 +47,16 @@ public class GhostModeManager implements Initiator {
 
     public void DeGhostMode(Player p) {
         if (!isGhostMode.contains(p.getUniqueId())) return;
+        var worn = p.getInventory().getArmorContents(); // put on while hidden
         p.getInventory().setArmorContents(saveArmor.get(p.getUniqueId()));
+        InventoryHelper.giveItemOrDrop(p, worn);
         p.setInvisible(false);
         p.setCollidable(true);
         for (Player online : Bukkit.getOnlinePlayers()) {
             online.showPlayer(plugin, p);
         }
         saveArmor.remove(p.getUniqueId());
-        isGhostMode.add(p.getUniqueId());
+        isGhostMode.remove(p.getUniqueId());
     }
 
     public void toggle(@NotNull Player p) {
@@ -70,6 +73,14 @@ public class GhostModeManager implements Initiator {
 
 	@Override
 	public void init() {
+	}
 
+	/** The armor taken off is only in memory. */
+	@Override
+	public void close() {
+		for (UUID uuid : getGhostModePlayer()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null) DeGhostMode(p);
+		}
 	}
 }

@@ -1,12 +1,12 @@
 package org.lazberry.xmaslegacy.role.selection;
 
+import org.lazberry.xmaslegacy.utils.ReadOnlyGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import org.lazberry.xmaslegacy.utils.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoleSelectionGui implements InventoryHolder {
+public class RoleSelectionGui implements ReadOnlyGui {
 	private final Inventory inventory;
 	private final XmasLegacy plugin;
 

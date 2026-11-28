@@ -201,9 +201,10 @@ public class SqlUserRepository extends DatabaseProcessor implements UserReposito
 				return loadedUser;
 			}
 		} catch (SQLException e) {
-			log.error("Sql error while loading User '{}' -> {}", uuid, e.getMessage(), e);
-		}
-		return null;
+				// Never null here: the caller would take it for a new player and overwrite the real row.
+				throw new IllegalStateException("Could not load user " + uuid, e);
+			}
+			return null;
 	}
 
 	@Override
@@ -250,8 +251,9 @@ public class SqlUserRepository extends DatabaseProcessor implements UserReposito
 
 	@Override
 	public int getRank(@NotNull UUID uuid) {
-		String sql = "SELECT rank FROM ( " +
-				"    SELECT uuid, RANK() OVER (ORDER BY Exp DESC) AS rank " +
+		// "rank" is a reserved word in MySQL 8
+		String sql = "SELECT user_rank FROM ( " +
+				"    SELECT uuid, RANK() OVER (ORDER BY Exp DESC) AS user_rank " +
 				"    FROM users " +
 				") AS temp WHERE uuid = ?";
 
@@ -262,7 +264,7 @@ public class SqlUserRepository extends DatabaseProcessor implements UserReposito
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
-					return rs.getInt("rank");
+					return rs.getInt("user_rank");
 				}
 			}
 		} catch (SQLException e) {

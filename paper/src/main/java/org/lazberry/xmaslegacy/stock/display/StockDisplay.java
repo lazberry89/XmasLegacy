@@ -36,6 +36,7 @@ public class StockDisplay {
 
 		this.display = location.getWorld().spawn(location, TextDisplay.class, t -> {
 			t.getPersistentDataContainer().set(KeyUtils.get("stock_display"), PersistentDataType.BOOLEAN, true);
+			t.setPersistent(false); // respawned by update(); a saved one comes back beside it
 			t.setBillboard(Display.Billboard.FIXED);
 			t.setDefaultBackground(false);
 			t.setBackgroundColor(Color.fromARGB(100, 0, 0, 0));

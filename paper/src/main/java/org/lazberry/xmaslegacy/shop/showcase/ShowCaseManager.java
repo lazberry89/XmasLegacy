@@ -65,11 +65,13 @@ public class ShowCaseManager implements Initiator {
 	}
 
 	public void registerGoods(String name, ItemStack item, int initial) {
-		goods.putIfAbsent(name, new Goods(name, item, initial));
+		goods.putIfAbsent(name, new Goods(name, item.clone(), initial));
+		save();
 	}
 
 	public void registerGoods(String name, ItemStack item, int initial, boolean changeName) {
-		goods.putIfAbsent(name, new Goods(name, item, initial, changeName));
+		goods.putIfAbsent(name, new Goods(name, item.clone(), initial, changeName));
+		save();
 	}
 
 	public boolean removeGoods(String name) {
@@ -78,6 +80,7 @@ public class ShowCaseManager implements Initiator {
 
 			var show = showCase.remove(name);
 			if (show != null) show.cleanUp();
+			save();
 			return true;
 		}
 		return false;
@@ -86,8 +89,9 @@ public class ShowCaseManager implements Initiator {
 	public boolean removeShowCase(String name) {
 		var s = showCase.remove(name);
 		if (s != null) {
-			s.cleanUp();
-			return true;
+		    s.cleanUp();
+		    save();
+		    return true;
 		}
 		return false;
 	}
@@ -103,6 +107,7 @@ public class ShowCaseManager implements Initiator {
 		s.spawnWallButton(location, face);
 
 		showCase.put(id, s);
+		save();
 		return true;
 	}
 
@@ -186,6 +191,12 @@ public class ShowCaseManager implements Initiator {
 		});
 	}
 
+	/** On every change: saving only at shutdown lost them in a crash. */
+	private void save() {
+		caseConfig.saveSync(showCase);
+		goodsConfig.saveSync(goods);
+	}
+
 	private void finalizeCleanUp() {
 		var worlds = Bukkit.getWorlds();
 		if (worlds.isEmpty()) return;
@@ -198,8 +209,7 @@ public class ShowCaseManager implements Initiator {
 
 	@Override
 	public void close() {
-		caseConfig.saveSync(showCase);
-		goodsConfig.saveSync(goods);
+		save();
 		cleanUp();
 		finalizeCleanUp();
 	}

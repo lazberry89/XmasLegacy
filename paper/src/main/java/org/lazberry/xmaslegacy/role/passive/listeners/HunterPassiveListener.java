@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.passive.listeners;
 
+import org.bukkit.event.EventPriority;
 import org.lazberry.xmaslegacy.advancement.Advancements;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import org.bukkit.Particle;
@@ -37,7 +38,7 @@ public class HunterPassiveListener extends PassiveListeners implements Listener 
         this.em = em;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void critWhenAttack(PrePlayerAttackEntityEvent e) {
         Player p = e.getPlayer();
         Entity entity = e.getAttacked();
@@ -46,7 +47,7 @@ public class HunterPassiveListener extends PassiveListeners implements Listener 
         if (entity instanceof LivingEntity victim)
             canUsePassive(p, u -> {
                 if (ThreadLocalRandom.current().nextDouble() < 0.3) {
-                    if (victim.isValid() || !victim.isDead()) {
+                    if (victim.isValid() && !victim.isDead()) {
                         victim.damage(ThreadLocalRandom.current().nextInt(3, 6), p);
                         victim.getWorld().spawnParticle(Particle.CRIT, victim.getLocation(), 10, 0.2, 0.2, 0.2, 0.01);
                         p.sendActionBar(ColorUtils.chat("&6&lCRIT!"));
@@ -56,7 +57,8 @@ public class HunterPassiveListener extends PassiveListeners implements Listener 
             });
     }
 
-    @EventHandler
+    // The final word on the damage: a cancelled or reduced hit was paid as a kill, again and again.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void whenKillEntity(EntityDamageByEntityEvent e) {
         Entity damager = e.getDamager();
         Entity victim = e.getEntity();
@@ -66,7 +68,7 @@ public class HunterPassiveListener extends PassiveListeners implements Listener 
 
         if (!(victim instanceof Monster)) return;
 
-        if (le.getHealth() <= e.getDamage()) {
+        if (!le.isDead() && le.getHealth() <= e.getFinalDamage()) {
             canUsePassive(player, u -> {
                 int expToGive;
                 int moneyToGive;

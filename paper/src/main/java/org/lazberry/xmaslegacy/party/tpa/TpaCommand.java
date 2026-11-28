@@ -1,6 +1,6 @@
 package org.lazberry.xmaslegacy.party.tpa;
 
-import org.bukkit.Bukkit;
+import org.lazberry.xmaslegacy.user.UserManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,10 +17,12 @@ import org.lazberry.xmaslegacy.utils.InfoUtils;
 @Components.Exclude(type = ServerType.LOBBY)
 public class TpaCommand implements CommandExecutor {
     private final TpaManager tpaManager;
+    private final UserManager userManager;
 
     @Inject
-    public TpaCommand(TpaManager tpaManager) {
+    public TpaCommand(TpaManager tpaManager, UserManager userManager) {
         this.tpaManager = tpaManager;
+        this.userManager = userManager;
     }
 
     @Override
@@ -37,7 +39,11 @@ public class TpaCommand implements CommandExecutor {
         }
 
         // Same name -> uuid lookup the whisper command uses, so targets on other servers resolve too.
-        var targetUuid = Bukkit.getOfflinePlayer(args[0]).getUniqueId();
+        var targetUuid = userManager.findOnlineByName(args[0]);
+        if (targetUuid == null) {
+            InfoUtils.error(p, "해당 유저가 오프라인입니다.");
+            return true;
+        }
         if (tpaManager.sendTpaRequest(p.getUniqueId(), p.getName(), targetUuid)) {
             InfoUtils.info(p, "&6{}&f님에게 텔레포트 요청을 보냈습니다. (60초간 유효)", args[0]);
         } else {

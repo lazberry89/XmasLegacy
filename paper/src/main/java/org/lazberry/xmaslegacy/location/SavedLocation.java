@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public abstract class SavedLocation {
     private final @NotNull @Getter XmasLegacy plugin;
-    private @Nullable @Getter Location spawn;
+    private @Nullable Location spawn;
     private final @NotNull @Getter DestinationType type;
 
     public SavedLocation(@NotNull DestinationType type) {
@@ -23,6 +23,12 @@ public abstract class SavedLocation {
         this.type = type;
         load();
         log.warn("{} Location loaded.", type);
+    }
+
+    /** Its world may have been loaded after this class was created. */
+    public @Nullable Location getSpawn() {
+    	if (spawn == null) load();
+    	return spawn;
     }
 
     public void setSpawn(@NotNull Location loc) {

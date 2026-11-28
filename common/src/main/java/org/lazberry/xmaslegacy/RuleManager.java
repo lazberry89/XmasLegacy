@@ -70,7 +70,9 @@ public class RuleManager {
 	}
 
 	public  boolean addAll(Collection<? extends String> values) {
-		return badWords.addAll(values);
+		boolean added = badWords.addAll(values);
+		if (added) recompilePattern(); // or the words from filter_words.yml are never matched
+		return added;
 	}
 
 	public boolean remove(String s) {

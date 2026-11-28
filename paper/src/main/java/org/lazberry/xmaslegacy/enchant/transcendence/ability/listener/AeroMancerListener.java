@@ -1,5 +1,9 @@
 package org.lazberry.xmaslegacy.enchant.transcendence.ability.listener;
 
+import org.bukkit.event.player.PlayerQuitEvent;
+import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -25,6 +29,8 @@ import org.lazberry.xmaslegacy.framework.annotation.Components;
 public class AeroMancerListener implements Listener {
 	private final AeroMancer aeroMancer;
 	private final XmasLegacy plugin;
+	/** Flight allowed by this weapon; flight from anything else is none of its business. */
+	private final Set<UUID> granted = new HashSet<>();
 
 	@Inject
 	public AeroMancerListener(AbilityManager abilityManager, XmasLegacy plugin) {
@@ -42,7 +48,13 @@ public class AeroMancerListener implements Listener {
 
 		if (p.isOnGround() && !p.getAllowFlight()) {
 			p.setAllowFlight(true);
+			granted.add(p.getUniqueId());
 		}
+	}
+
+	@EventHandler
+	public void onQuit(PlayerQuitEvent e) {
+		if (granted.remove(e.getPlayer().getUniqueId())) e.getPlayer().setAllowFlight(false);
 	}
 
 	@EventHandler
@@ -50,8 +62,8 @@ public class AeroMancerListener implements Listener {
 		Player p = e.getPlayer();
 
 		if (p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR) return;
+		if (!granted.remove(p.getUniqueId())) return;
 		var item = p.getInventory().getItemInMainHand();
-
 		e.setCancelled(true);
 		p.setFlying(false);
 

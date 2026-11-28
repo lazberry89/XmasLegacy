@@ -46,23 +46,18 @@ public class ServerOfficialLinks implements Initiator {
     }
 
     public void reload() {
-        serverLinkConfig.saveAsync(serverLinkValues).whenComplete((v, e) -> {
-           if (e != null) {
-               log.error("Failed to save server links file.", e);
-               return;
-           }
-           serverLinkValues.clear();
-           serverLinkConfig.loadAsync().whenComplete((value, ex) -> {
-               if (ex != null) {
-                   log.error("Failed to load server links file.", ex);
-                   return;
-               }
-               serverLinkValues.putAll(value);
-			   clearLinks();
-               serverLinks = createLinks();
-               Bukkit.getScheduler().runTask(plugin, this::updateAllUsers);
-           });
-        });
+        // Not saved first: that would overwrite the edits being loaded.
+        serverLinkConfig.loadAsync().whenComplete((value, ex) -> Bukkit.getScheduler().runTask(plugin, () -> {
+            if (ex != null) {
+                log.error("Failed to load server links file.", ex);
+                return;
+            }
+            serverLinkValues.clear();
+            serverLinkValues.putAll(value);
+            clearLinks();
+            serverLinks = createLinks();
+            updateAllUsers();
+        }));
     }
 
     public void sendOfficialLinks(Player player) {
@@ -82,8 +77,9 @@ public class ServerOfficialLinks implements Initiator {
 
     @Override
     public void close() {
-        serverLinkConfig.saveSync(serverLinkValues);
+        // Nothing changes the links at runtime; only write the default into an empty file.
+        if (serverLinkValues.isEmpty()) serverLinkConfig.saveSync(serverLinkValues);
         serverLinkValues.clear();
-		clearLinks();
+        clearLinks();
     }
 }

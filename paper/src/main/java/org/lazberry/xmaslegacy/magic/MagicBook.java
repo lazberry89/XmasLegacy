@@ -1,5 +1,8 @@
 package org.lazberry.xmaslegacy.magic;
 
+import java.util.List;
+import org.bukkit.entity.Entity;
+import org.bukkit.Bukkit;
 import io.papermc.paper.math.Rotation;
 import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Data;
@@ -15,7 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lazberry.xmaslegacy.Constants;
 import org.lazberry.xmaslegacy.framework.ServerType;
 import org.lazberry.xmaslegacy.framework.annotation.Components;
@@ -26,8 +28,7 @@ import org.lazberry.xmaslegacy.utils.KeyUtils;
 @Components.Include(type = ServerType.MAIN)
 public class MagicBook {
 	public static final NamespacedKey key = KeyUtils.get("book");
-    private @Nullable ItemDisplay display;
-	private @Nullable Interaction interaction;
+
 
 	public MagicBook() {}
 
@@ -40,7 +41,7 @@ public class MagicBook {
     }
 
 	public boolean exists() {
-		return display != null && interaction != null;
+		return !entities().isEmpty();
 	}
 
     public ItemDisplay BookStand(@NotNull Location loc) {
@@ -68,14 +69,15 @@ public class MagicBook {
 		});
 	}
 
+    /** By tag, so the book is still found after a restart. Only in loaded chunks. */
+    private List<Entity> entities() {
+    	return Bukkit.getWorlds().stream()
+    			.flatMap(w -> w.getEntities().stream())
+    			.filter(e -> KeyUtils.hasKey(e, key))
+    			.toList();
+    }
+
     public void remove() {
-		if (display != null) {
-			display.remove();
-			display = null;
-		}
-		if (interaction != null) {
-			interaction.remove();
-			interaction = null;
-		}
+		entities().forEach(Entity::remove);
     }
 }

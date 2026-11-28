@@ -46,6 +46,7 @@ public class InquiryManager implements Initiator {
 	}
 
 	public void sendInquiry(String name, UUID uuid, String message) {
+		setInquiryCooldown(uuid); // before saving, or a burst of commands passes the check
 		inquiryRepository.saveInquiryAndGet(uuid, name, message).whenComplete((id, e) -> {
 			if (e != null) {
 				log.error("Failed to save inquiry for player {} (uuid: {})", name, uuid, e);
@@ -59,7 +60,6 @@ public class InquiryManager implements Initiator {
 			JedisService.publish("inquiry-channel", "NEW_INQUIRY:" + name + ":" + id);
 
 			log.warn("player {} (uuid: {}) sent inquiry with contents '{}'", name, uuid, message);
-			setInquiryCooldown(uuid);
 		});
 	}
 

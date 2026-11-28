@@ -66,7 +66,17 @@ public class StockConfig implements Initiator {
 
 	@Override
 	public void close() {
+	    if (config == null || file == null) return;
+	    synchronized (this) {
+	        writeStocks();
+	    }
+	}
 
+	/** Cleared first, so a removed stock does not come back. */
+	private void writeStocks() {
+	    config.set("stocks", null);
+	    sm.getStocks().forEach(this::setInfo);
+	    saveConfig();
 	}
 
 	public CompletableFuture<Void> reloadConfig() {
@@ -131,10 +141,9 @@ public class StockConfig implements Initiator {
 		if (config == null || file == null) return CompletableFuture.completedFuture(null);
 		return CompletableFuture.runAsync(() -> {
 			synchronized (this) {
-				sm.getStocks().forEach(this::setInfo);
-				saveConfig();
-			}
-		});
+				        writeStocks();
+				    }
+				});
 	}
 
 	public CompletableFuture<Stock> saveStock(@Nullable Stock stock) {

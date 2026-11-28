@@ -88,6 +88,11 @@ public final class UserHandler {
     @NonBlocking
     public static void loadUser(@NotNull Player player, boolean msg, Consumer<User> whenComplete) {
         us.onJoinAsync(player.getUniqueId(), player.getName(), ServerUtils.getServerType(plugin()).name(), FloodgateUtils.isFloodgate(player)).whenComplete((user, throwable) -> {
+            if (Bukkit.getPlayer(player.getUniqueId()) == null) {
+                // Left while loading. Kept, this copy would be saved over newer data of another server every few minutes.
+                us.discard(player.getUniqueId());
+                return;
+            }
             if (throwable != null || user == null) {
                 if (msg) sendError(player, throwable);
                 return;

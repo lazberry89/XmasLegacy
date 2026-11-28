@@ -55,7 +55,7 @@ public class PortListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void cancelBlockBreaking(BlockBreakEvent e) {
         var player = e.getPlayer();
         Block broken = e.getBlock();
@@ -99,9 +99,9 @@ public class PortListener implements Listener {
         Location loc = sr.get(DestinationType.PORT).getSpawn();
         if (loc == null) {
             InfoUtils.error(player, "스폰이 설정되지 않았습니다. 자동으로 문의됩니다.");
-            player.performCommand("inquiry 항구 스폰설정이 되지 않았습니다.");
+            player.performCommand("문의 항구 스폰설정이 되지 않았습니다.");
             return;
         }
-        player.teleport(loc);
+        e.setRespawnLocation(loc); // the respawn itself overrides a teleport made during this event
     }
 }

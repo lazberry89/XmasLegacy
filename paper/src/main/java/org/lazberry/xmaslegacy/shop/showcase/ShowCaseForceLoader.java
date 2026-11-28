@@ -25,13 +25,20 @@ public class ShowCaseForceLoader implements Tasks {
 	public void startTask(@NotNull XmasLegacy plugin) {
 		if (this.task == null) {
 			task = Bukkit.getScheduler().runTaskTimer(plugin, () ->
-				showCaseManager.getShowCases().forEach(s ->
-					s.getBaseLocation().getChunk().load()), 0L, 20 * 10L);
+				// A ticket keeps the chunk loaded; loading it again came too late for its non-persistent displays.
+				showCaseManager.getShowCases().forEach(s -> {
+					var loc = s.getBaseLocation();
+					if (loc != null && loc.isWorldLoaded())
+						loc.getWorld().addPluginChunkTicket(loc.getBlockX() >> 4, loc.getBlockZ() >> 4, plugin);
+				}), 0L, 20 * 10L);
 		}
 	}
 
 	@Override
 	public void stopTask() {
-
+		if (task != null) {
+			task.cancel();
+			task = null;
+		}
 	}
 }

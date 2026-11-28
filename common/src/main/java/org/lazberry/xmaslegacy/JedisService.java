@@ -190,17 +190,23 @@ public class JedisService implements Initiator {
 		Thread.ofVirtual()
 				.name("Redis-Subscriber-" + String.join("-", channels))
 				.start(() -> {
-					try {
-						redisClient.subscribe(jedisPubSub, channels);
-					} catch (Exception e) {
-						if (redisClient == null || !jedisPubSub.isSubscribed()) {
-							log.debug("Redis subscriber stopped for channels: {}", String.join(", ", channels));
-						} else {
-							log.error("Error occurred while subscribing to Redis channels: {}", String.join(", ", channels), e);
+					// A dropped connection or a throwing onMessage ends subscribe(); without this loop chat, donations
+					// and TPA would stay dead until the server restarts.
+					while (activeSubscribers.contains(jedisPubSub) && redisClient != null) {
+						try {
+							redisClient.subscribe(jedisPubSub, channels);
+							break; // unsubscribed on purpose
+						} catch (Exception e) {
+							if (!activeSubscribers.contains(jedisPubSub) || redisClient == null) break;
+							log.error("Redis subscription to {} stopped; reconnecting in 3s.", String.join(", ", channels), e);
+							try {
+								Thread.sleep(3000);
+							} catch (InterruptedException ie) {
+								break;
+							}
 						}
-					} finally {
-						activeSubscribers.remove(jedisPubSub);
 					}
+					activeSubscribers.remove(jedisPubSub);
 				});
 
 		log.info("Started Redis subscriber virtual thread for channels: {}", String.join(", ", channels));
@@ -208,14 +214,13 @@ public class JedisService implements Initiator {
 
 	public static void unsubscribe(JedisPubSub jedisPubSub) {
 		if (jedisPubSub == null) return;
+		activeSubscribers.remove(jedisPubSub); // first, so the reconnect loop ends
 		try {
 			if (jedisPubSub.isSubscribed()) {
 				jedisPubSub.unsubscribe();
 			}
 		} catch (Exception e) {
 			log.warn("Failed to unsubscribe pubsub: {}", e.getMessage());
-		} finally {
-			activeSubscribers.remove(jedisPubSub);
 		}
 	}
 
@@ -237,7 +242,8 @@ public class JedisService implements Initiator {
 
 	public static void closeJedis() {
 		log.info("Closing Redis service and active subscribers (count: {})...", activeSubscribers.size());
-		for (JedisPubSub sub : activeSubscribers) {
+		for (JedisPubSub sub : Set.copyOf(activeSubscribers)) {
+			activeSubscribers.remove(sub);
 			try {
 				if (sub.isSubscribed()) {
 					sub.unsubscribe();

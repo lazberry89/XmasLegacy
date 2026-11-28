@@ -135,17 +135,15 @@ public final class Reflections {
 	 */
 	@Reflection(type = InitializeType.LISTENERS)
 	public static void registerListeners(@NotNull ClassPath classPath) {
-		try {
-			for (var entry : DependencyContainer.getContainer().entrySet()) {
-				Class<?> clazz = entry.getKey();
-				if (Listener.class.isAssignableFrom(clazz)) {
-					Listener instance = (Listener) entry.getValue();
-					Bukkit.getPluginManager().registerEvents(instance, plugin());
-					log.info("{} Listener {} Automatically registered from IoC Container", icon, clazz.getSimpleName());
-				}
+		for (var entry : DependencyContainer.getContainer().entrySet()) {
+			Class<?> clazz = entry.getKey();
+			if (!Listener.class.isAssignableFrom(clazz)) continue;
+			try { // per listener: one broken listener must not leave the rest unregistered
+				Bukkit.getPluginManager().registerEvents((Listener) entry.getValue(), plugin());
+				log.info("{} Listener {} Automatically registered from IoC Container", icon, clazz.getSimpleName());
+			} catch (Exception | LinkageError e) {
+				log.error("{} Error occurred while registering listener {}", icon, clazz.getSimpleName(), e);
 			}
-		} catch (Exception e) {
-			log.error("{} Error occurred while registering all listeners", icon, e);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package org.lazberry.xmaslegacy.role.passive.listeners;
 
+import org.bukkit.event.EventPriority;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -39,7 +40,8 @@ public class FarmerPassiveListener extends PassiveListeners implements Listener 
         this.em = em;
     }
 
-    @EventHandler
+    // After protection: a refused break or place still paid out.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void whenCropBreak(BlockBreakEvent e) {
         Block broken = e.getBlock();
         Player p = e.getPlayer();
@@ -76,7 +78,7 @@ public class FarmerPassiveListener extends PassiveListeners implements Listener 
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void whenCropPlant(BlockPlaceEvent e) {
         Block placed = e.getBlockPlaced();
         Player p = e.getPlayer();

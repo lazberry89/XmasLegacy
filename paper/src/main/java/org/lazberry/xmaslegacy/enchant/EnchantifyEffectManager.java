@@ -30,6 +30,8 @@ public class EnchantifyEffectManager implements Initiator {
 	private final XmasLegacy plugin;
 	private @Getter Location anvilLoc;
 	private BukkitTask task;
+	/** Returns the item being worked on if the server stops halfway. */
+	private Runnable refund;
 
 	@Inject
 	public EnchantifyEffectManager(EnchantManager enchantManager, EnchantConfig config, XmasLegacy plugin) {
@@ -48,6 +50,7 @@ public class EnchantifyEffectManager implements Initiator {
 		if (task != null) {
 			task.cancel();
 			task = null;
+			refund.run();
 		}
 		config.saveSync(anvilLoc);
 	}
@@ -57,7 +60,7 @@ public class EnchantifyEffectManager implements Initiator {
 	}
 
 	public boolean startEnchant(Player p) {
-		return playEnchantifyEffect(p, anvilLoc.clone().add(0.5, 1, 0.5));
+		return playEnchantifyEffect(p, anvilLoc == null ? null : anvilLoc.clone().add(0.5, 1, 0.5));
 	}
 
 	private boolean isArmor(ItemStack item) {
@@ -69,6 +72,7 @@ public class EnchantifyEffectManager implements Initiator {
 	private ItemDisplay createEffectDisplay(ItemStack item, Location loc) {
 		int axis = isArmor(item) ? 0 : -45;
 		return loc.getWorld().spawn(loc.clone().add(0, 1.3, 0), ItemDisplay.class, d -> {
+			d.setPersistent(false);
 			GlowUtils.glow(d, NamedTextColor.AQUA);
 			d.setItemStack(item);
 			Transformation transformation = new Transformation(
@@ -123,6 +127,12 @@ public class EnchantifyEffectManager implements Initiator {
 
 		var display = createEffectDisplay(cloned, loc);
 		item.setAmount(item.getAmount() - 1);
+		// By UUID: the player may leave, even rejoin, during the 5 seconds.
+		var owner = player.getUniqueId();
+		refund = () -> {
+		    display.remove();
+		    InventoryHelper.giveItemOrKeep(owner, cloned);
+		};
 
 		world.playSound(loc, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 0.5f);
 		task = new BukkitRunnable() {
@@ -140,16 +150,12 @@ public class EnchantifyEffectManager implements Initiator {
 						boolean result = enchantManager.setEnchantable(cloned);
 						if (result) {
 							playEndEffect(loc);
-							InventoryHelper.giveItemOrDrop(player, cloned);
 						} else {
 							InfoUtils.error(player, "해당 무기에 강화를 시작할 수 없어요!");
 							world.playSound(loc, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 1.0f);
-							InventoryHelper.giveItemOrDrop(player, cloned);
 						}
-						display.remove();
-					} else {
-						InventoryHelper.giveItemOrDrop(player, cloned);
 					}
+					refund.run();
 
 					task = null;
 					this.cancel();

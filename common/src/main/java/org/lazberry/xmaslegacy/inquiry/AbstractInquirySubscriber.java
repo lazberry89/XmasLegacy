@@ -22,7 +22,12 @@ public abstract class AbstractInquirySubscriber extends JedisPubSub {
             onInquiryReceived(playerName, idStr);
         }
         else if ("ANSWERED".equals(type)) {
-            UUID userUuid = UUID.fromString(parts[1]);
+            UUID userUuid;
+            try {
+                userUuid = UUID.fromString(parts[1]);
+            } catch (IllegalArgumentException e) {
+                return;
+            }
             String idStr = parts[2];
             onInquiryAnswered(userUuid, idStr);
         }

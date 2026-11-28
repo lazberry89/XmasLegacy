@@ -28,9 +28,10 @@ public class MobRepository {
         this.icedZombie = new IcedZombie();
         this.hunterZombie = new HunterZombie();
         this.iceCube = new IceCube();
+        init(); // nothing else calls it
     }
 
-    public void init() {
+    private void init() {
         this.mobInstances.put(MobKey.ICED_ZOMBIE, icedZombie);
         this.mobInstances.put(MobKey.HUNTER_ZOMBIE, hunterZombie);
         this.mobInstances.put(MobKey.ICE_CUBE, iceCube);

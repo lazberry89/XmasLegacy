@@ -36,17 +36,16 @@ public class KnockoutListener implements Listener {
         this.pm = pm;
     }
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void knockdownWhenDeadIfHasParty(EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof Player player)) return;
 		UUID uuid = player.getUniqueId();
 
-		if (!pm.isInParty(uuid) || KnockoutPlayer.isKnockedOut(player)) return;
-
-		if (player.getHealth() - e.getFinalDamage() <= 0) {
-			e.setCancelled(true);
-			km.knockdownPlayer(player);
-		}
+		// The party lookup goes to Redis: only for a lethal hit, not for every bit of damage.
+		if (player.getHealth() - e.getFinalDamage() > 0) return;
+		if (KnockoutPlayer.isKnockedOut(player) || !pm.isInParty(uuid)) return;
+		e.setCancelled(true);
+		km.knockdownPlayer(player);
 	}
 
 	@EventHandler
@@ -67,6 +66,8 @@ public class KnockoutListener implements Listener {
 
 		if (KnockoutPlayer.isKnockedOut(helper)) {
 			InfoUtils.error(helper, "당신도 기절한 상태입니다!");
+			e.setCancelled(true);
+			return;
 		}
         if (!(e.getRightClicked() instanceof Player downed)) return;
         if (!KnockoutPlayer.isKnockedOut(downed)) return;
@@ -102,6 +103,8 @@ public class KnockoutListener implements Listener {
 	@EventHandler
 	public void informPlayerIfLeftWhileKnockout(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
+		// Left over from a crash: they would stay blind, withering and unable to interact forever.
+		if (KnockoutPlayer.isKnockedOut(p) && km.getKnockoutPlayer(p.getUniqueId()).isEmpty()) KnockoutPlayer.clear(p);
 		if (KeyUtils.hasKey(p, KnockoutPlayer.left)) {
 			KeyUtils.remove(p, key);
 			InfoUtils.warn(p, "기절 도중 퇴장하여 사망처리되었습니다.");

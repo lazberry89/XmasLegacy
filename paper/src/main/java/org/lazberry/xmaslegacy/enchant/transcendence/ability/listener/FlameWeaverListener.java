@@ -32,8 +32,8 @@ public class FlameWeaverListener implements Listener {
 
 	@EventHandler
 	public void whenAttackedOnFire(EntityDamageByEntityEvent e) {
-		if (!(e.getEntity() instanceof Player attacker)) return;
-		if (!(e.getDamager() instanceof LivingEntity victim)) return;
+		if (!(e.getDamager() instanceof Player attacker)) return;
+		if (!(e.getEntity() instanceof LivingEntity victim)) return;
 
 		var item = attacker.getInventory().getItemInMainHand();
 		if (item.getType().isAir()) return;

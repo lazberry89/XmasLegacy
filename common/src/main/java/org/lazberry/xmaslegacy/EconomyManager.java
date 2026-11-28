@@ -22,12 +22,8 @@ public class EconomyManager {
 		this.um = um;
     }
 
-    public boolean deposit(@Nullable UUID uuid, int amount) {
-        if (uuid != null) {
-            um.deposit(uuid, amount);
-            return true;
-        }
-        return false;
+    public boolean deposit(@Nullable UUID uuid, long amount) {
+        return uuid != null && um.deposit(uuid, amount);
     }
 
     public boolean withdraw(@NotNull UUID uuid, int amount) {
@@ -45,7 +41,8 @@ public class EconomyManager {
         if (sender.equals(target)) return false;
         if (amount <= 0) return false;
         if (withdraw(sender.getUniqueId(), amount)) {
-            deposit(target.getUniqueId(), amount * (100- Constants.TAX_RATE)/100);
+            // long: amount * 97 overflows int above about 22 million
+            deposit(target.getUniqueId(), (long) amount * (100 - Constants.TAX_RATE) / 100);
             return true;
         }
         return false;

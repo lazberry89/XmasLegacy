@@ -48,6 +48,9 @@ public class KnockoutPoseFixTask implements Tasks {
 
     @Override
     public void stopTask() {
-
+    	if (task != null) {
+    		task.cancel();
+    		task = null;
+    	}
     }
 }
